@@ -1,0 +1,6 @@
+# The built demo dists ARE committed on purpose — they are what gets served.
+# Only ignore local noise.
+.DS_Store
+Thumbs.db
+*.log
+node_modules/
