@@ -28,11 +28,6 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <div class="ambient" aria-hidden="true">
-      <span class="ambient-blob ambient-blob--indigo"></span>
-      <span class="ambient-blob ambient-blob--violet"></span>
-      <span class="ambient-blob ambient-blob--faint"></span>
-    </div>
     <a class="skip-link" href="#work">Skip to work</a>
 
     <header class="site-header">
@@ -341,27 +336,20 @@
     </script>
 
     <script>
-      // Fresh motion: hero cursor spotlight + 3D-tilt on the feature card. Desktop + motion-on only.
+      // Subtle, senior motion: a gentle parallax tilt on the feature card.
+      // Desktop pointer + motion-on only; restrained angle, no slop.
       (function () {
         var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         var fine = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
         if (reduce || !fine) return;
-        var hero = document.querySelector('.hero');
-        if (hero) {
-          hero.addEventListener('pointermove', function (e) {
-            var r = hero.getBoundingClientRect();
-            hero.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-            hero.style.setProperty('--my', (e.clientY - r.top) + 'px');
-          });
-        }
         var card = document.querySelector('.card--feature');
         if (card) {
-          var MAX = 5.5;
+          var MAX = 2.4;
           card.addEventListener('pointermove', function (e) {
             var r = card.getBoundingClientRect();
             var px = (e.clientX - r.left) / r.width - 0.5;
             var py = (e.clientY - r.top) / r.height - 0.5;
-            card.style.transform = 'perspective(1100px) rotateX(' + (-py * MAX).toFixed(2) + 'deg) rotateY(' + (px * MAX).toFixed(2) + 'deg) translateY(-4px)';
+            card.style.transform = 'perspective(1200px) rotateX(' + (-py * MAX).toFixed(2) + 'deg) rotateY(' + (px * MAX).toFixed(2) + 'deg) translateY(-3px)';
           });
           card.addEventListener('pointerleave', function () { card.style.transform = ''; });
         }
