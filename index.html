@@ -242,13 +242,20 @@
                 say so — and if it isn't, I'll tell you that too.
               </p>
             </div>
-            <div class="contact-actions">
-              <a class="btn btn-primary" href="mailto:kostinmihail40@gmail.com?subject=Automation%20enquiry">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
-                Get in touch
-              </a>
-              <span class="contact-note">Replies within a working day.</span>
-            </div>
+            <form class="contact-form" id="contact-form" novalidate>
+              <div class="cf-row">
+                <input class="cf-input" type="text" name="name" aria-label="Your name" placeholder="Your name" autocomplete="name" />
+                <input class="cf-input" type="email" name="email" aria-label="Your email" placeholder="Email *" required autocomplete="email" />
+              </div>
+              <textarea class="cf-input cf-textarea" name="message" rows="3" aria-label="What process eats your week?" placeholder="What process eats your week? One sentence is fine."></textarea>
+              <div class="cf-foot">
+                <button class="btn btn-primary" type="submit">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+                  Send it over
+                </button>
+                <span class="contact-note" id="cf-status" role="status" aria-live="polite">Replies within a working day.</span>
+              </div>
+            </form>
           </div>
         </div>
       </section>
@@ -265,5 +272,36 @@
         <span class="footer-meta">Custom automation &amp; AI for small and mid-sized businesses.</span>
       </div>
     </footer>
+
+    <script>
+      (function () {
+        var form = document.getElementById('contact-form');
+        if (!form) return;
+        var status = document.getElementById('cf-status');
+        var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          var btn = form.querySelector('button[type=submit]');
+          var payload = {
+            name: form.elements['name'].value,
+            email: form.elements['email'].value,
+            message: form.elements['message'].value,
+            source: 'portfolio-landing'
+          };
+          if (!EMAIL_RE.test(payload.email)) { status.textContent = 'Please enter a valid email.'; return; }
+          btn.disabled = true; status.textContent = 'Sending…';
+          fetch('https://formsubmit.co/ajax/kostinmihail40@gmail.com', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify(payload)
+          }).then(function (r) {
+            if (r.ok) { form.reset(); status.textContent = "Thanks — I'll reply within a working day."; }
+            else { status.innerHTML = 'Could not send. <a href="mailto:kostinmihail40@gmail.com">Email me directly →</a>'; }
+          }).catch(function () {
+            status.innerHTML = 'Could not send. <a href="mailto:kostinmihail40@gmail.com">Email me directly →</a>';
+          }).finally(function () { btn.disabled = false; });
+        });
+      })();
+    </script>
   </body>
 </html>
