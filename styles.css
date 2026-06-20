@@ -529,6 +529,13 @@ img { display: block; max-width: 100%; }
   .card:hover .card-media img { transform: none; }
 }
 
+/* ---------- Process note (free consultation + pricing) ---------- */
+.process-note {
+  max-width: 720px; margin: 32px auto 0; text-align: center;
+  color: var(--slate-500); font-size: 16px; line-height: 1.62;
+}
+.process-note strong { color: var(--navy-800); font-weight: 600; }
+
 /* ---------- Contact form ---------- */
 .contact-form { display: flex; flex-direction: column; gap: 12px; width: min(440px, 100%); flex-shrink: 0; }
 .cf-row { display: flex; gap: 12px; }
