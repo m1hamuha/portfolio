@@ -3,7 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <script>
+      /* Some in-app browsers (a link opened inside a chat app) ignore the static
+         viewport meta and lay the page out at ~980px desktop width, then shrink
+         it to fit — making every phone render tiny. If the layout viewport is far
+         wider than the physical screen, re-assert device-width so the real mobile
+         layout engages. No-op on compliant browsers, tablets, and desktop. */
+      (function () {
+        function fixViewport() {
+          try {
+            var sw = (window.screen && window.screen.width) || 0;
+            if (sw && sw <= 520 && window.innerWidth > sw + 80) {
+              var m = document.querySelector('meta[name="viewport"]');
+              if (m) m.setAttribute('content', 'width=' + sw + ', initial-scale=1, viewport-fit=cover');
+            }
+          } catch (e) {}
+        }
+        fixViewport();
+        window.addEventListener('resize', fixViewport);
+        window.addEventListener('orientationchange', fixViewport);
+      })();
+    </script>
     <meta name="theme-color" content="#06080F" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -37,8 +58,8 @@
     />
     <meta name="twitter:image" content="https://m1hamuha.github.io/portfolio/assets/marginpulse.png" />
     <title>Kostin Automation — Automation that pays for itself</title>
-    <script type="module" crossorigin src="./assets/index-Dx75dqk2.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-DMiI4MYD.css">
+    <script type="module" crossorigin src="./assets/index-DIYfaayV.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-Bns0xupM.css">
   </head>
   <body>
     <div id="root"></div>
