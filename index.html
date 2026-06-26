@@ -3,22 +3,49 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#060810" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <script>
+      /* Some in-app browsers (a link opened inside a chat app) ignore the static
+         viewport meta and lay the page out at ~980px desktop width, then shrink
+         it to fit — making every phone render tiny. If the layout viewport is far
+         wider than the physical screen, re-assert device-width so the real mobile
+         layout engages. No-op on compliant browsers, tablets, and desktop. */
+      (function () {
+        function fixViewport() {
+          try {
+            var sw = (window.screen && window.screen.width) || 0;
+            if (sw && sw <= 520 && window.innerWidth > sw + 80) {
+              var m = document.querySelector('meta[name="viewport"]');
+              if (m) m.setAttribute('content', 'width=' + sw + ', initial-scale=1, viewport-fit=cover');
+            }
+          } catch (e) {}
+        }
+        fixViewport();
+        window.addEventListener('resize', fixViewport);
+        window.addEventListener('orientationchange', fixViewport);
+      })();
+    </script>
+    <meta name="theme-color" content="#06080F" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+    <!-- Satoshi (display) + General Sans (body) from Fontshare; Geist Mono (data) from Google -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap"
+      href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&f[]=general-sans@400,500,600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
     <meta
       name="description"
-      content="Kostin Automation — I build small tools that quietly save your business time and money."
+      content="Kostin Automation — I build small, custom tools for shops, clinics and busy teams that quietly win back the money and hours you lose to manual work. Three shipped, live worldwide."
     />
     <meta property="og:title" content="Kostin Automation" />
     <meta
       property="og:description"
-      content="Automation that pays for itself. Small tools that save your business time and money."
+      content="Automation that pays for itself. Small, custom tools that win back the money and hours small businesses lose to manual work."
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://m1hamuha.github.io/portfolio/" />
@@ -27,12 +54,12 @@
     <meta name="twitter:title" content="Kostin Automation" />
     <meta
       name="twitter:description"
-      content="Automation that pays for itself. Small tools that save your business time and money."
+      content="Automation that pays for itself. Small, custom tools that win back the money and hours small businesses lose to manual work."
     />
     <meta name="twitter:image" content="https://m1hamuha.github.io/portfolio/assets/marginpulse.png" />
     <title>Kostin Automation — Automation that pays for itself</title>
-    <script type="module" crossorigin src="./assets/index-hl8hvZy4.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-CDStEdrG.css">
+    <script type="module" crossorigin src="./assets/index-9yM7mgzM.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-dgFimPBp.css">
   </head>
   <body>
     <div id="root"></div>
