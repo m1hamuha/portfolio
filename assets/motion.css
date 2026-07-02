@@ -105,39 +105,14 @@ header.mx-glass > div {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  /* ── Hero headline: slow sheen across the accent phrase ──── */
-  #top h1 .text-accent {
-    background: linear-gradient(
-      100deg,
-      var(--mx-accent) 0%,
-      var(--mx-accent) 38%,
-      #ffe3ae 50%,
-      var(--mx-accent) 62%,
-      var(--mx-accent) 100%
-    );
-    background-size: 220% 100%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: var(--mx-accent); /* fallback if clip unsupported */
-    animation: mx-sheen 7s ease-in-out 2s infinite;
-  }
-  @keyframes mx-sheen {
-    0%,
-    55% {
-      background-position: 110% 0;
-    }
-    85%,
-    100% {
-      background-position: -35% 0;
-    }
-  }
-
   /* ── Scroll reveals (classes are added by motion.js only) ── */
+  .grid-cards {
+    perspective: 1200px;
+  }
   .mx-reveal {
     opacity: 0;
-    transform: translateY(26px) scale(0.985);
-    filter: blur(6px);
+    transform: translateY(46px) rotateX(9deg) scale(0.965);
+    filter: blur(7px);
     will-change: opacity, transform, filter;
     transition: opacity 0.75s cubic-bezier(0.22, 0.65, 0.25, 1),
       transform 0.75s cubic-bezier(0.22, 0.65, 0.25, 1),
@@ -168,6 +143,12 @@ header.mx-glass > div {
   }
   .mx-h2line.mx-in::after {
     transform: scaleX(1);
+  }
+  /* centered headings (contact) get a centered underline */
+  #contact .mx-h2line::after {
+    left: 50%;
+    margin-left: -2.25rem;
+    transform-origin: 50% 50%;
   }
 
   /* ── Card spotlight + border glow (overlay injected by JS) ─ */
@@ -420,5 +401,307 @@ header.mx-glass > div {
   .mx-howline,
   .mx-vid {
     display: none !important;
+  }
+}
+
+/* ═════════════════════════════════════════════════════════════
+   PREMIUM SKIN — dimensional restyle of the compiled landing.
+   Overrides authored classes (.glass, .bg-accent, .space-bg,
+   .band) with richer, layered treatments. Loaded after the
+   bundle stylesheet, so equal-specificity rules win here.
+   ═════════════════════════════════════════════════════════════ */
+
+/* ── Atmosphere: layered color grade + vignette over the void ─ */
+.space-bg {
+  background-image: radial-gradient(
+      60% 50% at 72% 16%,
+      rgba(64, 82, 138, 0.14),
+      transparent 62%
+    ),
+    radial-gradient(46% 38% at 12% 88%, rgba(240, 169, 62, 0.05), transparent 65%),
+    radial-gradient(130% 110% at 50% 45%, transparent 52%, rgba(0, 0, 2, 0.42) 100%);
+}
+
+/* section spotlights: soft light falling from the top */
+.band.bg-surface {
+  background-image: radial-gradient(
+      54% 28rem at 50% 0%,
+      rgba(240, 169, 62, 0.05),
+      transparent 72%
+    ),
+    linear-gradient(180deg, rgba(20, 26, 40, 0.35), transparent 30rem);
+}
+
+/* ── Cards: real elevation instead of a flat glass sheet ────── */
+.glass {
+  background-color: rgba(17, 21, 33, 0.55);
+  background-image: linear-gradient(
+    155deg,
+    rgba(38, 46, 68, 0.5),
+    rgba(13, 16, 26, 0.32) 55%,
+    rgba(10, 12, 20, 0.42)
+  );
+  box-shadow: 0 18px 44px -10px rgba(1, 2, 4, 0.65),
+    0 4px 12px rgba(1, 2, 4, 0.35),
+    inset 0 1px 0 rgba(235, 244, 255, 0.2),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.35);
+}
+.grid-cards a.glass {
+  transition: transform 0.35s cubic-bezier(0.22, 0.65, 0.25, 1),
+    box-shadow 0.35s cubic-bezier(0.22, 0.65, 0.25, 1);
+}
+.grid-cards .mx-card:hover a.glass {
+  transform: translateY(-6px);
+  box-shadow: 0 30px 70px -14px rgba(1, 2, 4, 0.75),
+    0 0 48px -10px rgba(240, 169, 62, 0.16),
+    inset 0 1px 0 rgba(235, 244, 255, 0.26),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.35);
+}
+
+/* proof tiles: give the flat panels the same dimensionality */
+#proof .grid-cards [class*="bg-card"] {
+  background-image: linear-gradient(
+    165deg,
+    rgba(34, 41, 60, 0.55),
+    rgba(13, 16, 26, 0.25) 60%
+  );
+  box-shadow: inset 0 1px 0 rgba(235, 244, 255, 0.14);
+}
+
+/* ── Money numbers: molten-metal gradient fill ───────────────── */
+#proof p.mono-label.text-accent,
+.grid-cards span.mono-label.text-accent {
+  background-image: linear-gradient(180deg, #ffe0a3 8%, #f4b548 48%, #d18a1e 95%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ── Primary CTA: layered, lit, pressable ────────────────────── */
+a.bg-accent,
+button.bg-accent {
+  background-image: linear-gradient(180deg, #ffc770 0%, #f4b548 45%, #dd9426 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -2px 6px rgba(122, 62, 0, 0.35),
+    0 10px 26px -6px rgba(240, 169, 62, 0.45),
+    0 2px 8px rgba(0, 0, 0, 0.45);
+  transition: transform 0.22s cubic-bezier(0.22, 0.65, 0.25, 1),
+    box-shadow 0.22s cubic-bezier(0.22, 0.65, 0.25, 1),
+    filter 0.22s ease;
+}
+a.bg-accent:hover,
+button.bg-accent:hover {
+  transform: translateY(-2px) scale(1.03);
+  filter: brightness(1.05);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -2px 6px rgba(122, 62, 0, 0.3),
+    0 16px 38px -8px rgba(240, 169, 62, 0.55),
+    0 3px 10px rgba(0, 0, 0, 0.5);
+}
+a.bg-accent:active,
+button.bg-accent:active {
+  transform: translateY(0) scale(0.98);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* ── Secondary hero CTA: slow-rotating conic border ─────────── */
+  @property --mx-rot {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+  }
+  #top a.glass {
+    position: relative;
+  }
+  #top a.glass::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1.5px;
+    pointer-events: none;
+    background: conic-gradient(
+      from var(--mx-rot),
+      transparent 0turn 0.62turn,
+      rgba(240, 169, 62, 0.9) 0.75turn,
+      rgba(127, 180, 255, 0.35) 0.82turn,
+      transparent 0.9turn 1turn
+    );
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: mx-rot 4.5s linear infinite;
+  }
+  @keyframes mx-rot {
+    to {
+      --mx-rot: 1turn;
+    }
+  }
+
+  /* ── Split-word typography (spans injected by motion.js) ───── */
+  #top h1 {
+    perspective: 800px;
+  }
+  .mx-w,
+  .mx-w2 {
+    display: inline-block;
+    will-change: transform, opacity, filter;
+  }
+  #top h1 .mx-w {
+    background-image: linear-gradient(180deg, #ffffff 12%, #c3cfdf 92%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    opacity: 0;
+    transform: translateY(0.55em) rotateX(38deg);
+    filter: blur(7px);
+    animation: mx-word-in 0.85s cubic-bezier(0.22, 0.65, 0.25, 1) forwards;
+    animation-delay: calc(var(--i) * 70ms + 120ms);
+  }
+  #top h1 .text-accent .mx-w {
+    background-image: linear-gradient(180deg, #ffdf9e 10%, #f4b548 50%, #d1891c 95%);
+  }
+  @keyframes mx-word-in {
+    to {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
+  }
+  .mx-h2split {
+    perspective: 700px;
+  }
+  .mx-h2split .mx-w2 {
+    background-image: linear-gradient(180deg, #ffffff 18%, #c9d5e5 95%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    opacity: 0;
+    transform: translateY(0.7em) rotateX(30deg);
+    filter: blur(6px);
+    transition: opacity 0.65s cubic-bezier(0.22, 0.65, 0.25, 1),
+      transform 0.65s cubic-bezier(0.22, 0.65, 0.25, 1),
+      filter 0.65s cubic-bezier(0.22, 0.65, 0.25, 1);
+    transition-delay: calc(var(--i) * 55ms);
+  }
+  .mx-h2split.mx-in .mx-w2 {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+
+  /* ── Cinematic light beam sweeping the page ─────────────────── */
+  .mx-beam {
+    position: fixed;
+    top: -35vh;
+    left: 0;
+    width: 34vw;
+    height: 170vh;
+    pointer-events: none;
+    z-index: 2;
+    mix-blend-mode: screen;
+    transform: rotate(16deg) translateX(-60vw);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(214, 226, 244, 0.045) 45%,
+      rgba(240, 169, 62, 0.03) 55%,
+      transparent
+    );
+    animation: mx-beam 13s ease-in-out infinite;
+  }
+  @keyframes mx-beam {
+    0%,
+    52% {
+      transform: rotate(16deg) translateX(-60vw);
+    }
+    78%,
+    100% {
+      transform: rotate(16deg) translateX(190vw);
+    }
+  }
+
+  /* ── Globe pedestal glow (injected under the globe) ─────────── */
+  .mx-pedestal {
+    position: absolute;
+    left: 50%;
+    bottom: -6%;
+    width: 74%;
+    height: 26%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(
+      50% 50% at 50% 50%,
+      rgba(240, 169, 62, 0.14),
+      rgba(127, 180, 255, 0.05) 55%,
+      transparent 75%
+    );
+    filter: blur(28px);
+    animation: mx-pedestal 6.5s ease-in-out infinite alternate;
+  }
+  @keyframes mx-pedestal {
+    to {
+      opacity: 0.55;
+      transform: translateX(-50%) scale(1.12);
+    }
+  }
+
+  /* ── Floating CTA pill (appears after the hero) ─────────────── */
+  .mx-fab {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    z-index: 85;
+    opacity: 0;
+    transform: translateY(18px) scale(0.9);
+    pointer-events: none;
+    transition: opacity 0.4s cubic-bezier(0.22, 0.65, 0.25, 1),
+      transform 0.4s cubic-bezier(0.22, 0.65, 0.25, 1);
+  }
+  .mx-fab.mx-fab-on {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+  .mx-fab a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 22px;
+    border-radius: 999px;
+    font: 600 0.92rem/1 "Satoshi", "General Sans", system-ui, sans-serif;
+    letter-spacing: 0.01em;
+    color: #17120a;
+    text-decoration: none;
+    background-image: linear-gradient(180deg, #ffc770, #f4b548 45%, #dd9426);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4),
+      inset 0 -2px 6px rgba(122, 62, 0, 0.35),
+      0 12px 30px -6px rgba(240, 169, 62, 0.5),
+      0 4px 14px rgba(0, 0, 0, 0.5);
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+  }
+  .mx-fab a:hover {
+    transform: translateY(-2px) scale(1.04);
+  }
+  .mx-fab a::after {
+    content: "→";
+    font-weight: 700;
+  }
+}
+
+/* extend the reduced-motion kill list for the premium layer */
+@media (prefers-reduced-motion: reduce) {
+  .mx-beam,
+  .mx-pedestal,
+  .mx-fab {
+    display: none !important;
+  }
+  .mx-w,
+  .mx-w2 {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
   }
 }

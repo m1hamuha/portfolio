@@ -65,13 +65,67 @@
     paint();
   }
 
+  /* Split an element's text into per-word inline-block spans so
+     typography can animate word by word. Returns word count. */
+  function splitWords(el, cls) {
+    if (el.querySelector("." + cls)) return 0;
+    var counter = 0;
+    function walk(node) {
+      Array.prototype.slice.call(node.childNodes).forEach(function (child) {
+        if (child.nodeType === 3) {
+          var parts = child.textContent.split(/(\s+)/);
+          if (parts.filter(function (p) { return p.trim(); }).length === 0) return;
+          var frag = document.createDocumentFragment();
+          parts.forEach(function (part) {
+            if (!part) return;
+            if (/^\s+$/.test(part)) {
+              frag.appendChild(document.createTextNode(part));
+            } else {
+              var w = document.createElement("span");
+              w.className = cls;
+              w.style.setProperty("--i", counter++);
+              w.textContent = part;
+              frag.appendChild(w);
+            }
+          });
+          node.replaceChild(frag, child);
+        } else if (child.nodeType === 1 && !child.classList.contains(cls)) {
+          walk(child);
+        }
+      });
+    }
+    walk(el);
+    return counter;
+  }
+
+  /* ── Hero headline: cascading word entrance ───────────────── */
+  function heroWords() {
+    var h1 = document.querySelector("#top h1");
+    if (!h1 || framerOwned(h1)) return;
+    splitWords(h1, "mx-w");
+  }
+
   /* ── Staggered scroll reveals ─────────────────────────────── */
   function reveals() {
     var targets = [];
+    var h2io = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          h2io.unobserve(entry.target);
+          entry.target.classList.add("mx-in");
+        });
+      },
+      { threshold: 0.4 }
+    );
     document.querySelectorAll(".band").forEach(function (band) {
       band.querySelectorAll("h2").forEach(function (h2) {
         if (framerOwned(h2)) return;
-        targets.push(h2);
+        /* word-by-word 3D rise instead of a block fade */
+        if (splitWords(h2, "mx-w2") > 0) {
+          h2.classList.add("mx-h2split");
+          h2io.observe(h2);
+        }
         /* underline draw, only if ::after is free */
         if (getComputedStyle(h2, "::after").content === "none") {
           h2.classList.add("mx-h2line");
@@ -531,6 +585,84 @@
     });
   }
 
+  /* ── Hero scroll choreography: content and globe part ways ── */
+  function heroParallax() {
+    var content = document.querySelector("#top .container-pad");
+    var globe = document.querySelector("#top > div.pointer-events-none.relative");
+    if (content && framerOwned(content)) content = null;
+    if (globe && framerOwned(globe)) globe = null;
+    if (!content && !globe) return;
+    var ticking = false;
+    window.addEventListener(
+      "scroll",
+      function () {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(function () {
+          ticking = false;
+          var y = window.scrollY;
+          if (y > window.innerHeight * 1.4) return;
+          if (content) {
+            content.style.transform = "translate3d(0," + (y * 0.16).toFixed(1) + "px,0)";
+            content.style.opacity = Math.max(0.25, 1 - y / (window.innerHeight * 1.1));
+          }
+          if (globe) {
+            globe.style.transform = "translate3d(0," + (y * 0.07).toFixed(1) + "px,0)";
+          }
+        });
+      },
+      { passive: true }
+    );
+  }
+
+  /* ── Warm pedestal glow under the globe ───────────────────── */
+  function pedestal() {
+    var globe = document.querySelector("#top > div.pointer-events-none.relative");
+    if (!globe || globe.querySelector(".mx-pedestal")) return;
+    var el = document.createElement("div");
+    el.className = "mx-pedestal";
+    el.setAttribute("aria-hidden", "true");
+    globe.appendChild(el);
+  }
+
+  /* ── Cinematic light beam ─────────────────────────────────── */
+  function lightBeam() {
+    var beam = document.createElement("div");
+    beam.className = "mx-beam";
+    beam.setAttribute("aria-hidden", "true");
+    document.body.appendChild(beam);
+  }
+
+  /* ── Floating "book a call" pill after the hero ───────────── */
+  function floatingCTA() {
+    if (!document.querySelector("#contact")) return;
+    var fab = document.createElement("div");
+    fab.className = "mx-fab";
+    var a = document.createElement("a");
+    a.href = "#contact";
+    a.textContent = "Book a free call";
+    fab.appendChild(a);
+    document.body.appendChild(fab);
+
+    var nearContact = false;
+    new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (en) {
+          nearContact = en.isIntersecting;
+          update();
+        });
+      },
+      { rootMargin: "0px 0px -20% 0px" }
+    ).observe(document.querySelector("#contact"));
+
+    function update() {
+      var show = window.scrollY > window.innerHeight * 0.85 && !nearContact;
+      fab.classList.toggle("mx-fab-on", show);
+    }
+    window.addEventListener("scroll", update, { passive: true });
+    update();
+  }
+
   /* ── Background grid parallax ─────────────────────────────── */
   function parallax() {
     var grid = document.querySelector(".space-grid");
@@ -555,7 +687,12 @@
     safe(headerGlass);
     if (REDUCED) return;
     safe(progressBar);
+    safe(heroWords);
     safe(reveals);
+    safe(heroParallax);
+    safe(pedestal);
+    safe(lightBeam);
+    safe(floatingCTA);
     safe(cardFX);
     safe(videoPreviews);
     safe(howLine);
