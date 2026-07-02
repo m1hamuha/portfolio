@@ -1,0 +1,208 @@
+/* ─────────────────────────────────────────────────────────────
+   Kostin Automation — ambient motion layer
+   Progressive enhancement over the compiled app bundle.
+   Everything here is additive: no rule targets compiled class
+   names except stable authored ones (.band, .grid-cards, header).
+   Fully disabled under prefers-reduced-motion.
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  --mx-accent: #f0a93e;
+  --mx-ice: #7fb4ff;
+  --mx-bg: #06080f;
+}
+
+/* ── Scroll progress bar ─────────────────────────────────── */
+.mx-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 90;
+  pointer-events: none;
+  background: linear-gradient(90deg, var(--mx-accent), #ffd58a 55%, var(--mx-ice));
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  opacity: 0.9;
+  box-shadow: 0 0 12px rgba(240, 169, 62, 0.55);
+}
+
+/* ── Header: glass panel once the page scrolls ───────────── */
+header.mx-glass-ready {
+  transition: background-color 0.35s ease, border-color 0.35s ease,
+    backdrop-filter 0.35s ease, box-shadow 0.35s ease;
+  border-bottom: 1px solid transparent;
+}
+header.mx-glass {
+  background: rgba(6, 8, 15, 0.72);
+  -webkit-backdrop-filter: blur(14px) saturate(1.25);
+  backdrop-filter: blur(14px) saturate(1.25);
+  border-bottom-color: rgba(255, 255, 255, 0.07);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+header.mx-glass-ready > div {
+  transition: padding 0.35s ease;
+}
+header.mx-glass > div {
+  padding-top: 0.8rem !important;
+  padding-bottom: 0.8rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* ── Scroll reveals (classes are added by motion.js only) ── */
+  .mx-reveal {
+    opacity: 0;
+    transform: translateY(26px) scale(0.985);
+    filter: blur(6px);
+    will-change: opacity, transform, filter;
+    transition: opacity 0.75s cubic-bezier(0.22, 0.65, 0.25, 1),
+      transform 0.75s cubic-bezier(0.22, 0.65, 0.25, 1),
+      filter 0.75s cubic-bezier(0.22, 0.65, 0.25, 1);
+  }
+  .mx-reveal.mx-in {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+
+  /* ── Section heading underline draw ──────────────────────── */
+  .mx-h2line {
+    position: relative;
+  }
+  .mx-h2line::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -0.35em;
+    width: 4.5rem;
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--mx-accent), transparent);
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    transition: transform 0.9s cubic-bezier(0.22, 0.65, 0.25, 1) 0.25s;
+  }
+  .mx-h2line.mx-in::after {
+    transform: scaleX(1);
+  }
+
+  /* ── Card spotlight + border glow (overlay injected by JS) ─ */
+  .mx-card {
+    position: relative;
+  }
+  .mx-glow {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    background: radial-gradient(
+      300px circle at var(--mx, 50%) var(--my, 50%),
+      rgba(240, 169, 62, 0.09),
+      transparent 65%
+    );
+  }
+  .mx-glow::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: radial-gradient(
+      240px circle at var(--mx, 50%) var(--my, 50%),
+      rgba(240, 169, 62, 0.55),
+      rgba(127, 180, 255, 0.12) 45%,
+      transparent 70%
+    );
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+  .mx-card:hover .mx-glow {
+    opacity: 1;
+  }
+  .mx-tilt {
+    transition: transform 0.18s ease-out;
+    transform-style: preserve-3d;
+  }
+
+  /* ── Cursor aurora ────────────────────────────────────────── */
+  .mx-aurora {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 520px;
+    height: 520px;
+    margin: -260px 0 0 -260px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 3;
+    mix-blend-mode: screen;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    background: radial-gradient(
+        circle at 50% 50%,
+        rgba(240, 169, 62, 0.1),
+        transparent 60%
+      ),
+      radial-gradient(circle at 42% 58%, rgba(127, 180, 255, 0.07), transparent 55%);
+    filter: blur(6px);
+  }
+
+  /* ── Starfield canvas ─────────────────────────────────────── */
+  .mx-stars {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* ── CTA shine sweep ──────────────────────────────────────── */
+  .mx-shine {
+    position: relative;
+    overflow: hidden;
+  }
+  .mx-shine-bar {
+    position: absolute;
+    top: -20%;
+    bottom: -20%;
+    left: 0;
+    width: 34%;
+    pointer-events: none;
+    background: linear-gradient(
+      105deg,
+      transparent,
+      rgba(255, 255, 255, 0.42) 50%,
+      transparent
+    );
+    transform: translateX(-160%) skewX(-18deg);
+    animation: mx-shine-sweep 4.8s cubic-bezier(0.4, 0, 0.2, 1) 1.6s infinite;
+  }
+  @keyframes mx-shine-sweep {
+    0% {
+      transform: translateX(-160%) skewX(-18deg);
+    }
+    24%,
+    100% {
+      transform: translateX(420%) skewX(-18deg);
+    }
+  }
+}
+
+/* Under reduced motion the reveal classes are never added by JS,
+   but belt-and-braces: force content visible if they ever are. */
+@media (prefers-reduced-motion: reduce) {
+  .mx-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+  .mx-shine-bar,
+  .mx-aurora,
+  .mx-stars {
+    display: none !important;
+  }
+}
