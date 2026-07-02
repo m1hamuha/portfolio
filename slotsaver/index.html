@@ -19,6 +19,22 @@
     />
     <script type="module" crossorigin src="./assets/index-CwjCyUuB.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/index-DGNx2a68.css">
+    <style>
+      /* Kostin portfolio polish: cross-document transition + film grain */
+      @media (prefers-reduced-motion: no-preference) {
+        @view-transition { navigation: auto; }
+        ::view-transition-old(root) { animation: mx-vt-out 0.28s cubic-bezier(0.4,0,1,1) both; }
+        ::view-transition-new(root) { animation: mx-vt-in 0.42s cubic-bezier(0,0,0.2,1) both; }
+        @keyframes mx-vt-out { to { opacity: 0; transform: scale(0.985); } }
+        @keyframes mx-vt-in { from { opacity: 0; transform: scale(1.012); } }
+      }
+      body::after {
+        content: ""; position: fixed; inset: 0; z-index: 80; pointer-events: none;
+        opacity: 0.05; mix-blend-mode: overlay;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        background-size: 160px 160px;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
