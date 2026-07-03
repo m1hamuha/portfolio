@@ -3,9 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="build" content="buy-conv-20260703">
 <script>document.documentElement.classList.add('js');</script>
-<title>Продающие карточки товара за 24 часа — Kostin Automation</title>
-<meta name="description" content="Пришлите обычное фото товара — получите карточку уровня студийной съёмки за 24 часа. Первый образец бесплатно.">
+<title>Бесплатная карточка товара за 2 часа — Kostin Automation</title>
+<meta name="description" content="Пришлите обычное фото товара в Telegram — получите бесплатную карточку уровня студийной съёмки за 2 часа. Понравится — сделаем весь ассортимент. Не понравится — не платите.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
@@ -109,7 +110,7 @@ header{
 .eyebrow{font-size:12px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:18px}
 h1{font-size:clamp(25px,6.6vw,50px);font-weight:700;line-height:1.12;margin-bottom:18px}
 h1 em{font-style:normal;color:var(--gold);text-shadow:0 0 28px rgba(230,180,92,0.35)}
-.sub{font-size:clamp(17px,2.4vw,20px);color:var(--muted);margin-bottom:30px;max-width:36ch}
+.sub{font-size:clamp(17px,2.4vw,20px);color:var(--muted);margin-bottom:30px;max-width:38ch}
 .btn{
   display:inline-block;position:relative;
   background:linear-gradient(180deg,var(--gold-bright),var(--gold-deep));
@@ -131,8 +132,11 @@ h1 em{font-style:normal;color:var(--gold);text-shadow:0 0 28px rgba(230,180,92,0
 }
 .btn:hover{filter:brightness(1.06)}
 .btn:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
-.guarantee{margin-top:16px;font-size:15px;color:var(--muted)}
+.cta-hint{margin-top:14px;font-size:15px;color:var(--muted)}
+.guarantee{margin-top:10px;font-size:15px;color:var(--muted)}
 .guarantee strong{color:var(--text)}
+.alt-contact{margin-top:10px;font-size:14px;color:var(--muted)}
+.alt-contact a{color:var(--gold)}
 
 /* signature: before -> after luminous showcase */
 .pair{
@@ -247,9 +251,19 @@ h2{font-size:clamp(22px,4.6vw,32px);font-weight:700;margin-bottom:12px}
 .step h3{font-size:17px;font-weight:700;margin-bottom:8px}
 .step p{font-size:16px;color:var(--muted)}
 
-/* form */
+/* final CTA block */
+#cta .cta-block{max-width:660px;margin:0 auto;padding:44px 26px;text-align:center}
+@media(min-width:680px){#cta .cta-block{padding:56px 52px}}
+#cta h2{margin-bottom:10px}
+#cta .cta-lead{color:var(--muted);margin-bottom:28px}
+.who{margin-top:22px;font-size:15px;color:var(--muted)}
+.who strong{color:var(--text)}
+.who a{color:var(--gold)}
+
+/* fallback form (demoted) */
 #zayavka .wrap{text-align:center}
-#zayavka .sec-sub{margin-left:auto;margin-right:auto}
+#zayavka .sec-sub{margin-left:auto;margin-right:auto;margin-bottom:28px}
+.form-title{font-size:clamp(19px,3.6vw,24px)}
 .form-wrap{max-width:560px;padding:30px 24px;margin:0 auto;text-align:left}
 @media(min-width:680px){.form-wrap{padding:38px 36px}}
 label{display:block;font-size:14px;font-weight:600;margin-bottom:8px;color:var(--text)}
@@ -279,12 +293,37 @@ footer a{color:var(--muted)}
 footer a:hover{color:var(--gold)}
 a:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4px}
 
+/* sticky mobile CTA bar — pure enhancement: without JS it stays display:none */
+.sticky-bar{display:none}
+@media(max-width:768px){
+  html.js .sticky-bar{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    position:fixed;left:0;right:0;bottom:0;z-index:30;
+    padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));
+    background:rgba(12,10,8,0.85);
+    -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+    border-top:1px solid var(--edge-top);
+    box-shadow:0 -12px 32px rgba(0,0,0,0.45);
+    transform:translateY(110%);visibility:hidden;
+    transition:transform .35s cubic-bezier(.22,.61,.36,1),visibility 0s linear .35s;
+  }
+  html.js .sticky-bar.show{
+    transform:translateY(0);visibility:visible;
+    transition:transform .35s cubic-bezier(.22,.61,.36,1);
+  }
+  html.js body{padding-bottom:calc(70px + env(safe-area-inset-bottom,0px))}
+  .sticky-bar-text{font-size:14px;font-weight:700;min-width:0}
+  .sticky-bar .btn{display:inline-block;width:auto;padding:12px 18px;font-size:15px;border-radius:12px;white-space:nowrap;flex-shrink:0}
+  .sticky-bar .btn::before{display:none}
+}
+
 @media(max-width:400px){
   .pair{padding:14px;gap:8px;grid-template-columns:minmax(0,0.66fr) 30px minmax(0,1fr)}
   .pair-arrow{width:28px;height:28px;font-size:14px}
 }
 @media(max-width:480px){
   .btn{display:block;width:100%;text-align:center;padding:16px 18px}
+  .sticky-bar .btn{display:inline-block;width:auto;padding:12px 18px}
 }
 @media(max-width:420px){
   .brand{font-size:12px;white-space:nowrap}
@@ -323,7 +362,7 @@ html.io .reveal.in{
 <header>
   <div class="wrap head-in">
     <div class="brand">Kostin <span>Automation</span></div>
-    <a class="head-cta" href="#zayavka">Бесплатный образец</a>
+    <a class="head-cta" href="https://t.me/onomamichail" target="_blank" rel="noopener">Прислать фото</a>
   </div>
 </header>
 
@@ -332,10 +371,12 @@ html.io .reveal.in{
   <div class="wrap hero-grid">
     <div class="reveal" style="--i:0">
       <p class="eyebrow">Для небольших магазинов</p>
-      <h1>Продающие карточки товара <em>за 24&nbsp;часа</em></h1>
-      <p class="sub">Пришлите обычное фото — получите карточку уровня студийной съёмки.</p>
-      <a class="btn" href="#zayavka">Получить бесплатный образец</a>
-      <p class="guarantee"><strong>Не понравится — не платите.</strong> Первая карточка бесплатно.</p>
+      <h1><em>Бесплатная карточка</em> вашего товара — за 2&nbsp;часа</h1>
+      <p class="sub">Пришлите обычное фото — получите карточку уровня студийной съёмки. Понравится — сделаем весь ассортимент.</p>
+      <a class="btn" href="https://t.me/onomamichail" target="_blank" rel="noopener">Прислать фото в Telegram</a>
+      <p class="cta-hint">Просто киньте фото товара в чат — остальное сделаем мы</p>
+      <p class="guarantee"><strong>Не понравится — не платите.</strong></p>
+      <p class="alt-contact">Без Telegram? <a href="mailto:kostinmihail40@gmail.com?subject=Бесплатная%20карточка%20товара">WhatsApp / почта</a></p>
     </div>
     <div class="pair glass reveal" style="--i:1">
       <figure class="shot shot--before">
@@ -393,10 +434,34 @@ html.io .reveal.in{
   </div>
 </section>
 
+<section id="kak">
+  <div class="wrap">
+    <h2 class="reveal" style="--i:0">Как это работает</h2>
+    <p class="sec-sub reveal" style="--i:1">Первый шаг — бесплатный образец. Никаких созвонов, брифов и предоплат.</p>
+    <div class="steps">
+      <div class="step glass reveal" style="--i:0">
+        <div class="step-num">1</div>
+        <h3>Присылаете фото</h3>
+        <p>Обычный снимок с телефона в Telegram — этого достаточно.</p>
+      </div>
+      <div class="step glass reveal" style="--i:1">
+        <div class="step-num">2</div>
+        <h3>Получаете бесплатную карточку</h3>
+        <p>Первую карточку делаем бесплатно — за 2 часа. Смотрите и решаете.</p>
+      </div>
+      <div class="step glass reveal" style="--i:2">
+        <div class="step-num">3</div>
+        <h3>Заказываете весь ассортимент</h3>
+        <p>Понравилось — делаем остальные за 24 часа. Не понравилось — ничего не платите.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="price">
   <div class="wrap">
     <h2 class="reveal" style="--i:0">Прайс</h2>
-    <p class="sec-sub reveal" style="--i:1">Без предоплаты. Сначала бесплатный образец по вашему фото.</p>
+    <p class="sec-sub reveal" style="--i:1">Без предоплаты. Сначала бесплатная карточка по вашему фото.</p>
     <div class="prices">
       <div class="price-card glass reveal" style="--i:0">
         <p class="price-name">Пакет «Проба»</p>
@@ -410,38 +475,27 @@ html.io .reveal.in{
         <p class="price-what">10 карточек &middot; срок 24 часа</p>
       </div>
     </div>
-    <p class="price-note reveal" style="--i:2"><strong>Не понравится — не платите.</strong></p>
+    <p class="price-note reveal" style="--i:2"><strong>Оплата — после того, как увидите результат.</strong> Не понравится — не платите.</p>
   </div>
 </section>
 
-<section id="kak">
+<section id="cta">
   <div class="wrap">
-    <h2 class="reveal" style="--i:0">Как это работает</h2>
-    <p class="sec-sub reveal" style="--i:1">Три шага, никаких созвонов и брифов на десять страниц.</p>
-    <div class="steps">
-      <div class="step glass reveal" style="--i:0">
-        <div class="step-num">1</div>
-        <h3>Присылаете фото</h3>
-        <p>Обычные снимки с телефона — этого достаточно.</p>
-      </div>
-      <div class="step glass reveal" style="--i:1">
-        <div class="step-num">2</div>
-        <h3>Согласуем стиль</h3>
-        <p>Покажем бесплатный образец. Правки — до тех пор, пока не понравится.</p>
-      </div>
-      <div class="step glass reveal" style="--i:2">
-        <div class="step-num">3</div>
-        <h3>Получаете карточки за 24 часа</h3>
-        <p>Готовые файлы для маркетплейса, Instagram или сайта.</p>
-      </div>
+    <div class="cta-block glass reveal" style="--i:0">
+      <h2>Пришлите фото — карточка будет готова через 2&nbsp;часа</h2>
+      <p class="cta-lead">Бесплатно. Понравится — сделаем весь ассортимент.</p>
+      <a class="btn" href="https://t.me/onomamichail" target="_blank" rel="noopener">Прислать фото в Telegram</a>
+      <p class="cta-hint">Просто киньте фото товара в чат — остальное сделаем мы</p>
+      <p class="guarantee"><strong>Не понравится — не платите.</strong></p>
+      <p class="who">Делает <strong>Kostin Automation</strong> &middot; <a href="https://m1hamuha.github.io/portfolio/v2/" target="_blank" rel="noopener">посмотреть портфолио</a></p>
     </div>
   </div>
 </section>
 
 <section id="zayavka">
   <div class="wrap">
-    <h2 class="reveal" style="--i:0">Получить бесплатный образец</h2>
-    <p class="sec-sub reveal" style="--i:1">Оставьте контакт — ответим в течение пары часов и попросим одно фото товара.</p>
+    <h2 class="form-title reveal" style="--i:0">Без Telegram? Оставьте контакт</h2>
+    <p class="sec-sub reveal" style="--i:1">Ответим в течение пары часов и попросим одно фото товара.</p>
     <form class="form-wrap glass reveal" id="lead-form" style="--i:2" action="https://formsubmit.co/kostinmihail40@gmail.com" method="POST">
       <input type="hidden" name="_subject" value="Заявка с сайта product-cards">
       <input type="hidden" name="_captcha" value="false">
@@ -462,9 +516,15 @@ html.io .reveal.in{
 <footer>
   <div class="wrap foot-in">
     <span>Kostin Automation</span>
+    <a href="https://m1hamuha.github.io/portfolio/v2/" target="_blank" rel="noopener">портфолио</a>
     <a href="mailto:kostinmihail40@gmail.com">kostinmihail40@gmail.com</a>
   </div>
 </footer>
+
+<div class="sticky-bar" id="sticky-bar">
+  <span class="sticky-bar-text">📸 Первая карточка — бесплатно</span>
+  <a class="btn" href="https://t.me/onomamichail" target="_blank" rel="noopener">Прислать фото</a>
+</div>
 
 <script>
 (function(){
@@ -482,6 +542,27 @@ html.io .reveal.in{
     }, {rootMargin:'0px 0px -10% 0px', threshold:0.06});
     els.forEach(function(e){ ob.observe(e); });
   }
+})();
+(function(){
+  /* sticky mobile CTA bar: show after hero, hide over fallback form + footer */
+  var bar = document.getElementById('sticky-bar');
+  var hero = document.querySelector('.hero');
+  if (!bar || !hero || !('IntersectionObserver' in window)) return;
+  var pastHero = false, endVisible = {form:false, foot:false};
+  function upd(){
+    bar.classList.toggle('show', pastHero && !endVisible.form && !endVisible.foot);
+  }
+  new IntersectionObserver(function(en){
+    pastHero = !en[0].isIntersecting;
+    upd();
+  }, {threshold:0}).observe(hero);
+  [['form', document.getElementById('zayavka')], ['foot', document.querySelector('footer')]].forEach(function(p){
+    if (!p[1]) return;
+    new IntersectionObserver(function(en){
+      endVisible[p[0]] = en[0].isIntersecting;
+      upd();
+    }, {threshold:0.05}).observe(p[1]);
+  });
 })();
 (function(){
   var form = document.getElementById('lead-form');
