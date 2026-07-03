@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="build" content="buy-conv-20260703">
+<meta name="build" content="eu-l10n-20260703">
 <script>document.documentElement.classList.add('js');</script>
-<title>Бесплатная карточка товара за 2 часа — Kostin Automation</title>
-<meta name="description" content="Пришлите обычное фото товара в Telegram — получите бесплатную карточку уровня студийной съёмки за 2 часа. Понравится — сделаем весь ассортимент. Не понравится — не платите.">
+<title>Free product card for your item — ready in 2 hours | Kostin Automation</title>
+<meta name="description" content="Send a plain photo of your product on Telegram and get a studio-grade product card free in 2 hours. Love it — we'll do your whole range in 24 hours. Don't like it — you don't pay.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
@@ -76,11 +76,28 @@ header{
   -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
   border-bottom:1px solid var(--edge);
 }
-.head-in{display:flex;align-items:center;justify-content:space-between;padding-top:14px;padding-bottom:14px}
+.head-in{display:flex;align-items:center;justify-content:space-between;padding-top:14px;padding-bottom:14px;gap:10px}
 .brand{font-weight:700;font-size:15px}
 .brand span{color:var(--gold)}
+.head-right{display:flex;align-items:center;gap:10px}
 .head-cta{font-size:14px;font-weight:600;color:var(--gold);text-decoration:none;border:1px solid rgba(230,180,92,0.35);border-radius:99px;padding:7px 16px;transition:background .15s ease,border-color .15s ease}
 .head-cta:hover{background:rgba(230,180,92,0.12);border-color:rgba(230,180,92,0.6)}
+
+/* language toggle — pure enhancement: hidden without JS (page is full English then) */
+.lang-toggle{display:none}
+html.js .lang-toggle{
+  display:inline-flex;gap:2px;align-items:center;
+  border:1px solid var(--edge);border-radius:99px;padding:3px;
+  background:rgba(255,255,255,0.04);
+}
+.lang-toggle button{
+  font-family:var(--body);font-size:12px;font-weight:700;letter-spacing:0.06em;
+  color:var(--muted);background:none;border:none;border-radius:99px;
+  padding:4px 10px;cursor:pointer;line-height:1.4;
+  transition:color .15s ease,background .15s ease;
+}
+.lang-toggle button[aria-pressed="true"]{background:rgba(230,180,92,0.16);color:var(--gold)}
+.lang-toggle button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 
 /* hero */
 .hero{padding:64px 0 72px;position:relative;overflow:hidden}
@@ -239,6 +256,14 @@ h2{font-size:clamp(22px,4.6vw,32px);font-weight:700;margin-bottom:12px}
 }
 .price-note strong{color:var(--gold)}
 
+/* One-click buy step inside pricing cards — primary gold PayPal checkout */
+.pay-step{margin-top:22px;padding-top:20px;border-top:1px solid var(--edge)}
+.pay-step .btn{display:block;width:100%;text-align:center;padding:15px 22px;font-size:16px}
+.pay-step .btn::before{display:none} /* keep the breathing halo unique to the hero/final CTA */
+.pay-note{margin-top:12px;font-size:13px;color:var(--muted)}
+.pay-alt{margin-top:8px;font-size:13px;color:var(--muted)}
+.pay-alt a{color:var(--gold)}
+
 /* steps */
 .steps{display:grid;grid-template-columns:1fr;gap:20px}
 @media(min-width:680px){.steps{grid-template-columns:1fr 1fr 1fr;gap:24px}}
@@ -328,6 +353,7 @@ a:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4
 @media(max-width:420px){
   .brand{font-size:12px;white-space:nowrap}
   .head-cta{font-size:13px;padding:6px 12px;white-space:nowrap}
+  .lang-toggle button{padding:4px 8px}
 }
 
 /* ---------- scroll reveal (rise + fade) ----------
@@ -362,7 +388,13 @@ html.io .reveal.in{
 <header>
   <div class="wrap head-in">
     <div class="brand">Kostin <span>Automation</span></div>
-    <a class="head-cta" href="https://t.me/onomamichail" target="_blank" rel="noopener">Прислать фото</a>
+    <div class="head-right">
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button type="button" id="lang-en" aria-pressed="true">EN</button>
+        <button type="button" id="lang-uk" aria-pressed="false">UK</button>
+      </div>
+      <a class="head-cta" href="https://t.me/onomamichail" target="_blank" rel="noopener" data-i18n="head.cta">Send a photo</a>
+    </div>
   </div>
 </header>
 
@@ -370,23 +402,23 @@ html.io .reveal.in{
 <section class="hero">
   <div class="wrap hero-grid">
     <div class="reveal" style="--i:0">
-      <p class="eyebrow">Для небольших магазинов</p>
-      <h1><em>Бесплатная карточка</em> вашего товара — за 2&nbsp;часа</h1>
-      <p class="sub">Пришлите обычное фото — получите карточку уровня студийной съёмки. Понравится — сделаем весь ассортимент.</p>
-      <a class="btn" href="https://t.me/onomamichail" target="_blank" rel="noopener">Прислать фото в Telegram</a>
-      <p class="cta-hint">Просто киньте фото товара в чат — остальное сделаем мы</p>
-      <p class="guarantee"><strong>Не понравится — не платите.</strong></p>
-      <p class="alt-contact">Без Telegram? <a href="mailto:kostinmihail40@gmail.com?subject=Бесплатная%20карточка%20товара">WhatsApp / почта</a></p>
+      <p class="eyebrow" data-i18n="hero.eyebrow">For Etsy sellers, Instagram shops &amp; small brands</p>
+      <h1 data-i18n="hero.h1"><em>Free product card</em> for your item — ready in 2&nbsp;hours</h1>
+      <p class="sub" data-i18n="hero.sub">Send a plain phone photo — get a studio-grade product card back. Love it? We'll do your whole range.</p>
+      <a class="btn" href="https://t.me/onomamichail" target="_blank" rel="noopener" data-i18n="btn.tg">Send a photo on Telegram</a>
+      <p class="cta-hint" data-i18n="hint.tg">Just drop a photo of your product in the chat — we handle the rest</p>
+      <p class="guarantee" data-i18n="guar"><strong>Don't like it — don't pay.</strong></p>
+      <p class="alt-contact" data-i18n="hero.alt">No Telegram? <a href="mailto:kostinmihail40@gmail.com?subject=Free%20product%20card">Email us</a></p>
     </div>
     <div class="pair glass reveal" style="--i:1">
       <figure class="shot shot--before">
-        <img src="img/before-1.jpg" width="720" height="480" alt="Обычное фото банки мёда, снятое дома">
-        <figcaption>обычное фото</figcaption>
+        <img src="img/before-1.jpg" width="720" height="480" alt="Plain photo of a honey jar shot at home" data-i18n-alt="alt.b1">
+        <figcaption data-i18n="cap.before">plain photo</figcaption>
       </figure>
       <span class="pair-arrow" aria-hidden="true">&rarr;</span>
       <figure class="shot shot--after">
-        <span class="frame"><img src="img/after-1.jpg" width="720" height="1080" alt="Готовая продающая карточка: та же банка мёда с подсветкой и стекающим мёдом"></span>
-        <figcaption>карточка</figcaption>
+        <span class="frame"><img src="img/after-1.jpg" width="720" height="1080" alt="Finished product card: the same honey jar with dramatic lighting and dripping honey" data-i18n-alt="alt.a1"></span>
+        <figcaption data-i18n="cap.after">product card</figcaption>
       </figure>
     </div>
   </div>
@@ -394,40 +426,40 @@ html.io .reveal.in{
 
 <section id="primery">
   <div class="wrap">
-    <h2 class="reveal" style="--i:0">До и после</h2>
-    <p class="sec-sub reveal" style="--i:1">Это те же самые товары. Слева — фото как есть, справа — карточка, которую получает магазин.</p>
+    <h2 class="reveal" style="--i:0" data-i18n="ba.h2">Before &amp; after</h2>
+    <p class="sec-sub reveal" style="--i:1" data-i18n="ba.sub">These are the same products. Left — the photo as it came, right — the card your shop gets.</p>
     <div class="gallery">
       <div class="pair glass reveal" style="--i:0">
         <figure class="shot shot--before">
-          <img src="img/before-2.jpg" width="720" height="480" loading="lazy" alt="Обычное фото жемчужного ожерелья в коробке">
-          <figcaption>обычное фото</figcaption>
+          <img src="img/before-2.jpg" width="720" height="480" loading="lazy" alt="Plain photo of a pearl necklace in a box" data-i18n-alt="alt.b2">
+          <figcaption data-i18n="cap.before">plain photo</figcaption>
         </figure>
         <span class="pair-arrow" aria-hidden="true">&rarr;</span>
         <figure class="shot shot--after">
-          <span class="frame"><img src="img/after-2.jpg" width="720" height="1080" loading="lazy" alt="Карточка: то же ожерелье на чёрном бархате под лучом света"></span>
-          <figcaption>карточка</figcaption>
+          <span class="frame"><img src="img/after-2.jpg" width="720" height="1080" loading="lazy" alt="Product card: the same necklace on black velvet under a beam of light" data-i18n-alt="alt.a2"></span>
+          <figcaption data-i18n="cap.after">product card</figcaption>
         </figure>
       </div>
       <div class="pair glass reveal" style="--i:1">
         <figure class="shot shot--before">
-          <img src="img/before-3.jpg" width="720" height="523" loading="lazy" alt="Обычное фото наручных часов в руке">
-          <figcaption>обычное фото</figcaption>
+          <img src="img/before-3.jpg" width="720" height="523" loading="lazy" alt="Plain photo of a wristwatch held in a hand" data-i18n-alt="alt.b3">
+          <figcaption data-i18n="cap.before">plain photo</figcaption>
         </figure>
         <span class="pair-arrow" aria-hidden="true">&rarr;</span>
         <figure class="shot shot--after">
-          <span class="frame"><img src="img/after-3.jpg" width="720" height="1080" loading="lazy" alt="Карточка: те же часы в полёте на тёмном фоне с золотой подсветкой"></span>
-          <figcaption>карточка</figcaption>
+          <span class="frame"><img src="img/after-3.jpg" width="720" height="1080" loading="lazy" alt="Product card: the same watch floating on a dark background with golden light" data-i18n-alt="alt.a3"></span>
+          <figcaption data-i18n="cap.after">product card</figcaption>
         </figure>
       </div>
       <div class="pair glass reveal" style="--i:2">
         <figure class="shot shot--before">
-          <img src="img/before-4.jpg" width="720" height="1080" loading="lazy" alt="Обычное фото зелёной бутылки на белом фоне">
-          <figcaption>обычное фото</figcaption>
+          <img src="img/before-4.jpg" width="720" height="1080" loading="lazy" alt="Plain photo of a green bottle on a white background" data-i18n-alt="alt.b4">
+          <figcaption data-i18n="cap.before">plain photo</figcaption>
         </figure>
         <span class="pair-arrow" aria-hidden="true">&rarr;</span>
         <figure class="shot shot--after">
-          <span class="frame"><img src="img/after-4.jpg" width="720" height="1080" loading="lazy" alt="Карточка: та же бутылка в брызгах воды на ярком зелёном фоне"></span>
-          <figcaption>карточка</figcaption>
+          <span class="frame"><img src="img/after-4.jpg" width="720" height="1080" loading="lazy" alt="Product card: the same bottle in water splashes on a vivid green background" data-i18n-alt="alt.a4"></span>
+          <figcaption data-i18n="cap.after">product card</figcaption>
         </figure>
       </div>
     </div>
@@ -436,23 +468,23 @@ html.io .reveal.in{
 
 <section id="kak">
   <div class="wrap">
-    <h2 class="reveal" style="--i:0">Как это работает</h2>
-    <p class="sec-sub reveal" style="--i:1">Первый шаг — бесплатный образец. Никаких созвонов, брифов и предоплат.</p>
+    <h2 class="reveal" style="--i:0" data-i18n="how.h2">How it works</h2>
+    <p class="sec-sub reveal" style="--i:1" data-i18n="how.sub">The first card is a free sample. No calls, no briefs, no upfront payment.</p>
     <div class="steps">
       <div class="step glass reveal" style="--i:0">
         <div class="step-num">1</div>
-        <h3>Присылаете фото</h3>
-        <p>Обычный снимок с телефона в Telegram — этого достаточно.</p>
+        <h3 data-i18n="step1.h3">Send a photo</h3>
+        <p data-i18n="step1.p">A plain phone snapshot sent on Telegram is enough.</p>
       </div>
       <div class="step glass reveal" style="--i:1">
         <div class="step-num">2</div>
-        <h3>Получаете бесплатную карточку</h3>
-        <p>Первую карточку делаем бесплатно — за 2 часа. Смотрите и решаете.</p>
+        <h3 data-i18n="step2.h3">Get a free card in 2 hours</h3>
+        <p data-i18n="step2.p">We make your first card free. Look at it and decide.</p>
       </div>
       <div class="step glass reveal" style="--i:2">
         <div class="step-num">3</div>
-        <h3>Заказываете весь ассортимент</h3>
-        <p>Понравилось — делаем остальные за 24 часа. Не понравилось — ничего не платите.</p>
+        <h3 data-i18n="step3.h3">Order your full range</h3>
+        <p data-i18n="step3.p">Love it? We do the rest in 24 hours. Don't like it? You pay nothing.</p>
       </div>
     </div>
   </div>
@@ -460,54 +492,64 @@ html.io .reveal.in{
 
 <section id="price">
   <div class="wrap">
-    <h2 class="reveal" style="--i:0">Прайс</h2>
-    <p class="sec-sub reveal" style="--i:1">Без предоплаты. Сначала бесплатная карточка по вашему фото.</p>
+    <h2 class="reveal" style="--i:0" data-i18n="price.h2">Pricing</h2>
+    <p class="sec-sub reveal" style="--i:1" data-i18n="price.sub">No upfront payment. Your free card comes first — made from your photo.</p>
     <div class="prices">
       <div class="price-card glass reveal" style="--i:0">
-        <p class="price-name">Пакет «Проба»</p>
+        <p class="price-name" data-i18n="price1.name">Starter pack</p>
         <p class="price-num">€30</p>
-        <p class="price-what">5 карточек &middot; срок 24 часа</p>
+        <p class="price-what" data-i18n="price1.what">5 product cards &middot; ready in 24 hours</p>
+        <div class="pay-step">
+          <a class="btn" href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&amp;business=kostinmihail40%40gmail.com&amp;item_name=Starter%20pack%20%E2%80%94%205%20product%20cards&amp;amount=30&amp;currency_code=EUR" target="_blank" rel="noopener" data-i18n="pay.btn30">Buy now — €30</a>
+          <p class="pay-note" data-i18n="pay.note">One-click secure PayPal checkout &middot; you approve every card before the work is final.</p>
+          <p class="pay-alt" data-i18n="pay.alt">Prefer to see a free sample first? <a href="https://t.me/onomamichail" target="_blank" rel="noopener">Send a photo on Telegram</a></p>
+        </div>
       </div>
       <div class="price-card glass price-card--best reveal" style="--i:1">
-        <span class="badge">выгоднее</span>
-        <p class="price-name">Пакет «Витрина»</p>
+        <span class="badge" data-i18n="price2.badge">best value</span>
+        <p class="price-name" data-i18n="price2.name">Shopfront pack</p>
         <p class="price-num">€50</p>
-        <p class="price-what">10 карточек &middot; срок 24 часа</p>
+        <p class="price-what" data-i18n="price2.what">10 product cards &middot; ready in 24 hours</p>
+        <div class="pay-step">
+          <a class="btn" href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&amp;business=kostinmihail40%40gmail.com&amp;item_name=Shopfront%20pack%20%E2%80%94%2010%20product%20cards&amp;amount=50&amp;currency_code=EUR" target="_blank" rel="noopener" data-i18n="pay.btn50">Buy now — €50</a>
+          <p class="pay-note" data-i18n="pay.note">One-click secure PayPal checkout &middot; you approve every card before the work is final.</p>
+          <p class="pay-alt" data-i18n="pay.alt">Prefer to see a free sample first? <a href="https://t.me/onomamichail" target="_blank" rel="noopener">Send a photo on Telegram</a></p>
+        </div>
       </div>
     </div>
-    <p class="price-note reveal" style="--i:2"><strong>Оплата — после того, как увидите результат.</strong> Не понравится — не платите.</p>
+    <p class="price-note reveal" style="--i:2" data-i18n="price.note"><strong>You pay after you approve the result.</strong> Don't like it — don't pay.</p>
   </div>
 </section>
 
 <section id="cta">
   <div class="wrap">
     <div class="cta-block glass reveal" style="--i:0">
-      <h2>Пришлите фото — карточка будет готова через 2&nbsp;часа</h2>
-      <p class="cta-lead">Бесплатно. Понравится — сделаем весь ассортимент.</p>
-      <a class="btn" href="https://t.me/onomamichail" target="_blank" rel="noopener">Прислать фото в Telegram</a>
-      <p class="cta-hint">Просто киньте фото товара в чат — остальное сделаем мы</p>
-      <p class="guarantee"><strong>Не понравится — не платите.</strong></p>
-      <p class="who">Делает <strong>Kostin Automation</strong> &middot; <a href="https://m1hamuha.github.io/portfolio/v2/" target="_blank" rel="noopener">посмотреть портфолио</a></p>
+      <h2 data-i18n="cta.h2">Send a photo — your card is ready in 2&nbsp;hours</h2>
+      <p class="cta-lead" data-i18n="cta.lead">Free. Love it — we'll do your whole range.</p>
+      <a class="btn" href="https://t.me/onomamichail" target="_blank" rel="noopener" data-i18n="btn.tg">Send a photo on Telegram</a>
+      <p class="cta-hint" data-i18n="hint.tg">Just drop a photo of your product in the chat — we handle the rest</p>
+      <p class="guarantee" data-i18n="guar"><strong>Don't like it — don't pay.</strong></p>
+      <p class="who" data-i18n="cta.who">Made by <strong>Kostin Automation</strong> &middot; <a href="https://m1hamuha.github.io/portfolio/v2/" target="_blank" rel="noopener">see the portfolio</a></p>
     </div>
   </div>
 </section>
 
 <section id="zayavka">
   <div class="wrap">
-    <h2 class="form-title reveal" style="--i:0">Без Telegram? Оставьте контакт</h2>
-    <p class="sec-sub reveal" style="--i:1">Ответим в течение пары часов и попросим одно фото товара.</p>
+    <h2 class="form-title reveal" style="--i:0" data-i18n="form.h2">No Telegram? Leave your contact</h2>
+    <p class="sec-sub reveal" style="--i:1" data-i18n="form.sub">We reply within a couple of hours and ask for one product photo.</p>
     <form class="form-wrap glass reveal" id="lead-form" style="--i:2" action="https://formsubmit.co/kostinmihail40@gmail.com" method="POST">
-      <input type="hidden" name="_subject" value="Заявка с сайта product-cards">
+      <input type="hidden" name="_subject" value="New lead — product cards site (EU)">
       <input type="hidden" name="_captcha" value="false">
-      <label for="f-name">Имя</label>
+      <label for="f-name" data-i18n="form.name">Name</label>
       <input id="f-name" name="name" type="text" required autocomplete="name">
-      <label for="f-contact">Телефон, Telegram или WhatsApp</label>
+      <label for="f-contact" data-i18n="form.contact">Phone, Telegram or WhatsApp</label>
       <input id="f-contact" name="contact" type="text" required autocomplete="tel">
-      <label for="f-message">Что за товар? (пара слов)</label>
-      <textarea id="f-message" name="message" placeholder="Например: свечи ручной работы, 12 позиций"></textarea>
-      <button class="btn" type="submit">Отправить заявку</button>
+      <label for="f-message" data-i18n="form.message">What's the product? (a few words)</label>
+      <textarea id="f-message" name="message" placeholder="e.g. handmade candles, 12 items" data-i18n-ph="form.ph"></textarea>
+      <button class="btn" type="submit" data-i18n="form.btn">Send request</button>
       <p class="form-status" id="form-status" role="status"></p>
-      <p class="mailto-alt">Удобнее почтой? Пишите: <a href="mailto:kostinmihail40@gmail.com?subject=Бесплатный%20образец%20карточки">kostinmihail40@gmail.com</a></p>
+      <p class="mailto-alt" data-i18n="form.mailto">Prefer email? Write to <a href="mailto:kostinmihail40@gmail.com?subject=Free%20sample%20card">kostinmihail40@gmail.com</a></p>
     </form>
   </div>
 </section>
@@ -516,17 +558,136 @@ html.io .reveal.in{
 <footer>
   <div class="wrap foot-in">
     <span>Kostin Automation</span>
-    <a href="https://m1hamuha.github.io/portfolio/v2/" target="_blank" rel="noopener">портфолио</a>
+    <a href="https://m1hamuha.github.io/portfolio/v2/" target="_blank" rel="noopener" data-i18n="foot.portfolio">portfolio</a>
     <a href="mailto:kostinmihail40@gmail.com">kostinmihail40@gmail.com</a>
   </div>
 </footer>
 
 <div class="sticky-bar" id="sticky-bar">
-  <span class="sticky-bar-text">📸 Первая карточка — бесплатно</span>
-  <a class="btn" href="https://t.me/onomamichail" target="_blank" rel="noopener">Прислать фото</a>
+  <span class="sticky-bar-text" data-i18n="sticky.text">📸 First card — free</span>
+  <a class="btn" href="https://t.me/onomamichail" target="_blank" rel="noopener" data-i18n="sticky.btn">Send a photo</a>
 </div>
 
 <script>
+/* ---------- i18n: EN default (full English lives in the HTML), UK via dictionary ---------- */
+(function(){
+  var UK = {
+    'title': 'Безкоштовна картка товару за 2 години — Kostin Automation',
+    'meta.desc': 'Надішліть звичайне фото товару в Telegram — отримайте безкоштовну картку рівня студійної зйомки за 2 години. Сподобається — зробимо весь асортимент за 24 години. Ні — не платите.',
+    'head.cta': 'Надіслати фото',
+    'hero.eyebrow': 'Для продавців Etsy, Instagram-магазинів і малих брендів',
+    'hero.h1': '<em>Безкоштовна картка</em> вашого товару — за 2 години',
+    'hero.sub': 'Надішліть звичайне фото з телефона — отримаєте картку рівня студійної зйомки. Сподобається — зробимо весь асортимент.',
+    'btn.tg': 'Надіслати фото в Telegram',
+    'hint.tg': 'Просто киньте фото товару в чат — решту зробимо ми',
+    'guar': '<strong>Не сподобається — не платите.</strong>',
+    'hero.alt': 'Без Telegram? <a href="mailto:kostinmihail40@gmail.com?subject=Free%20product%20card">Напишіть на пошту</a>',
+    'cap.before': 'звичайне фото',
+    'cap.after': 'картка товару',
+    'ba.h2': 'До і після',
+    'ba.sub': 'Це ті самі товари. Ліворуч — фото як є, праворуч — картка, яку отримує магазин.',
+    'how.h2': 'Як це працює',
+    'how.sub': 'Перший крок — безкоштовний зразок. Жодних дзвінків, брифів і передоплат.',
+    'step1.h3': 'Надсилаєте фото',
+    'step1.p': 'Звичайний знімок з телефона в Telegram — цього досить.',
+    'step2.h3': 'Отримуєте безкоштовну картку за 2 години',
+    'step2.p': 'Першу картку робимо безкоштовно. Дивитесь і вирішуєте.',
+    'step3.h3': 'Замовляєте весь асортимент',
+    'step3.p': 'Сподобалось — робимо решту за 24 години. Не сподобалось — нічого не платите.',
+    'price.h2': 'Ціни',
+    'price.sub': 'Без передоплати. Спершу — безкоштовна картка з вашого фото.',
+    'price1.name': 'Пакет «Старт»',
+    'price1.what': '5 карток · готово за 24 години',
+    'price2.badge': 'вигідніше',
+    'price2.name': 'Пакет «Вітрина»',
+    'price2.what': '10 карток · готово за 24 години',
+    'pay.btn30': 'Купити зараз — €30',
+    'pay.btn50': 'Купити зараз — €50',
+    'pay.note': 'Оплата через PayPal в один клік · кожну картку ви затверджуєте перед фіналом.',
+    'pay.alt': 'Хочете спершу безкоштовний зразок? <a href="https://t.me/onomamichail" target="_blank" rel="noopener">Надішліть фото в Telegram</a>',
+    'price.note': '<strong>Оплата — після того, як побачите результат.</strong> Не сподобається — не платите.',
+    'cta.h2': 'Надішліть фото — картка буде готова за 2 години',
+    'cta.lead': 'Безкоштовно. Сподобається — зробимо весь асортимент.',
+    'cta.who': 'Робить <strong>Kostin Automation</strong> · <a href="https://m1hamuha.github.io/portfolio/v2/" target="_blank" rel="noopener">подивитись портфоліо</a>',
+    'form.h2': 'Без Telegram? Залиште контакт',
+    'form.sub': 'Відповімо протягом кількох годин і попросимо одне фото товару.',
+    'form.name': "Ім'я",
+    'form.contact': 'Телефон, Telegram або WhatsApp',
+    'form.message': 'Що за товар? (кілька слів)',
+    'form.ph': 'Наприклад: свічки ручної роботи, 12 позицій',
+    'form.btn': 'Надіслати заявку',
+    'form.mailto': 'Зручніше поштою? Пишіть: <a href="mailto:kostinmihail40@gmail.com?subject=Free%20sample%20card">kostinmihail40@gmail.com</a>',
+    'foot.portfolio': 'портфоліо',
+    'sticky.text': '📸 Перша картка — безкоштовно',
+    'sticky.btn': 'Надіслати фото',
+    'alt.b1': 'Звичайне фото банки меду, зняте вдома',
+    'alt.a1': 'Готова картка товару: та сама банка меду з підсвіткою та краплями меду',
+    'alt.b2': 'Звичайне фото перлового намиста в коробці',
+    'alt.a2': 'Картка: те саме намисто на чорному оксамиті під променем світла',
+    'alt.b3': 'Звичайне фото наручного годинника в руці',
+    'alt.a3': 'Картка: той самий годинник у польоті на темному тлі із золотою підсвіткою',
+    'alt.b4': 'Звичайне фото зеленої пляшки на білому тлі',
+    'alt.a4': 'Картка: та сама пляшка у бризках води на яскравому зеленому тлі'
+  };
+  var MSG = {
+    en: {ok: "Request sent. We'll reply within a couple of hours.", err: "Couldn't send. Email us instead — link below."},
+    uk: {ok: 'Заявку надіслано. Відповімо протягом кількох годин.', err: 'Не вдалося надіслати. Напишіть нам на пошту — посилання нижче.'}
+  };
+  var EN = {}; /* captured from the DOM so no-JS/default stays pure English */
+  var metaDesc = document.querySelector('meta[name="description"]');
+  var enTitle = document.title;
+  var enDesc = metaDesc ? metaDesc.getAttribute('content') : '';
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var k = el.getAttribute('data-i18n');
+    if (!(k in EN)) EN[k] = el.innerHTML;
+  });
+  document.querySelectorAll('[data-i18n-alt]').forEach(function(el){
+    var k = 'alt:' + el.getAttribute('data-i18n-alt');
+    if (!(k in EN)) EN[k] = el.getAttribute('alt');
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(function(el){
+    var k = 'ph:' + el.getAttribute('data-i18n-ph');
+    if (!(k in EN)) EN[k] = el.getAttribute('placeholder');
+  });
+  var cur = 'en';
+  function applyLang(l){
+    cur = (l === 'uk') ? 'uk' : 'en';
+    document.documentElement.lang = cur;
+    document.querySelectorAll('[data-i18n]').forEach(function(el){
+      var k = el.getAttribute('data-i18n');
+      var v = (cur === 'uk') ? UK[k] : EN[k];
+      if (v != null) el.innerHTML = v;
+    });
+    document.querySelectorAll('[data-i18n-alt]').forEach(function(el){
+      var k = el.getAttribute('data-i18n-alt');
+      var v = (cur === 'uk') ? UK[k] : EN['alt:' + k];
+      if (v != null) el.setAttribute('alt', v);
+    });
+    document.querySelectorAll('[data-i18n-ph]').forEach(function(el){
+      var k = el.getAttribute('data-i18n-ph');
+      var v = (cur === 'uk') ? UK[k] : EN['ph:' + k];
+      if (v != null) el.setAttribute('placeholder', v);
+    });
+    document.title = (cur === 'uk') ? UK['title'] : enTitle;
+    if (metaDesc) metaDesc.setAttribute('content', (cur === 'uk') ? UK['meta.desc'] : enDesc);
+    var be = document.getElementById('lang-en'), bu = document.getElementById('lang-uk');
+    if (be) be.setAttribute('aria-pressed', cur === 'en' ? 'true' : 'false');
+    if (bu) bu.setAttribute('aria-pressed', cur === 'uk' ? 'true' : 'false');
+    try { localStorage.setItem('cards-lang', cur); } catch(e){}
+  }
+  window.__cardsLang = function(){ return cur; };
+  window.__cardsMsg = function(kind){ return MSG[cur][kind]; };
+  var be = document.getElementById('lang-en'), bu = document.getElementById('lang-uk');
+  if (be) be.addEventListener('click', function(){ applyLang('en'); });
+  if (bu) bu.addEventListener('click', function(){ applyLang('uk'); });
+  var want = null;
+  try {
+    var m = location.search.match(/[?&]lang=(uk|en)\b/);
+    if (m) want = m[1];
+    else want = localStorage.getItem('cards-lang');
+  } catch(e){}
+  if (want === 'uk') applyLang('uk');
+})();
 (function(){
   /* scroll reveal: html.io overrides the 1.9s keyframe failsafe, observer adds .in */
   var d = document.documentElement;
@@ -576,19 +737,19 @@ html.io .reveal.in{
       method: 'POST',
       headers: {'Content-Type':'application/json','Accept':'application/json'},
       body: JSON.stringify({
-        _subject: 'Заявка с сайта product-cards',
+        _subject: 'New lead — product cards site (EU)',
         name: form.name.value,
         contact: form.contact.value,
         message: form.message.value
       })
     }).then(function(r){ return r.json(); }).then(function(d){
       if (d.success === 'true' || d.success === true) {
-        status.textContent = 'Заявка отправлена. Ответим в течение пары часов.';
+        status.textContent = window.__cardsMsg ? window.__cardsMsg('ok') : 'Request sent.';
         status.className = 'form-status ok';
         form.reset();
       } else { throw new Error('fail'); }
     }).catch(function(){
-      status.textContent = 'Не получилось отправить. Напишите нам на почту — ссылка ниже.';
+      status.textContent = window.__cardsMsg ? window.__cardsMsg('err') : 'Could not send.';
       status.className = 'form-status err';
     }).finally(function(){ btn.disabled = false; });
   });
