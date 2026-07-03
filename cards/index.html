@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Продающие карточки товара за 24 часа — Kostin Automation</title>
+<meta name="description" content="Пришлите обычное фото товара — получите карточку уровня студийной съёмки за 24 часа. Первый образец бесплатно.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet"></noscript>
+<style>
+:root{
+  --bg-deep:#070605;
+  --bg-base:#0b0a08;
+  --text:#f3eee5;
+  --muted:#b5ac9c;
+  --gold:#e6b45c;
+  --gold-bright:#f0c274;
+  --gold-deep:#dfa64a;
+  --ink-on-gold:#1c1406;
+  --edge:rgba(255,255,255,0.09);
+  --edge-top:rgba(255,255,255,0.22);
+  --surface-hi:rgba(255,255,255,0.055);
+  --surface-lo:rgba(255,255,255,0.028);
+  --radius:16px;
+  --radius-sm:12px;
+  --display:'Unbounded','Manrope',system-ui,sans-serif;
+  --body:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--bg-deep)}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{transition:none!important}}
+html,body{overflow-x:clip}
+body{
+  font-family:var(--body);
+  color:var(--text);
+  background:var(--bg-base);
+  line-height:1.6;
+  font-size:17px;
+  position:relative;
+}
+/* layered background: warm radial glow + fine grain */
+body::before{
+  content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:
+    radial-gradient(58% 42% at 50% -6%, rgba(230,180,92,0.13), transparent 62%),
+    radial-gradient(42% 32% at 88% 12%, rgba(230,180,92,0.055), transparent 60%),
+    linear-gradient(180deg, #0d0b09 0%, var(--bg-base) 32%, var(--bg-deep) 100%);
+}
+body::after{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:0.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+img{max-width:100%;display:block;height:auto}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+h1,h2,.price-num,.step-num,.brand{font-family:var(--display);letter-spacing:-0.01em}
+
+/* glass recipe */
+.glass{
+  background:linear-gradient(180deg,var(--surface-hi),var(--surface-lo));
+  border:1px solid var(--edge);
+  border-top-color:var(--edge-top);
+  border-radius:var(--radius);
+  box-shadow:0 18px 44px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.06);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+}
+
+/* header */
+header{
+  position:sticky;top:0;z-index:20;
+  background:rgba(9,8,6,0.72);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--edge);
+}
+.head-in{display:flex;align-items:center;justify-content:space-between;padding-top:14px;padding-bottom:14px}
+.brand{font-weight:700;font-size:15px}
+.brand span{color:var(--gold)}
+.head-cta{font-size:14px;font-weight:600;color:var(--gold);text-decoration:none;border:1px solid rgba(230,180,92,0.35);border-radius:99px;padding:7px 16px;transition:background .15s ease,border-color .15s ease}
+.head-cta:hover{background:rgba(230,180,92,0.12);border-color:rgba(230,180,92,0.6)}
+
+/* hero */
+.hero{padding:64px 0 72px}
+.hero-grid{display:grid;grid-template-columns:1fr;gap:44px;align-items:center}
+@media(min-width:860px){.hero-grid{grid-template-columns:1.02fr 0.98fr;gap:48px}.hero{padding:88px 0 96px}}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:18px}
+h1{font-size:clamp(25px,6.6vw,50px);font-weight:700;line-height:1.12;margin-bottom:18px}
+h1 em{font-style:normal;color:var(--gold);text-shadow:0 0 28px rgba(230,180,92,0.35)}
+.sub{font-size:clamp(17px,2.4vw,20px);color:var(--muted);margin-bottom:30px;max-width:36ch}
+.btn{
+  display:inline-block;
+  background:linear-gradient(180deg,var(--gold-bright),var(--gold-deep));
+  color:var(--ink-on-gold);
+  font-weight:700;font-size:17px;padding:16px 30px;border-radius:14px;
+  text-decoration:none;border:none;cursor:pointer;font-family:var(--body);
+  box-shadow:0 12px 34px rgba(230,180,92,0.22), inset 0 1px 0 rgba(255,255,255,0.45);
+  transition:filter .15s ease,transform .15s ease;
+}
+.btn:hover{filter:brightness(1.06)}
+.btn:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.guarantee{margin-top:16px;font-size:15px;color:var(--muted)}
+.guarantee strong{color:var(--text)}
+
+/* signature: before -> after luminous showcase */
+.pair{
+  display:grid;grid-template-columns:minmax(0,0.68fr) 36px minmax(0,1fr);
+  gap:10px;align-items:end;padding:18px;
+  position:relative;
+}
+.pair-arrow{align-self:center}
+.hero .pair::after{
+  content:"";position:absolute;inset:-48px;z-index:-1;pointer-events:none;
+  background:radial-gradient(52% 52% at 62% 42%, rgba(230,180,92,0.13), transparent 70%);
+}
+.shot{min-width:0}
+.shot img{width:100%;object-fit:cover}
+.shot--before img{
+  aspect-ratio:1/1;border-radius:10px;
+  border:1px solid var(--edge);
+  opacity:0.82;filter:saturate(0.85) brightness(0.92);
+}
+.shot--after img{
+  aspect-ratio:2/3;border-radius:var(--radius-sm);
+  border:1px solid rgba(230,180,92,0.5);
+  box-shadow:0 0 0 1px rgba(230,180,92,0.12), 0 16px 40px rgba(0,0,0,0.5), 0 0 36px rgba(230,180,92,0.16);
+}
+.shot figcaption{font-size:14px;margin-top:10px;text-align:center}
+.shot--before figcaption{color:var(--muted)}
+.shot--after figcaption{color:var(--gold);font-weight:700;text-shadow:0 0 18px rgba(230,180,92,0.4)}
+.pair-arrow{
+  width:34px;height:34px;border-radius:50%;justify-self:center;
+  background:linear-gradient(180deg,var(--surface-hi),var(--surface-lo));
+  border:1px solid rgba(230,180,92,0.4);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;color:var(--gold);font-size:16px;
+  box-shadow:0 0 18px rgba(230,180,92,0.18), inset 0 1px 0 rgba(255,255,255,0.12);
+}
+
+/* sections */
+section{padding:clamp(64px,9vw,96px) 0}
+h2{font-size:clamp(22px,4.6vw,32px);font-weight:700;margin-bottom:12px}
+.sec-sub{color:var(--muted);margin-bottom:40px;max-width:54ch}
+
+/* gallery */
+.gallery{display:grid;grid-template-columns:1fr;gap:20px}
+@media(min-width:860px){.gallery{grid-template-columns:1fr 1fr 1fr;gap:24px}}
+
+/* pricing */
+#price{background:radial-gradient(48% 46% at 74% 22%, rgba(230,180,92,0.06), transparent 66%)}
+.prices{display:grid;grid-template-columns:1fr;gap:20px;margin-bottom:28px}
+.price-card{padding:30px 28px;position:relative}
+@media(min-width:680px){.prices{grid-template-columns:1fr 1fr;gap:24px}.price-card{padding:36px 34px}}
+.price-card--best{
+  border-color:rgba(230,180,92,0.55);
+  border-top-color:rgba(240,194,116,0.7);
+  box-shadow:0 18px 44px rgba(0,0,0,0.42), 0 0 44px rgba(230,180,92,0.14), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.badge{
+  position:absolute;top:-13px;left:24px;
+  background:linear-gradient(180deg,var(--gold-bright),var(--gold-deep));
+  color:var(--ink-on-gold);
+  font-size:13px;font-weight:700;padding:5px 16px;border-radius:99px;letter-spacing:0.04em;
+  box-shadow:0 6px 18px rgba(230,180,92,0.3);
+}
+.price-name{font-weight:600;font-size:15px;color:var(--muted);margin-bottom:10px}
+.price-num{font-size:clamp(40px,4.5vw,50px);font-weight:700;margin-bottom:10px;line-height:1}
+.price-card--best .price-num{color:var(--gold);text-shadow:0 0 30px rgba(230,180,92,0.4)}
+.price-what{font-size:16px;color:var(--muted)}
+.price-note{
+  display:block;width:max-content;max-width:100%;margin:0 auto;text-align:center;
+  font-size:16px;color:var(--muted);
+  padding:14px 22px;border-radius:var(--radius-sm);
+  background:linear-gradient(180deg,var(--surface-hi),var(--surface-lo));
+  border:1px solid var(--edge);border-top-color:var(--edge-top);
+}
+.price-note strong{color:var(--gold)}
+
+/* steps */
+.steps{display:grid;grid-template-columns:1fr;gap:20px}
+@media(min-width:680px){.steps{grid-template-columns:1fr 1fr 1fr;gap:24px}}
+.step{padding:28px 24px}
+.step-num{
+  font-size:36px;font-weight:700;color:var(--gold);line-height:1;
+  text-shadow:0 0 26px rgba(230,180,92,0.4);margin-bottom:18px;
+}
+.step h3{font-size:17px;font-weight:700;margin-bottom:8px}
+.step p{font-size:16px;color:var(--muted)}
+
+/* form */
+#zayavka .wrap{text-align:center}
+#zayavka .sec-sub{margin-left:auto;margin-right:auto}
+.form-wrap{max-width:560px;padding:30px 24px;margin:0 auto;text-align:left}
+@media(min-width:680px){.form-wrap{padding:38px 36px}}
+label{display:block;font-size:14px;font-weight:600;margin-bottom:8px;color:var(--text)}
+input,textarea{
+  width:100%;font:inherit;font-size:16px;color:var(--text);
+  border:1px solid rgba(255,255,255,0.14);border-radius:var(--radius-sm);
+  padding:14px 16px;background:rgba(255,255,255,0.05);margin-bottom:18px;
+  transition:border-color .15s ease,box-shadow .15s ease;
+}
+input::placeholder,textarea::placeholder{color:#948b7c;opacity:1}
+input:focus,textarea:focus{
+  outline:none;border-color:var(--gold);
+  box-shadow:0 0 0 3px rgba(230,180,92,0.22);
+}
+textarea{min-height:100px;resize:vertical}
+.form-wrap .btn{width:100%}
+.form-status{margin-top:16px;font-size:15px;font-weight:600;display:none}
+.form-status.ok{display:block;color:var(--gold)}
+.form-status.err{display:block;color:#ff9d88}
+.mailto-alt{margin-top:20px;font-size:14px;color:var(--muted)}
+.mailto-alt a{color:var(--gold)}
+
+/* footer */
+footer{border-top:1px solid var(--edge);padding:36px 0 44px;font-size:15px;color:var(--muted)}
+.foot-in{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between}
+footer a{color:var(--muted)}
+footer a:hover{color:var(--gold)}
+a:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4px}
+
+@media(max-width:400px){
+  .pair{padding:14px;gap:8px;grid-template-columns:minmax(0,0.66fr) 30px minmax(0,1fr)}
+  .pair-arrow{width:28px;height:28px;font-size:14px}
+}
+@media(max-width:480px){
+  .btn{display:block;width:100%;text-align:center;padding:16px 18px}
+}
+@media(max-width:420px){
+  .brand{font-size:12px;white-space:nowrap}
+  .head-cta{font-size:13px;padding:6px 12px;white-space:nowrap}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap head-in">
+    <div class="brand">Kostin <span>Automation</span></div>
+    <a class="head-cta" href="#zayavka">Бесплатный образец</a>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="eyebrow">Для небольших магазинов</p>
+      <h1>Продающие карточки товара <em>за 24&nbsp;часа</em></h1>
+      <p class="sub">Пришлите обычное фото — получите карточку уровня студийной съёмки.</p>
+      <a class="btn" href="#zayavka">Получить бесплатный образец</a>
+      <p class="guarantee"><strong>Не понравится — не платите.</strong> Первая карточка бесплатно.</p>
+    </div>
+    <div class="pair glass">
+      <figure class="shot shot--before">
+        <img src="img/before-1.jpg" width="720" height="480" alt="Обычное фото банки мёда, снятое дома">
+        <figcaption>обычное фото</figcaption>
+      </figure>
+      <span class="pair-arrow" aria-hidden="true">&rarr;</span>
+      <figure class="shot shot--after">
+        <img src="img/after-1.jpg" width="720" height="1073" alt="Готовая продающая карточка: та же банка мёда в студийной подаче">
+        <figcaption>карточка</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="primery">
+  <div class="wrap">
+    <h2>До и после</h2>
+    <p class="sec-sub">Это те же самые товары. Слева — фото как есть, справа — карточка, которую получает магазин.</p>
+    <div class="gallery">
+      <div class="pair glass">
+        <figure class="shot shot--before">
+          <img src="img/before-2.jpg" width="720" height="480" loading="lazy" alt="Обычное фото жемчужного ожерелья в коробке">
+          <figcaption>обычное фото</figcaption>
+        </figure>
+        <span class="pair-arrow" aria-hidden="true">&rarr;</span>
+        <figure class="shot shot--after">
+          <img src="img/after-2.jpg" width="720" height="1073" loading="lazy" alt="Карточка: то же ожерелье на светлом камне, студийный свет">
+          <figcaption>карточка</figcaption>
+        </figure>
+      </div>
+      <div class="pair glass">
+        <figure class="shot shot--before">
+          <img src="img/before-3.jpg" width="720" height="523" loading="lazy" alt="Обычное фото наручных часов в руке">
+          <figcaption>обычное фото</figcaption>
+        </figure>
+        <span class="pair-arrow" aria-hidden="true">&rarr;</span>
+        <figure class="shot shot--after">
+          <img src="img/after-3.jpg" width="720" height="1073" loading="lazy" alt="Карточка: те же часы на каменном постаменте">
+          <figcaption>карточка</figcaption>
+        </figure>
+      </div>
+      <div class="pair glass">
+        <figure class="shot shot--before">
+          <img src="img/before-4.jpg" width="720" height="1080" loading="lazy" alt="Обычное фото зелёной бутылки на белом фоне">
+          <figcaption>обычное фото</figcaption>
+        </figure>
+        <span class="pair-arrow" aria-hidden="true">&rarr;</span>
+        <figure class="shot shot--after">
+          <img src="img/after-4.jpg" width="720" height="1073" loading="lazy" alt="Карточка: та же бутылка на подиуме с веткой эвкалипта">
+          <figcaption>карточка</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="price">
+  <div class="wrap">
+    <h2>Прайс</h2>
+    <p class="sec-sub">Без предоплаты. Сначала бесплатный образец по вашему фото.</p>
+    <div class="prices">
+      <div class="price-card glass">
+        <p class="price-name">Пакет «Проба»</p>
+        <p class="price-num">€30</p>
+        <p class="price-what">5 карточек &middot; срок 24 часа</p>
+      </div>
+      <div class="price-card glass price-card--best">
+        <span class="badge">выгоднее</span>
+        <p class="price-name">Пакет «Витрина»</p>
+        <p class="price-num">€50</p>
+        <p class="price-what">10 карточек &middot; срок 24 часа</p>
+      </div>
+    </div>
+    <p class="price-note"><strong>Не понравится — не платите.</strong></p>
+  </div>
+</section>
+
+<section id="kak">
+  <div class="wrap">
+    <h2>Как это работает</h2>
+    <p class="sec-sub">Три шага, никаких созвонов и брифов на десять страниц.</p>
+    <div class="steps">
+      <div class="step glass">
+        <div class="step-num">1</div>
+        <h3>Присылаете фото</h3>
+        <p>Обычные снимки с телефона — этого достаточно.</p>
+      </div>
+      <div class="step glass">
+        <div class="step-num">2</div>
+        <h3>Согласуем стиль</h3>
+        <p>Покажем бесплатный образец. Правки — до тех пор, пока не понравится.</p>
+      </div>
+      <div class="step glass">
+        <div class="step-num">3</div>
+        <h3>Получаете карточки за 24 часа</h3>
+        <p>Готовые файлы для маркетплейса, Instagram или сайта.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="zayavka">
+  <div class="wrap">
+    <h2>Получить бесплатный образец</h2>
+    <p class="sec-sub">Оставьте контакт — ответим в течение пары часов и попросим одно фото товара.</p>
+    <form class="form-wrap glass" id="lead-form" action="https://formsubmit.co/kostinmihail40@gmail.com" method="POST">
+      <input type="hidden" name="_subject" value="Заявка с сайта product-cards">
+      <input type="hidden" name="_captcha" value="false">
+      <label for="f-name">Имя</label>
+      <input id="f-name" name="name" type="text" required autocomplete="name">
+      <label for="f-contact">Телефон, Telegram или WhatsApp</label>
+      <input id="f-contact" name="contact" type="text" required autocomplete="tel">
+      <label for="f-message">Что за товар? (пара слов)</label>
+      <textarea id="f-message" name="message" placeholder="Например: свечи ручной работы, 12 позиций"></textarea>
+      <button class="btn" type="submit">Отправить заявку</button>
+      <p class="form-status" id="form-status" role="status"></p>
+      <p class="mailto-alt">Удобнее почтой? Пишите: <a href="mailto:kostinmihail40@gmail.com?subject=Бесплатный%20образец%20карточки">kostinmihail40@gmail.com</a></p>
+    </form>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap foot-in">
+    <span>Kostin Automation</span>
+    <a href="mailto:kostinmihail40@gmail.com">kostinmihail40@gmail.com</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var form = document.getElementById('lead-form');
+  var status = document.getElementById('form-status');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    status.className = 'form-status';
+    var btn = form.querySelector('button[type=submit]');
+    btn.disabled = true;
+    fetch('https://formsubmit.co/ajax/kostinmihail40@gmail.com', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json','Accept':'application/json'},
+      body: JSON.stringify({
+        _subject: 'Заявка с сайта product-cards',
+        name: form.name.value,
+        contact: form.contact.value,
+        message: form.message.value
+      })
+    }).then(function(r){ return r.json(); }).then(function(d){
+      if (d.success === 'true' || d.success === true) {
+        status.textContent = 'Заявка отправлена. Ответим в течение пары часов.';
+        status.className = 'form-status ok';
+        form.reset();
+      } else { throw new Error('fail'); }
+    }).catch(function(){
+      status.textContent = 'Не получилось отправить. Напишите нам на почту — ссылка ниже.';
+      status.className = 'form-status err';
+    }).finally(function(){ btn.disabled = false; });
+  });
+})();
+</script>
+
+</body>
+</html>
