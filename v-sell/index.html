@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="manifest" href="./manifest.json" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <script>
+      /* Some in-app browsers (a link opened inside a chat app) ignore the static
+         viewport meta and lay the page out at ~980px desktop width, then shrink
+         it to fit — making every phone render tiny. If the layout viewport is far
+         wider than the physical screen, re-assert device-width so the real mobile
+         layout engages. No-op on compliant browsers, tablets, and desktop. */
+      (function () {
+        function fixViewport() {
+          try {
+            var sw = (window.screen && window.screen.width) || 0;
+            if (sw && sw <= 520 && window.innerWidth > sw + 80) {
+              var m = document.querySelector('meta[name="viewport"]');
+              if (m) m.setAttribute('content', 'width=' + sw + ', initial-scale=1, viewport-fit=cover');
+            }
+          } catch (e) {}
+        }
+        fixViewport();
+        window.addEventListener('resize', fixViewport);
+        window.addEventListener('orientationchange', fixViewport);
+      })();
+    </script>
+    <meta name="theme-color" content="#06080F" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="canonical" href="https://m1hamuha.github.io/portfolio/" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
+    <!-- Clash Display (display) + General Sans (body) from Fontshare;
+         JetBrains Mono (data figures + HUD labels) from Google. All
+         font-display: swap. 600 loaded for both text faces so semibold
+         renders TRUE (no faux-bold) — headings are Clash Display 600.
+         Loaded non-blocking (media=print swapped to all onload) so the
+         first paint doesn't wait on these two cross-origin CSS fetches. -->
+    <link
+      rel="stylesheet"
+      href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600&f[]=general-sans@400,500,600&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600&f[]=general-sans@400,500,600&display=swap"
+      />
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap"
+      />
+    </noscript>
+    <meta
+      name="description"
+      content="The draining parts of running your business — your social media, your busywork, your product content — done for you. Hand it over and breathe."
+    />
+    <meta property="og:title" content="Kostin Automation" />
+    <meta
+      property="og:description"
+      content="Your business, finally handled. The parts that wear you down — done for you, quietly."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://m1hamuha.github.io/portfolio/" />
+    <meta property="og:image" content="https://m1hamuha.github.io/portfolio/assets/marginpulse.png" />
+    <meta property="og:image:width" content="1425" />
+    <meta property="og:image:height" content="1141" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:alt" content="MarginPulse product dashboard preview" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Kostin Automation" />
+    <meta
+      name="twitter:description"
+      content="Your business, finally handled. The parts that wear you down — done for you, quietly."
+    />
+    <meta name="twitter:image" content="https://m1hamuha.github.io/portfolio/assets/marginpulse.png" />
+    <meta name="twitter:image:alt" content="MarginPulse product dashboard preview" />
+    <title>Kostin — Your business, finally handled</title>
+    <script type="module" crossorigin src="./assets/index-BuP4AIMf.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-B2RmHw3v.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
