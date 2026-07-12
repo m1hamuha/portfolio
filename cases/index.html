@@ -602,6 +602,17 @@
         }, { threshold: 0.16, rootMargin: "0px 0px -8% 0px" });
 
         revEls.forEach(function (e) { io.observe(e); });
+
+        /* Failsafe: never let content stay invisible if the observer doesn't fire
+           — an anchor landing mid-page, a passive full-page render, or an odd
+           browser. After a grace period, reveal anything still hidden and resolve
+           its figures. Normal scrollers see the animation long before this runs. */
+        setTimeout(function () {
+          revEls.forEach(function (e) { e.classList.add("in"); });
+          [].slice.call(document.querySelectorAll("[data-count]")).forEach(function (n) {
+            if (!n.dataset.done) { n.dataset.done = "1"; countUp(n); }
+          });
+        }, 2600);
       })();
     </script>
   </body>
