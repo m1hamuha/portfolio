@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <script>
+      /* Some in-app browsers (a link opened inside a chat app) lay out at ~980px
+         desktop width then shrink to fit — making every phone render tiny. If the
+         layout viewport is far wider than the physical screen, re-assert
+         device-width so the real mobile layout engages. Matches the parent site. */
+      (function () {
+        function fixViewport() {
+          try {
+            var sw = (window.screen && window.screen.width) || 0;
+            if (sw && sw <= 520 && window.innerWidth > sw + 80) {
+              var m = document.querySelector('meta[name="viewport"]');
+              if (m) m.setAttribute('content', 'width=' + sw + ', initial-scale=1, viewport-fit=cover');
+            }
+          } catch (e) {}
+        }
+        fixViewport();
+        window.addEventListener('resize', fixViewport);
+        window.addEventListener('orientationchange', fixViewport);
+      })();
+    </script>
+    <meta name="theme-color" content="#06080F" />
+
+    <title>Proof, not promises — real AI automation & video cases | Kostin</title>
+    <meta
+      name="description"
+      content="Four honest capability cases: an AI product video in ~15 minutes from one photo, €8,850/mo of margin leaks surfaced, €2,140/mo of dead appointment slots recovered, invoices filed 47× faster. Real figures, measured on demo data. See the work before you pay."
+    />
+    <link rel="canonical" href="https://m1hamuha.github.io/portfolio/cases/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://m1hamuha.github.io/portfolio/cases/" />
+    <meta property="og:title" content="Proof, not promises — real AI automation & video cases" />
+    <meta
+      property="og:description"
+      content="See the finished work before you pay: an AI product video in ~15 min from one photo, margin leaks surfaced, dead slots recovered, invoices filed 47× faster. Real figures."
+    />
+    <meta property="og:image" content="https://m1hamuha.github.io/portfolio/assets/marginpulse.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Proof, not promises — real AI cases | Kostin" />
+    <meta
+      name="twitter:description"
+      content="See the finished work before you pay. Real figures, measured on demo data."
+    />
+    <meta name="twitter:image" content="https://m1hamuha.github.io/portfolio/assets/marginpulse.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
+    <link
+      href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600&f[]=general-sans@400,500,600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "ProfessionalService",
+        "name": "Kostin Automation",
+        "url": "https://m1hamuha.github.io/portfolio/",
+        "description": "AI-built automation and product video for small businesses. See the finished work before you pay.",
+        "areaServed": "Europe",
+        "makesOffer": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "AI product video for small cosmetics brands",
+              "description": "A cinematic 9:16 reel generated from a single product photo in about 15 minutes. First one free."
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Margin-leak analysis for online shops (MarginPulse)",
+              "description": "Surfaces which SKUs quietly lose money. Demo data: €8,850/mo across 23 SKUs."
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Auto-refill cancelled appointments (SlotSaver)",
+              "description": "A cancellation refills itself from the waitlist by SMS. Demo data: €2,140/mo recovered."
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Hands-free invoice processing (InvoiceAutopilot)",
+              "description": "Reads a photographed invoice, checks it, files it. 47× faster: 7 min to 9 sec."
+            }
+          }
+        ]
+      }
+    </script>
+
+    <style>
+      :root {
+        --bg: #06080f;
+        --bg-deep: #04060c;
+        --panel: rgba(158, 198, 255, 0.028);
+        --panel-2: rgba(158, 198, 255, 0.05);
+        --line: rgba(158, 198, 255, 0.14);
+        --line-soft: rgba(158, 198, 255, 0.08);
+        --gold: #f4b548;
+        --gold-soft: #ffd27a;
+        --ice: #9ec6ff;
+        --ink: #eaf2ff;
+        --ink-2: #b7c6dc;
+        --ink-dim: #8ea3c0;
+        --green: #79c79a;
+        --on-gold: #1a1305;
+        --maxw: 1120px;
+        --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "General Sans", system-ui, -apple-system, sans-serif;
+        font-size: 17px;
+        line-height: 1.62;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+        overflow-x: hidden;
+      }
+
+      /* Ambient atmosphere — a slow, low-opacity aurora of gold + ice behind the
+         page. No blobs; two soft radial fields drifting. Paused for reduced-motion. */
+      .aura {
+        position: fixed;
+        inset: -20vh -10vw;
+        z-index: 0;
+        pointer-events: none;
+        background:
+          radial-gradient(38vw 38vw at 18% 8%, rgba(244, 181, 72, 0.10), transparent 60%),
+          radial-gradient(44vw 44vw at 88% 22%, rgba(158, 198, 255, 0.08), transparent 62%),
+          radial-gradient(50vw 40vw at 60% 100%, rgba(244, 181, 72, 0.05), transparent 60%);
+        filter: blur(6px);
+        animation: drift 26s var(--ease) infinite alternate;
+      }
+      @keyframes drift {
+        0%   { transform: translate3d(0, 0, 0) scale(1); }
+        100% { transform: translate3d(-2%, 2.5%, 0) scale(1.06); }
+      }
+
+      .wrap { position: relative; z-index: 1; max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+      a { color: inherit; text-decoration: none; }
+      :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 3px; }
+
+      .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+      .eyebrow {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.72rem;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: var(--ice);
+        font-weight: 500;
+      }
+
+      /* ---------- top nav ---------- */
+      nav {
+        position: sticky; top: 0; z-index: 20;
+        backdrop-filter: saturate(140%) blur(14px);
+        -webkit-backdrop-filter: saturate(140%) blur(14px);
+        background: rgba(6, 8, 15, 0.72);
+        border-bottom: 1px solid var(--line-soft);
+      }
+      nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 62px; }
+      .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: -0.01em; }
+      .brand .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 14px 1px rgba(244,181,72,0.7); }
+      .brand .sep { color: var(--ink-dim); font-weight: 400; }
+      .brand .here { color: var(--ink-dim); font-family: "JetBrains Mono", monospace; font-size: 0.82rem; }
+      .nav-cta {
+        font-family: "JetBrains Mono", monospace; font-size: 0.8rem; letter-spacing: 0.04em;
+        color: var(--ink-2); border: 1px solid var(--line); border-radius: 999px;
+        padding: 8px 16px; transition: 0.3s var(--ease);
+      }
+      .nav-cta:hover { color: var(--on-gold); background: var(--gold); border-color: var(--gold); }
+
+      /* ---------- hero ---------- */
+      header { padding: clamp(70px, 13vh, 150px) 0 clamp(48px, 8vh, 96px); }
+      .hero-eyebrow { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; }
+      .hero-eyebrow .rule { height: 1px; flex: 0 0 46px; background: linear-gradient(90deg, var(--gold), transparent); }
+      h1 {
+        font-family: "Clash Display", sans-serif; font-weight: 600;
+        font-size: clamp(2.7rem, 7.4vw, 5.4rem);
+        line-height: 0.98; letter-spacing: -0.028em; color: #fff;
+        max-width: 16ch;
+      }
+      h1 .warm { color: var(--gold); }
+      .hero-sub {
+        margin-top: 26px; max-width: 54ch; font-size: clamp(1.05rem, 2.2vw, 1.28rem);
+        color: var(--ink-2); line-height: 1.55;
+      }
+      .provstrip {
+        margin-top: 38px; display: flex; flex-wrap: wrap; gap: 10px 26px;
+        padding-top: 22px; border-top: 1px solid var(--line-soft);
+      }
+      .provstrip span { font-family: "JetBrains Mono", monospace; font-size: 0.74rem; letter-spacing: 0.14em; color: var(--ink-dim); text-transform: uppercase; display: flex; align-items: center; gap: 9px; }
+      .provstrip span::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--gold); opacity: 0.85; }
+
+      /* ---------- "see it before you pay" lead ---------- */
+      .lead { padding: clamp(40px, 7vh, 80px) 0; }
+      .lead-card {
+        border: 1px solid var(--line); border-radius: 20px; overflow: hidden;
+        background: linear-gradient(180deg, var(--panel-2), var(--panel));
+      }
+      .lead-top { padding: clamp(28px, 4vw, 44px); border-bottom: 1px solid var(--line-soft); }
+      .lead-top h2 {
+        font-family: "Clash Display", sans-serif; font-weight: 500; letter-spacing: -0.02em;
+        font-size: clamp(1.7rem, 4vw, 2.7rem); color: #fff; margin-bottom: 14px;
+      }
+      .lead-top p { color: var(--ink-2); max-width: 62ch; }
+      .steps { display: grid; grid-template-columns: repeat(3, 1fr); }
+      .step { padding: clamp(24px, 3vw, 38px); border-right: 1px solid var(--line-soft); }
+      .step:last-child { border-right: none; }
+      .step .n { font-family: "JetBrains Mono", monospace; font-size: 0.78rem; color: var(--gold); letter-spacing: 0.16em; margin-bottom: 14px; }
+      .step h3 { font-family: "General Sans", sans-serif; font-weight: 600; font-size: 1.06rem; margin-bottom: 8px; color: var(--ink); }
+      .step p { font-size: 0.96rem; color: var(--ink-dim); }
+
+      /* ---------- cases ---------- */
+      .cases { padding: clamp(32px, 6vh, 70px) 0 20px; }
+      .sec-head { margin-bottom: clamp(28px, 4vh, 48px); }
+      .sec-head h2 {
+        font-family: "Clash Display", sans-serif; font-weight: 600; letter-spacing: -0.025em;
+        font-size: clamp(2rem, 5vw, 3.2rem); color: #fff; margin-top: 14px;
+      }
+      .sec-head p { color: var(--ink-dim); margin-top: 12px; max-width: 56ch; }
+
+      .case {
+        display: grid; grid-template-columns: minmax(240px, 0.85fr) 1.15fr; gap: clamp(20px, 4vw, 56px);
+        padding: clamp(30px, 5vw, 54px) 0; border-top: 1px solid var(--line-soft); align-items: center;
+      }
+      .case:last-child { border-bottom: 1px solid var(--line-soft); }
+
+      /* readout — the signature instrument panel */
+      .readout {
+        position: relative; border: 1px solid var(--line); border-radius: 16px;
+        padding: clamp(24px, 3.5vw, 36px); background: var(--panel);
+        transition: border-color 0.4s var(--ease), box-shadow 0.4s var(--ease), transform 0.4s var(--ease);
+      }
+      .case:hover .readout { border-color: rgba(244, 181, 72, 0.45); box-shadow: 0 0 0 1px rgba(244,181,72,0.12), 0 24px 60px -30px rgba(244,181,72,0.4); transform: translateY(-3px); }
+      .readout .tick { position: absolute; top: 12px; right: 14px; width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px 1px rgba(121,199,154,0.8); }
+      .readout .cat { font-family: "JetBrains Mono", monospace; font-size: 0.68rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--ice); }
+      .readout .fig {
+        font-family: "JetBrains Mono", monospace; font-weight: 500;
+        font-size: clamp(2.7rem, 7vw, 4.3rem); line-height: 1; color: #fff;
+        margin: 16px 0 4px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;
+      }
+      .readout .fig .u { color: var(--gold); font-size: 0.42em; letter-spacing: 0; }
+      .readout .figlabel { font-size: 0.95rem; color: var(--ink-2); }
+      .prov {
+        margin-top: 20px; display: inline-flex; align-items: center; gap: 8px;
+        font-family: "JetBrains Mono", monospace; font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase;
+        color: var(--ink-dim); border: 1px solid var(--line-soft); border-radius: 999px; padding: 6px 12px;
+      }
+      .prov.measured { color: var(--ice); }
+      .prov.delivered { color: var(--green); }
+      .prov::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+      .case-body .kw { font-family: "Clash Display", sans-serif; font-weight: 500; letter-spacing: -0.015em; font-size: clamp(1.35rem, 3vw, 2rem); color: #fff; line-height: 1.12; }
+      .case-body .who { margin-top: 10px; font-size: 0.85rem; font-family: "JetBrains Mono", monospace; color: var(--gold); letter-spacing: 0.03em; }
+      .case-body .desc { margin-top: 16px; color: var(--ink-2); max-width: 52ch; }
+      .case-body .desc strong { color: var(--ink); font-weight: 600; }
+      .demo-link {
+        margin-top: 22px; display: inline-flex; align-items: center; gap: 10px;
+        font-family: "JetBrains Mono", monospace; font-size: 0.86rem; color: var(--ink);
+        border-bottom: 1px solid var(--line); padding-bottom: 4px; transition: 0.3s var(--ease);
+      }
+      .demo-link .arrow { color: var(--gold); transition: transform 0.3s var(--ease); }
+      .demo-link:hover { border-color: var(--gold); color: var(--gold-soft); }
+      .demo-link:hover .arrow { transform: translateX(4px); }
+
+      /* ---------- faq ---------- */
+      .faq { padding: clamp(50px, 8vh, 96px) 0; }
+      .faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; border: 1px solid var(--line-soft); border-radius: 18px; overflow: hidden; background: var(--line-soft); }
+      .qa { background: var(--bg); padding: clamp(24px, 3vw, 34px); }
+      .qa h3 { font-family: "Clash Display", sans-serif; font-weight: 500; font-size: 1.14rem; color: #fff; margin-bottom: 10px; }
+      .qa p { color: var(--ink-dim); font-size: 0.98rem; }
+
+      /* ---------- final cta ---------- */
+      .cta { padding: clamp(50px, 9vh, 110px) 0; text-align: center; }
+      .cta h2 { font-family: "Clash Display", sans-serif; font-weight: 600; letter-spacing: -0.025em; font-size: clamp(2.1rem, 5.6vw, 3.6rem); color: #fff; max-width: 18ch; margin: 0 auto; line-height: 1.02; }
+      .cta p { margin: 18px auto 34px; max-width: 46ch; color: var(--ink-2); }
+      .btn {
+        display: inline-flex; align-items: center; gap: 12px; font-family: "General Sans", sans-serif; font-weight: 600;
+        background: var(--gold); color: var(--on-gold); padding: 15px 30px; border-radius: 999px;
+        font-size: 1.02rem; transition: 0.3s var(--ease); box-shadow: 0 14px 44px -14px rgba(244,181,72,0.7);
+      }
+      .btn:hover { background: var(--gold-soft); transform: translateY(-2px); box-shadow: 0 20px 54px -14px rgba(244,181,72,0.85); }
+      .btn .arrow { transition: transform 0.3s var(--ease); }
+      .btn:hover .arrow { transform: translateX(4px); }
+      .cta .fine { margin-top: 20px; font-family: "JetBrains Mono", monospace; font-size: 0.72rem; letter-spacing: 0.1em; color: var(--ink-dim); text-transform: uppercase; }
+
+      /* ---------- footer ---------- */
+      footer { border-top: 1px solid var(--line-soft); padding: 40px 0; }
+      footer .wrap { display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center; }
+      footer .links { display: flex; flex-wrap: wrap; gap: 6px 22px; }
+      footer a { font-family: "JetBrains Mono", monospace; font-size: 0.8rem; color: var(--ink-dim); transition: color 0.25s; }
+      footer a:hover { color: var(--gold); }
+      footer .mk { font-family: "JetBrains Mono", monospace; font-size: 0.74rem; color: var(--ink-dim); }
+
+      /* ---------- reveal ---------- */
+      .rev { opacity: 0; transform: translateY(22px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); }
+      .rev.in { opacity: 1; transform: none; }
+
+      /* ---------- responsive ---------- */
+      @media (max-width: 860px) {
+        .steps { grid-template-columns: 1fr; }
+        .step { border-right: none; border-bottom: 1px solid var(--line-soft); }
+        .step:last-child { border-bottom: none; }
+        .case { grid-template-columns: 1fr; gap: 26px; }
+        .faq-grid { grid-template-columns: 1fr; }
+      }
+      @media (max-width: 480px) {
+        body { font-size: 16px; }
+        .brand .here { display: none; }
+        .provstrip { gap: 8px 18px; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        .aura { animation: none; }
+        .rev { opacity: 1; transform: none; transition: none; }
+        * { transition-duration: 0.01ms !important; }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="aura" aria-hidden="true"></div>
+
+    <nav>
+      <div class="wrap">
+        <a class="brand" href="../" aria-label="Kostin Automation home">
+          <span class="dot"></span>
+          <span>Kostin</span>
+          <span class="sep">/</span>
+          <span class="here">cases</span>
+        </a>
+        <a class="nav-cta" href="#start">Get a free sample →</a>
+      </div>
+    </nav>
+
+    <header>
+      <div class="wrap">
+        <div class="hero-eyebrow rev">
+          <span class="rule"></span>
+          <span class="eyebrow">Proof, not promises</span>
+        </div>
+        <h1 class="rev">See the work<br />before you <span class="warm">pay</span> for it.</h1>
+        <p class="hero-sub rev">
+          Most small businesses never try this kind of work — not because it doesn't pay off, but
+          because agencies want a cheque before you've seen anything. I flip the order. Below are four
+          real capabilities with one honest number each. Every figure is measured, labelled, and yours to check.
+        </p>
+        <div class="provstrip rev">
+          <span>4 capability cases</span>
+          <span>Real figures</span>
+          <span>No fabricated ROI</span>
+          <span>Live demos linked</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="lead" id="start" aria-labelledby="lead-h">
+      <div class="wrap">
+        <div class="lead-card rev">
+          <div class="lead-top">
+            <span class="eyebrow">The offer</span>
+            <h2 id="lead-h" style="margin-top:14px;">See it before you pay for it</h2>
+            <p>
+              A finished video shoot costs more than most small ad budgets — so the video never gets made.
+              Here's the deal instead: you see a finished, on-brand piece for <em>your</em> product first,
+              free, before any invoice exists. Like it, we talk price. Don't, no cost, no follow-up.
+            </p>
+          </div>
+          <div class="steps">
+            <div class="step">
+              <div class="n">01 — SEND</div>
+              <h3>Your product photo + shop link</h3>
+              <p>One phone photo is enough. No brief, no call, no studio booking.</p>
+            </div>
+            <div class="step">
+              <div class="n">02 — BUILD</div>
+              <h3>I make one finished piece</h3>
+              <p>Your product, your packaging, your colours — through an AI production pipeline. No film crew, no studio day.</p>
+            </div>
+            <div class="step">
+              <div class="n">03 — DECIDE</div>
+              <h3>You get the file same day</h3>
+              <p>Like it → we talk price. Don't → nothing happens. The sample is the proof.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cases" aria-labelledby="cases-h">
+      <div class="wrap">
+        <div class="sec-head rev">
+          <span class="eyebrow">The cases</span>
+          <h2 id="cases-h">Four capabilities, four honest numbers.</h2>
+          <p>No paying-client testimonials yet — so nothing here is dressed up as one. Each is a real capability, with a figure that's either measured on the product's own demo data or a true delivery fact. Both are labelled.</p>
+        </div>
+
+        <!-- Case 1 -->
+        <article class="case rev">
+          <div class="readout">
+            <span class="tick" aria-hidden="true"></span>
+            <span class="cat">Video · reels</span>
+            <div class="fig"><span data-count="15" data-prefix="~">~15</span> <span class="u">min</span></div>
+            <div class="figlabel">from one product photo to a postable reel</div>
+            <span class="prov delivered">Delivered fact</span>
+          </div>
+          <div class="case-body">
+            <h3 class="kw">AI product video for a small cosmetics brand</h3>
+            <div class="who">artisan cosmetics · soap · skincare</div>
+            <p class="desc">
+              No product video means the scroll doesn't stop on Instagram or TikTok — where beauty is sold now.
+              I build a cinematic 15-second vertical reel <strong>from a single product photo</strong>:
+              faithful still → gentle motion → your logo, sound included. Cost per reel is a few cents of compute.
+            </p>
+            <a class="demo-link" href="../ai-ads/">View the AI-ads showcase <span class="arrow">→</span></a>
+          </div>
+        </article>
+
+        <!-- Case 2 -->
+        <article class="case rev">
+          <div class="readout">
+            <span class="tick" aria-hidden="true"></span>
+            <span class="cat">Margin · analytics</span>
+            <div class="fig"><span data-count="8850" data-prefix="€">€8,850</span><span class="u">/mo</span></div>
+            <div class="figlabel">margin leaks surfaced across 23 SKUs</div>
+            <span class="prov measured">Measured on demo data</span>
+          </div>
+          <div class="case-body">
+            <h3 class="kw">Find the profit leaks in an online shop</h3>
+            <div class="who">stores with dozens+ of SKUs</div>
+            <p class="desc">
+              Margin bleeds quietly across products — fees, discounts, shipping — and a spreadsheet hides it.
+              <strong>MarginPulse</strong> surfaces the loss per SKU. On its demo data it flags
+              <strong>€8,850/mo across 23 SKUs</strong>. Point it at your own numbers to see yours.
+            </p>
+            <a class="demo-link" href="../marginpulse/">Open the live demo <span class="arrow">→</span></a>
+          </div>
+        </article>
+
+        <!-- Case 3 -->
+        <article class="case rev">
+          <div class="readout">
+            <span class="tick" aria-hidden="true"></span>
+            <span class="cat">Scheduling · recovery</span>
+            <div class="fig"><span data-count="2140" data-prefix="€">€2,140</span><span class="u">/mo</span></div>
+            <div class="figlabel">dead appointment slots recovered</div>
+            <span class="prov measured">Measured on demo data</span>
+          </div>
+          <div class="case-body">
+            <h3 class="kw">Auto-refill cancelled appointments</h3>
+            <div class="who">salons · clinics · studios</div>
+            <p class="desc">
+              A cancellation is a dead, unpaid slot unless someone scrambles to refill it.
+              <strong>SlotSaver</strong> refills it automatically from your waitlist by SMS, hands-free.
+              On its demo data that's <strong>€2,140/mo</strong> of otherwise-lost time recovered.
+            </p>
+            <a class="demo-link" href="../slotsaver/">Open the live demo <span class="arrow">→</span></a>
+          </div>
+        </article>
+
+        <!-- Case 4 -->
+        <article class="case rev">
+          <div class="readout">
+            <span class="tick" aria-hidden="true"></span>
+            <span class="cat">Invoices · OCR</span>
+            <div class="fig"><span data-count="47" data-suffix="×">47×</span> <span class="u">faster</span></div>
+            <div class="figlabel">per invoice — 7 min down to 9 sec</div>
+            <span class="prov delivered">Delivered fact</span>
+          </div>
+          <div class="case-body">
+            <h3 class="kw">Hands-free invoice processing</h3>
+            <div class="who">small teams keying invoices by hand</div>
+            <p class="desc">
+              Every invoice is minutes of typing and a chance to fat-finger a number.
+              <strong>InvoiceAutopilot</strong> reads a photographed invoice, checks it, and files it —
+              <strong>7 minutes down to 9 seconds</strong>, 47× faster, with no manual keying.
+            </p>
+            <a class="demo-link" href="../invoice-autopilot/">Open the live demo <span class="arrow">→</span></a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="faq" aria-labelledby="faq-h">
+      <div class="wrap">
+        <div class="sec-head rev">
+          <span class="eyebrow">Straight answers</span>
+          <h2 id="faq-h" style="font-size:clamp(1.7rem,4vw,2.6rem);">The questions you're already asking</h2>
+        </div>
+        <div class="faq-grid rev">
+          <div class="qa">
+            <h3>Isn't this expensive?</h3>
+            <p>The first one is free. You only talk price after you've seen your own product finished — never before.</p>
+          </div>
+          <div class="qa">
+            <h3>How long does it take?</h3>
+            <p>Same day for the free sample. A full batch takes about an hour once you're set up.</p>
+          </div>
+          <div class="qa">
+            <h3>What if I don't like it?</h3>
+            <p>Nothing happens. No invoice, no follow-up pressure. You've lost one photo and a message.</p>
+          </div>
+          <div class="qa">
+            <h3>Do you actually use my product?</h3>
+            <p>Yes — that's the whole point. The sample matches your real packaging and label, not a template. It's the proof.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta" id="contact" aria-labelledby="cta-h">
+      <div class="wrap">
+        <h2 id="cta-h" class="rev">Send one product photo. Get a free reel back.</h2>
+        <p class="rev">That's the entire commitment. See what your product looks like in motion, then decide.</p>
+        <a class="btn rev" href="../#contact">Start with one photo <span class="arrow">→</span></a>
+        <div class="fine rev">No invoice until you've seen the work</div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="wrap">
+        <div class="links">
+          <a href="../">← Back to Kostin</a>
+          <a href="../ai-ads/">AI ads</a>
+          <a href="../marginpulse/">MarginPulse</a>
+          <a href="../slotsaver/">SlotSaver</a>
+          <a href="../invoice-autopilot/">InvoiceAutopilot</a>
+        </div>
+        <div class="mk">Figures measured on demo data — no fabricated client results.</div>
+      </div>
+    </footer>
+
+    <script>
+      /* Scroll reveal + count-up. Both resolve instantly under reduced-motion. */
+      (function () {
+        var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        function fmt(n) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+
+        function countUp(el) {
+          var target = parseInt(el.getAttribute("data-count"), 10);
+          var pre = el.getAttribute("data-prefix") || "";
+          var suf = el.getAttribute("data-suffix") || "";
+          if (isNaN(target)) return;
+          if (reduce) { el.textContent = pre + fmt(target) + suf; return; }
+          var dur = 1100, t0 = null;
+          function step(ts) {
+            if (!t0) t0 = ts;
+            var p = Math.min((ts - t0) / dur, 1);
+            var eased = 1 - Math.pow(1 - p, 3);
+            el.textContent = pre + fmt(Math.round(target * eased)) + suf;
+            if (p < 1) requestAnimationFrame(step);
+          }
+          requestAnimationFrame(step);
+        }
+
+        var revEls = [].slice.call(document.querySelectorAll(".rev"));
+        if (!("IntersectionObserver" in window) || reduce) {
+          revEls.forEach(function (e) { e.classList.add("in"); });
+          [].slice.call(document.querySelectorAll("[data-count]")).forEach(countUp);
+          return;
+        }
+
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (en) {
+            if (!en.isIntersecting) return;
+            en.target.classList.add("in");
+            var nums = en.target.querySelectorAll ? en.target.querySelectorAll("[data-count]") : [];
+            [].slice.call(nums).forEach(function (n) {
+              if (!n.dataset.done) { n.dataset.done = "1"; countUp(n); }
+            });
+            io.unobserve(en.target);
+          });
+        }, { threshold: 0.16, rootMargin: "0px 0px -8% 0px" });
+
+        revEls.forEach(function (e) { io.observe(e); });
+      })();
+    </script>
+  </body>
+</html>

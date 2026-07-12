@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://m1hamuha.github.io/portfolio/</loc>
+    <lastmod>2026-07-12</lastmod>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://m1hamuha.github.io/portfolio/cases/</loc>
+    <lastmod>2026-07-12</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://m1hamuha.github.io/portfolio/ai-ads/</loc>
+    <lastmod>2026-07-12</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://m1hamuha.github.io/portfolio/marginpulse/</loc>
+    <lastmod>2026-07-12</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://m1hamuha.github.io/portfolio/slotsaver/</loc>
+    <lastmod>2026-07-12</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://m1hamuha.github.io/portfolio/invoice-autopilot/</loc>
+    <lastmod>2026-07-12</lastmod>
+    <priority>0.7</priority>
+  </url>
+</urlset>
