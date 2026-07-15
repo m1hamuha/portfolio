@@ -2,41 +2,83 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <script>
+      /* Some in-app browsers (a link opened inside a chat app) ignore the static
+         viewport meta and lay the page out at ~980px desktop width, then shrink
+         it to fit — making every phone render tiny. If the layout viewport is far
+         wider than the physical screen, re-assert device-width so the real mobile
+         layout engages. No-op on compliant browsers, tablets, and desktop. */
+      (function () {
+        function fixViewport() {
+          try {
+            var sw = (window.screen && window.screen.width) || 0;
+            if (sw && sw <= 520 && window.innerWidth > sw + 80) {
+              var m = document.querySelector('meta[name="viewport"]');
+              if (m) m.setAttribute('content', 'width=' + sw + ', initial-scale=1, viewport-fit=cover');
+            }
+          } catch (e) {}
+        }
+        fixViewport();
+        window.addEventListener('resize', fixViewport);
+        window.addEventListener('orientationchange', fixViewport);
+      })();
+    </script>
     <meta name="description" content="MarginPulse — real-time profit-leak control tower for European Amazon & eBay sellers. See the money leaking out of your store right now, and stop it in one click." />
-    <meta name="theme-color" content="#060810" />
+    <meta name="theme-color" content="#06080F" />
+    <link rel="canonical" href="https://m1hamuha.github.io/portfolio/marginpulse/" />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://m1hamuha.github.io/portfolio/marginpulse/" />
     <meta property="og:title" content="MarginPulse — stop the profit leaking out of your store" />
     <meta property="og:description" content="Real-time profit-leak control tower for European Amazon & eBay sellers. See the money leaking out of your store right now, and stop it in one click." />
+    <meta property="og:image" content="https://m1hamuha.github.io/portfolio/marginpulse/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:alt" content="MarginPulse — profit-leak control tower dashboard preview" />
     <meta name="twitter:card" content="summary_large_image" />
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%232563eb'/%3E%3Cpath d='M13 4 5 14h6l-1 6 8-10h-6z' fill='%23fff'/%3E%3C/svg%3E" />
+    <meta name="twitter:title" content="MarginPulse — stop the profit leaking out of your store" />
+    <meta name="twitter:description" content="Real-time profit-leak control tower for European Amazon & eBay sellers. See the money leaking out of your store right now, and stop it in one click." />
+    <meta name="twitter:image" content="https://m1hamuha.github.io/portfolio/marginpulse/og-image.png" />
+    <meta name="twitter:image:alt" content="MarginPulse — profit-leak control tower dashboard preview" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%23F5B544'/%3E%3Cpath d='M13 4 5 14h6l-1 6 8-10h-6z' fill='%2306080F'/%3E%3C/svg%3E" />
     <title>MarginPulse — stop the profit leaking out of your store</title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "serviceType": "Profit-leak monitoring for e-commerce sellers",
+        "name": "MarginPulse",
+        "description": "Real-time profit-leak control tower for European Amazon & eBay sellers. See the money leaking out of your store right now, and stop it in one click.",
+        "url": "https://m1hamuha.github.io/portfolio/marginpulse/",
+        "provider": {
+          "@type": "Organization",
+          "name": "Kostin Automation",
+          "url": "https://m1hamuha.github.io/portfolio/"
+        },
+        "areaServed": "EU",
+        "audience": {
+          "@type": "Audience",
+          "audienceType": "Amazon and eBay sellers"
+        }
+      }
+    </script>
+    <!-- Satoshi (display) + General Sans (body) from Fontshare; Geist Mono (data) from Google -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&f[]=general-sans@400,500,600&display=swap"
       rel="stylesheet"
     />
-    <script type="module" crossorigin src="./assets/index-ChbirXgo.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-CDocpkw1.css">
-    <style>
-      /* Kostin portfolio polish: cross-document transition + film grain */
-      @media (prefers-reduced-motion: no-preference) {
-        @view-transition { navigation: auto; }
-        ::view-transition-old(root) { animation: mx-vt-out 0.28s cubic-bezier(0.4,0,1,1) both; }
-        ::view-transition-new(root) { animation: mx-vt-in 0.42s cubic-bezier(0,0,0.2,1) both; }
-        @keyframes mx-vt-out { to { opacity: 0; transform: scale(0.985); } }
-        @keyframes mx-vt-in { from { opacity: 0; transform: scale(1.012); } }
-      }
-      body::after {
-        content: ""; position: fixed; inset: 0; z-index: 80; pointer-events: none;
-        opacity: 0.05; mix-blend-mode: overlay;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-        background-size: 160px 160px;
-      }
-    </style>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <script type="module" crossorigin src="./assets/index-BpBiPGUw.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-qrFdIE9L.css">
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"></div>
   </body>
 </html>

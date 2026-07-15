@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://m1hamuha.github.io/portfolio/marginpulse/sitemap.xml
