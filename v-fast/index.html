@@ -28,6 +28,11 @@
     </script>
     <meta name="theme-color" content="#06080F" />
     <meta name="color-scheme" content="dark" />
+    <!-- Hero poster is the LCP element but only enters the DOM once React
+         renders (after the JS bundle parses/executes). Preloading it here
+         lets the browser fetch it in parallel with the bundle instead of
+         waiting for it. -->
+    <link rel="preload" as="image" href="./hero/earth-hero-poster.jpg" fetchpriority="high" />
     <link rel="canonical" href="https://m1hamuha.github.io/portfolio/" />
     <link rel="alternate" hreflang="en" href="https://m1hamuha.github.io/portfolio/" />
     <link rel="alternate" hreflang="de" href="https://m1hamuha.github.io/portfolio/?lang=de" />
@@ -111,6 +116,6 @@
     <link rel="stylesheet" crossorigin href="./assets/index-MUalcw-1.css">
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"></div>
   </body>
 </html>
