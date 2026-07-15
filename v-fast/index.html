@@ -27,6 +27,27 @@
         window.addEventListener('orientationchange', fixViewport);
       })();
     </script>
+    <script>
+      /* The mobile nav dropdown is a card, not a full-screen overlay, so the
+         hero behind it stays scrollable and its buttons stay tappable while
+         the menu is open — two "Book a free call" CTAs live and clickable
+         at once. Lock scroll off the burger's own aria-expanded state (the
+         real open/closed signal) instead of any menu markup detail. */
+      (function () {
+        function apply(open) {
+          document.documentElement.style.overflow = open ? 'hidden' : '';
+          document.body.style.overflow = open ? 'hidden' : '';
+        }
+        new MutationObserver(function () {
+          var btn = document.querySelector('.nav-burger[aria-expanded]');
+          apply(!!btn && btn.getAttribute('aria-expanded') === 'true');
+        }).observe(document.documentElement, {
+          attributes: true,
+          attributeFilter: ['aria-expanded'],
+          subtree: true,
+        });
+      })();
+    </script>
     <meta name="theme-color" content="#06080F" />
     <meta name="color-scheme" content="dark" />
     <!-- Hero poster is the LCP element but only enters the DOM once React
