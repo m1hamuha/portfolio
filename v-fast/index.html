@@ -56,6 +56,31 @@
     </script>
     <meta name="theme-color" content="#06080F" />
     <meta name="color-scheme" content="dark" />
+    <style>
+      /* Skip-to-content link: keyboard/screen-reader users landing on a page
+         with a fixed nav otherwise have to tab through every nav item before
+         reaching real content. Visually hidden until focused, then docked
+         top-left using the app's own token colors so it doesn't look bolted on. */
+      .skip-link {
+        position: fixed;
+        top: -100px;
+        left: 1rem;
+        z-index: 100;
+        padding: 0.6rem 1rem;
+        background: hsl(var(--background, 224 44% 4%));
+        color: hsl(var(--foreground, 213 100% 96%));
+        border-radius: 4px;
+        font-family: system-ui, sans-serif;
+        font-size: 0.9rem;
+        text-decoration: none;
+        transition: top 0.2s ease;
+      }
+      .skip-link:focus-visible {
+        top: 1rem;
+        outline: 2px solid hsl(var(--ring, 38 89% 62%));
+        outline-offset: 3px;
+      }
+    </style>
     <!-- Hero poster is the LCP element but only enters the DOM once React
          renders (after the JS bundle parses/executes). Preloading it here
          lets the browser fetch it in parallel with the bundle instead of
@@ -144,6 +169,7 @@
     <link rel="stylesheet" crossorigin href="./assets/index-MUalcw-1.css">
   </head>
   <body>
+    <a class="skip-link" href="#root">Skip to content</a>
     <div id="root"></div>
   </body>
 </html>
