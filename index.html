@@ -2,74 +2,15 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="refresh" content="0; url=./v-fast/" />
+    <link rel="canonical" href="https://m1hamuha.github.io/portfolio/v-fast/" />
+    <title>Opening Misha Kostin's portfolio</title>
     <script>
-      /* Some in-app browsers (a link opened inside a chat app) ignore the static
-         viewport meta and lay the page out at ~980px desktop width, then shrink
-         it to fit — making every phone render tiny. If the layout viewport is far
-         wider than the physical screen, re-assert device-width so the real mobile
-         layout engages. No-op on compliant browsers, tablets, and desktop. */
-      (function () {
-        function fixViewport() {
-          try {
-            var sw = (window.screen && window.screen.width) || 0;
-            if (sw && sw <= 520 && window.innerWidth > sw + 80) {
-              var m = document.querySelector('meta[name="viewport"]');
-              if (m) m.setAttribute('content', 'width=' + sw + ', initial-scale=1, viewport-fit=cover');
-            }
-          } catch (e) {}
-        }
-        fixViewport();
-        window.addEventListener('resize', fixViewport);
-        window.addEventListener('orientationchange', fixViewport);
-      })();
+      window.location.replace("./v-fast/" + window.location.search + window.location.hash);
     </script>
-    <meta name="theme-color" content="#06080F" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
-    <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
-    <!-- Clash Display (display) + General Sans (body) from Fontshare;
-         JetBrains Mono (data figures + HUD labels) from Google. All
-         font-display: swap. 600 loaded for both text faces so semibold
-         renders TRUE (no faux-bold) — headings are Clash Display 600. -->
-    <link
-      href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600&f[]=general-sans@400,500,600&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <meta
-      name="description"
-      content="The draining parts of running your business — your social media, your busywork, your product content — done for you. Hand it over and breathe."
-    />
-    <meta property="og:title" content="Kostin Automation" />
-    <meta
-      property="og:description"
-      content="Your business, finally handled. The parts that wear you down — done for you, quietly."
-    />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://m1hamuha.github.io/portfolio/" />
-    <meta property="og:image" content="https://m1hamuha.github.io/portfolio/assets/marginpulse.png" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Kostin Automation" />
-    <meta
-      name="twitter:description"
-      content="Your business, finally handled. The parts that wear you down — done for you, quietly."
-    />
-    <meta name="twitter:image" content="https://m1hamuha.github.io/portfolio/assets/marginpulse.png" />
-    <title>Kostin — Your business, finally handled</title>
-    <link rel="canonical" href="https://m1hamuha.github.io/portfolio/" />
-    <script type="application/ld+json">
-    {"@context":"https://schema.org","@type":"ProfessionalService","name":"Kostin Automation","url":"https://m1hamuha.github.io/portfolio/","image":"https://m1hamuha.github.io/portfolio/assets/marginpulse.png","description":"Premium AI-made product photos, video ads, landing pages and business automation for small and mid-size businesses. US, Europe, Ukraine.","areaServed":["US","EU","UA"],"serviceType":["Product photography","Video ads","Landing pages","Business automation"],"priceRange":"€€"}
-    </script>
-    <script type="module" crossorigin src="./assets/index-BKrIJXAe.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-DCPx5rEY.css">
   </head>
   <body>
-    <div id="root"></div>
+    <p><a href="./v-fast/">Open the portfolio</a></p>
   </body>
 </html>
