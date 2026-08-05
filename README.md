@@ -2,7 +2,10 @@
 
 **Small automation tools that quietly recover the money a business is losing — built end to end by Misha Kostin.**
 
-🔗 **Live:** https://m1hamuha.github.io/portfolio/
+🔗 **Live portfolio:** https://m1hamuha.github.io/portfolio/v-fast/
+
+`v-fast/` is the only current portfolio version in this repository. The root
+address redirects to it.
 
 I build focused tools that do one job well and pay for themselves. Each one below is a real, live, clickable product you can try right now — no signup.
 
