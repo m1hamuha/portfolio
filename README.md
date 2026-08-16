@@ -7,15 +7,18 @@
 `v-fast/` is the only current portfolio version in this repository. The root
 address redirects to it.
 
-I build focused tools that do one job well and pay for themselves. Each one below is a real, live, clickable product you can try right now — no signup.
+I build focused tools that do one job well. Each item below is a working,
+clickable portfolio demo you can try without signup. External services are not
+connected unless a page explicitly says otherwise.
 
 ## Shipped tools
 
 | Tool | What it does | Try it |
 |------|--------------|--------|
-| **MarginPulse** | A profit-leak control tower for online shops — finds the margin quietly draining out of an Amazon/eBay store and shows exactly where. | [Live demo](https://m1hamuha.github.io/portfolio/marginpulse/) |
-| **InvoiceAutopilot** | Drop a photographed supplier invoice → a validated, posted accounting entry in seconds, with the price typo caught before it hits the books. | [Live demo](https://m1hamuha.github.io/portfolio/invoice-autopilot/) |
-| **SlotSaver** | A salon/clinic cancellation auto-refills itself from the waitlist by SMS while the owner does nothing — recovered revenue, automatically. | [Live demo](https://m1hamuha.github.io/portfolio/slotsaver/) |
+| **MarginPulse** | Analyses the built-in shop or a visitor's CSV locally and surfaces margin leaks. Amazon/eBay connections are production scope. | [Live demo](https://m1hamuha.github.io/portfolio/marginpulse/) |
+| **InvoiceAutopilot** | Runs three fixed sample invoices through extraction, review safeguards and a local demo ledger. No OCR upload or accounting connection. | [Live demo](https://m1hamuha.github.io/portfolio/invoice-autopilot/) |
+| **SlotSaver** | Runs a deterministic cancellation-and-waitlist simulation. No real calendar or SMS is contacted. | [Live demo](https://m1hamuha.github.io/portfolio/slotsaver/) |
+| **Product cards** | Shows real before/after examples and provides a contact route for a free sample. | [Live page](https://m1hamuha.github.io/portfolio/cards/) |
 
 ## How I work
 
@@ -23,7 +26,9 @@ Spot the busywork or the silent money leak on a free call → ship a focused too
 
 ## Stack
 
-Vite · React · TypeScript · Tailwind · Framer Motion · React Three Fiber. Each tool is driven by a deterministic, tested engine (money in integer cents) so every demo is consistent and honest.
+Vite · React · TypeScript · Tailwind · Framer Motion. Each software demo is
+driven by a deterministic, tested engine (money in integer cents), so its
+sample results are reproducible.
 
 ## Contact
 
@@ -31,4 +36,4 @@ Vite · React · TypeScript · Tailwind · Framer Motion · React Three Fiber. E
 
 ---
 
-<sub>This repository hosts the compiled, public build (GitHub Pages). Source for each tool lives in its own private repository.</sub>
+<sub>This repository hosts the compiled GitHub Pages build. Maintained source and tests live in separate source repositories.</sub>

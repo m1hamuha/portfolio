@@ -7,6 +7,36 @@
 <script>document.documentElement.classList.add('js');</script>
 <title>Free product card for your item — ready in 2 hours | Kostin Automation</title>
 <meta name="description" content="Send a plain photo of your product on Telegram and get a studio-grade product card free in 2 hours. Love it — we'll do your whole range in 24 hours. Don't like it — you don't pay.">
+<link rel="canonical" href="https://m1hamuha.github.io/portfolio/cards/">
+<link rel="alternate" hreflang="en" href="https://m1hamuha.github.io/portfolio/cards/?lang=en">
+<link rel="alternate" hreflang="uk" href="https://m1hamuha.github.io/portfolio/cards/?lang=uk">
+<link rel="alternate" hreflang="x-default" href="https://m1hamuha.github.io/portfolio/cards/">
+<link rel="icon" href="../v-fast/favicon.svg" type="image/svg+xml">
+<meta property="og:title" content="Free product card for your item — ready in 2 hours">
+<meta property="og:description" content="Send one product photo and get a free sample card. Continue only after you approve it.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://m1hamuha.github.io/portfolio/cards/">
+<meta property="og:image" content="https://m1hamuha.github.io/portfolio/cards/img/after-1.jpg">
+<meta property="og:image:alt" content="Finished product card for a honey jar">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Free product card for your item — ready in 2 hours">
+<meta name="twitter:description" content="Send one product photo and get a free sample card. Continue only after you approve it.">
+<meta name="twitter:image" content="https://m1hamuha.github.io/portfolio/cards/img/after-1.jpg">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "Product card design",
+  "description": "Product-card design from a customer-supplied photo, with a free first sample.",
+  "provider": {
+    "@type": "Person",
+    "name": "Mikhail Kostin",
+    "email": "kostinmihail40@gmail.com"
+  },
+  "url": "https://m1hamuha.github.io/portfolio/cards/",
+  "areaServed": "EU"
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
@@ -77,10 +107,10 @@ header{
   border-bottom:1px solid var(--edge);
 }
 .head-in{display:flex;align-items:center;justify-content:space-between;padding-top:14px;padding-bottom:14px;gap:10px}
-.brand{font-weight:700;font-size:15px}
-.brand span{color:var(--gold)}
+.brand{display:inline-flex;align-items:center;gap:7px;min-height:44px;font-weight:700;font-size:15px;color:var(--text);text-decoration:none}
+.brand-accent{color:var(--gold)}
 .head-right{display:flex;align-items:center;gap:10px}
-.head-cta{font-size:14px;font-weight:600;color:var(--gold);text-decoration:none;border:1px solid rgba(230,180,92,0.35);border-radius:99px;padding:7px 16px;transition:background .15s ease,border-color .15s ease}
+.head-cta{display:inline-flex;align-items:center;min-height:44px;font-size:14px;font-weight:600;color:var(--gold);text-decoration:none;border:1px solid rgba(230,180,92,0.35);border-radius:99px;padding:7px 16px;transition:background .15s ease,border-color .15s ease}
 .head-cta:hover{background:rgba(230,180,92,0.12);border-color:rgba(230,180,92,0.6)}
 
 /* language toggle — pure enhancement: hidden without JS (page is full English then) */
@@ -93,7 +123,7 @@ html.js .lang-toggle{
 .lang-toggle button{
   font-family:var(--body);font-size:12px;font-weight:700;letter-spacing:0.06em;
   color:var(--muted);background:none;border:none;border-radius:99px;
-  padding:4px 10px;cursor:pointer;line-height:1.4;
+  min-width:44px;min-height:44px;padding:4px 10px;cursor:pointer;line-height:1.4;
   transition:color .15s ease,background .15s ease;
 }
 .lang-toggle button[aria-pressed="true"]{background:rgba(230,180,92,0.16);color:var(--gold)}
@@ -256,7 +286,7 @@ h2{font-size:clamp(22px,4.6vw,32px);font-weight:700;margin-bottom:12px}
 }
 .price-note strong{color:var(--gold)}
 
-/* One-click buy step inside pricing cards — primary gold PayPal checkout */
+/* Request step inside pricing cards — the pack is confirmed before payment. */
 .pay-step{margin-top:22px;padding-top:20px;border-top:1px solid var(--edge)}
 .pay-step .btn{display:block;width:100%;text-align:center;padding:15px 22px;font-size:16px}
 .pay-step .btn::before{display:none} /* keep the breathing halo unique to the hero/final CTA */
@@ -308,6 +338,9 @@ textarea{min-height:100px;resize:vertical}
 .form-status{margin-top:16px;font-size:15px;font-weight:600;display:none}
 .form-status.ok{display:block;color:var(--gold)}
 .form-status.err{display:block;color:#ff9d88}
+.form-wrap[aria-busy="true"] .btn{cursor:wait;opacity:.72}
+.hp-field{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important}
+.privacy-note{margin-top:14px;font-size:12px;line-height:1.5;color:var(--muted)}
 .mailto-alt{margin-top:20px;font-size:14px;color:var(--muted)}
 .mailto-alt a{color:var(--gold)}
 
@@ -351,8 +384,11 @@ a:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4
   .sticky-bar .btn{display:inline-block;width:auto;padding:12px 18px}
 }
 @media(max-width:420px){
-  .brand{font-size:12px;white-space:nowrap}
-  .head-cta{font-size:13px;padding:6px 12px;white-space:nowrap}
+  .brand{width:44px;justify-content:center;border:1px solid var(--edge);border-radius:999px}
+  .brand-name{display:none}
+  .head-in{padding-top:8px;padding-bottom:8px}
+  .head-right{gap:6px}
+  .head-cta{font-size:13px;padding-inline:12px;white-space:nowrap}
   .lang-toggle button{padding:4px 8px}
 }
 
@@ -384,12 +420,9 @@ html.io .reveal.in{
 </style>
 </head>
 <body>
-<a href="../" style="position:fixed;top:14px;left:14px;z-index:99999;display:inline-flex;gap:6px;align-items:center;padding:8px 14px;border-radius:999px;background:rgba(0,0,0,.55);color:#fff;font:600 13px/1 system-ui,-apple-system,Segoe UI,sans-serif;text-decoration:none;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.18)">← Kostin Automation</a>
-
-
 <header>
   <div class="wrap head-in">
-    <div class="brand">Kostin <span>Automation</span></div>
+    <a class="brand" href="../v-fast/" aria-label="Back to Kostin Automation portfolio"><span aria-hidden="true">←</span><span class="brand-name">Kostin <span class="brand-accent">Automation</span></span></a>
     <div class="head-right">
       <div class="lang-toggle" role="group" aria-label="Language">
         <button type="button" id="lang-en" aria-pressed="true">EN</button>
@@ -502,8 +535,8 @@ html.io .reveal.in{
         <p class="price-num">€30</p>
         <p class="price-what" data-i18n="price1.what">5 product cards &middot; ready in 24 hours</p>
         <div class="pay-step">
-          <a class="btn" href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&amp;business=kostinmihail40%40gmail.com&amp;item_name=Starter%20pack%20%E2%80%94%205%20product%20cards&amp;amount=30&amp;currency_code=EUR" target="_blank" rel="noopener" data-i18n="pay.btn30">Buy now — €30</a>
-          <p class="pay-note" data-i18n="pay.note">One-click secure PayPal checkout &middot; you approve every card before the work is final.</p>
+          <a class="btn" href="#zayavka" data-pack="Starter pack — 5 product cards — €30" data-pack-uk="Пакет «Старт» — 5 карток — €30" data-i18n="pay.btn30">Request 5 cards — €30</a>
+          <p class="pay-note" data-i18n="pay.note">Send the request first &middot; you pay only after you approve the result.</p>
           <p class="pay-alt" data-i18n="pay.alt">Prefer to see a free sample first? <a href="https://t.me/onomamichail" target="_blank" rel="noopener">Send a photo on Telegram</a></p>
         </div>
       </div>
@@ -513,8 +546,8 @@ html.io .reveal.in{
         <p class="price-num">€50</p>
         <p class="price-what" data-i18n="price2.what">10 product cards &middot; ready in 24 hours</p>
         <div class="pay-step">
-          <a class="btn" href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&amp;business=kostinmihail40%40gmail.com&amp;item_name=Shopfront%20pack%20%E2%80%94%2010%20product%20cards&amp;amount=50&amp;currency_code=EUR" target="_blank" rel="noopener" data-i18n="pay.btn50">Buy now — €50</a>
-          <p class="pay-note" data-i18n="pay.note">One-click secure PayPal checkout &middot; you approve every card before the work is final.</p>
+          <a class="btn" href="#zayavka" data-pack="Shopfront pack — 10 product cards — €50" data-pack-uk="Пакет «Вітрина» — 10 карток — €50" data-i18n="pay.btn50">Request 10 cards — €50</a>
+          <p class="pay-note" data-i18n="pay.note">Send the request first &middot; you pay only after you approve the result.</p>
           <p class="pay-alt" data-i18n="pay.alt">Prefer to see a free sample first? <a href="https://t.me/onomamichail" target="_blank" rel="noopener">Send a photo on Telegram</a></p>
         </div>
       </div>
@@ -542,15 +575,22 @@ html.io .reveal.in{
     <p class="sec-sub reveal" style="--i:1" data-i18n="form.sub">We reply within a couple of hours and ask for one product photo.</p>
     <form class="form-wrap glass reveal" id="lead-form" style="--i:2" action="https://formsubmit.co/kostinmihail40@gmail.com" method="POST">
       <input type="hidden" name="_subject" value="New lead — product cards site (EU)">
-      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="source" value="product-cards-contact">
+      <input type="hidden" name="_url" value="https://m1hamuha.github.io/portfolio/cards/">
+      <div class="hp-field" aria-hidden="true">
+        <label for="f-website">Website</label>
+        <input id="f-website" name="_honey" type="text" tabindex="-1" autocomplete="off">
+      </div>
       <label for="f-name" data-i18n="form.name">Name</label>
-      <input id="f-name" name="name" type="text" required autocomplete="name">
+      <input id="f-name" name="name" type="text" required maxlength="100" autocomplete="name">
       <label for="f-contact" data-i18n="form.contact">Phone, Telegram or WhatsApp</label>
-      <input id="f-contact" name="contact" type="text" required autocomplete="tel">
+      <input id="f-contact" name="contact" type="text" required maxlength="254" autocomplete="tel">
       <label for="f-message" data-i18n="form.message">What's the product? (a few words)</label>
-      <textarea id="f-message" name="message" placeholder="e.g. handmade candles, 12 items" data-i18n-ph="form.ph"></textarea>
+      <textarea id="f-message" name="message" maxlength="2000" placeholder="e.g. handmade candles, 12 items" data-i18n-ph="form.ph"></textarea>
       <button class="btn" type="submit" data-i18n="form.btn">Send request</button>
-      <p class="form-status" id="form-status" role="status"></p>
+      <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+      <p class="privacy-note" data-i18n="form.privacy">Sent through FormSubmit. We use your details only to reply. Do not send passwords or payment data.</p>
       <p class="mailto-alt" data-i18n="form.mailto">Prefer email? Write to <a href="mailto:kostinmihail40@gmail.com?subject=Free%20sample%20card">kostinmihail40@gmail.com</a></p>
     </form>
   </div>
@@ -603,9 +643,9 @@ html.io .reveal.in{
     'price2.badge': 'вигідніше',
     'price2.name': 'Пакет «Вітрина»',
     'price2.what': '10 карток · готово за 24 години',
-    'pay.btn30': 'Купити зараз — €30',
-    'pay.btn50': 'Купити зараз — €50',
-    'pay.note': 'Оплата через PayPal в один клік · кожну картку ви затверджуєте перед фіналом.',
+    'pay.btn30': 'Замовити 5 карток — €30',
+    'pay.btn50': 'Замовити 10 карток — €50',
+    'pay.note': 'Спершу надсилаєте заявку · платите лише після затвердження результату.',
     'pay.alt': 'Хочете спершу безкоштовний зразок? <a href="https://t.me/onomamichail" target="_blank" rel="noopener">Надішліть фото в Telegram</a>',
     'price.note': '<strong>Оплата — після того, як побачите результат.</strong> Не сподобається — не платите.',
     'cta.h2': 'Надішліть фото — картка буде готова за 2 години',
@@ -618,6 +658,7 @@ html.io .reveal.in{
     'form.message': 'Що за товар? (кілька слів)',
     'form.ph': 'Наприклад: свічки ручної роботи, 12 позицій',
     'form.btn': 'Надіслати заявку',
+    'form.privacy': 'Надсилається через FormSubmit. Використовуємо ваші дані лише для відповіді. Не надсилайте паролі чи платіжні дані.',
     'form.mailto': 'Зручніше поштою? Пишіть: <a href="mailto:kostinmihail40@gmail.com?subject=Free%20sample%20card">kostinmihail40@gmail.com</a>',
     'foot.portfolio': 'портфоліо',
     'sticky.text': '📸 Перша картка — безкоштовно',
@@ -632,8 +673,18 @@ html.io .reveal.in{
     'alt.a4': 'Картка: та сама пляшка у бризках води на яскравому зеленому тлі'
   };
   var MSG = {
-    en: {ok: "Request sent. We'll reply within a couple of hours.", err: "Couldn't send. Email us instead — link below."},
-    uk: {ok: 'Заявку надіслано. Відповімо протягом кількох годин.', err: 'Не вдалося надіслати. Напишіть нам на пошту — посилання нижче.'}
+    en: {
+      ok: "Request sent. We'll reply within a couple of hours.",
+      err: "Couldn't send. Try again or email us using the link below.",
+      timeout: "Sending took too long. Try again or email us using the link below.",
+      rate: "Too many requests right now. Wait a minute or email us using the link below."
+    },
+    uk: {
+      ok: 'Заявку надіслано. Відповімо протягом кількох годин.',
+      err: 'Не вдалося надіслати. Спробуйте ще раз або напишіть на пошту за посиланням нижче.',
+      timeout: 'Надсилання тривало надто довго. Спробуйте ще раз або напишіть на пошту нижче.',
+      rate: 'Зараз забагато запитів. Зачекайте хвилину або напишіть на пошту нижче.'
+    }
   };
   var EN = {}; /* captured from the DOM so no-JS/default stays pure English */
   var metaDesc = document.querySelector('meta[name="description"]');
@@ -691,6 +742,18 @@ html.io .reveal.in{
   if (want === 'uk') applyLang('uk');
 })();
 (function(){
+  /* Pack buttons move to the request form and fill the selected package. */
+  document.querySelectorAll('[data-pack]').forEach(function(link){
+    link.addEventListener('click', function(){
+      var message = document.getElementById('f-message');
+      if (!message) return;
+      var uk = window.__cardsLang && window.__cardsLang() === 'uk';
+      var pack = uk ? link.getAttribute('data-pack-uk') : link.getAttribute('data-pack');
+      message.value = (uk ? 'Цікавить: ' : 'Interested in: ') + pack;
+    });
+  });
+})();
+(function(){
   /* scroll reveal: html.io overrides the 1.9s keyframe failsafe, observer adds .in */
   var d = document.documentElement;
   d.classList.add('io');
@@ -727,35 +790,53 @@ html.io .reveal.in{
     }, {threshold:0.05}).observe(p[1]);
   });
 })();
-(function(){
-  var form = document.getElementById('lead-form');
-  var status = document.getElementById('form-status');
-  form.addEventListener('submit', function(e){
-    e.preventDefault();
-    status.className = 'form-status';
-    var btn = form.querySelector('button[type=submit]');
-    btn.disabled = true;
-    fetch('https://formsubmit.co/ajax/kostinmihail40@gmail.com', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json','Accept':'application/json'},
-      body: JSON.stringify({
-        _subject: 'New lead — product cards site (EU)',
-        name: form.name.value,
-        contact: form.contact.value,
-        message: form.message.value
-      })
-    }).then(function(r){ return r.json(); }).then(function(d){
-      if (d.success === 'true' || d.success === true) {
-        status.textContent = window.__cardsMsg ? window.__cardsMsg('ok') : 'Request sent.';
-        status.className = 'form-status ok';
-        form.reset();
-      } else { throw new Error('fail'); }
-    }).catch(function(){
-      status.textContent = window.__cardsMsg ? window.__cardsMsg('err') : 'Could not send.';
-      status.className = 'form-status err';
-    }).finally(function(){ btn.disabled = false; });
+</script>
+<script type="module">
+import { submitCardsLead } from './lead-submission.mjs';
+
+const form = document.getElementById('lead-form');
+const status = document.getElementById('form-status');
+const button = form.querySelector('button[type=submit]');
+let sending = false;
+
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  if (sending) return;
+  sending = true;
+  button.disabled = true;
+  form.setAttribute('aria-busy', 'true');
+  status.className = 'form-status';
+
+  const data = new FormData(form);
+  const result = await submitCardsLead({
+    name: String(data.get('name') || ''),
+    contact: String(data.get('contact') || ''),
+    message: String(data.get('message') || ''),
+    honey: String(data.get('_honey') || ''),
+    language: window.__cardsLang ? window.__cardsLang() : 'en',
+    pageUrl: window.location.href,
+  }, {
+    endpoint: 'https://formsubmit.co/ajax/kostinmihail40@gmail.com',
   });
-})();
+
+  if (result.ok) {
+    status.textContent = window.__cardsMsg ? window.__cardsMsg('ok') : 'Request sent.';
+    status.className = 'form-status ok';
+    form.reset();
+  } else {
+    const key = result.reason === 'timeout'
+      ? 'timeout'
+      : result.reason === 'rate-limit'
+        ? 'rate'
+        : 'err';
+    status.textContent = window.__cardsMsg ? window.__cardsMsg(key) : 'Could not send.';
+    status.className = 'form-status err';
+  }
+
+  sending = false;
+  button.disabled = false;
+  form.removeAttribute('aria-busy');
+});
 </script>
 
 </body>
