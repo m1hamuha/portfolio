@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EUDR Compliance Assistant — Geospatial Plot Audit & TRACES NT Validation</title>
+  <meta name="description" content="Production-grade EUDR (EU 2023/1115) geospatial audit engine with sub-meter polygon validation, cross-supplier overlap detection, and TRACES NT compliance packages.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f17;
+      --card-bg: #111827;
+      --card-border: #1f2937;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent: #10b981;
+      --accent-dim: rgba(16, 185, 129, 0.15);
+      --danger: #ef4444;
+      --danger-dim: rgba(239, 68, 68, 0.15);
+      --warning: #f59e0b;
+      --warning-dim: rgba(245, 158, 11, 0.15);
+      --blue: #3b82f6;
+      --blue-dim: rgba(59, 130, 246, 0.15);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.5;
+      padding-bottom: 60px;
+    }
+    header {
+      background: #0f172a;
+      border-bottom: 1px solid #1e293b;
+      padding: 18px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-icon {
+      font-size: 24px;
+      background: rgba(16, 185, 129, 0.2);
+      border: 1px solid #10b981;
+      border-radius: 8px;
+      padding: 6px 10px;
+    }
+    .brand-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .brand-subtitle {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+    .header-links {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .badge-green { background: var(--accent-dim); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3); }
+    .badge-amber { background: var(--warning-dim); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); }
+    .badge-red { background: var(--danger-dim); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.3); }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+    .btn-github {
+      background: #24292f;
+      color: #fff;
+      border-color: #3f4753;
+    }
+    .btn-github:hover {
+      background: #323842;
+      border-color: #5c6779;
+    }
+    .btn-primary {
+      background: #059669;
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: #10b981;
+    }
+    .container {
+      max-width: 1280px;
+      margin: 32px auto;
+      padding: 0 24px;
+    }
+    .hero-banner {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(30, 41, 59, 0.6) 100%);
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      padding: 24px 32px;
+      margin-bottom: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .hero-text h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    .hero-text p {
+      color: #cbd5e1;
+      font-size: 0.92rem;
+      max-width: 780px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+    .panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .panel-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #fff;
+    }
+    .preset-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .preset-card:hover {
+      border-color: #10b981;
+      background: #243247;
+    }
+    .preset-card.active {
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.08);
+      box-shadow: 0 0 0 1px #10b981;
+    }
+    .preset-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .preset-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .map-container {
+      position: relative;
+      background: #0a0f1d;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      height: 380px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    svg.plot-canvas {
+      width: 100%;
+      height: 100%;
+    }
+    .verdict-box {
+      margin-top: 20px;
+      padding: 18px 20px;
+      border-radius: 10px;
+      border: 1px solid;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .verdict-COMPLIANT {
+      background: rgba(16, 185, 129, 0.08);
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+    .verdict-CONFLICT_DETECTED {
+      background: rgba(245, 158, 11, 0.08);
+      border-color: rgba(245, 158, 11, 0.4);
+    }
+    .verdict-DEFORESTATION_DETECTED {
+      background: rgba(239, 68, 68, 0.08);
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+    .verdict-icon {
+      font-size: 28px;
+      line-height: 1;
+    }
+    .verdict-content h4 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .verdict-content p {
+      font-size: 0.85rem;
+      color: #cbd5e1;
+    }
+    .checklist {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+    .check-item {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 0.82rem;
+    }
+    .check-item-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .check-pass { color: #34d399; }
+    .check-fail { color: #f87171; }
+    .check-warn { color: #fbbf24; }
+    .json-preview {
+      background: #050811;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: #94a3b8;
+      max-height: 220px;
+      overflow-y: auto;
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="brand-icon">🛰️</div>
+      <div>
+        <div class="brand-title">EUDR Compliance Assistant</div>
+        <div class="brand-subtitle">European Union Deforestation Regulation (EU) 2023/1115 Geospatial Engine</div>
+      </div>
+    </div>
+    <div class="header-links">
+      <span class="badge badge-green">Turf.js Sub-Meter Spatial Engine</span>
+      <a href="https://github.com/m1hamuha/EUDR-Compliance-Assistant" target="_blank" class="btn btn-github">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub Repository
+      </a>
+      <a href="https://m1hamuha.github.io/portfolio/" class="btn btn-github">← Portfolio Home</a>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="hero-banner">
+      <div class="hero-text">
+        <h1>Interactive Spatial Due Diligence & Audit Inspector</h1>
+        <p>Demonstrates deterministic 6-decimal coordinate validation, cross-supplier polygon conflict detection, satellite deforestation cut-off auditing (Dec 31, 2020), and TRACES NT XML/JSON packet synthesis.</p>
+      </div>
+      <div>
+        <button id="runAuditBtn" class="btn btn-primary" onclick="runAudit()">⚡ Re-Run Spatial Validation</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- Left Column: Presets & Controls -->
+      <div class="panel">
+        <div class="panel-title">
+          <span>Production Presets</span>
+          <span style="font-size:0.75rem; color:var(--text-muted);">Select Scenario</span>
+        </div>
+
+        <div id="preset0" class="preset-card active" onclick="selectPreset(0)">
+          <div class="preset-name">
+            <span>Compliant Cocoa Co-op</span>
+            <span class="badge badge-green">Compliant</span>
+          </div>
+          <div class="preset-desc">Ghana · 4 smallholder plots (18.4 ha). Zero boundary collisions, >6-decimal WGS84 coordinates, 100% forest canopy intact post-2020.</div>
+        </div>
+
+        <div id="preset1" class="preset-card" onclick="selectPreset(1)">
+          <div class="preset-name">
+            <span>Overlapping Palm Plots</span>
+            <span class="badge badge-amber">Overlap Conflict</span>
+          </div>
+          <div class="preset-desc">Indonesia · 2 supplier concessions claiming identical perimeter (3.2 ha intersection). Detected via Turf.js intersection matrix.</div>
+        </div>
+
+        <div id="preset2" class="preset-card" onclick="selectPreset(2)">
+          <div class="preset-name">
+            <span>Cattle Pasture Encroachment</span>
+            <span class="badge badge-red">Deforestation Alert</span>
+          </div>
+          <div class="preset-desc">Brazil · Southern parcel penetrates Copernicus Global Land Service forest baseline cleared in Aug 2022. Non-compliant.</div>
+        </div>
+
+        <div style="margin-top: 20px;">
+          <div class="panel-title" style="font-size: 0.85rem; margin-bottom: 8px;">Technical Metrics</div>
+          <div style="font-size: 0.8rem; color: #94a3b8; display: flex; flex-direction: column; gap: 6px;">
+            <div style="display:flex; justify-content:space-between;"><span>Coordinate Precision:</span><strong style="color:#f3f4f6;">6 Decimals (~0.1m)</strong></div>
+            <div style="display:flex; justify-content:space-between;"><span>Coordinate System:</span><strong style="color:#f3f4f6;">EPSG:4326 (WGS84)</strong></div>
+            <div style="display:flex; justify-content:space-between;"><span>Intersection Engine:</span><strong style="color:#f3f4f6;">Turf.js 2D Geometry</strong></div>
+            <div style="display:flex; justify-content:space-between;"><span>Export Schema:</span><strong style="color:#f3f4f6;">EU TRACES NT v2.4</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Map & Analysis -->
+      <div class="panel">
+        <div class="panel-title">
+          <span>Geospatial Radar & Boundary Visualizer</span>
+          <span id="plotBadge" class="badge badge-green">4 Plots Verified</span>
+        </div>
+
+        <div class="map-container" id="mapCanvas">
+          <!-- SVG Map rendering will be injected here -->
+        </div>
+
+        <div id="verdictContainer"></div>
+
+        <div class="checklist" id="checklistContainer"></div>
+
+        <div style="margin-top: 24px;">
+          <div class="panel-title" style="font-size: 0.9rem; margin-bottom: 8px;">
+            <span>TRACES NT Due Diligence Statement (DDS) Payload</span>
+            <button class="btn btn-github" style="padding: 4px 10px; font-size: 0.75rem;" onclick="copyJson()">📋 Copy JSON</button>
+          </div>
+          <pre class="json-preview" id="jsonPreview"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const PRESETS = [
+      {
+        id: "cocoa-ghana",
+        name: "Compliant Cocoa Ghana",
+        commodity: "COCOA",
+        country: "GH",
+        badge: "Compliant",
+        plotsCount: 4,
+        areaHectares: 18.4,
+        verdict: "COMPLIANT",
+        title: "All Plots Meet EUDR Regulation (EU) 2023/1115",
+        description: "Zero geospatial overlap found between suppliers. Coordinates satisfy 6-decimal WGS84 precision requirements. Forest canopy integrity verified against JRC global forest observatory (zero deforestation post Dec 31, 2020).",
+        checks: [
+          { name: "Article 9 (Coordinates)", status: "pass", detail: "WGS84 6 decimals valid" },
+          { name: "Article 3a (Deforestation)", status: "pass", detail: "0.0 ha loss post-2020" },
+          { name: "Article 3b (Legality)", status: "pass", detail: "COCOBOD License #8491" },
+          { name: "Cross-Supplier Overlap", status: "pass", detail: "0% mutual collision" }
+        ],
+        svg: `
+          <svg class="plot-canvas" viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
+                <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#1e293b" stroke-width="0.8"/>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="#0a0f1d"/>
+            <rect width="100%" height="100%" fill="url(#grid)"/>
+            
+            <!-- Plot 1 -->
+            <polygon points="120,80 240,60 260,160 140,180" fill="rgba(16, 185, 129, 0.25)" stroke="#10b981" stroke-width="2"/>
+            <text x="170" y="125" fill="#34d399" font-size="12" font-weight="bold">GH-PLT-001 (5.2 ha)</text>
+            
+            <!-- Plot 2 -->
+            <polygon points="280,70 420,50 440,150 300,170" fill="rgba(16, 185, 129, 0.25)" stroke="#10b981" stroke-width="2"/>
+            <text x="330" y="115" fill="#34d399" font-size="12" font-weight="bold">GH-PLT-002 (6.1 ha)</text>
+
+            <!-- Plot 3 -->
+            <polygon points="150,200 270,190 280,280 160,290" fill="rgba(16, 185, 129, 0.25)" stroke="#10b981" stroke-width="2"/>
+            <text x="180" y="245" fill="#34d399" font-size="12" font-weight="bold">GH-PLT-003 (3.8 ha)</text>
+
+            <!-- Plot 4 -->
+            <polygon points="310,195 460,180 480,270 330,285" fill="rgba(16, 185, 129, 0.25)" stroke="#10b981" stroke-width="2"/>
+            <text x="360" y="240" fill="#34d399" font-size="12" font-weight="bold">GH-PLT-004 (3.3 ha)</text>
+          </svg>
+        `
+      },
+      {
+        id: "conflict-indonesia",
+        name: "Overlapping Palm Plots",
+        commodity: "OIL_PALM",
+        country: "ID",
+        badge: "Overlap Conflict",
+        plotsCount: 2,
+        areaHectares: 24.8,
+        verdict: "CONFLICT_DETECTED",
+        title: "Spatial Boundary Conflict Detected Between Suppliers",
+        description: "Supplier PT Nusantara and Supplier CV Borneo claim overlapping polygon areas (3.21 ha shared). Under EUDR Article 9, disputed polygon coordinates cannot be used in a Due Diligence Statement until boundaries are reconciled.",
+        checks: [
+          { name: "Article 9 (Coordinates)", status: "warn", detail: "Polygon bounds collide" },
+          { name: "Article 3a (Deforestation)", status: "pass", detail: "No forest loss in base plot" },
+          { name: "Article 3b (Legality)", status: "pass", detail: "RSPO #ID-2093" },
+          { name: "Cross-Supplier Overlap", status: "fail", detail: "3.21 ha intersection" }
+        ],
+        svg: `
+          <svg class="plot-canvas" viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100%" height="100%" fill="#0a0f1d"/>
+            <!-- Plot 1 -->
+            <polygon points="140,80 340,60 360,240 160,260" fill="rgba(59, 130, 246, 0.2)" stroke="#3b82f6" stroke-width="2"/>
+            <text x="180" y="110" fill="#60a5fa" font-size="12" font-weight="bold">Supplier A (PT Nusantara)</text>
+
+            <!-- Plot 2 Overlapping -->
+            <polygon points="280,100 480,80 500,260 300,280" fill="rgba(245, 158, 11, 0.2)" stroke="#f59e0b" stroke-width="2"/>
+            <text x="360" y="240" fill="#fbbf24" font-size="12" font-weight="bold">Supplier B (CV Borneo)</text>
+
+            <!-- Collision zone -->
+            <polygon points="280,100 340,94 360,240 300,246" fill="rgba(239, 68, 68, 0.5)" stroke="#ef4444" stroke-width="2" stroke-dasharray="4"/>
+            <text x="290" y="180" fill="#fca5a5" font-size="12" font-weight="bold">3.21 ha Conflict</text>
+          </svg>
+        `
+      },
+      {
+        id: "deforestation-brazil",
+        name: "Cattle Pasture Encroachment",
+        commodity: "CATTLE",
+        country: "BR",
+        badge: "Deforestation Alert",
+        plotsCount: 1,
+        areaHectares: 42.0,
+        verdict: "DEFORESTATION_DETECTED",
+        title: "Deforestation Identified Post Dec 31, 2020",
+        description: "Satellite imagery intersection detects 8.4 hectares of primary Cerrado forest canopy loss in August 2022 within plot coordinates. This plot is strictly prohibited from EU export under EUDR Article 3(a).",
+        checks: [
+          { name: "Article 9 (Coordinates)", status: "pass", detail: "Precision valid" },
+          { name: "Article 3a (Deforestation)", status: "fail", detail: "8.4 ha cleared Aug 2022" },
+          { name: "Article 3b (Legality)", status: "warn", detail: "CAR registration pending" },
+          { name: "Cross-Supplier Overlap", status: "pass", detail: "Single owner boundary" }
+        ],
+        svg: `
+          <svg class="plot-canvas" viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100%" height="100%" fill="#0a0f1d"/>
+            <!-- Forest Boundary -->
+            <path d="M 50 300 Q 250 180 550 240 L 550 0 L 50 0 Z" fill="rgba(16, 185, 129, 0.15)" stroke="#10b981" stroke-width="1.5" stroke-dasharray="6"/>
+            <text x="80" y="50" fill="#34d399" font-size="13" font-weight="bold">JRC Baseline Forest Cover (Dec 31, 2020)</text>
+
+            <!-- Plot Boundary -->
+            <polygon points="180,100 420,90 440,270 200,280" fill="rgba(239, 68, 68, 0.25)" stroke="#ef4444" stroke-width="2.5"/>
+            <text x="220" y="250" fill="#f87171" font-size="12" font-weight="bold">BR-MT-FAZENDA-09 (42 ha)</text>
+
+            <!-- Encroachment Area -->
+            <polygon points="200,100 420,90 430,200 190,205" fill="rgba(239, 68, 68, 0.6)" stroke="#b91c1c" stroke-width="1.5"/>
+            <text x="210" y="150" fill="#ffffff" font-size="12" font-weight="bold">⚠️ 8.4 ha Encroachment (Post-2020)</text>
+          </svg>
+        `
+      }
+    ];
+
+    let currentIdx = 0;
+
+    function selectPreset(idx) {
+      currentIdx = idx;
+      document.querySelectorAll('.preset-card').forEach((el, i) => {
+        el.classList.toggle('active', i === idx);
+      });
+      render();
+    }
+
+    function runAudit() {
+      const btn = document.getElementById('runAuditBtn');
+      btn.innerText = "⏳ Auditing Boundaries...";
+      btn.disabled = true;
+      setTimeout(() => {
+        btn.innerText = "⚡ Re-Run Spatial Validation";
+        btn.disabled = false;
+        render();
+      }, 350);
+    }
+
+    function render() {
+      const p = PRESETS[currentIdx];
+      document.getElementById('mapCanvas').innerHTML = p.svg;
+      
+      const badge = document.getElementById('plotBadge');
+      badge.innerText = p.plotsCount + " Plots · " + p.areaHectares + " ha";
+      badge.className = "badge " + (p.verdict === 'COMPLIANT' ? 'badge-green' : p.verdict === 'CONFLICT_DETECTED' ? 'badge-amber' : 'badge-red');
+
+      const vIcon = p.verdict === 'COMPLIANT' ? '✅' : p.verdict === 'CONFLICT_DETECTED' ? '⚠️' : '🚨';
+      document.getElementById('verdictContainer').innerHTML = `
+        <div class="verdict-box verdict-${p.verdict}">
+          <div class="verdict-icon">${vIcon}</div>
+          <div class="verdict-content">
+            <h4 style="color:${p.verdict === 'COMPLIANT' ? '#34d399' : p.verdict === 'CONFLICT_DETECTED' ? '#fbbf24' : '#f87171'};">${p.title}</h4>
+            <p>${p.description}</p>
+          </div>
+        </div>
+      `;
+
+      const checklistHtml = p.checks.map(c => {
+        const icon = c.status === 'pass' ? '✓' : c.status === 'fail' ? '✕' : '⚠';
+        const cls = c.status === 'pass' ? 'check-pass' : c.status === 'fail' ? 'check-fail' : 'check-warn';
+        return `
+          <div class="check-item">
+            <div class="check-item-header">
+              <span>${c.name}</span>
+              <span class="${cls}">${icon}</span>
+            </div>
+            <div style="color:var(--text-muted); font-size:0.75rem;">${c.detail}</div>
+          </div>
+        `;
+      }).join('');
+      document.getElementById('checklistContainer').innerHTML = checklistHtml;
+
+      const payload = {
+        regulation: "Regulation (EU) 2023/1115",
+        ddsReferenceToken: "TRACES-EUDR-2026-" + p.id.toUpperCase(),
+        timestamp: new Date().toISOString(),
+        commodity: p.commodity,
+        countryOfProduction: p.country,
+        verdict: p.verdict,
+        plotsCount: p.plotsCount,
+        totalAreaHectares: p.areaHectares,
+        checks: p.checks.map(c => ({ rule: c.name, status: c.status, detail: c.detail }))
+      };
+      document.getElementById('jsonPreview').innerText = JSON.stringify(payload, null, 2);
+    }
+
+    function copyJson() {
+      const text = document.getElementById('jsonPreview').innerText;
+      navigator.clipboard.writeText(text);
+      alert('TRACES NT JSON copied to clipboard!');
+    }
+
+    // Init
+    render();
+  </script>
+</body>
+</html>

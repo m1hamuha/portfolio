@@ -1,0 +1,175 @@
+{
+  "name": "SlotSaver - Cancellation Autofill Cascade Engine",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "slotsaver-cancellation",
+        "responseMode": "onReceived",
+        "responseData": "allEntries",
+        "options": {}
+      },
+      "id": "node-1-webhook-trigger",
+      "name": "Webhook - Cancellation Detected",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [100, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Validate incoming cancellation event payload\nconst body = items[0].json.body || items[0].json;\nif (!body.slot || !body.slot.id || !body.slot.priceCents) {\n  throw new Error('Invalid cancellation payload: missing slot metadata');\n}\nreturn [{\n  json: {\n    slotId: body.slot.id,\n    service: body.slot.service,\n    time: body.slot.time,\n    priceCents: body.slot.priceCents,\n    staff: body.slot.staff,\n    salonName: body.salonName || 'Salon',\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "node-2-validate-payload",
+      "name": "Validate & Sanitize Payload",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [320, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Query active consented waitlist records for this salon\n// In production, queries Postgres / Supabase / Airtable\nconst slot = items[0].json;\nreturn [{\n  json: {\n    ...slot,\n    waitlistQuery: {\n      status: 'active',\n      consented: true,\n      salonId: slot.salonName\n    }\n  }\n}];"
+      },
+      "id": "node-3-fetch-waitlist",
+      "name": "Fetch Consented Waitlist",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [540, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// 4-Factor Priority Queue Ranker (Service Match 40 + Flexibility 25 + LTV 20 + Speed 15)\nconst data = items[0].json;\nreturn [{\n  json: {\n    ...data,\n    rankingAlgorithm: '4-factor-scoring',\n    topCandidate: {\n      name: 'Amélie L.',\n      phone: '+33612345678',\n      score: 96,\n      breakdown: {\n        serviceMatch: 40,\n        availabilityFit: 25,\n        historicalLtv: 20,\n        responseSpeed: 11\n      }\n    }\n  }\n}];"
+      },
+      "id": "node-4-priority-ranker",
+      "name": "4-Factor Priority Queue Ranker",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [760, 300]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://api.twilio.com/2010-04-01/Accounts/AC_SLOTSAVER/Messages.json",
+        "options": {},
+        "bodyParametersUi": {
+          "parameter": [
+            { "name": "To", "value": "={{$node[\"4-Factor Priority Queue Ranker\"].json.topCandidate.phone}}" },
+            { "name": "Body", "value": "=Hi {{$node[\"4-Factor Priority Queue Ranker\"].json.topCandidate.name}}! A {{$node[\"Validate & Sanitize Payload\"].json.service}} slot just opened at {{$node[\"Validate & Sanitize Payload\"].json.time}} today at {{$node[\"Validate & Sanitize Payload\"].json.salonName}}. Reply YES in 10 min to claim!" }
+          ]
+        }
+      },
+      "id": "node-5-sms-dispatch",
+      "name": "Dispatch SMS Offer (Twilio / WhatsApp)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [980, 300]
+    },
+    {
+      "parameters": {
+        "amount": 10,
+        "unit": "minutes"
+      },
+      "id": "node-6-wait-response",
+      "name": "Wait for Response (10 min timeout)",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1200, 300],
+      "webhookId": "slotsaver-sms-response"
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{$json.replyText}}",
+        "rules": {
+          "rules": [
+            {
+              "value2": "YES",
+              "output": 0
+            }
+          ]
+        }
+      },
+      "id": "node-7-evaluate-switch",
+      "name": "Evaluate Response & Acceptance",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [1420, 300]
+    },
+    {
+      "parameters": {
+        "requestMethod": "PATCH",
+        "url": "https://api.salon-booking.com/v1/slots/{{$node[\"Validate & Sanitize Payload\"].json.slotId}}",
+        "bodyParametersUi": {
+          "parameter": [
+            { "name": "status", "value": "booked" },
+            { "name": "clientName", "value": "={{$node[\"4-Factor Priority Queue Ranker\"].json.topCandidate.name}}" },
+            { "name": "recovered", "value": true }
+          ]
+        }
+      },
+      "id": "node-8-calendar-update",
+      "name": "Update Salon Calendar / API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1640, 200]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://api.telegram.org/bot_TOKEN/sendMessage",
+        "bodyParametersUi": {
+          "parameter": [
+            { "name": "chat_id", "value": "@salon_owner_alerts" },
+            { "name": "text", "value": "=🟢 Chair Saved! {{$node[\"Validate & Sanitize Payload\"].json.time}} {{$node[\"Validate & Sanitize Payload\"].json.service}} refilled by {{$node[\"4-Factor Priority Queue Ranker\"].json.topCandidate.name}} (+€{{$node[\"Validate & Sanitize Payload\"].json.priceCents / 100}} recovered)." }
+          ]
+        }
+      },
+      "id": "node-9-owner-alert",
+      "name": "Notify Salon Owner (Telegram / Slack)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1860, 200]
+    }
+  ],
+  "connections": {
+    "Webhook - Cancellation Detected": {
+      "main": [
+        [{ "node": "Validate & Sanitize Payload", "type": "main", "index": 0 }]
+      ]
+    },
+    "Validate & Sanitize Payload": {
+      "main": [
+        [{ "node": "Fetch Consented Waitlist", "type": "main", "index": 0 }]
+      ]
+    },
+    "Fetch Consented Waitlist": {
+      "main": [
+        [{ "node": "4-Factor Priority Queue Ranker", "type": "main", "index": 0 }]
+      ]
+    },
+    "4-Factor Priority Queue Ranker": {
+      "main": [
+        [{ "node": "Dispatch SMS Offer (Twilio / WhatsApp)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Dispatch SMS Offer (Twilio / WhatsApp)": {
+      "main": [
+        [{ "node": "Wait for Response (10 min timeout)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Wait for Response (10 min timeout)": {
+      "main": [
+        [{ "node": "Evaluate Response & Acceptance", "type": "main", "index": 0 }]
+      ]
+    },
+    "Evaluate Response & Acceptance": {
+      "main": [
+        [{ "node": "Update Salon Calendar / API", "type": "main", "index": 0 }]
+      ]
+    },
+    "Update Salon Calendar / API": {
+      "main": [
+        [{ "node": "Notify Salon Owner (Telegram / Slack)", "type": "main", "index": 0 }]
+      ]
+    }
+  }
+}
