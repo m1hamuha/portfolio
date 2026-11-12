@@ -5,6 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <script>
       document.documentElement.classList.remove("no-js");
+      /* Cyrillic font files are only discovered after the text is swapped in,
+         so preload them up front for uk/ru visitors (mirrors pickLang in app.js). */
+      (function () {
+        var all = ["en", "de", "uk", "ru"], l = null;
+        try { l = new URLSearchParams(location.search).get("lang"); } catch (e) {}
+        try { if (all.indexOf(l) < 0) l = localStorage.getItem("lang"); } catch (e) {}
+        if (all.indexOf(l) < 0) l = (navigator.language || "en").slice(0, 2).toLowerCase();
+        if (l === "uk" || l === "ru") {
+          ["unbounded", "onest", "jetbrains-mono"].forEach(function (f) {
+            var k = document.createElement("link");
+            k.rel = "preload"; k.as = "font"; k.type = "font/woff2"; k.crossOrigin = "anonymous";
+            k.href = "./fonts/" + f + "-cyrillic-wght-normal.woff2";
+            document.head.appendChild(k);
+          });
+        }
+      })();
       /* Some in-app browsers ignore the viewport meta and lay the page out at
          desktop width. Re-assert device-width when that happens. */
       (function () {
@@ -156,7 +172,7 @@
                 <img src="./img/coffee.webp" alt="" width="768" height="1376" />
                 <img src="./img/perfume.webp" alt="" width="768" height="1376" />
                 <img src="./img/cream.webp" alt="" width="768" height="1376" />
-                <div class="phone__ui"><i>K</i><span data-i18n="hero.phone">Made by AI · posted for you</span></div>
+                <div class="phone__ui"><i>K</i><span data-i18n="hero.phone">Made by AI</span></div>
               </div>
             </div>
             <div class="toast toast--1">
@@ -187,7 +203,7 @@
       <section class="stats" aria-label="Facts">
         <div class="wrap">
           <div class="stats__grid">
-            <div class="stat rv"><b>€0</b><span data-i18n="stat.1">first call &amp; first sample</span></div>
+            <div class="stat rv"><b data-i18n="stat.1b">€0</b><span data-i18n="stat.1">first call &amp; first sample</span></div>
             <div class="stat rv" style="--i: 1"><b data-i18n="stat.2b">1 day</b><span data-i18n="stat.2">to your free sample</span></div>
             <div class="stat rv" style="--i: 2"><b>7</b><span data-i18n="stat.3">live demos you can click</span></div>
             <div class="stat rv" style="--i: 3"><b>4</b><span data-i18n="stat.4">languages: EN · DE · UK · RU</span></div>
@@ -201,7 +217,7 @@
           <div class="sec-head rv">
             <div>
               <div class="eyebrow"><b>01</b><span data-i18n="svc.eye">What I do</span></div>
-              <h2 data-i18n="svc.h2">Three ways AI moves into your business.</h2>
+              <h2 data-i18n="svc.h2">How AI moves into your business.</h2>
             </div>
           </div>
           <div class="bento">
@@ -209,7 +225,7 @@
               <div class="tile__txt">
                 <div class="tile__tag" data-i18n="svc.1.tag">Social media</div>
                 <h3 data-i18n="svc.1.h">Content on autopilot</h3>
-                <p data-i18n="svc.1.p">Posts, reels and captions — planned, made and published for you.</p>
+                <p data-i18n="svc.1.p">Posts, reels and captions — planned and made for you.</p>
                 <a class="pill" href="#pricing" style="margin-top: auto"
                   ><span data-i18n="svc.1.cta">from €190 / month</span><svg class="ico"><use href="#i-arrow" /></svg
                 ></a>
@@ -248,8 +264,8 @@
               <img src="./img/after-4.webp" alt="" loading="lazy" width="800" height="1000" />
               <span class="price-tag" data-i18n="svc.4.price">from €30</span>
               <div class="tile__over">
-                <div class="tile__tag" data-i18n="svc.4.tag">Product cards</div>
-                <h3 data-i18n="svc.4.h">Phone photo → selling card</h3>
+                <div class="tile__tag" data-i18n="svc.4.tag">Product images</div>
+                <h3 data-i18n="svc.4.h">Phone photo → image that sells</h3>
               </div>
             </a>
 
@@ -298,8 +314,8 @@
             </div>
 
             <div class="reel rv" style="--i: 1">
-              <video id="reel" muted loop playsinline preload="none" poster="./img/reel-serum-poster.jpg" aria-label="Product video ad sample">
-                <source data-src="./img/reel-serum.mp4" type="video/mp4" />
+              <video id="reel" controls muted loop playsinline preload="none" poster="./img/reel-serum-poster.jpg" aria-label="Product video ad sample">
+                <source src="./img/reel-serum.mp4" type="video/mp4" />
               </video>
               <span class="reel__rec">REEL</span>
               <div class="reel__tag">
@@ -344,7 +360,7 @@
           <div class="sec-head rv">
             <div>
               <div class="eyebrow"><b>04</b><span data-i18n="tl.eye">Built &amp; running</span></div>
-              <h2 data-i18n="tl.h2">Don't take my word. Click.</h2>
+              <h2 data-i18n="tl.h2">Don't take my word for it. Click.</h2>
             </div>
             <p data-i18n="tl.sub">Seven working tools. Open any — they run on demo data right in your browser.</p>
           </div>
@@ -433,7 +449,7 @@
             </div>
           </div>
           <div class="steps">
-            <div class="step rv"><h3 data-i18n="st.1.h">Tell me the pain</h3><p data-i18n="st.1.p">One free call. No pitch.</p></div>
+            <div class="step rv"><h3 data-i18n="st.1.h">Tell me what hurts</h3><p data-i18n="st.1.p">One free call. No pitch.</p></div>
             <div class="step rv" style="--i: 1"><h3 data-i18n="st.2.h">I build it</h3><p data-i18n="st.2.p">Days, not months.</p></div>
             <div class="step rv" style="--i: 2"><h3 data-i18n="st.3.h">It runs itself</h3><p data-i18n="st.3.p">You get your time back.</p></div>
           </div>
@@ -451,8 +467,8 @@
           </div>
           <div class="plans">
             <div class="plan rv">
-              <small data-i18n="pr.0.n">Product cards</small>
-              <div class="plan__price"><span data-i18n="pr.from">from</span> €30</div>
+              <small data-i18n="pr.0.n">Product images</small>
+              <div class="plan__price"><span data-i18n="pr.from">from</span> <b data-i18n="pr.0.amt">€30</b></div>
               <ul>
                 <li data-i18n="pr.0.a">From one plain photo</li>
                 <li data-i18n="pr.0.b">Marketplace-ready</li>
@@ -461,7 +477,7 @@
             </div>
             <div class="plan rv" style="--i: 1">
               <small>Starter</small>
-              <div class="plan__price">€190 <span data-i18n="pr.mo">/ month</span></div>
+              <div class="plan__price"><b data-i18n="pr.1.amt">€190</b> <span data-i18n="pr.mo">/ month</span></div>
               <ul>
                 <li data-i18n="pr.1.a">8 posts a month</li>
                 <li data-i18n="pr.1.b">2 short reels</li>
@@ -469,18 +485,18 @@
               </ul>
             </div>
             <div class="plan plan--hot rv" style="--i: 2">
-              <span class="plan__flag" data-i18n="pr.hot">Most picked</span>
+              <span class="plan__flag" data-i18n="pr.hot">Most popular</span>
               <small>Growth</small>
-              <div class="plan__price">€390 <span data-i18n="pr.mo">/ month</span></div>
+              <div class="plan__price"><b data-i18n="pr.2.amt">€390</b> <span data-i18n="pr.mo">/ month</span></div>
               <ul>
                 <li data-i18n="pr.2.a">16 posts a month</li>
-                <li data-i18n="pr.2.b">Reels + product cards</li>
+                <li data-i18n="pr.2.b">Reels + product images</li>
                 <li data-i18n="pr.2.c">Posted for you</li>
               </ul>
             </div>
             <div class="plan rv" style="--i: 3">
               <small>Pro</small>
-              <div class="plan__price">€690 <span data-i18n="pr.mo">/ month</span></div>
+              <div class="plan__price"><b data-i18n="pr.3.amt">€690</b> <span data-i18n="pr.mo">/ month</span></div>
               <ul>
                 <li data-i18n="pr.3.a">Content every other day</li>
                 <li data-i18n="pr.3.b">Every format, handled</li>
@@ -533,7 +549,9 @@
               </div>
             </div>
 
-            <form class="form rv" style="--i: 1" id="form" novalidate>
+            <form class="form rv" style="--i: 1" id="form" action="https://formsubmit.co/kostinmihail40@gmail.com" method="POST" novalidate>
+              <input type="hidden" name="_subject" value="New portfolio request — Kostin Automation" />
+              <input type="hidden" name="_template" value="table" />
               <h3 data-i18n="fm.h">One line is enough.</h3>
               <label><span data-i18n="fm.name">Your name</span><input name="name" type="text" autocomplete="name" required maxlength="120" /></label>
               <label><span data-i18n="fm.email">Your email</span><input name="email" type="email" autocomplete="email" required maxlength="200" /></label>

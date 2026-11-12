@@ -7,6 +7,7 @@
   var D = window.I18N;
   var lang = "en";
   var timers = {};
+  var resay = function () {};
 
   /* ---------- i18n ---------- */
   var originals = {};
@@ -38,6 +39,8 @@
     document.title = t("meta.title");
     var md = $('meta[name="description"]');
     if (md) md.setAttribute("content", t("meta.desc"));
+    var canon = $('link[rel="canonical"]');
+    if (canon) canon.href = "https://m1hamuha.github.io/portfolio/v-fast/" + (lang === "en" ? "" : "?lang=" + lang);
     $$("[data-i18n]").forEach(function (el) { el.textContent = t(el.dataset.i18n); });
     $$("[data-i18n-html]").forEach(function (el) { el.innerHTML = t(el.dataset.i18nHtml); });
     $$("[data-i18n-aria]").forEach(function (el) { el.setAttribute("aria-label", t(el.dataset.i18nAria)); });
@@ -48,6 +51,7 @@
       if (lang === "en") u.searchParams.delete("lang"); else u.searchParams.set("lang", lang);
       history.replaceState(null, "", u);
     }
+    resay();
     buildMarquee();
     buildFlow(flowIdx);
     startChat();
@@ -65,6 +69,7 @@
     burger.setAttribute("aria-expanded", String(open));
   });
   $$("#menu a").forEach(function (a) { a.addEventListener("click", closeMenu); });
+  document.addEventListener("pointerdown", function (e) { if (!nav.contains(e.target)) closeMenu(); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeMenu(); });
 
   /* ---------- reveal ---------- */
@@ -159,10 +164,12 @@
     var box = $("#chat"), script = t("chat");
     clearTimeout(timers.chat);
     box.innerHTML = "";
-    if (reduce || !chatVisible) {
-      script.forEach(function (m) { box.appendChild(bubble(m[0], m[1])); });
-      return;
-    }
+    box.style.minHeight = "";
+    script.forEach(function (m) { box.appendChild(bubble(m[0], m[1])); });
+    if (reduce || !chatVisible) return;
+    /* Reserve the height of the full conversation so the loop never moves the page. */
+    box.style.minHeight = box.offsetHeight + "px";
+    box.innerHTML = "";
     var i = 0;
     (function next() {
       if (i >= script.length) { timers.chat = setTimeout(startChat, 3600); return; }
@@ -249,12 +256,10 @@
   /* ---------- reel video: load + play only when visible ---------- */
   (function () {
     var v = $("#reel");
-    if (reduce) { v.controls = true; }
+    v.controls = reduce;
     new IntersectionObserver(function (es) {
       es.forEach(function (e) {
         if (e.isIntersecting) {
-          var s = $("source", v);
-          if (s && !s.src) { s.src = s.dataset.src; v.load(); }
           if (!reduce) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
         } else { v.pause(); }
       });
@@ -275,15 +280,20 @@
   function buildFlow(idx) {
     flowIdx = idx;
     var flows = t("flows"), labels = t("flowLabels"), chips = $("#chips"), flow = $("#flow");
-    chips.innerHTML = "";
-    flows.forEach(function (f, i) {
-      var b = document.createElement("button");
-      b.type = "button";
+    /* Build the chips once and only relabel afterwards, so the pressed chip keeps keyboard focus. */
+    if (chips.children.length !== flows.length) {
+      chips.innerHTML = "";
+      flows.forEach(function (f, i) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.innerHTML = ico(FLOW_ICONS[i][0]) + "<span></span>";
+        b.addEventListener("click", function () { buildFlow(i); });
+        chips.appendChild(b);
+      });
+    }
+    $$("button", chips).forEach(function (b, i) {
       b.setAttribute("aria-pressed", String(i === idx));
-      b.innerHTML = ico(FLOW_ICONS[i][0]) + "<span></span>";
-      b.lastChild.textContent = f.chip;
-      b.addEventListener("click", function () { buildFlow(i); });
-      chips.appendChild(b);
+      b.lastChild.textContent = flows[i].chip;
     });
     var html = "";
     flows[idx].steps.forEach(function (s, i) {
@@ -297,10 +307,13 @@
   (function () {
     var form = $("#form"), msg = $("#formMsg"), btn = $("button[type=submit]", form), busy = false;
     var ENDPOINT = "https://formsubmit.co/ajax/kostinmihail40@gmail.com";
-    function say(kind, text, withMail) {
+    var last = null;
+    resay = function () { if (last) say(last[0], last[1], last[2]); };
+    function say(kind, key, withMail) {
+      last = [kind, key, withMail];
       msg.hidden = false;
       msg.className = "form__msg " + kind;
-      msg.textContent = text;
+      msg.textContent = t(key);
       if (withMail) {
         var a = document.createElement("a");
         a.href = "mailto:kostinmihail40@gmail.com";
@@ -314,9 +327,10 @@
       if (busy) return;
       var f = new FormData(form);
       var name = String(f.get("name") || "").trim(), email = String(f.get("email") || "").trim(), message = String(f.get("message") || "").trim();
-      if (String(f.get("_honey") || "").trim()) { say("ok", t("fm.ok")); form.reset(); return; }
-      if (!name || !message || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { say("err", t("fm.invalid")); return; }
-      busy = true; btn.disabled = true; say("ok", t("fm.sending"));
+      if (String(f.get("_honey") || "").trim()) { say("ok", "fm.ok"); form.reset(); return; }
+      var bad = !name ? "name" : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? "email" : !message ? "message" : "";
+      if (bad) { say("err", "fm.invalid"); $('[name="' + bad + '"]', form).focus(); return; }
+      busy = true; btn.disabled = true; say("ok", "fm.sending");
       var ctl = new AbortController(), to = setTimeout(function () { ctl.abort(); }, 15000);
       fetch(ENDPOINT, {
         method: "POST",
@@ -331,9 +345,9 @@
         .then(function (r) { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
         .then(function (j) {
           if (j && String(j.success) === "false") throw new Error("rejected");
-          say("ok", t("fm.ok")); form.reset();
+          say("ok", "fm.ok"); form.reset();
         })
-        .catch(function () { say("err", t("fm.err"), true); })
+        .catch(function () { say("err", "fm.err", true); })
         .then(function () { clearTimeout(to); busy = false; btn.disabled = false; });
     });
   })();
