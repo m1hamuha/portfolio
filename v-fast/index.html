@@ -150,9 +150,11 @@
           <div>
             <div class="status rv"><i></i><span data-i18n="hero.status">Open for projects · worldwide</span></div>
             <h1 class="rv" style="--i: 1" data-i18n-html="hero.h1">I put <mark>AI</mark> to work in your business.</h1>
-            <p class="hero__sub rv" style="--i: 2" data-i18n="hero.sub">
-              Content, client replies, routine and custom tools — set up once, running every day.
-            </p>
+            <div class="hero__tags rv" style="--i: 2">
+              <a href="#services"><svg class="ico"><use href="#i-cal" /></svg><span data-i18n="svc.1.tag">Social media</span></a>
+              <a href="#services"><svg class="ico"><use href="#i-bot" /></svg><span data-i18n="svc.2.tag">AI assistants</span></a>
+              <a href="#services"><svg class="ico"><use href="#i-code" /></svg><span data-i18n="svc.3.tag">Custom software</span></a>
+            </div>
             <div class="hero__cta rv" style="--i: 3">
               <a class="btn btn--ink" href="#contact"
                 ><span data-i18n="hero.cta1">Get a free sample</span><svg class="ico"><use href="#i-arrow" /></svg
@@ -205,8 +207,8 @@
           <div class="stats__grid">
             <div class="stat rv"><b data-i18n="stat.1b">€0</b><span data-i18n="stat.1">first call &amp; first sample</span></div>
             <div class="stat rv" style="--i: 1"><b data-i18n="stat.2b">1 day</b><span data-i18n="stat.2">to your free sample</span></div>
-            <div class="stat rv" style="--i: 2"><b>7</b><span data-i18n="stat.3">live demos you can click</span></div>
-            <div class="stat rv" style="--i: 3"><b>4</b><span data-i18n="stat.4">languages: EN · DE · UK · RU</span></div>
+            <div class="stat rv" style="--i: 2"><b data-count="7">7</b><span data-i18n="stat.3">live demos you can click</span></div>
+            <div class="stat rv" style="--i: 3"><b data-count="4">4</b><span data-i18n="stat.4">languages: EN · DE · UK · RU</span></div>
           </div>
         </div>
       </section>
@@ -225,7 +227,6 @@
               <div class="tile__txt">
                 <div class="tile__tag" data-i18n="svc.1.tag">Social media</div>
                 <h3 data-i18n="svc.1.h">Content on autopilot</h3>
-                <p data-i18n="svc.1.p">Posts, reels and captions — planned and made for you.</p>
                 <a class="pill" href="#pricing" style="margin-top: auto"
                   ><span data-i18n="svc.1.cta">from €190 / month</span><svg class="ico"><use href="#i-arrow" /></svg
                 ></a>
@@ -241,7 +242,6 @@
             <article class="tile tile--chat rv" style="--i: 1">
               <div class="tile__tag" data-i18n="svc.2.tag">AI assistants</div>
               <h3 data-i18n="svc.2.h">Answers while you sleep</h3>
-              <p data-i18n="svc.2.p">Bots for Telegram, WhatsApp and your site: reply, book, qualify.</p>
               <div class="tile__viz" aria-hidden="true">
                 <div class="chat__who"><i></i><span data-i18n="chat.who">AI assistant · online 24/7</span></div>
                 <div class="chat" id="chat"></div>
@@ -251,7 +251,6 @@
             <article class="tile tile--code rv">
               <div class="tile__tag" data-i18n="svc.3.tag">Custom software</div>
               <h3 data-i18n="svc.3.h">A tool for your exact task</h3>
-              <p data-i18n="svc.3.p">Scripts, parsers, dashboards, integrations — built to order.</p>
               <div class="tile__viz" aria-hidden="true">
                 <div class="term">
                   <div class="term__dots"><i></i><i></i><i></i></div>
@@ -291,7 +290,6 @@
               <div class="eyebrow"><b>02</b><span data-i18n="cr.eye">Real work</span></div>
               <h2 data-i18n-html="cr.h2">Phone photo in.<br /><mark>Ad out.</mark></h2>
             </div>
-            <p data-i18n="cr.sub">Drag the slider. Left — what the client sent. Right — what went live.</p>
           </div>
           <div class="show">
             <div class="cmp-wrap rv">
@@ -323,12 +321,7 @@
               </div>
             </div>
 
-            <div class="mosaic rv" style="--i: 2">
-              <figure><img src="./img/coffee.webp" alt="Coffee pack product scene" loading="lazy" width="768" height="1376" /></figure>
-              <figure><img src="./img/perfume.webp" alt="Perfume product scene" loading="lazy" width="768" height="1376" /></figure>
-              <figure><img src="./img/cream.webp" alt="Face cream product scene" loading="lazy" width="768" height="1376" /></figure>
-              <figure><img src="./img/serum.webp" alt="Serum product scene" loading="lazy" width="768" height="1376" /></figure>
-            </div>
+            <div class="wall rv" style="--i: 2" id="wall" role="img" aria-label="More samples"></div>
           </div>
           <div class="show__note rv">
             <span data-i18n="cr.note">Samples to show the level. Yours is made from your real product.</span>
@@ -347,7 +340,6 @@
               <div class="eyebrow"><b>03</b><span data-i18n="fl.eye">Pick your pain</span></div>
               <h2 data-i18n="fl.h2">What eats your time?</h2>
             </div>
-            <p data-i18n="fl.sub">Tap a task — see how it runs without you.</p>
           </div>
           <div class="chips rv" id="chips" role="group" aria-label="Tasks"></div>
           <div class="flow rv" id="flow" aria-live="polite"></div>
@@ -362,7 +354,6 @@
               <div class="eyebrow"><b>04</b><span data-i18n="tl.eye">Built &amp; running</span></div>
               <h2 data-i18n="tl.h2">Don't take my word for it. Click.</h2>
             </div>
-            <p data-i18n="tl.sub">Seven working tools. Open any — they run on demo data right in your browser.</p>
           </div>
           <div class="tools">
             <a class="tool rv" href="../marginpulse/">
@@ -372,7 +363,7 @@
                 <div class="tool__open"><span><span data-i18n="tl.open">Open demo</span><svg class="ico"><use href="#i-up" /></svg></span></div>
               </div>
               <div class="tool__body">
-                <b>MarginPulse<svg class="ico"><use href="#i-up" /></svg></b><span data-i18n="tl.1">Finds where an online store leaks profit</span>
+                <b>MarginPulse<svg class="ico"><use href="#i-up" /></svg></b><span data-i18n="tl.1">Online stores</span>
               </div>
             </a>
             <a class="tool rv" style="--i: 1" href="../slotsaver/">
@@ -382,7 +373,7 @@
                 <div class="tool__open"><span><span data-i18n="tl.open">Open demo</span><svg class="ico"><use href="#i-up" /></svg></span></div>
               </div>
               <div class="tool__body">
-                <b>SlotSaver<svg class="ico"><use href="#i-up" /></svg></b><span data-i18n="tl.2">Refills cancelled appointments by itself</span>
+                <b>SlotSaver<svg class="ico"><use href="#i-up" /></svg></b><span data-i18n="tl.2">Bookings</span>
               </div>
             </a>
             <a class="tool rv" style="--i: 2" href="../invoice-autopilot/">
@@ -392,7 +383,7 @@
                 <div class="tool__open"><span><span data-i18n="tl.open">Open demo</span><svg class="ico"><use href="#i-up" /></svg></span></div>
               </div>
               <div class="tool__body">
-                <b>InvoiceAutopilot<svg class="ico"><use href="#i-up" /></svg></b><span data-i18n="tl.3">Reads and checks invoices in seconds</span>
+                <b>InvoiceAutopilot<svg class="ico"><use href="#i-up" /></svg></b><span data-i18n="tl.3">Invoices</span>
               </div>
             </a>
             <a class="tool rv" href="../kostin-erp-audit/">
@@ -402,7 +393,7 @@
                 <div class="tool__open"><span><span data-i18n="tl.open">Open demo</span><svg class="ico"><use href="#i-up" /></svg></span></div>
               </div>
               <div class="tool__body">
-                <b>ERP Health Audit<svg class="ico"><use href="#i-up" /></svg></b><span data-i18n="tl.4">Scores your business system in 2 minutes</span>
+                <b>ERP Health Audit<svg class="ico"><use href="#i-up" /></svg></b><span data-i18n="tl.4">ERP check</span>
               </div>
             </a>
             <a class="tool rv" style="--i: 1" href="../fintech-dashboard/">
@@ -412,7 +403,7 @@
                 <div class="tool__open"><span><span data-i18n="tl.open">Open demo</span><svg class="ico"><use href="#i-up" /></svg></span></div>
               </div>
               <div class="tool__body">
-                <b>Fintech Copilot<svg class="ico"><use href="#i-up" /></svg></b><span data-i18n="tl.5">Cash runway dashboard with an AI copilot</span>
+                <b>Fintech Copilot<svg class="ico"><use href="#i-up" /></svg></b><span data-i18n="tl.5">Finance + AI</span>
               </div>
             </a>
             <a class="tool rv" style="--i: 2" href="../saas-crm-erp/">
@@ -422,7 +413,7 @@
                 <div class="tool__open"><span><span data-i18n="tl.open">Open demo</span><svg class="ico"><use href="#i-up" /></svg></span></div>
               </div>
               <div class="tool__body">
-                <b>CRM / ERP<svg class="ico"><use href="#i-up" /></svg></b><span data-i18n="tl.6">Deals, quotes and invoices in one place</span>
+                <b>CRM / ERP<svg class="ico"><use href="#i-up" /></svg></b><span data-i18n="tl.6">CRM</span>
               </div>
             </a>
             <a class="tool rv" style="--i: 3" href="../eudr-assistant/">
@@ -432,7 +423,7 @@
                 <div class="tool__open"><span><span data-i18n="tl.open">Open demo</span><svg class="ico"><use href="#i-up" /></svg></span></div>
               </div>
               <div class="tool__body">
-                <b>EUDR Assistant<svg class="ico"><use href="#i-up" /></svg></b><span data-i18n="tl.7">Checks supplier land plots on a map</span>
+                <b>EUDR Assistant<svg class="ico"><use href="#i-up" /></svg></b><span data-i18n="tl.7">Supplier check</span>
               </div>
             </a>
           </div>
@@ -449,9 +440,9 @@
             </div>
           </div>
           <div class="steps">
-            <div class="step rv"><h3 data-i18n="st.1.h">Tell me what hurts</h3><p data-i18n="st.1.p">One free call. No pitch.</p></div>
-            <div class="step rv" style="--i: 1"><h3 data-i18n="st.2.h">I build it</h3><p data-i18n="st.2.p">Days, not months.</p></div>
-            <div class="step rv" style="--i: 2"><h3 data-i18n="st.3.h">It runs itself</h3><p data-i18n="st.3.p">You get your time back.</p></div>
+            <div class="step rv"><h3 data-i18n="st.1.h">Tell me what hurts</h3></div>
+            <div class="step rv" style="--i: 1"><h3 data-i18n="st.2.h">I build it</h3></div>
+            <div class="step rv" style="--i: 2"><h3 data-i18n="st.3.h">It runs itself</h3></div>
           </div>
         </div>
       </section>

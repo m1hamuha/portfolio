@@ -120,6 +120,42 @@
     $("#marquee").innerHTML = html;
   }
 
+  /* ---------- creatives wall: two endless strips moving in opposite directions ---------- */
+  (function () {
+    var wall = $("#wall");
+    var sets = [["coffee", "after-2", "perfume", "after-4"], ["after-3", "cream", "after-1", "serum"]];
+    sets.forEach(function (set) {
+      var col = document.createElement("div"), track = document.createElement("div"), html = "";
+      col.className = "wall__col"; track.className = "wall__track";
+      for (var r = 0; r < 2; r++) set.forEach(function (n) { html += '<img src="./img/' + n + '.webp" alt="" loading="lazy" width="300" height="400">'; });
+      track.innerHTML = html; col.appendChild(track); wall.appendChild(col);
+    });
+  })();
+
+  /* ---------- stats count-up + card tilt ---------- */
+  (function () {
+    if (reduce) return;
+    $$("[data-count]").forEach(function (el) {
+      var end = +el.dataset.count;
+      new IntersectionObserver(function (es, o) {
+        if (!es[0].isIntersecting) return;
+        o.disconnect();
+        var n = 0; el.textContent = "0";
+        var id = setInterval(function () { el.textContent = String(++n); if (n >= end) clearInterval(id); }, 110);
+      }, { threshold: 0.6 }).observe(el);
+    });
+    if (!window.matchMedia("(hover: hover)").matches) return;
+    $$(".tile, .tool, .plan").forEach(function (el) {
+      el.addEventListener("pointermove", function (e) {
+        var r = el.getBoundingClientRect();
+        el.style.setProperty("--tx", ((e.clientX - r.left) / r.width - 0.5).toFixed(2));
+        el.style.setProperty("--ty", ((e.clientY - r.top) / r.height - 0.5).toFixed(2));
+        el.classList.add("tilt");
+      });
+      el.addEventListener("pointerleave", function () { el.classList.remove("tilt"); });
+    });
+  })();
+
   /* ---------- content calendar ---------- */
   (function () {
     var grid = $("#cal"), count = $("#calCount");
