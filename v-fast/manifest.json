@@ -5,8 +5,8 @@
   "start_url": "/portfolio/v-fast/",
   "scope": "/portfolio/v-fast/",
   "display": "standalone",
-  "background_color": "#e8dcc0",
-  "theme_color": "#e8dcc0",
+  "background_color": "#24104f",
+  "theme_color": "#24104f",
   "icons": [
     {
       "src": "favicon.svg",

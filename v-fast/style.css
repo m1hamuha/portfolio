@@ -9,21 +9,24 @@
 @font-face { font-family: "JetBrains Mono"; src: url("./fonts/jetbrains-mono-cyrillic-wght-normal.woff2") format("woff2"); font-weight: 100 800; font-display: swap; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
 
 :root {
-  /* Three-colour palette: cream, burgundy-rose, olive. The dark is a deep olive. */
-  --paper: #e8dcc0;
-  --paper-2: #dccfae;
-  --card: #f3ead5;
-  --ink: #23281b;
-  --ink-2: #2e3424;
-  --ink-3: #3c4330;
-  --muted: #6a634f;
-  --muted-d: #d3c8ab;
-  --accent: #a63d55;
-  --accent-d: #7c2a3e;
-  --olive: #596447;
-  --on: #f3ead5;
-  --line: rgba(35, 40, 27, 0.16);
-  --line-d: rgba(243, 234, 213, 0.28);
+  /* Three-colour palette: coral #FF4D6D, amber #FFB627, indigo #24104F.
+     The page is indigo; coral is the accent, amber the second colour, and a
+     warm white (--ink) is the text and the light contrast surface.
+     Names are roles: --paper page, --ink foreground, --on text on coloured blocks. */
+  --paper: #24104f;
+  --paper-2: #38207a;
+  --card: #2e1763;
+  --ink: #fff3dc;
+  --ink-2: #1a0b3b;
+  --ink-3: #f1dfbf;
+  --muted: #b9a9e6;
+  --muted-d: #b9a9e6;
+  --accent: #ff4d6d;
+  --accent-d: #c42d4b;
+  --olive: #ffb627;
+  --on: #24104f;
+  --line: rgba(255, 243, 220, 0.16);
+  --line-d: rgba(36, 16, 79, 0.3);
 
   --f-display: "Unbounded", "Arial Black", sans-serif;
   --f-body: "Onest", "Segoe UI", sans-serif;
@@ -79,7 +82,7 @@ h1 mark { position: relative; z-index: -1; }
 
 /* Nav */
 .nav { position: fixed; inset: 0.75rem 0 auto; z-index: 50; pointer-events: none; }
-.nav__bar { pointer-events: auto; display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0.5rem 0.5rem 1.1rem; border-radius: var(--r-full); background: var(--card); border: 1px solid var(--line); box-shadow: 0 8px 30px rgba(35, 40, 27, 0.08); }
+.nav__bar { pointer-events: auto; display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0.5rem 0.5rem 1.1rem; border-radius: var(--r-full); background: var(--card); border: 1px solid var(--line); box-shadow: 0 8px 30px rgba(10, 4, 28, 0.08); }
 .logo { display: inline-flex; align-items: center; gap: 0.6rem; font-family: var(--f-display); font-weight: 800; font-size: 0.95rem; letter-spacing: -0.02em; margin-right: auto; white-space: nowrap; }
 .logo i { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 0.6rem; background: var(--ink); color: var(--paper); font-style: normal; }
 .nav__links { display: flex; gap: 0.25rem; list-style: none; }
@@ -105,7 +108,7 @@ h1 { font-size: clamp(2.5rem, 7vw, 6.4rem); line-height: 1.06; }
 .cmp input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; margin: 0; touch-action: pan-y; }
 .cmp:has(input:focus-visible) { outline: 3px solid var(--olive); outline-offset: 3px; }
 .cmp__lbl { position: absolute; top: 1rem; padding: 0.4rem 0.9rem; border-radius: var(--r-full); font-family: var(--f-display); font-size: clamp(0.8rem, 1.2vw, 1rem); font-weight: 700; pointer-events: none; }
-.cmp__lbl--b { left: 1rem; background: rgba(35, 40, 27, 0.8); color: var(--on); }
+.cmp__lbl--b { left: 1rem; background: var(--paper); color: var(--ink); }
 .cmp__lbl--a { right: 1rem; background: var(--accent); color: var(--on); }
 
 /* 2 — Services: three tiles, each a title and a live demo */
@@ -118,7 +121,7 @@ h1 { font-size: clamp(2.5rem, 7vw, 6.4rem); line-height: 1.06; }
 .tile--chat { background: var(--ink); color: var(--on); }
 .tile--code { background: var(--olive); color: var(--on); }
 
-.cal { background: var(--ink); border-radius: var(--r-md); padding: 0.8rem; box-shadow: 0 20px 40px -18px rgba(35, 40, 27, 0.5); transform: rotate(-1.5deg); }
+.cal { background: var(--ink); border-radius: var(--r-md); padding: 0.8rem; box-shadow: 0 20px 40px -18px rgba(10, 4, 28, 0.5); transform: rotate(-1.5deg); }
 .cal__grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
 .cal__cell { position: relative; aspect-ratio: 3 / 4; border-radius: 7px; background: var(--ink-3); overflow: hidden; }
 .cal__cell img { width: 100%; height: 100%; object-fit: cover; transform: scale(0); opacity: 0; transition: transform 0.5s var(--spring), opacity 0.3s; }
@@ -137,11 +140,11 @@ h1 { font-size: clamp(2.5rem, 7vw, 6.4rem); line-height: 1.06; }
 @keyframes dot { 30% { transform: translateY(-4px); opacity: 0.4; } }
 @keyframes bub { from { transform: translateY(12px) scale(0.9); opacity: 0; } }
 
-.term { background: rgba(35, 40, 27, 0.94); border-radius: var(--r-md); padding: 0.9rem 1rem 1.1rem; font-family: var(--f-mono); font-size: 0.82rem; line-height: 1.8; min-height: 12.5rem; box-shadow: 0 20px 40px -18px rgba(35, 40, 27, 0.6); }
+.term { background: var(--paper); color: var(--ink); border-radius: var(--r-md); padding: 0.9rem 1rem 1.1rem; font-family: var(--f-mono); font-size: 0.82rem; line-height: 1.8; min-height: 12.5rem; box-shadow: 0 20px 40px -18px rgba(10, 4, 28, 0.6); }
 .term div { white-space: nowrap; overflow: hidden; }
-.term .ok { color: var(--paper); }
+.term .ok { color: var(--olive); }
 .term .dim { color: var(--muted-d); }
-.term .cur::after { content: "▍"; animation: blink 1s steps(2) infinite; color: var(--paper); }
+.term .cur::after { content: "▍"; animation: blink 1s steps(2) infinite; color: var(--olive); }
 @keyframes blink { 50% { opacity: 0; } }
 
 /* 3 — Work: a reel and a moving wall of images */
