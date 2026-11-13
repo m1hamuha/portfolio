@@ -1,12 +1,12 @@
 {
   "name": "Kostin Automation",
   "short_name": "Kostin",
-  "description": "The draining parts of running your business — your social media, your busywork, your product content — done for you.",
-  "start_url": "/portfolio/",
-  "scope": "/portfolio/",
+  "description": "AI put to work in your business: social media content on autopilot, AI assistants that answer clients, and custom scripts and software for your exact task.",
+  "start_url": "/portfolio/v-fast/",
+  "scope": "/portfolio/v-fast/",
   "display": "standalone",
-  "background_color": "#06080F",
-  "theme_color": "#06080F",
+  "background_color": "#f3f0e8",
+  "theme_color": "#f3f0e8",
   "icons": [
     {
       "src": "favicon.svg",
