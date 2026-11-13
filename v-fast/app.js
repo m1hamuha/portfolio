@@ -52,25 +52,12 @@
       history.replaceState(null, "", u);
     }
     resay();
-    buildMarquee();
-    buildFlow(flowIdx);
     startChat();
   }
 
   $$(".lang button").forEach(function (b) {
     b.addEventListener("click", function () { setLang(b.dataset.lang, true); });
   });
-
-  /* ---------- nav ---------- */
-  var nav = $("#nav"), burger = $(".burger");
-  function closeMenu() { nav.classList.remove("open"); burger.setAttribute("aria-expanded", "false"); }
-  burger.addEventListener("click", function () {
-    var open = nav.classList.toggle("open");
-    burger.setAttribute("aria-expanded", String(open));
-  });
-  $$("#menu a").forEach(function (a) { a.addEventListener("click", closeMenu); });
-  document.addEventListener("pointerdown", function (e) { if (!nav.contains(e.target)) closeMenu(); });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeMenu(); });
 
   /* ---------- reveal ---------- */
   var io = new IntersectionObserver(function (es) {
@@ -85,75 +72,43 @@
     }, { threshold: 0.2 }).observe(el);
   }
 
-  /* ---------- hero: phone stories + parallax ---------- */
+  /* ---------- hero: before / after ----------
+     The slider sweeps by itself and steps through the four pairs until the
+     visitor touches it; from then on it is theirs. */
   (function () {
-    var imgs = $$("#slides img"), bars = $$("#slides .phone__bars span"), i = 0;
-    function show(n) {
-      i = n % imgs.length;
-      imgs.forEach(function (im, k) { im.classList.toggle("on", k === i); });
-      bars.forEach(function (b, k) {
-        b.classList.remove("on", "done");
-        if (k < i) b.classList.add("done");
-      });
-      void bars[i].offsetWidth;
-      bars[i].classList.add("on");
-    }
-    if (reduce) { bars[0].classList.add("done"); return; }
-    show(0);
-    whenVisible($("#stage"),
-      function () { clearInterval(timers.slides); timers.slides = setInterval(function () { show(i + 1); }, 3200); },
-      function () { clearInterval(timers.slides); });
-
-    var stage = $("#stage");
-    if (window.matchMedia("(hover: hover)").matches) {
-      window.addEventListener("pointermove", function (e) {
-        stage.style.setProperty("--mx", (e.clientX / innerWidth - 0.5).toFixed(3));
-        stage.style.setProperty("--my", (e.clientY / innerHeight - 0.5).toFixed(3));
-      }, { passive: true });
-    }
-  })();
-
-  /* ---------- marquee ---------- */
-  function buildMarquee() {
-    var items = t("marquee"), html = "";
-    for (var r = 0; r < 4; r++) items.forEach(function (s) { html += "<span>" + s + "</span>"; });
-    $("#marquee").innerHTML = html;
-  }
-
-  /* ---------- creatives wall: two endless strips moving in opposite directions ---------- */
-  (function () {
-    var wall = $("#wall");
-    var sets = [["coffee", "after-2", "perfume", "after-4"], ["after-3", "cream", "after-1", "serum"]];
-    sets.forEach(function (set) {
-      var col = document.createElement("div"), track = document.createElement("div"), html = "";
-      col.className = "wall__col"; track.className = "wall__track";
-      for (var r = 0; r < 2; r++) set.forEach(function (n) { html += '<img src="./img/' + n + '.webp" alt="" loading="lazy" width="300" height="400">'; });
-      track.innerHTML = html; col.appendChild(track); wall.appendChild(col);
-    });
-  })();
-
-  /* ---------- stats count-up + card tilt ---------- */
-  (function () {
+    var cmp = $("#cmp"), range = $("input", cmp), before = $("#cmpBefore"), after = $("#cmpAfter");
+    var touched = false, pair = 1, t0 = 0;
+    function set(v) { cmp.style.setProperty("--pos", v + "%"); }
+    function stop() { touched = true; clearTimeout(timers.cmp); }
+    range.addEventListener("input", function () { stop(); set(range.value); });
+    range.addEventListener("pointerdown", stop);
+    range.addEventListener("keydown", stop);
     if (reduce) return;
-    $$("[data-count]").forEach(function (el) {
-      var end = +el.dataset.count;
-      new IntersectionObserver(function (es, o) {
-        if (!es[0].isIntersecting) return;
-        o.disconnect();
-        var n = 0; el.textContent = "0";
-        var id = setInterval(function () { el.textContent = String(++n); if (n >= end) clearInterval(id); }, 110);
-      }, { threshold: 0.6 }).observe(el);
-    });
-    if (!window.matchMedia("(hover: hover)").matches) return;
-    $$(".tile, .tool, .plan, .pm").forEach(function (el) {
-      el.addEventListener("pointermove", function (e) {
-        var r = el.getBoundingClientRect();
-        el.style.setProperty("--tx", ((e.clientX - r.left) / r.width - 0.5).toFixed(2));
-        el.style.setProperty("--ty", ((e.clientY - r.top) / r.height - 0.5).toFixed(2));
-        el.classList.add("tilt");
-      });
-      el.addEventListener("pointerleave", function () { el.classList.remove("tilt"); });
-    });
+    for (var i = 2; i <= 4; i++) { new Image().src = "./img/before-" + i + ".webp"; new Image().src = "./img/after-" + i + ".webp"; }
+
+    function sweep(now) {
+      if (touched) return;
+      if (!t0) t0 = now;
+      var p = Math.min((now - t0) / 3600, 1);
+      /* 50 → 12 → 88 → 50: show the "after" side, then the "before" side. */
+      var v = 50 - 38 * Math.sin(p * Math.PI * 2);
+      range.value = v; set(v);
+      if (p < 1) { requestAnimationFrame(sweep); return; }
+      timers.cmp = setTimeout(next, 900);
+    }
+    function next() {
+      if (touched) return;
+      pair = pair % 4 + 1;
+      cmp.classList.add("swap");
+      timers.cmp = setTimeout(function () {
+        before.src = "./img/before-" + pair + ".webp";
+        after.src = "./img/after-" + pair + ".webp";
+        cmp.classList.remove("swap");
+        t0 = 0;
+        timers.cmp = setTimeout(function () { requestAnimationFrame(sweep); }, 500);
+      }, 450);
+    }
+    timers.cmp = setTimeout(function () { requestAnimationFrame(sweep); }, 1200);
   })();
 
   /* ---------- content calendar ---------- */
@@ -164,14 +119,12 @@
     for (var d = 0; d < 14; d++) {
       var c = document.createElement("div");
       c.className = "cal__cell";
-      c.dataset.d = d + 1;
       c.innerHTML = '<img src="./img/' + pics[d % pics.length] + '" alt="" loading="lazy" width="80" height="106">';
       grid.appendChild(c);
     }
     var cells = $$(".cal__cell", grid), n = 0;
     function paint() { count.textContent = n + " / 14"; }
-    function fillAll() { cells.forEach(function (c) { c.classList.add("on"); }); n = 14; paint(); }
-    if (reduce) { fillAll(); return; }
+    if (reduce) { cells.forEach(function (c) { c.classList.add("on"); }); n = 14; paint(); return; }
     function tick() {
       if (n >= 14) {
         timers.cal = setTimeout(function () {
@@ -237,11 +190,10 @@
       ["ok", "✓ 1 284 orders loaded"],
       ["ok", "✓ 37 margin leaks flagged"],
       ["ok", "✓ report.pdf → Telegram"],
-      ["dim", "done in 3.2s · next run: Mon 08:00"],
+      ["dim", "done in 3.2s"],
     ];
     function line(cls, text) { var d = document.createElement("div"); d.className = cls; d.textContent = text; box.appendChild(d); return d; }
-    function all() { box.innerHTML = ""; lines.forEach(function (l) { line(l[0], l[1]); }); }
-    if (reduce) { all(); return; }
+    if (reduce) { lines.forEach(function (l) { line(l[0], l[1]); }); return; }
     function run() {
       box.innerHTML = "";
       var el = line("cmd cur", ""), cmd = lines[0][1], k = 0;
@@ -260,36 +212,19 @@
     whenVisible(box, function () { clearTimeout(timers.term); run(); }, function () { clearTimeout(timers.term); });
   })();
 
-  /* ---------- before / after ---------- */
+  /* ---------- work: endless strips of images moving in opposite directions ---------- */
   (function () {
-    var cmp = $("#cmp"), range = $("input", cmp), before = $("#cmpBefore"), after = $("#cmpAfter");
-    function set(v) { cmp.style.setProperty("--pos", v + "%"); }
-    range.addEventListener("input", function () { set(range.value); });
-    $$("#thumbs button").forEach(function (b) {
-      b.addEventListener("click", function () {
-        $$("#thumbs button").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
-        before.src = "./img/before-" + b.dataset.n + ".webp";
-        after.src = "./img/after-" + b.dataset.n + ".webp";
-        range.value = 50; set(50);
-      });
+    var wall = $("#wall");
+    var sets = [["coffee", "after-2", "perfume", "after-4"], ["after-3", "cream", "after-1", "serum"], ["perfume", "after-4", "coffee", "after-2"]];
+    sets.forEach(function (set) {
+      var col = document.createElement("div"), track = document.createElement("div"), html = "";
+      col.className = "wall__col"; track.className = "wall__track";
+      for (var r = 0; r < 2; r++) set.forEach(function (n) { html += '<img src="./img/' + n + '.webp" alt="" loading="lazy" width="300" height="400">'; });
+      track.innerHTML = html; col.appendChild(track); wall.appendChild(col);
     });
-    /* One gentle nudge the first time it scrolls into view, so it reads as draggable. */
-    if (reduce) return;
-    var nudged = false;
-    new IntersectionObserver(function (es, o) {
-      if (!es[0].isIntersecting || nudged) return;
-      nudged = true; o.disconnect();
-      var t0 = performance.now();
-      (function frame(now) {
-        var p = Math.min((now - t0) / 1600, 1);
-        var v = 50 + Math.sin(p * Math.PI * 2) * 22 * (1 - p * 0.3);
-        if (document.activeElement !== range) { range.value = v; set(v); }
-        if (p < 1) requestAnimationFrame(frame); else { range.value = 50; set(50); }
-      })(t0);
-    }, { threshold: 0.5 }).observe(cmp);
   })();
 
-  /* ---------- reel video: load + play only when visible ---------- */
+  /* ---------- reel: play only while visible ---------- */
   (function () {
     var v = $("#reel");
     v.controls = reduce;
@@ -301,43 +236,6 @@
       });
     }, { threshold: 0.25 }).observe(v);
   })();
-
-  /* ---------- flow picker ---------- */
-  var flowIdx = 0;
-  var FLOW_ICONS = [
-    ["i-msg", "i-bot", "i-cal"],
-    ["i-img", "i-spark", "i-send"],
-    ["i-file", "i-bot", "i-check"],
-    ["i-chart", "i-code", "i-send"],
-    ["i-x", "i-spark", "i-user"],
-    ["i-img", "i-spark", "i-card"],
-  ];
-  function ico(id) { return '<svg class="ico"><use href="#' + id + '"/></svg>'; }
-  function buildFlow(idx) {
-    flowIdx = idx;
-    var flows = t("flows"), labels = t("flowLabels"), chips = $("#chips"), flow = $("#flow");
-    /* Build the chips once and only relabel afterwards, so the pressed chip keeps keyboard focus. */
-    if (chips.children.length !== flows.length) {
-      chips.innerHTML = "";
-      flows.forEach(function (f, i) {
-        var b = document.createElement("button");
-        b.type = "button";
-        b.innerHTML = ico(FLOW_ICONS[i][0]) + "<span></span>";
-        b.addEventListener("click", function () { buildFlow(i); });
-        chips.appendChild(b);
-      });
-    }
-    $$("button", chips).forEach(function (b, i) {
-      b.setAttribute("aria-pressed", String(i === idx));
-      b.lastChild.textContent = flows[i].chip;
-    });
-    var html = "";
-    flows[idx].steps.forEach(function (s, i) {
-      if (i) html += '<div class="wire" aria-hidden="true"></div>';
-      html += '<div class="node node--' + i + '"><span class="node__ico">' + ico(FLOW_ICONS[idx][i]) + "</span><div><small>" + labels[i] + "</small><b>" + s + "</b></div></div>";
-    });
-    flow.innerHTML = html;
-  }
 
   /* ---------- contact form ---------- */
   (function () {
