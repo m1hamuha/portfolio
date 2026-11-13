@@ -127,16 +127,16 @@
           <a class="logo" href="#top" aria-label="Kostin Automation"><i>K</i><span>Kostin Automation</span></a>
           <ul class="nav__links">
             <li><a href="#services" data-i18n="nav.services">Services</a></li>
-            <li><a href="#creatives" data-i18n="nav.work">Work</a></li>
+            <li><a href="#creatives" data-i18n="nav.work">Samples</a></li>
             <li><a href="#pricing" data-i18n="nav.pricing">Prices</a></li>
           </ul>
           <div class="lang" role="group" aria-label="Language">
             <button type="button" data-lang="en" aria-pressed="true">EN</button>
             <button type="button" data-lang="de" aria-pressed="false">DE</button>
-            <button type="button" data-lang="uk" aria-pressed="false">UK</button>
+            <button type="button" data-lang="uk" aria-pressed="false">UA</button>
             <button type="button" data-lang="ru" aria-pressed="false">RU</button>
           </div>
-          <a class="btn btn--ink btn--sm" href="#contact" data-i18n="nav.cta">Free sample</a>
+          <a class="btn btn--ink btn--sm" href="#contact" data-i18n="nav.cta">Write to me</a>
         </div>
       </div>
     </header>
@@ -148,14 +148,16 @@
           <div>
             <h1 class="rv" data-i18n-html="hero.h1">I put <mark>AI</mark> to work in your business.</h1>
             <a class="btn btn--ink rv" style="--i: 1" href="#contact"
-              ><span data-i18n="hero.cta">Get a free sample</span><svg class="ico"><use href="#i-arrow" /></svg
+              ><span data-i18n="hero.cta">First photo free</span><svg class="ico"><use href="#i-arrow" /></svg
             ></a>
           </div>
           <div class="cmp rv" style="--i: 1" id="cmp">
-            <img id="cmpAfter" src="./img/after-1.webp" alt="" width="800" height="1000" />
-            <img id="cmpBefore" class="cmp__before" src="./img/before-1.webp" alt="" width="800" height="1000" />
-            <span class="cmp__lbl cmp__lbl--b" data-i18n="cr.before">Before</span>
+            <img id="cmpAfter" src="./img/after-4.webp" alt="" width="800" height="1000" />
             <span class="cmp__lbl cmp__lbl--a" data-i18n="cr.after">After</span>
+            <div class="cmp__before">
+              <img id="cmpBefore" src="./img/before-4.webp" alt="" width="800" height="1000" />
+              <span class="cmp__lbl cmp__lbl--b" data-i18n="cr.before">Before</span>
+            </div>
             <div class="cmp__line">
               <span class="cmp__knob"><svg class="ico"><use href="#i-drag" /></svg></span>
             </div>
@@ -173,7 +175,6 @@
               <h3 data-i18n="svc.1.h">Social media on autopilot</h3>
               <div class="tile__viz" aria-hidden="true">
                 <div class="cal">
-                  <div class="cal__top"><span data-i18n="cal.title">Content plan</span><b id="calCount">0 / 14</b></div>
                   <div class="cal__grid" id="cal"></div>
                 </div>
               </div>
@@ -182,11 +183,10 @@
               <h3 data-i18n="svc.2.h">A bot that answers clients</h3>
               <div class="tile__viz" aria-hidden="true"><div class="chat" id="chat"></div></div>
             </article>
-            <article class="tile tile--code rv" style="--i: 2">
+            <article class="tile tile--code rv" style="--i: 2" id="work">
               <h3 data-i18n="svc.3.h">Software for your task</h3>
               <div class="tile__viz" aria-hidden="true">
                 <div class="term">
-                  <div class="term__dots"><i></i><i></i><i></i></div>
                   <div id="term"></div>
                 </div>
               </div>
@@ -198,7 +198,7 @@
       <!-- 3. WORK -->
       <section class="dark round" id="creatives">
         <div class="wrap">
-          <h2 class="rv" data-i18n="cr.h2">Work</h2>
+          <h2 class="rv" data-i18n="cr.h2">Samples</h2>
           <div class="show">
             <div class="reel rv">
               <video id="reel" controls muted loop playsinline preload="none" poster="./img/reel-serum-poster.jpg" aria-label="Product video ad sample">
@@ -207,65 +207,30 @@
             </div>
             <div class="wall rv" style="--i: 1" id="wall" role="img" aria-label="Product image samples"></div>
           </div>
-          <p class="show__note rv" data-i18n="cr.note">Samples to show the level. Yours is made from your real product.</p>
         </div>
       </section>
 
-      <!-- 4. TOOLS -->
-      <section id="work">
-        <div class="wrap">
-          <h2 class="rv" data-i18n="tl.h2">Try it yourself</h2>
-          <div class="tools">
-            <a class="tool rv" href="../marginpulse/">
-              <div class="tool__shot"><img src="./img/demo-marginpulse.webp" alt="MarginPulse screenshot" loading="lazy" width="960" height="600" /></div>
-              <div class="tool__body">
-                <div><b>MarginPulse</b><small data-i18n="tl.1">Finds lost profit</small></div>
-                <span class="tool__go"><svg class="ico"><use href="#i-up" /></svg></span>
-              </div>
-            </a>
-            <a class="tool rv" style="--i: 1" href="../slotsaver/">
-              <div class="tool__shot"><img src="./img/demo-slotsaver.webp" alt="SlotSaver screenshot" loading="lazy" width="960" height="600" /></div>
-              <div class="tool__body">
-                <div><b>SlotSaver</b><small data-i18n="tl.2">Refills cancelled bookings</small></div>
-                <span class="tool__go"><svg class="ico"><use href="#i-up" /></svg></span>
-              </div>
-            </a>
-            <a class="tool rv" style="--i: 2" href="../invoice-autopilot/">
-              <div class="tool__shot"><img src="./img/demo-invoice-autopilot.webp" alt="InvoiceAutopilot screenshot" loading="lazy" width="960" height="600" /></div>
-              <div class="tool__body">
-                <div><b>InvoiceAutopilot</b><small data-i18n="tl.3">Checks invoices in seconds</small></div>
-                <span class="tool__go"><svg class="ico"><use href="#i-up" /></svg></span>
-              </div>
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <!-- 5. PRICES -->
-      <section id="pricing" style="padding-top: 0">
+      <!-- 4. PRICES -->
+      <section id="pricing">
         <div class="wrap">
           <h2 class="rv" data-i18n="pr.h2">Prices</h2>
           <div class="menu">
-            <div class="pm rv"><small data-i18n="pm.1">Product image</small><div class="pm__price"><b data-i18n="pm.1.amt">€5</b></div></div>
+            <div class="pm rv"><small data-i18n="pm.1">Product photo</small><div class="pm__price"><b data-i18n="pm.1.amt">€5</b></div></div>
             <div class="pm rv" style="--i: 1"><small data-i18n="pm.2">Video ad</small><div class="pm__price"><span data-i18n="pr.from">from</span><b data-i18n="pm.2.amt">€79</b></div></div>
-            <div class="pm rv" style="--i: 2"><small data-i18n="pm.3">AI chatbot</small><div class="pm__price"><span data-i18n="pr.from">from</span><b data-i18n="pm.3.amt">€790</b></div></div>
-            <div class="pm rv" style="--i: 3"><small data-i18n="pm.4">Automation</small><div class="pm__price"><span data-i18n="pr.from">from</span><b data-i18n="pm.4.amt">€590</b></div></div>
-            <div class="pm rv" style="--i: 4"><small data-i18n="pm.5">Script</small><div class="pm__price"><span data-i18n="pr.from">from</span><b data-i18n="pm.5.amt">€290</b></div></div>
+            <div class="pm rv" style="--i: 2"><small data-i18n="pm.3">Custom software</small><div class="pm__price"><span data-i18n="pr.from">from</span><b data-i18n="pm.3.amt">€290</b></div></div>
+            <div class="pm rv" style="--i: 3"><small data-i18n="pm.4">Chatbot</small><div class="pm__price"><span data-i18n="pr.from">from</span><b data-i18n="pm.4.amt">€790</b></div></div>
           </div>
           <h3 class="sub rv" data-i18n="pr.sub">Social media, per month</h3>
           <div class="plans">
             <div class="plan rv">
-              <small>Starter</small>
               <div class="plan__price"><b data-i18n="pr.1.amt">€100</b></div>
               <div class="plan__chips"><span data-i18n="pr.1.a">8 posts</span><span data-i18n="pr.1.b">2 reels</span><span data-i18n="pr.1.c">Captions</span></div>
             </div>
             <div class="plan plan--hot rv" style="--i: 1">
-              <small>Growth</small>
               <div class="plan__price"><b data-i18n="pr.2.amt">€250</b></div>
-              <div class="plan__chips"><span data-i18n="pr.2.a">16 posts</span><span data-i18n="pr.2.b">Reels + images</span><span data-i18n="pr.2.c">Posted for you</span></div>
+              <div class="plan__chips"><span data-i18n="pr.2.a">16 posts</span><span data-i18n="pr.2.b">Reels + photos</span><span data-i18n="pr.2.c">Posted for you</span></div>
             </div>
             <div class="plan rv" style="--i: 2">
-              <small>Pro</small>
               <div class="plan__price"><b data-i18n="pr.3.amt">€500</b></div>
               <div class="plan__chips"><span data-i18n="pr.3.a">Every other day</span><span data-i18n="pr.3.b">All formats</span><span data-i18n="pr.3.c">Strategy</span></div>
             </div>
@@ -273,13 +238,13 @@
         </div>
       </section>
 
-      <!-- 6. CONTACT -->
+      <!-- 5. CONTACT -->
       <section class="dark round" id="contact">
         <div class="wrap">
           <div class="contact">
             <div class="rv">
               <h2 data-i18n="ct.h2">Write to me</h2>
-              <p class="contact__sub" data-i18n="ct.sub">The first sample is free. I reply within a day.</p>
+              <p class="contact__sub" data-i18n="ct.sub">The first photo is free. I reply within a day.</p>
             </div>
             <form class="form rv" style="--i: 1" id="form" action="https://formsubmit.co/kostinmihail40@gmail.com" method="POST" novalidate>
               <input type="hidden" name="_subject" value="New portfolio request — Kostin Automation" />
@@ -287,7 +252,7 @@
               <label><span data-i18n="fm.name">Your name</span><input name="name" type="text" autocomplete="name" required maxlength="120" /></label>
               <label><span data-i18n="fm.email">Your email</span><input name="email" type="email" autocomplete="email" required maxlength="200" /></label>
               <label
-                ><span data-i18n="fm.msg">What should run without you?</span
+                ><span data-i18n="fm.msg">What do you need?</span
                 ><textarea name="message" required maxlength="4000"></textarea
               ></label>
               <label class="hp" aria-hidden="true">Website<input name="_honey" type="text" tabindex="-1" autocomplete="off" /></label>
@@ -296,7 +261,7 @@
               ></button>
               <div class="form__msg" id="formMsg" role="status" hidden></div>
               <small data-i18n="fm.note"
-                >Sent via FormSubmit. I use your data only to reply. Don't send passwords or payment details.</small
+                >Sent via FormSubmit. Your data is used only to reply.</small
               >
             </form>
           </div>

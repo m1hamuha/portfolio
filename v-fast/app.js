@@ -53,6 +53,7 @@
     }
     resay();
     startChat();
+    startTerm();
   }
 
   $$(".lang button").forEach(function (b) {
@@ -77,21 +78,21 @@
      visitor touches it; from then on it is theirs. */
   (function () {
     var cmp = $("#cmp"), range = $("input", cmp), before = $("#cmpBefore"), after = $("#cmpAfter");
-    var touched = false, pair = 1, t0 = 0;
+    var touched = false, pair = 4, t0 = 0;
     function set(v) { cmp.style.setProperty("--pos", v + "%"); }
     function stop() { touched = true; clearTimeout(timers.cmp); }
     range.addEventListener("input", function () { stop(); set(range.value); });
     range.addEventListener("pointerdown", stop);
     range.addEventListener("keydown", stop);
     if (reduce) return;
-    for (var i = 2; i <= 4; i++) { new Image().src = "./img/before-" + i + ".webp"; new Image().src = "./img/after-" + i + ".webp"; }
+    for (var i = 1; i <= 3; i++) { new Image().src = "./img/before-" + i + ".webp"; new Image().src = "./img/after-" + i + ".webp"; }
 
     function sweep(now) {
       if (touched) return;
       if (!t0) t0 = now;
       var p = Math.min((now - t0) / 3600, 1);
-      /* 50 → 12 → 88 → 50: show the "after" side, then the "before" side. */
-      var v = 50 - 38 * Math.sin(p * Math.PI * 2);
+      /* 50 → 25 → 75 → 50: show more of the "after" side, then more of the "before" side. */
+      var v = 50 - 25 * Math.sin(p * Math.PI * 2);
       range.value = v; set(v);
       if (p < 1) { requestAnimationFrame(sweep); return; }
       timers.cmp = setTimeout(next, 900);
@@ -99,21 +100,17 @@
     function next() {
       if (touched) return;
       pair = pair % 4 + 1;
-      cmp.classList.add("swap");
-      timers.cmp = setTimeout(function () {
-        before.src = "./img/before-" + pair + ".webp";
-        after.src = "./img/after-" + pair + ".webp";
-        cmp.classList.remove("swap");
-        t0 = 0;
-        timers.cmp = setTimeout(function () { requestAnimationFrame(sweep); }, 500);
-      }, 450);
+      before.src = "./img/before-" + pair + ".webp";
+      after.src = "./img/after-" + pair + ".webp";
+      t0 = 0;
+      timers.cmp = setTimeout(function () { requestAnimationFrame(sweep); }, 700);
     }
     timers.cmp = setTimeout(function () { requestAnimationFrame(sweep); }, 1200);
   })();
 
   /* ---------- content calendar ---------- */
   (function () {
-    var grid = $("#cal"), count = $("#calCount");
+    var grid = $("#cal");
     var pics = ["serum.webp", "after-1.webp", "coffee.webp", "after-3.webp", "perfume.webp", "after-4.webp", "cream.webp", "after-2.webp"];
     var order = [0, 2, 4, 1, 7, 9, 3, 11, 5, 13, 6, 8, 10, 12];
     for (var d = 0; d < 14; d++) {
@@ -123,19 +120,18 @@
       grid.appendChild(c);
     }
     var cells = $$(".cal__cell", grid), n = 0;
-    function paint() { count.textContent = n + " / 14"; }
-    if (reduce) { cells.forEach(function (c) { c.classList.add("on"); }); n = 14; paint(); return; }
+    if (reduce) { cells.forEach(function (c) { c.classList.add("on"); }); return; }
     function tick() {
       if (n >= 14) {
         timers.cal = setTimeout(function () {
           cells.forEach(function (c) { c.classList.remove("on"); });
-          n = 0; paint();
+          n = 0;
           timers.cal = setTimeout(tick, 700);
         }, 2600);
         return;
       }
       cells[order[n]].classList.add("on");
-      n++; paint();
+      n++;
       timers.cal = setTimeout(tick, 380);
     }
     whenVisible(grid, function () { clearTimeout(timers.cal); tick(); }, function () { clearTimeout(timers.cal); });
@@ -182,40 +178,35 @@
     function () { chatVisible = true; startChat(); },
     function () { chatVisible = false; clearTimeout(timers.chat); });
 
-  /* ---------- terminal ---------- */
-  (function () {
-    var box = $("#term");
-    var lines = [
-      ["cmd", "$ run weekly-report"],
-      ["ok", "✓ 1 284 orders loaded"],
-      ["ok", "✓ 37 margin leaks flagged"],
-      ["ok", "✓ report.pdf → Telegram"],
-      ["dim", "done in 3.2s"],
-    ];
+  /* ---------- "terminal": a short job report typed out in the visitor's language ---------- */
+  var termVisible = false;
+  function startTerm() {
+    var box = $("#term"), lines = t("term");
+    clearTimeout(timers.term);
     function line(cls, text) { var d = document.createElement("div"); d.className = cls; d.textContent = text; box.appendChild(d); return d; }
-    if (reduce) { lines.forEach(function (l) { line(l[0], l[1]); }); return; }
-    function run() {
-      box.innerHTML = "";
-      var el = line("cmd cur", ""), cmd = lines[0][1], k = 0;
-      (function type() {
-        el.textContent = cmd.slice(0, ++k);
-        if (k < cmd.length) { timers.term = setTimeout(type, 55); return; }
-        el.classList.remove("cur");
-        var i = 1;
-        (function out() {
-          if (i >= lines.length) { timers.term = setTimeout(run, 3800); return; }
-          line(lines[i][0], lines[i][1]); i++;
-          timers.term = setTimeout(out, 520);
-        })();
+    box.innerHTML = "";
+    if (reduce || !termVisible) { lines.forEach(function (l) { line(l[0], l[1]); }); return; }
+    var el = line("cmd cur", ""), cmd = lines[0][1], k = 0;
+    (function type() {
+      el.textContent = cmd.slice(0, ++k);
+      if (k < cmd.length) { timers.term = setTimeout(type, 55); return; }
+      el.classList.remove("cur");
+      var i = 1;
+      (function out() {
+        if (i >= lines.length) { timers.term = setTimeout(startTerm, 3800); return; }
+        line(lines[i][0], lines[i][1]); i++;
+        timers.term = setTimeout(out, 520);
       })();
-    }
-    whenVisible(box, function () { clearTimeout(timers.term); run(); }, function () { clearTimeout(timers.term); });
-  })();
+    })();
+  }
+  whenVisible($("#term"),
+    function () { termVisible = true; startTerm(); },
+    function () { termVisible = false; clearTimeout(timers.term); });
 
   /* ---------- work: endless strips of images moving in opposite directions ---------- */
   (function () {
     var wall = $("#wall");
-    var sets = [["coffee", "after-2", "perfume", "after-4"], ["after-3", "cream", "after-1", "serum"], ["perfume", "after-4", "coffee", "after-2"]];
+    var sets = [["coffee", "after-2", "perfume", "after-4"], ["after-3", "cream", "after-1"], ["perfume", "after-4", "coffee", "after-2"]];
     sets.forEach(function (set) {
       var col = document.createElement("div"), track = document.createElement("div"), html = "";
       col.className = "wall__col"; track.className = "wall__track";
