@@ -10,8 +10,9 @@
 
 :root {
   /* Three-colour palette: black #000000, violet #7027FF, lime #D8FF00.
-     The page is black; lime is the accent, violet the second colour, and an
-     off-white (--ink) is the text and the light contrast surface.
+     The page and every large surface are black or near-black. Lime and
+     violet appear only as accents (a word, a button, a line, a number);
+     off-white (--ink) is the text.
      Names are roles: --paper page, --ink foreground, --on text on lime,
      --on-2 text on violet. */
   --paper: #000000;
@@ -19,7 +20,7 @@
   --card: #141414;
   --ink: #f6f6f1;
   --ink-2: #0c0c0c;
-  --ink-3: #e3e3da;
+  --ink-3: #2a2a2a;
   --muted: #a6a6a6;
   --muted-d: #a6a6a6;
   --accent: #d8ff00;
@@ -28,7 +29,7 @@
   --on: #000000;
   --on-2: #ffffff;
   --line: rgba(255, 255, 255, 0.18);
-  --line-d: rgba(0, 0, 0, 0.3);
+  --line-d: rgba(255, 255, 255, 0.18);
 
   --f-display: "Unbounded", "Arial Black", sans-serif;
   --f-body: "Onest", "Segoe UI", sans-serif;
@@ -52,8 +53,8 @@ img, video, svg { display: block; max-width: 100%; }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; }
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
-.dark :focus-visible { outline-color: var(--on-2); }
-#contact :focus-visible { outline-color: var(--on); }
+.dark :focus-visible { outline-color: var(--accent); }
+
 .dark .form :focus-visible { outline-color: var(--accent); }
 ::selection { background: var(--accent); color: var(--on); }
 
@@ -65,11 +66,11 @@ button { font: inherit; color: inherit; cursor: pointer; border: 0; background: 
 h1, h2, h3 { font-family: var(--f-display); font-weight: 800; letter-spacing: -0.03em; line-height: 1; text-wrap: balance; overflow-wrap: break-word; }
 h2 { font-size: clamp(2.4rem, 8vw, 6.5rem); margin-bottom: clamp(1.5rem, 4vw, 3rem); }
 section { padding-block: var(--sec); }
-mark { background: var(--accent); color: var(--on); padding: 0 0.16em; border-radius: 0.16em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+mark { background: none; color: var(--accent); }
 h1 { isolation: isolate; }
 h1 mark { position: relative; z-index: -1; }
-.dark { background: var(--olive); color: var(--on-2); }
-#contact { background: var(--accent); color: var(--on); }
+.dark { background: var(--card); color: var(--ink); border: 1px solid var(--line); }
+#contact { background: var(--card); }
 .round { border-radius: clamp(1.5rem, 4vw, 3.5rem); margin-inline: clamp(0.4rem, 1vw, 1rem); }
 
 /* Buttons */
@@ -116,15 +117,14 @@ h1 { font-size: clamp(2.5rem, 7vw, 6.4rem); line-height: 1.06; }
 
 /* 2 — Services: three tiles, each a title and a live demo */
 .trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap); }
-.tile { position: relative; overflow: hidden; border-radius: var(--r-lg); padding: clamp(1.25rem, 2.4vw, 2rem); min-height: 27rem; display: flex; flex-direction: column; transition: transform 0.4s var(--ease); }
+.tile { position: relative; overflow: hidden; border-radius: var(--r-lg); padding: clamp(1.25rem, 2.4vw, 2rem); min-height: 27rem; display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--line); transition: transform 0.4s var(--ease), border-color 0.3s; }
 .tile:hover { transform: translateY(-6px); }
 .tile h3 { font-size: clamp(1.5rem, 2.5vw, 2.3rem); }
 .tile__viz { margin-top: auto; padding-top: 2rem; }
-.tile--social { background: var(--accent); color: var(--on); }
-.tile--chat { background: var(--ink); color: var(--on); }
-.tile--code { background: var(--olive); color: var(--on-2); }
+.tile--social:hover, .tile--chat:hover { border-color: var(--accent); }
+.tile--code:hover { border-color: var(--olive); }
 
-.cal { background: var(--ink); border-radius: var(--r-md); padding: 0.8rem; box-shadow: 0 20px 40px -18px rgba(0, 0, 0, 0.5); transform: rotate(-1.5deg); }
+.cal { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); padding: 0.8rem; transform: rotate(-1.5deg); }
 .cal__grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
 .cal__cell { position: relative; aspect-ratio: 3 / 4; border-radius: 7px; background: var(--ink-3); overflow: hidden; }
 .cal__cell img { width: 100%; height: 100%; object-fit: cover; transform: scale(0); opacity: 0; transition: transform 0.5s var(--spring), opacity 0.3s; }
@@ -143,9 +143,9 @@ h1 { font-size: clamp(2.5rem, 7vw, 6.4rem); line-height: 1.06; }
 @keyframes dot { 30% { transform: translateY(-4px); opacity: 0.4; } }
 @keyframes bub { from { transform: translateY(12px) scale(0.9); opacity: 0; } }
 
-.term { background: var(--paper); color: var(--ink); border-radius: var(--r-md); padding: 0.9rem 1rem 1.1rem; font-family: var(--f-mono); font-size: 0.82rem; line-height: 1.8; min-height: 12.5rem; box-shadow: 0 20px 40px -18px rgba(0, 0, 0, 0.6); }
+.term { background: var(--paper); color: var(--ink); border: 1px solid var(--line); border-radius: var(--r-md); padding: 0.9rem 1rem 1.1rem; font-family: var(--f-mono); font-size: 0.82rem; line-height: 1.8; min-height: 12.5rem; }
 .term div { white-space: nowrap; overflow: hidden; }
-.term .ok { color: var(--accent); }
+.term .ok { color: var(--olive); filter: brightness(1.7); }
 .term .dim { color: var(--muted-d); }
 .term .cur::after { content: "▍"; animation: blink 1s steps(2) infinite; color: var(--accent); }
 @keyframes blink { 50% { opacity: 0; } }
@@ -172,10 +172,8 @@ h1 { font-size: clamp(2.5rem, 7vw, 6.4rem); line-height: 1.06; }
 .pm small { font-weight: 700; font-size: clamp(0.95rem, 1.2vw, 1.1rem); line-height: 1.2; }
 .pm__price { margin-top: auto; font-family: var(--f-display); font-weight: 800; font-size: clamp(2rem, 4.4vw, 4rem); letter-spacing: -0.05em; line-height: 0.95; white-space: nowrap; }
 .pm__price span { display: block; margin-bottom: 0.3rem; font-family: var(--f-body); font-weight: 500; font-size: 0.85rem; letter-spacing: 0; opacity: 0.65; }
-.pm:nth-child(1) { background: var(--accent); color: var(--on); border-color: var(--accent); }
-/* Same colours as the matching service tiles above. */
-.pm:nth-child(3) { background: var(--olive); color: var(--on-2); border-color: var(--olive); }
-.pm:nth-child(4) { background: var(--ink); color: var(--on); border-color: var(--ink); }
+.pm:nth-child(1) .pm__price { color: var(--accent); }
+
 .sub { margin: clamp(2.5rem, 5vw, 4rem) 0 1.25rem; font-family: var(--f-display); font-weight: 700; font-size: clamp(1.2rem, 2.2vw, 1.9rem); letter-spacing: -0.02em; }
 .plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap); }
 .plan { position: relative; padding: clamp(1.25rem, 2.2vw, 1.9rem); border-radius: var(--r-lg); background: var(--card); border: 1px solid var(--line); transition: transform 0.4s var(--ease); }
@@ -184,14 +182,14 @@ h1 { font-size: clamp(2.5rem, 7vw, 6.4rem); line-height: 1.06; }
 .plan__price span { font-family: var(--f-body); font-weight: 500; font-size: 0.95rem; letter-spacing: 0; opacity: 0.65; }
 .plan__chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem; }
 .plan__chips span { padding: 0.45rem 0.85rem; border-radius: var(--r-full); background: var(--paper-2); font-weight: 700; font-size: 0.92rem; }
-.plan--hot { background: var(--ink); color: var(--on); border-color: var(--ink); }
+.plan--hot { border-color: var(--accent); }
 .plan--hot .plan__chips span { background: var(--accent); color: var(--on); }
 
 /* 5 — Contact */
 .contact { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1.5rem, 5vw, 5rem); align-items: center; }
 .contact h2 { margin-bottom: 1.25rem; }
-.contact__sub { font-size: clamp(1.15rem, 2vw, 1.6rem); font-weight: 600; color: var(--on); max-width: 18em; line-height: 1.3; }
-.form { background: var(--paper); color: var(--ink); border-radius: var(--r-lg); padding: clamp(1.25rem, 3vw, 2.25rem); display: grid; gap: 0.9rem; box-shadow: 10px 10px 0 var(--ink); }
+.contact__sub { font-size: clamp(1.15rem, 2vw, 1.6rem); font-weight: 600; color: var(--accent); max-width: 18em; line-height: 1.3; }
+.form { background: var(--paper); color: var(--ink); border: 1px solid var(--line); border-radius: var(--r-lg); padding: clamp(1.25rem, 3vw, 2.25rem); display: grid; gap: 0.9rem; box-shadow: 10px 10px 0 var(--olive); }
 .form label { display: grid; gap: 0.35rem; font-weight: 600; font-size: 0.9rem; }
 .form input, .form textarea { font: inherit; font-size: 1rem; width: 100%; padding: 0.9rem 1rem; border-radius: var(--r-sm); border: 2px solid var(--line); background: var(--card); color: var(--ink); transition: border-color 0.2s; }
 .form input:focus, .form textarea:focus { outline: none; border-color: var(--accent); }
@@ -203,7 +201,7 @@ h1 { font-size: clamp(2.5rem, 7vw, 6.4rem); line-height: 1.06; }
 .form__msg.ok { background: var(--olive); color: var(--on-2); }
 .form__msg.err { background: #ffe1dc; color: #8f1d0c; }
 .form__msg a { text-decoration: underline; }
-.foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-top: clamp(3rem, 7vw, 6rem); padding-top: 1.5rem; border-top: 1px solid var(--line-d); font-size: 0.9rem; color: var(--on); }
+.foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-top: clamp(3rem, 7vw, 6rem); padding-top: 1.5rem; border-top: 1px solid var(--line-d); font-size: 0.9rem; color: var(--muted); }
 .foot a { display: inline-block; padding: 0.5rem 0; }
 .foot a:hover { text-decoration: underline; }
 .foot nav { display: flex; flex-wrap: wrap; gap: 1.25rem; }
@@ -247,7 +245,7 @@ h1 { font-size: clamp(2.5rem, 7vw, 6.4rem); line-height: 1.06; }
   .pm { min-height: 9.5rem; }
   .pm__price { font-size: clamp(1.7rem, 9.5vw, 2.8rem); }
   .plans { grid-template-columns: 1fr; }
-  .form { box-shadow: 6px 6px 0 var(--ink); }
+  .form { box-shadow: 6px 6px 0 var(--olive); }
 }
 
 @media (prefers-reduced-motion: reduce) {
