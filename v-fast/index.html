@@ -116,6 +116,7 @@
         <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></symbol>
         <symbol id="i-pause" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M10 9v6M14 9v6" /></symbol>
         <symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A15 15 0 0 1 3 6a2 2 0 0 1 2-2z" /></symbol>
+        <symbol id="i-plug" viewBox="0 0 24 24"><path d="M9 3v5M15 3v5M6 8h12v4a6 6 0 0 1-12 0zM12 18v3" /></symbol>
         <symbol id="i-drag" viewBox="0 0 24 24"><path d="m9 7-5 5 5 5M15 7l5 5-5 5" /></symbol>
       </defs>
     </svg>
@@ -261,7 +262,7 @@
 
             <a class="tile tile--cards rv" style="--i: 1" href="../cards/">
               <img src="./img/after-4.webp" alt="" loading="lazy" width="800" height="1000" />
-              <span class="price-tag" data-i18n="svc.4.price">from €30</span>
+              <span class="price-tag" data-i18n="svc.4.price">from €25</span>
               <div class="tile__over">
                 <div class="tile__tag" data-i18n="svc.4.tag">Product images</div>
                 <h3 data-i18n="svc.4.h">Phone photo → image that sells</h3>
@@ -456,53 +457,61 @@
               <h2 data-i18n="pr.h2">Clear prices. No surprises.</h2>
             </div>
           </div>
-          <div class="plans">
-            <div class="plan rv">
-              <small data-i18n="pr.0.n">Product images</small>
-              <div class="plan__price"><span data-i18n="pr.from">from</span> <b data-i18n="pr.0.amt">€30</b></div>
-              <ul>
-                <li data-i18n="pr.0.a">From one plain photo</li>
-                <li data-i18n="pr.0.b">Marketplace-ready</li>
-                <li data-i18n="pr.0.c">Same day</li>
-              </ul>
+          <div class="menu">
+            <div class="pm rv" style="--i: 0">
+              <i><svg class="ico"><use href="#i-img" /></svg></i>
+              <small data-i18n="pm.1">Product image</small>
+              <div class="pm__price"><span data-i18n="pr.from">from</span> <b data-i18n="pm.1.amt">€25</b></div>
             </div>
-            <div class="plan rv" style="--i: 1">
+            <div class="pm rv" style="--i: 1">
+              <i><svg class="ico"><use href="#i-card" /></svg></i>
+              <small data-i18n="pm.2">Set of 7 images</small>
+              <div class="pm__price"><b data-i18n="pm.2.amt">€119</b></div>
+            </div>
+            <div class="pm rv" style="--i: 2">
+              <i><svg class="ico"><use href="#i-spark" /></svg></i>
+              <small data-i18n="pm.3">Video ad</small>
+              <div class="pm__price"><span data-i18n="pr.from">from</span> <b data-i18n="pm.3.amt">€79</b></div>
+            </div>
+            <div class="pm rv" style="--i: 0">
+              <i><svg class="ico"><use href="#i-bot" /></svg></i>
+              <small data-i18n="pm.4">AI chatbot</small>
+              <div class="pm__price"><span data-i18n="pr.from">from</span> <b data-i18n="pm.4.amt">€790</b></div>
+            </div>
+            <div class="pm rv" style="--i: 1">
+              <i><svg class="ico"><use href="#i-plug" /></svg></i>
+              <small data-i18n="pm.5">Automation</small>
+              <div class="pm__price"><span data-i18n="pr.from">from</span> <b data-i18n="pm.5.amt">€590</b></div>
+            </div>
+            <div class="pm rv" style="--i: 2">
+              <i><svg class="ico"><use href="#i-code" /></svg></i>
+              <small data-i18n="pm.6">Script</small>
+              <div class="pm__price"><span data-i18n="pr.from">from</span> <b data-i18n="pm.6.amt">€290</b></div>
+            </div>
+          </div>
+          <div class="eyebrow eyebrow--sub rv"><span data-i18n="pr.sub">Social media · every month</span></div>
+          <div class="plans">
+            <div class="plan rv" style="--i: 0">
               <small>Starter</small>
               <div class="plan__price"><b data-i18n="pr.1.amt">€190</b> <span data-i18n="pr.mo">/ month</span></div>
-              <ul>
-                <li data-i18n="pr.1.a">8 posts a month</li>
-                <li data-i18n="pr.1.b">2 short reels</li>
-                <li data-i18n="pr.1.c">Captions included</li>
-              </ul>
+              <div class="plan__chips"><span data-i18n="pr.1.a">8 posts</span><span data-i18n="pr.1.b">2 reels</span><span data-i18n="pr.1.c">Captions</span></div>
             </div>
-            <div class="plan plan--hot rv" style="--i: 2">
+            <div class="plan plan--hot rv" style="--i: 1">
               <span class="plan__flag" data-i18n="pr.hot">Most popular</span>
               <small>Growth</small>
               <div class="plan__price"><b data-i18n="pr.2.amt">€390</b> <span data-i18n="pr.mo">/ month</span></div>
-              <ul>
-                <li data-i18n="pr.2.a">16 posts a month</li>
-                <li data-i18n="pr.2.b">Reels + product images</li>
-                <li data-i18n="pr.2.c">Posted for you</li>
-              </ul>
+              <div class="plan__chips"><span data-i18n="pr.2.a">16 posts</span><span data-i18n="pr.2.b">Reels + images</span><span data-i18n="pr.2.c">Posted for you</span></div>
             </div>
-            <div class="plan rv" style="--i: 3">
+            <div class="plan rv" style="--i: 2">
               <small>Pro</small>
               <div class="plan__price"><b data-i18n="pr.3.amt">€690</b> <span data-i18n="pr.mo">/ month</span></div>
-              <ul>
-                <li data-i18n="pr.3.a">Content every other day</li>
-                <li data-i18n="pr.3.b">Every format, handled</li>
-                <li data-i18n="pr.3.c">Priority + strategy</li>
-              </ul>
+              <div class="plan__chips"><span data-i18n="pr.3.a">Every other day</span><span data-i18n="pr.3.b">All formats</span><span data-i18n="pr.3.c">Strategy</span></div>
             </div>
-            <div class="custom rv">
-              <div>
-                <h3 data-i18n="pr.c.h">AI assistants, scripts &amp; custom software</h3>
-                <p data-i18n="pr.c.p">Fixed price per project. You get the exact number after a free call — before any work starts.</p>
-              </div>
-              <a class="btn btn--lime" href="#contact"
-                ><span data-i18n="pr.c.cta">Get a quote</span><svg class="ico"><use href="#i-arrow" /></svg
-              ></a>
-            </div>
+          </div>
+          <div class="pricing__cta rv">
+            <a class="btn btn--ink" href="#contact"
+              ><span data-i18n="pr.c.cta">Get a quote</span><svg class="ico"><use href="#i-arrow" /></svg
+            ></a>
           </div>
           <div class="proofs rv">
             <span><svg class="ico"><use href="#i-phone" /></svg><span data-i18n="pf.1">First call free</span></span>

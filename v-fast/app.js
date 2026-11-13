@@ -145,7 +145,7 @@
       }, { threshold: 0.6 }).observe(el);
     });
     if (!window.matchMedia("(hover: hover)").matches) return;
-    $$(".tile, .tool, .plan").forEach(function (el) {
+    $$(".tile, .tool, .plan, .pm").forEach(function (el) {
       el.addEventListener("pointermove", function (e) {
         var r = el.getBoundingClientRect();
         el.style.setProperty("--tx", ((e.clientX - r.left) / r.width - 0.5).toFixed(2));
