@@ -8,6 +8,7 @@
   var lang = "en";
   var timers = {};
   var resay = function () {};
+  var relocWall = function () {};
 
   /* ---------- i18n ---------- */
   var originals = {};
@@ -52,6 +53,7 @@
       history.replaceState(null, "", u);
     }
     resay();
+    relocWall();
     startChat();
     startTerm();
   }
@@ -74,18 +76,19 @@
   }
 
   /* ---------- hero: before / after ----------
-     The slider sweeps by itself and steps through the four pairs until the
+     The slider sweeps by itself and steps through the photo pairs until the
      visitor touches it; from then on it is theirs. */
   (function () {
     var cmp = $("#cmp"), range = $("input", cmp), before = $("#cmpBefore"), after = $("#cmpAfter");
-    var touched = false, pair = 4, t0 = 0;
+    var PAIRS = ["sneaker", "can", "candle"];
+    var touched = false, pair = 0, t0 = 0;
     function set(v) { cmp.style.setProperty("--pos", v + "%"); }
     function stop() { touched = true; clearTimeout(timers.cmp); }
     range.addEventListener("input", function () { stop(); set(range.value); });
     range.addEventListener("pointerdown", stop);
     range.addEventListener("keydown", stop);
     if (reduce) return;
-    for (var i = 1; i <= 3; i++) { new Image().src = "./img/before-" + i + ".webp"; new Image().src = "./img/after-" + i + ".webp"; }
+    for (var i = 1; i < PAIRS.length; i++) { new Image().src = "./img/pair-" + PAIRS[i] + "-before.webp"; new Image().src = "./img/pair-" + PAIRS[i] + "-after.webp"; }
 
     function sweep(now) {
       if (touched) return;
@@ -99,9 +102,9 @@
     }
     function next() {
       if (touched) return;
-      pair = pair % 4 + 1;
-      before.src = "./img/before-" + pair + ".webp";
-      after.src = "./img/after-" + pair + ".webp";
+      pair = (pair + 1) % PAIRS.length;
+      before.src = "./img/pair-" + PAIRS[pair] + "-before.webp";
+      after.src = "./img/pair-" + PAIRS[pair] + "-after.webp";
       t0 = 0;
       timers.cmp = setTimeout(function () { requestAnimationFrame(sweep); }, 700);
     }
@@ -111,12 +114,12 @@
   /* ---------- content calendar ---------- */
   (function () {
     var grid = $("#cal");
-    var pics = ["serum.webp", "after-1.webp", "coffee.webp", "after-3.webp", "perfume.webp", "after-4.webp", "cream.webp", "after-2.webp"];
+    var pics = ["t-01.webp", "t-02.webp", "t-03.webp", "t-04.webp", "t-05.webp", "t-09.webp", "t-12.webp", "t-08.webp"];
     var order = [0, 2, 4, 1, 7, 9, 3, 11, 5, 13, 6, 8, 10, 12];
     for (var d = 0; d < 14; d++) {
       var c = document.createElement("div");
       c.className = "cal__cell";
-      c.innerHTML = '<img src="./img/' + pics[d % pics.length] + '" alt="" loading="lazy" width="80" height="106">';
+      c.innerHTML = '<img src="./img/' + pics[d % pics.length] + '" alt="" loading="lazy" width="150" height="200">';
       grid.appendChild(c);
     }
     var cells = $$(".cal__cell", grid), n = 0;
@@ -203,27 +206,49 @@
     function () { termVisible = true; startTerm(); },
     function () { termVisible = false; clearTimeout(timers.term); });
 
-  /* ---------- work: endless strips of images moving in opposite directions ---------- */
+  /* ---------- work: endless strips of images moving in opposite directions ----------
+     Pictures 7-12 carry a short caption, rendered once per language, so they follow the language switch. */
   (function () {
     var wall = $("#wall");
-    var sets = [["coffee", "after-2", "perfume", "after-4"], ["after-3", "cream", "after-1"], ["perfume", "after-4", "coffee", "after-2"]];
+    var sets = [[1, 7, 5, 10], [8, 6, 2, 11], [3, 9, 4, 12]];
+    function url(n) { return "./img/wall-" + (n < 10 ? "0" + n : n) + (n >= 7 ? "-" + lang : "") + ".webp"; }
     sets.forEach(function (set) {
       var col = document.createElement("div"), track = document.createElement("div"), html = "";
       col.className = "wall__col"; track.className = "wall__track";
-      for (var r = 0; r < 2; r++) set.forEach(function (n) { html += '<img src="./img/' + n + '.webp" alt="" loading="lazy" width="300" height="400">'; });
+      for (var r = 0; r < 2; r++) set.forEach(function (n) { html += '<img data-n="' + n + '" src="' + url(n) + '" alt="" loading="lazy" width="900" height="1200">'; });
       track.innerHTML = html; col.appendChild(track); wall.appendChild(col);
     });
+    relocWall = function () {
+      $$("#wall img").forEach(function (im) {
+        var n = +im.dataset.n;
+        if (n >= 7 && im.getAttribute("src") !== url(n)) im.src = url(n);
+      });
+    };
   })();
 
-  /* ---------- reel: play only while visible ---------- */
+  /* ---------- reel: three short videos in a row, like stories ----------
+     Plays only while on screen; a tap or click jumps to the next one. */
   (function () {
-    var v = $("#reel");
-    v.controls = reduce;
+    var v = $("#reel"), bars = $$(".reel__bars span"), next = $(".reel__next"), N = bars.length, cur = 0, started = false;
+    if (reduce) { v.controls = true; next.hidden = true; $(".reel__bars").hidden = true; return; }
+    v.controls = false;
+    function paint(p) { bars.forEach(function (b, k) { b.style.setProperty("--p", k < cur ? 1 : k === cur ? p : 0); }); }
+    function play() { var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); }
+    function show(i) {
+      cur = i % N;
+      v.poster = "./img/reel-" + (cur + 1) + "-poster.jpg";
+      v.src = "./img/reel-" + (cur + 1) + ".mp4";
+      v.load();
+      paint(0);
+      play();
+    }
+    v.addEventListener("timeupdate", function () { if (v.duration) paint(v.currentTime / v.duration); });
+    v.addEventListener("ended", function () { show(cur + 1); });
+    next.addEventListener("click", function () { show(cur + 1); });
     new IntersectionObserver(function (es) {
       es.forEach(function (e) {
-        if (e.isIntersecting) {
-          if (!reduce) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
-        } else { v.pause(); }
+        if (!e.isIntersecting) { v.pause(); return; }
+        if (started) play(); else { started = true; show(0); }
       });
     }, { threshold: 0.25 }).observe(v);
   })();
