@@ -80,7 +80,7 @@
      visitor touches it; from then on it is theirs. */
   (function () {
     var cmp = $("#cmp"), range = $("input", cmp), before = $("#cmpBefore"), after = $("#cmpAfter");
-    var PAIRS = ["sneaker", "can", "candle"];
+    var PAIRS = ["can", "candle", "sneaker"];
     var touched = false, pair = 0, t0 = 0;
     function set(v) { cmp.style.setProperty("--pos", v + "%"); }
     function stop() { touched = true; clearTimeout(timers.cmp); }
