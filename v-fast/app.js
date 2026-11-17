@@ -356,18 +356,24 @@
   $$("[data-car]").forEach(function (car) {
     var track = $(".car__track", car), prev = $(".car__btn--prev", car), next = $(".car__btn--next", car), raf = 0;
     function cards() { return $$(".cc", track); }
+    var dots = $(".car__dots", car);
+    if (dots) dots.innerHTML = cards().map(function () { return "<i></i>"; }).join("");
+    function listMode() { return getComputedStyle(track).flexDirection === "column"; }
     function paint() {
       raf = 0;
       var mid = track.getBoundingClientRect(), cx = mid.left + mid.width / 2, best = null, bd = 1e9;
       cards().forEach(function (c) {
         var r = c.getBoundingClientRect(), d = (r.left + r.width / 2 - cx) / r.width, a = Math.abs(d);
-        if (!reduce && mid.width > 0) {
+        if (!reduce && mid.width > 0 && !listMode()) {
           c.style.transform = "translateZ(" + (-Math.min(a, 2) * 70) + "px) rotateY(" + Math.max(-48, Math.min(48, -d * 30)) + "deg) scale(" + (1 - Math.min(a, 2) * 0.07) + ")";
           c.style.opacity = String(1 - Math.min(a, 2.5) * 0.16);
         }
         if (a < bd) { bd = a; best = c; }
       });
-      cards().forEach(function (c) { c.classList.toggle("mid", c === best); });
+      cards().forEach(function (c, k) {
+        c.classList.toggle("mid", c === best);
+        if (dots && dots.children[k]) dots.children[k].classList.toggle("on", c === best);
+      });
     }
     function queue() { if (!raf) raf = requestAnimationFrame(paint); }
     function step(dir) {
@@ -392,7 +398,14 @@
       if (!down) return; down = false; track.classList.remove("drag");
       if (moved) { var c = cards()[0], w = c ? c.getBoundingClientRect().width + 16 : 1; track.scrollTo({ left: Math.round(track.scrollLeft / w) * w, behavior: "smooth" }); }
     });
-    track.addEventListener("click", function (e) { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
+    track.addEventListener("click", function (e) {
+      if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; return; }
+      var c = e.target.closest(".cc");
+      if (c && !listMode() && !c.classList.contains("mid")) {
+        e.preventDefault(); e.stopPropagation();
+        track.scrollTo({ left: c.offsetLeft - (track.clientWidth - c.offsetWidth) / 2, behavior: reduce ? "auto" : "smooth" });
+      }
+    }, true);
     /* centre the first card once visible, so the neighbours show on both sides */
     var inited = false;
     new IntersectionObserver(function (es) {
@@ -423,6 +436,10 @@
       home.hidden = true; views.hidden = false;
       current = m[1];
       window.scrollTo({ top: 0, behavior: "instant" });
+      $$(".rv", sec).forEach(function (el) { el.classList.add("in"); });
+      var V = { salon: "salon", cafe: "cafe", shop: "shop", clinic: "clinic", trades: "craft", office: "office" }[ctxNiche];
+      $$(".task", sec).forEach(function (li) { li.classList.toggle("hit", !!V && !!$('[data-i18n="v.' + V + '"]', li)); });
+      var ul = $(".tasks", sec); if (ul) $$(".task.hit", ul).forEach(function (li) { ul.insertBefore(li, ul.firstChild); });
       var hd = $(".svc__h", sec); if (hd) hd.focus({ preventScroll: true });
       return;
     }

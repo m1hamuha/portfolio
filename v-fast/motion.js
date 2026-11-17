@@ -14,14 +14,28 @@
   /* 3D hero: load after first paint */
   function loadScene() {
     if (!host) return;
+    /* fixed full-screen background */
     import("./scene.min.js").then(function (m) {
       var scene = m.start(host, { reduce: reduce });
       if (!scene) return;
       document.documentElement.classList.add("has-gl");
+      /* the scene sits behind the whole site: bright on the first screen, dim behind content,
+         and on a business page the camera flies to that business's node */
+      var NICHES = ["salon", "cleaning", "cafe", "shop", "clinic", "trades", "fitness", "office", "other"];
+      var bg = document.getElementById("gl");
+      function dim(v) { bg.style.setProperty("--gl", String(v)); }
+      function sync() {
+        var h = location.hash, nm = h.match(/^#\/for\/([a-z]+)$/), sv = /^#\/[a-z]+$/.test(h);
+        if (nm) { scene.focus(NICHES.indexOf(nm[1])); dim(0.75); }
+        else if (sv) { scene.focus(-1); dim(0.35); }
+        else { scene.focus(-1); dim(1); }
+      }
+      window.addEventListener("hashchange", sync);
+      sync();
       if (hasGsap) {
         window.ScrollTrigger.create({
           trigger: ".hero", start: "top top", end: "bottom top", scrub: true,
-          onUpdate: function (s) { scene.setProgress(s.progress); },
+          onUpdate: function (s) { scene.setProgress(s.progress); if (!/^#\//.test(location.hash)) dim(1 - s.progress * 0.65); },
         });
       }
     }).catch(function () {});
