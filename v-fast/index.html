@@ -117,6 +117,8 @@
         <symbol id="i-pause" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M10 9v6M14 9v6" /></symbol>
         <symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A15 15 0 0 1 3 6a2 2 0 0 1 2-2z" /></symbol>
         <symbol id="i-plug" viewBox="0 0 24 24"><path d="M9 3v5M15 3v5M6 8h12v4a6 6 0 0 1-12 0zM12 18v3" /></symbol>
+        <symbol id="i-wa" viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.7 13.6L3 21l4.5-1.2A9 9 0 1 0 12 3z" /><path d="M9 8.5c0 3 2.5 5.5 5.5 5.5l1-1.5-2-1-1 .8a3.5 3.5 0 0 1-1.6-1.6l.8-1-1-2z" /></symbol>
+        <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></symbol>
         <symbol id="i-drag" viewBox="0 0 24 24"><path d="m9 7-5 5 5 5M15 7l5 5-5 5" /></symbol>
       </defs>
     </svg>
@@ -147,51 +149,95 @@
         <div class="wrap hero__grid">
           <div>
             <h1 class="rv" data-i18n-html="hero.h1">I put <mark>AI</mark> to work in your business.</h1>
-            <a class="btn btn--ink rv" style="--i: 1" href="#contact"
-              ><span data-i18n="hero.cta">First photo free</span><svg class="ico"><use href="#i-arrow" /></svg
-            ></a>
+            <div class="hero__cta rv" style="--i: 1">
+              <a class="btn btn--ink" href="https://t.me/onomamichail" target="_blank" rel="noopener"
+                ><svg class="ico"><use href="#i-send" /></svg><span data-i18n="hero.cta">First photo free</span></a
+              >
+              <a class="btn btn--round" href="https://wa.me/491709094298" target="_blank" rel="noopener" data-wa="hero" aria-label="WhatsApp"
+                ><svg class="ico"><use href="#i-wa" /></svg
+              ></a>
+            </div>
           </div>
           <div class="cmp rv" style="--i: 1" id="cmp">
             <img id="cmpAfter" src="./img/pair-can-after.webp" alt="" width="1000" height="1250" />
-            <span class="cmp__lbl cmp__lbl--a" data-i18n="cr.after">After</span>
             <div class="cmp__before">
               <img id="cmpBefore" src="./img/pair-can-before.webp" alt="" width="1000" height="1250" />
-              <span class="cmp__lbl cmp__lbl--b" data-i18n="cr.before">Before</span>
             </div>
             <div class="cmp__line">
               <span class="cmp__knob"><svg class="ico"><use href="#i-drag" /></svg></span>
             </div>
+            <span class="cmp__lbl cmp__lbl--b" data-i18n="cr.before">Before</span>
+            <span class="cmp__lbl cmp__lbl--a" data-i18n="cr.after">After</span>
             <input type="range" min="0" max="100" value="50" aria-label="Before / after" data-i18n-aria="cr.aria" />
           </div>
         </div>
       </section>
 
-      <!-- 2. SERVICES -->
+      <!-- 2. WHAT YOU GET: each tile is a link to its price -->
       <section id="services" style="padding-top: 0">
         <div class="wrap">
-          <h2 class="rv" data-i18n="svc.h2">What I do</h2>
-          <div class="trio">
-            <article class="tile tile--social rv">
-              <h3 data-i18n="svc.1.h">Social media on autopilot</h3>
+          <h2 class="rv" data-i18n="svc.h2">What you get</h2>
+          <div class="quad">
+            <a class="tile rv" href="#p-photo">
+              <div class="tile__txt">
+                <h3 data-i18n="svc.0.h">Photos &amp; video for your product</h3>
+                <span class="tile__price" data-i18n="tp.0">€5 per photo</span>
+                <span class="tile__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </div>
               <div class="tile__viz" aria-hidden="true">
-                <div class="cal">
-                  <div class="cal__grid" id="cal"></div>
+                <div class="ba" id="ba">
+                  <img id="baBefore" src="./img/t-can-before.webp" alt="" width="240" height="300" />
+                  <span class="ba__arrow"><svg class="ico"><use href="#i-arrow" /></svg></span>
+                  <img id="baAfter" src="./img/t-can-after.webp" alt="" width="240" height="300" />
                 </div>
               </div>
-            </article>
-            <article class="tile tile--chat rv" style="--i: 1">
-              <h3 data-i18n="svc.2.h">A bot that answers clients</h3>
+            </a>
+            <a class="tile rv" style="--i: 1" href="#p-social">
+              <div class="tile__txt">
+                <h3 data-i18n="svc.1.h">Social media on autopilot</h3>
+                <span class="tile__price" data-i18n="tp.1">from €100 / month</span>
+                <span class="tile__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </div>
+              <div class="tile__viz" aria-hidden="true">
+                <div class="cal"><div class="cal__grid" id="cal"></div></div>
+              </div>
+            </a>
+            <a class="tile rv" href="#p-bot">
+              <div class="tile__txt">
+                <h3 data-i18n="svc.2.h">A bot that answers clients</h3>
+                <span class="tile__price" data-i18n="tp.2">from €790</span>
+                <span class="tile__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </div>
               <div class="tile__viz" aria-hidden="true"><div class="chat" id="chat"></div></div>
-            </article>
-            <article class="tile tile--code rv" style="--i: 2" id="work">
-              <h3 data-i18n="svc.3.h">Software for your task</h3>
-              <div class="tile__viz" aria-hidden="true">
-                <div class="term">
-                  <div id="term"></div>
-                </div>
+            </a>
+            <a class="tile rv" style="--i: 1" href="#p-soft" id="work">
+              <div class="tile__txt">
+                <h3 data-i18n="svc.3.h">Software for your task</h3>
+                <span class="tile__price" data-i18n="tp.3">from €290</span>
+                <span class="tile__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
               </div>
-            </article>
+              <div class="tile__viz" aria-hidden="true">
+                <div class="term"><div id="term"></div></div>
+              </div>
+            </a>
           </div>
+        </div>
+      </section>
+
+      <!-- 3. HOW IT WORKS: the whole route in three steps -->
+      <section class="how" id="how">
+        <div class="wrap">
+          <h2 class="h2--sm rv" data-i18n="how.h2">How it works</h2>
+          <ol class="steps">
+            <li class="step rv"><span class="step__ico"><svg class="ico"><use href="#i-img" /></svg></span><span data-i18n="how.1">Send a photo</span></li>
+            <li class="steps__arr" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></li>
+            <li class="step rv" style="--i: 1"><span class="step__ico"><svg class="ico"><use href="#i-clock" /></svg></span><span data-i18n="how.2">Get it in 24 hours</span></li>
+            <li class="steps__arr" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></li>
+            <li class="step rv" style="--i: 2"><span class="step__ico"><svg class="ico"><use href="#i-check" /></svg></span><span data-i18n="how.3">Like it? Then pay</span></li>
+          </ol>
+          <a class="btn btn--ink how__cta rv" href="https://t.me/onomamichail" target="_blank" rel="noopener"
+            ><svg class="ico"><use href="#i-send" /></svg><span data-i18n="hero.cta">First photo free</span></a
+          >
         </div>
       </section>
 
@@ -212,45 +258,109 @@
         </div>
       </section>
 
-      <!-- 4. PRICES -->
+      <!-- 4. PRICES: every card leads to the order -->
       <section id="pricing">
         <div class="wrap">
           <h2 class="rv" data-i18n="pr.h2">Prices</h2>
           <div class="menu">
-            <div class="pm rv"><small data-i18n="pm.1">Product photo</small><div class="pm__price"><b data-i18n="pm.1.amt">€5</b></div></div>
-            <div class="pm rv" style="--i: 1"><small data-i18n="pm.2">Video ad</small><div class="pm__price"><span data-i18n="pr.from">from</span><b data-i18n="pm.2.amt">€79</b></div></div>
-            <div class="pm rv" style="--i: 2"><small data-i18n="pm.3">Custom software</small><div class="pm__price"><span data-i18n="pr.from">from</span><b data-i18n="pm.3.amt">€290</b></div></div>
-            <div class="pm rv" style="--i: 3"><small data-i18n="pm.4">Chatbot</small><div class="pm__price"><span data-i18n="pr.from">from</span><b data-i18n="pm.4.amt">€790</b></div></div>
+            <a class="pm rv" id="p-photo" href="#contact" data-order="photo">
+              <small data-i18n="pm.1">Product photo</small>
+              <em class="pm__d" data-i18n="pm.1.d">1 photo → finished ad</em>
+              <div class="pm__price"><b data-i18n="pm.1.amt">€5</b></div>
+              <span class="pm__go"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+            </a>
+            <a class="pm rv" style="--i: 1" id="p-video" href="#contact" data-order="video">
+              <small data-i18n="pm.2">Video ad</small>
+              <em class="pm__d" data-i18n="pm.2.d">15 seconds, vertical</em>
+              <div class="pm__price"><span data-i18n="pr.from">from</span> <b data-i18n="pm.2.amt">€79</b></div>
+              <span class="pm__go"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+            </a>
+            <a class="pm rv" style="--i: 2" id="p-soft" href="#contact" data-order="soft">
+              <small data-i18n="pm.3">Custom software</small>
+              <em class="pm__d" data-i18n="pm.3.d">Script, report or parser</em>
+              <div class="pm__price"><span data-i18n="pr.from">from</span> <b data-i18n="pm.3.amt">€290</b></div>
+              <span class="pm__go"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+            </a>
+            <a class="pm rv" style="--i: 3" id="p-bot" href="#contact" data-order="bot">
+              <small data-i18n="pm.4">Chatbot</small>
+              <em class="pm__d" data-i18n="pm.4.d">Answers and books clients</em>
+              <div class="pm__price"><span data-i18n="pr.from">from</span> <b data-i18n="pm.4.amt">€790</b></div>
+              <span class="pm__go"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+            </a>
           </div>
-          <h3 class="sub rv" data-i18n="pr.sub">Social media, per month</h3>
-          <div class="plans">
-            <div class="plan rv">
-              <div class="plan__price"><b data-i18n="pr.1.amt">€100</b></div>
-              <div class="plan__chips"><span data-i18n="pr.1.a">8 posts</span><span data-i18n="pr.1.b">2 reels</span><span data-i18n="pr.1.c">Captions</span></div>
+
+          <div class="pgroup" id="p-social">
+            <h3 class="sub rv" data-i18n="pr.sub">Social media, per month</h3>
+            <div class="plans">
+              <a class="plan rv" href="#contact" data-order="plan1">
+                <small data-i18n="pl.1">Start</small>
+                <div class="plan__price"><b data-i18n="pr.1.amt">€100</b> <span data-i18n="pr.mo">/ month</span></div>
+                <ul class="plan__list">
+                  <li><svg class="ico"><use href="#i-img" /></svg><span data-i18n="pr.1.a">8 posts</span></li>
+                  <li><svg class="ico"><use href="#i-play" /></svg><span data-i18n="pr.1.b">2 reels</span></li>
+                  <li><svg class="ico"><use href="#i-user" /></svg><span data-i18n="pr.1.c">You publish yourself</span></li>
+                </ul>
+                <span class="plan__go"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="plan plan--hot rv" style="--i: 1" href="#contact" data-order="plan2">
+                <small data-i18n="pl.2">Growth</small>
+                <div class="plan__price"><b data-i18n="pr.2.amt">€250</b> <span data-i18n="pr.mo">/ month</span></div>
+                <ul class="plan__list">
+                  <li><svg class="ico"><use href="#i-img" /></svg><span data-i18n="pr.2.a">16 posts</span></li>
+                  <li><svg class="ico"><use href="#i-play" /></svg><span data-i18n="pr.2.b">4 reels</span></li>
+                  <li><svg class="ico"><use href="#i-check" /></svg><span data-i18n="pr.2.c">I publish for you</span></li>
+                </ul>
+                <span class="plan__go"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="plan rv" style="--i: 2" href="#contact" data-order="plan3">
+                <small data-i18n="pl.3">Max</small>
+                <div class="plan__price"><b data-i18n="pr.3.amt">€400</b> <span data-i18n="pr.mo">/ month</span></div>
+                <ul class="plan__list">
+                  <li><svg class="ico"><use href="#i-img" /></svg><span data-i18n="pr.3.a">30 posts, one a day</span></li>
+                  <li><svg class="ico"><use href="#i-play" /></svg><span data-i18n="pr.3.b">8 reels</span></li>
+                  <li><svg class="ico"><use href="#i-check" /></svg><span data-i18n="pr.3.c">I publish for you</span></li>
+                </ul>
+                <span class="plan__go"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
             </div>
-            <div class="plan plan--hot rv" style="--i: 1">
-              <div class="plan__price"><b data-i18n="pr.2.amt">€250</b></div>
-              <div class="plan__chips"><span data-i18n="pr.2.a">16 posts</span><span data-i18n="pr.2.b">Reels + photos</span><span data-i18n="pr.2.c">Posted for you</span></div>
-            </div>
-            <div class="plan rv" style="--i: 2">
-              <div class="plan__price"><b data-i18n="pr.3.amt">€500</b></div>
-              <div class="plan__chips"><span data-i18n="pr.3.a">Every other day</span><span data-i18n="pr.3.b">All formats</span><span data-i18n="pr.3.c">Strategy</span></div>
-            </div>
+            <p class="legend rv" data-i18n="pr.legend">Post = picture with caption. Reel = short video.</p>
           </div>
+
+          <a class="custom rv" id="p-custom" href="#contact" data-order="custom">
+            <small hidden data-i18n="pc.label">Custom task</small>
+            <div>
+              <h3 data-i18n="pc.h">Need something else?</h3>
+              <p data-i18n="pc.p">Describe the task, I'll name the price.</p>
+            </div>
+            <span class="btn btn--ink"><span data-i18n="nav.cta">Write to me</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+          </a>
         </div>
       </section>
 
-      <!-- 5. CONTACT -->
+      <!-- 5. CONTACT: two big messenger buttons, the form is the fallback -->
       <section class="dark round" id="contact">
         <div class="wrap">
           <div class="contact">
             <div class="rv">
               <h2 data-i18n="ct.h2">Write to me</h2>
               <p class="contact__sub" data-i18n="ct.sub">The first photo is free. I reply within a day.</p>
+              <div class="order" id="order" hidden>
+                <span data-i18n="ct.pick">Chosen:</span> <b id="orderLabel"></b>
+                <button type="button" id="orderClear" aria-label="Clear choice" data-i18n-aria="ct.clear">×</button>
+              </div>
+              <div class="msgs">
+                <a class="btn btn--ink" href="https://t.me/onomamichail" target="_blank" rel="noopener"
+                  ><svg class="ico"><use href="#i-send" /></svg><span>Telegram</span></a
+                >
+                <a class="btn btn--wa" href="https://wa.me/491709094298" target="_blank" rel="noopener" data-wa="order"
+                  ><svg class="ico"><use href="#i-wa" /></svg><span>WhatsApp</span></a
+                >
+              </div>
             </div>
             <form class="form rv" style="--i: 1" id="form" action="https://formsubmit.co/kostinmihail40@gmail.com" method="POST" novalidate>
               <input type="hidden" name="_subject" value="New portfolio request — Kostin Automation" />
               <input type="hidden" name="_template" value="table" />
+              <p class="form__or" data-i18n="ct.or">Or leave your email</p>
               <label><span data-i18n="fm.name">Your name</span><input name="name" type="text" autocomplete="name" required maxlength="120" /></label>
               <label><span data-i18n="fm.email">Your email</span><input name="email" type="email" autocomplete="email" required maxlength="200" /></label>
               <label
@@ -271,6 +381,8 @@
           <footer class="foot">
             <span>© 2026 Mikhail Kostin</span>
             <nav aria-label="Footer">
+              <a href="https://t.me/onomamichail" target="_blank" rel="noopener">Telegram @onomamichail</a>
+              <a href="https://wa.me/491709094298" target="_blank" rel="noopener">WhatsApp +49 170 9094298</a>
               <a href="mailto:kostinmihail40@gmail.com">kostinmihail40@gmail.com</a>
               <a href="https://github.com/m1hamuha" rel="noopener">GitHub</a>
             </nav>
@@ -278,6 +390,15 @@
         </div>
       </section>
     </main>
+
+    <div class="dock" id="dock" role="group" aria-label="Contact" data-i18n-aria="dock.aria">
+      <a class="btn btn--ink" href="https://t.me/onomamichail" target="_blank" rel="noopener"
+        ><svg class="ico"><use href="#i-send" /></svg><span>Telegram</span></a
+      >
+      <a class="btn btn--wa" href="https://wa.me/491709094298" target="_blank" rel="noopener" data-wa="order"
+        ><svg class="ico"><use href="#i-wa" /></svg><span>WhatsApp</span></a
+      >
+    </div>
 
     <script src="./i18n.js"></script>
     <script src="./app.js"></script>

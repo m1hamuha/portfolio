@@ -9,6 +9,7 @@
   var timers = {};
   var resay = function () {};
   var relocWall = function () {};
+  var PAIRS = ["can", "candle", "sneaker"];
 
   /* ---------- i18n ---------- */
   var originals = {};
@@ -54,6 +55,7 @@
     }
     resay();
     relocWall();
+    paintOrder();
     startChat();
     startTerm();
   }
@@ -80,7 +82,6 @@
      visitor touches it; from then on it is theirs. */
   (function () {
     var cmp = $("#cmp"), range = $("input", cmp), before = $("#cmpBefore"), after = $("#cmpAfter");
-    var PAIRS = ["can", "candle", "sneaker"];
     var touched = false, pair = 0, t0 = 0;
     function set(v) { cmp.style.setProperty("--pos", v + "%"); }
     function stop() { touched = true; clearTimeout(timers.cmp); }
@@ -300,6 +301,55 @@
         .catch(function () { say("err", "fm.err", true); })
         .then(function () { clearTimeout(to); busy = false; btn.disabled = false; });
     });
+  })();
+
+  /* ---------- messengers and the chosen offer ----------
+     Tapping a price card remembers what was chosen, shows it next to the
+     messenger buttons and prefills the WhatsApp text and the form. */
+  var WA = "https://wa.me/491709094298";
+  var order = null, typed = false;
+  function labelFor(el) {
+    var name = $("small, h3", el), price = $(".pm__price, .plan__price", el);
+    var n = name ? name.textContent.trim() : "";
+    var p = price ? price.textContent.replace(/\s+/g, " ").trim() : "";
+    return p ? n + " · " + p : n;
+  }
+  function paintOrder() {
+    var box = $("#order"), lab = $("#orderLabel"), ta = $('#form [name="message"]');
+    var el = order && $('[data-order="' + order + '"]');
+    lab.textContent = el ? labelFor(el) : "";
+    box.hidden = !el;
+    if (!typed) ta.value = el ? t("wa.order") + lab.textContent : "";
+    var text = el ? t("wa.order") + lab.textContent : t("wa.hero");
+    $$("[data-wa]").forEach(function (a) { a.href = WA + "?text=" + encodeURIComponent(a.dataset.wa === "hero" ? t("wa.hero") : text); });
+  }
+  $$("[data-order]").forEach(function (el) { el.addEventListener("click", function () { order = el.dataset.order; paintOrder(); }); });
+  $("#orderClear").addEventListener("click", function () { order = null; paintOrder(); });
+  $('#form [name="message"]').addEventListener("input", function () { typed = true; });
+
+  /* phone only: a bar with both messengers appears once the first button has scrolled away */
+  (function () {
+    var dock = $("#dock"), first = $(".hero__cta"), contact = $("#contact"), away = false, inContact = false;
+    if (!dock || !first || !contact) return;
+    function sync() { dock.classList.toggle("on", away && !inContact); }
+    new IntersectionObserver(function (es) { away = !es[0].isIntersecting; sync(); }).observe(first);
+    new IntersectionObserver(function (es) { inContact = es[0].isIntersecting; sync(); }, { threshold: 0.1 }).observe(contact);
+  })();
+
+  /* the photo tile: small before/after pairs, one after another */
+  (function () {
+    var ba = $("#ba"), b = $("#baBefore"), a = $("#baAfter"), i = 0, id = null;
+    if (!ba || reduce) return;
+    PAIRS.forEach(function (n) { new Image().src = "./img/t-" + n + "-before.webp"; new Image().src = "./img/t-" + n + "-after.webp"; });
+    function step() {
+      ba.classList.add("out");
+      setTimeout(function () {
+        i = (i + 1) % PAIRS.length;
+        b.src = "./img/t-" + PAIRS[i] + "-before.webp"; a.src = "./img/t-" + PAIRS[i] + "-after.webp";
+        ba.classList.remove("out");
+      }, 350);
+    }
+    whenVisible(ba, function () { clearInterval(id); id = setInterval(step, 3200); }, function () { clearInterval(id); });
   })();
 
   setLang(pickLang(), false);
