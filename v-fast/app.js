@@ -8,6 +8,7 @@
   var lang = "en";
   var timers = {};
   var resay = function () {};
+  var refillL3 = function () {};
   var relocWall = function () {};
   var PAIRS = ["can", "candle", "sneaker"];
 
@@ -54,6 +55,7 @@
       history.replaceState(null, "", u);
     }
     resay();
+    refillL3();
     relocWall();
     paintOrder();
     startChat();
@@ -312,20 +314,22 @@
      Tapping "Order" on a page or a price card remembers what was chosen, shows it
      next to the messenger buttons and prefills the WhatsApp text and the form. */
   var WA = "https://wa.me/491709094298";
+  var ctxNiche = null;
   var order = null, typed = false;
   /* id -> [name key, "from" prefix?, amount] ; plans are named under social media */
   var ORD = {
-    social: ["sv.social.h", 1, "€100"], bot: ["sv.bot.h", 1, "€790"], content: ["sv.content.h", 1, "€5"],
-    reports: ["sv.reports.h", 1, "€190"], docs: ["sv.docs.h", 1, "€190"], reviews: ["sv.reviews.h", 1, "€150"],
-    data: ["sv.data.h", 1, "€290"], site: ["sv.site.h", 1, "€290"], leads: ["sv.leads.h", 1, "€290"], mail: ["sv.mail.h", 1, "€190"],
-    translate: ["sv.translate.h", 1, "€49"], assistant: ["sv.assistant.h", 1, "€490"], custom: ["sv.custom.h", 0, ""],
-    photo: ["pm.photo", 0, "€5"], video: ["pm.video", 1, "€79"],
-    plan1: ["pl.1", 0, "€100 " ], plan2: ["pl.2", 0, "€250 "], plan3: ["pl.3", 0, "€400 "]
+    social: ["sv.social.h", 1, "€10"], bot: ["sv.bot.h", 1, "€79"], content: ["sv.content.h", 1, "€1"],
+    reports: ["sv.reports.h", 1, "€19"], docs: ["sv.docs.h", 1, "€19"], reviews: ["sv.reviews.h", 1, "€15"],
+    data: ["sv.data.h", 1, "€29"], site: ["sv.site.h", 1, "€29"], leads: ["sv.leads.h", 1, "€29"], mail: ["sv.mail.h", 1, "€19"],
+    translate: ["sv.translate.h", 1, "€5"], assistant: ["sv.assistant.h", 1, "€49"], custom: ["sv.custom.h", 0, ""],
+    photo: ["pm.photo", 0, "€1"], video: ["pm.video", 1, "€8"],
+    plan1: ["pl.1", 0, "€10 " ], plan2: ["pl.2", 0, "€25 "], plan3: ["pl.3", 0, "€40 "]
   };
   function labelFor(id) {
     var o = ORD[id], name = t(o[0]);
-    if (id.indexOf("plan") === 0) return t("sv.social.h") + ", " + name + ": " + o[2] + t("pr.mo");
-    return o[2] ? name + ": " + (o[1] ? t("pr.from") + " " : "") + o[2] : name;
+    var pre = ctxNiche ? t("n." + ctxNiche) + ": " : "";
+    if (id.indexOf("plan") === 0) return pre + t("sv.social.h") + ", " + name + ": " + o[2] + t("pr.mo");
+    return pre + (o[2] ? name + ": " + (o[1] ? t("pr.from") + " " : "") + o[2] : name);
   }
   function paintOrder() {
     var box = $("#order"), lab = $("#orderLabel"), ta = $('#form [name="message"]');
@@ -348,40 +352,138 @@
     new IntersectionObserver(function (es) { inContact = es[0].isIntersecting; sync(); }, { threshold: 0.1 }).observe(contact);
   })();
 
-  /* ---------- "who is it for" chips: tap one and only the services that fit that business stay bright ---------- */
-  (function () {
-    var chips = $$(".vchip"), cards = $$(".card[data-vs]"), on = null;
-    chips.forEach(function (c) {
-      c.addEventListener("click", function () {
-        on = on === c.dataset.v ? null : c.dataset.v;
-        chips.forEach(function (x) { x.setAttribute("aria-pressed", String(x.dataset.v === on)); });
-        cards.forEach(function (k) { k.classList.toggle("dim", !!on && k.dataset.vs.split(" ").indexOf(on) < 0); });
-        if (on) $("#services").scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
+  /* ---------- 3D carousels ----------
+     Native scroll-snap does the moving; every frame each card is tilted and scaled by how far
+     it sits from the centre. Mouse drag, arrow buttons and keyboard all work. */
+  $$("[data-car]").forEach(function (car) {
+    var track = $(".car__track", car), prev = $(".car__btn--prev", car), next = $(".car__btn--next", car), raf = 0;
+    function cards() { return $$(".cc", track); }
+    var dots = $(".car__dots", car);
+    if (dots) dots.innerHTML = cards().map(function () { return "<i></i>"; }).join("");
+    function listMode() { return getComputedStyle(track).flexDirection === "column"; }
+    function paint() {
+      raf = 0;
+      var mid = track.getBoundingClientRect(), cx = mid.left + mid.width / 2, best = null, bd = 1e9;
+      cards().forEach(function (c) {
+        var r = c.getBoundingClientRect(), d = (r.left + r.width / 2 - cx) / r.width, a = Math.abs(d);
+        if (!reduce && mid.width > 0 && !listMode()) {
+          c.style.transform = "translateZ(" + (-Math.min(a, 2) * 70) + "px) rotateY(" + Math.max(-48, Math.min(48, -d * 30)) + "deg) scale(" + (1 - Math.min(a, 2) * 0.07) + ")";
+          c.style.opacity = String(1 - Math.min(a, 2.5) * 0.16);
+        }
+        if (a < bd) { bd = a; best = c; }
       });
+      cards().forEach(function (c, k) {
+        c.classList.toggle("mid", c === best);
+        if (dots && dots.children[k]) dots.children[k].classList.toggle("on", c === best);
+      });
+    }
+    function queue() { if (!raf) raf = requestAnimationFrame(paint); }
+    function step(dir) {
+      var c = cards()[0]; if (!c) return;
+      track.scrollBy({ left: dir * (c.getBoundingClientRect().width + 16), behavior: reduce ? "auto" : "smooth" });
+    }
+    track.addEventListener("scroll", queue, { passive: true });
+    window.addEventListener("resize", queue);
+    if (prev) prev.addEventListener("click", function () { step(-1); });
+    if (next) next.addEventListener("click", function () { step(1); });
+    track.addEventListener("keydown", function (e) { if (e.key === "ArrowRight") { step(1); e.preventDefault(); } if (e.key === "ArrowLeft") { step(-1); e.preventDefault(); } });
+    /* mouse drag (touch already scrolls natively); a drag must not count as a click */
+    var down = false, sx = 0, sl = 0, moved = false;
+    track.addEventListener("pointerdown", function (e) { if (e.pointerType !== "mouse") return; down = true; moved = false; sx = e.clientX; sl = track.scrollLeft; });
+    window.addEventListener("pointermove", function (e) {
+      if (!down) return;
+      var dx = e.clientX - sx;
+      if (Math.abs(dx) > 5) { moved = true; track.classList.add("drag"); }
+      if (moved) track.scrollLeft = sl - dx;
     });
-  })();
+    window.addEventListener("pointerup", function () {
+      if (!down) return; down = false; track.classList.remove("drag");
+      if (moved) { var c = cards()[0], w = c ? c.getBoundingClientRect().width + 16 : 1; track.scrollTo({ left: Math.round(track.scrollLeft / w) * w, behavior: "smooth" }); }
+    });
+    track.addEventListener("click", function (e) {
+      if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; return; }
+      var c = e.target.closest(".cc");
+      if (c && !listMode() && !c.classList.contains("mid")) {
+        e.preventDefault(); e.stopPropagation();
+        track.scrollTo({ left: c.offsetLeft - (track.clientWidth - c.offsetWidth) / 2, behavior: reduce ? "auto" : "smooth" });
+      }
+    }, true);
+    /* centre the first card once visible, so the neighbours show on both sides */
+    var inited = false;
+    new IntersectionObserver(function (es) {
+      if (es[0].isIntersecting && !inited && track.clientWidth > 0) {
+        inited = true;
+        var cs = cards(), c = cs[window.innerWidth < 760 ? 0 : Math.min(1, cs.length - 1)];
+        if (c) track.scrollLeft = c.offsetLeft - (track.clientWidth - c.offsetWidth) / 2;
+      }
+      queue();
+    }, { threshold: 0.1 }).observe(car);
+    queue();
+  });
 
-  /* ---------- pages inside the page ----------
-     #/social, #/bot ... open that service's page; any other hash shows the home page.
-     Browser back/forward work, and the home page remembers where the visitor was. */
+  /* ---------- pages inside the page: one step at a time ----------
+     home (pick a business) > #/for/<business> (pick a task) > #/for/<business>/<task> (example, price, order)
+     > contact. Each level shows only what that step needs. #contact on its own is the contact page. */
   var home = $("#home"), views = $("#views"), current = null, homeY = 0;
+  var F = window.FUNNEL || { niches: {}, sv: {}, icons: {} };
+  var l3 = $("#l3"), l3demo = $("#l3demo"), l3ctx = null;
   var LEGACY = { "#creatives": "#/content" };
+  function svg(name) { return '<svg class="ico ph"><use href="#l-' + name + '" /></svg>'; }
+  /* demos live in the old service pages; lend them to the level-3 page while it shows */
+  function demoFor(sid) {
+    if (sid === "social") return $("#v-social .pgroup");
+    var d = $("#v-" + sid + " .svc__demo > *");
+    return d || null;
+  }
+  var lent = null, lentFrom = null;
+  function giveBack() { if (lent && lentFrom) lentFrom.appendChild(lent); lent = lentFrom = null; }
+  function fillL3() {
+    if (!l3ctx) return;
+    var n = l3ctx[0], sid = l3ctx[1], row = (F.niches[n] || []).filter(function (x) { return x[0] === sid; })[0], sv = F.sv[sid];
+    if (!row || !sv) return;
+    $("#l3nb").textContent = t("n." + n);
+    $("#l3back").setAttribute("href", "#/for/" + n);
+    $("#l3ico").innerHTML = svg(sv.icon);
+    $("#l3h").textContent = t("sv." + sid + ".h");
+    $("#l3line").textContent = t(row[1]);
+    $("#l3price").innerHTML = sid === "social" ? "" : '<span>' + t("pr.from") + '</span> <b>' + sv.amt + '</b> <span>' + (sv.per ? t("pr.mo") : t("pr.once")) + "</span>";
+    $("#l3order").dataset.order = sid;
+    $(".l3__buy").hidden = sid === "social"; /* social media has its own three plans, each with Order */
+  }
+  refillL3 = fillL3;
+  function show(sec, key) {
+    if (current === null) homeY = window.pageYOffset;
+    $$(".svc").forEach(function (v) { v.hidden = v !== sec; });
+    home.hidden = true; views.hidden = false;
+    current = key;
+    window.scrollTo({ top: 0, behavior: "instant" });
+    $$(".rv", sec).forEach(function (el) { el.classList.add("in"); });
+    var hd = $(".svc__h", sec); if (hd) hd.focus({ preventScroll: true });
+  }
   function route() {
     var h = LEGACY[location.hash] || location.hash;
     if (h !== location.hash) { history.replaceState(null, "", h); }
-    var m = h.match(/^#\/([a-z]+)$/), sec = m && $("#v-" + m[1]);
-    if (sec) {
-      if (current === null) homeY = window.pageYOffset;
-      $$(".svc").forEach(function (v) { v.hidden = v !== sec; });
-      home.hidden = true; views.hidden = false;
-      current = m[1];
-      window.scrollTo({ top: 0, behavior: "instant" });
-      var hd = $(".svc__h", sec); if (hd) hd.focus({ preventScroll: true });
+    var root = document.documentElement;
+    var m3 = h.match(/^#\/for\/([a-z]+)\/([a-z]+)$/), m2 = h.match(/^#\/for\/([a-z]+)$/), m1 = h.match(/^#\/([a-z]+)$/);
+    root.classList.remove("lvl3", "ctpage");
+    if (m3 && F.niches[m3[1]]) {
+      giveBack();
+      ctxNiche = m3[1]; l3ctx = [m3[1], m3[2]]; fillL3();
+      var d = demoFor(m3[2]); if (d) { lentFrom = d.parentNode; lent = d; l3demo.appendChild(d); }
+      root.classList.add("lvl3");
+      show(l3, h); return;
+    }
+    if (m2 && $("#n-" + m2[1])) { giveBack(); ctxNiche = m2[1]; show($("#n-" + m2[1]), h); return; }
+    if (m1 && $("#v-" + m1[1])) { giveBack(); show($("#v-" + m1[1]), h); root.classList.add("lvl3"); return; }
+    if (h === "#contact") {
+      root.classList.add(current !== null ? "lvl3" : "ctpage");
+      if (current === null) { home.hidden = true; views.hidden = true; }
+      var ct = $("#contact"); requestAnimationFrame(function () { ct.scrollIntoView({ behavior: reduce ? "auto" : "smooth" }); });
       return;
     }
-    if (h === "#contact" && current !== null) return; /* the contact block is shared; stay on the page */
+    giveBack();
     var wasView = current !== null;
-    current = null;
+    current = null; ctxNiche = null; l3ctx = null;
     $$(".svc").forEach(function (v) { v.hidden = true; });
     views.hidden = true; home.hidden = false;
     var target = h.length > 1 && document.getElementById(h.slice(1));
@@ -390,6 +492,15 @@
   }
   window.addEventListener("hashchange", route);
   if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+
+  /* spotlight border: the card edge brightens where the cursor is */
+  document.addEventListener("pointermove", function (e) {
+    var c = e.target.closest && e.target.closest(".cc");
+    if (!c) return;
+    var r = c.getBoundingClientRect();
+    c.style.setProperty("--mx", (e.clientX - r.left) + "px");
+    c.style.setProperty("--my", (e.clientY - r.top) + "px");
+  }, { passive: true });
 
   setLang(pickLang(), false);
   route();

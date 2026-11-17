@@ -95,6 +95,7 @@
   </head>
   <body>
     <a class="skip" href="#main" data-i18n="skip">Skip to content</a>
+    <div class="gl" id="gl" aria-hidden="true"></div>
 
     <svg width="0" height="0" style="position: absolute" aria-hidden="true">
       <defs>
@@ -147,6 +148,101 @@
         <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" /></symbol>
         <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6" /><path d="m16 16 5 5" /></symbol>
         <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18" /></symbol>
+        <symbol id="i-cup" viewBox="0 0 24 24"><path d="M5 8h11v6a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5zM16 10h2a2.5 2.5 0 0 1 0 5h-2M8 3v2M12 3v2" /></symbol>
+        <symbol id="i-scissors" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5" /><circle cx="6" cy="18" r="2.5" /><path d="M8 7.5 20 17M8 16.5 20 7" /></symbol>
+        <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6zM9 8V6a3 3 0 0 1 6 0v2" /></symbol>
+        <symbol id="i-cross" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4" /><path d="M12 8v8M8 12h8" /></symbol>
+        <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.5 6.5a4 4 0 0 0-5 5L4 17l3 3 5.5-5.5a4 4 0 0 0 5-5L15 12l-3-3z" /></symbol>
+        <symbol id="i-building" viewBox="0 0 24 24"><path d="M5 21V4h9v17M14 9h5v12M3 21h18M8 8h3M8 12h3M8 16h3" /></symbol>
+        <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" /></symbol>
+        <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6" /><path d="m16 16 5 5" /></symbol>
+        <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18" /></symbol>
+        <symbol id="i-cup" viewBox="0 0 24 24"><path d="M5 8h11v6a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5zM16 10h2a2.5 2.5 0 0 1 0 5h-2M8 3v2M12 3v2" /></symbol>
+        <symbol id="i-scissors" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5" /><circle cx="6" cy="18" r="2.5" /><path d="M8 7.5 20 17M8 16.5 20 7" /></symbol>
+        <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6zM9 8V6a3 3 0 0 1 6 0v2" /></symbol>
+        <symbol id="i-cross" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4" /><path d="M12 8v8M8 12h8" /></symbol>
+        <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.5 6.5a4 4 0 0 0-5 5L4 17l3 3 5.5-5.5a4 4 0 0 0 5-5L15 12l-3-3z" /></symbol>
+        <symbol id="i-building" viewBox="0 0 24 24"><path d="M5 21V4h9v17M14 9h5v12M3 21h18M8 8h3M8 12h3M8 16h3" /></symbol>
+        <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" /></symbol>
+        <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6" /><path d="m16 16 5 5" /></symbol>
+        <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18" /></symbol>
+        <symbol id="i-cup" viewBox="0 0 24 24"><path d="M5 8h11v6a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5zM16 10h2a2.5 2.5 0 0 1 0 5h-2M8 3v2M12 3v2" /></symbol>
+        <symbol id="i-scissors" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5" /><circle cx="6" cy="18" r="2.5" /><path d="M8 7.5 20 17M8 16.5 20 7" /></symbol>
+        <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6zM9 8V6a3 3 0 0 1 6 0v2" /></symbol>
+        <symbol id="i-cross" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4" /><path d="M12 8v8M8 12h8" /></symbol>
+        <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.5 6.5a4 4 0 0 0-5 5L4 17l3 3 5.5-5.5a4 4 0 0 0 5-5L15 12l-3-3z" /></symbol>
+        <symbol id="i-building" viewBox="0 0 24 24"><path d="M5 21V4h9v17M14 9h5v12M3 21h18M8 8h3M8 12h3M8 16h3" /></symbol>
+        <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" /></symbol>
+        <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6" /><path d="m16 16 5 5" /></symbol>
+        <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18" /></symbol>
+        <symbol id="i-cup" viewBox="0 0 24 24"><path d="M5 8h11v6a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5zM16 10h2a2.5 2.5 0 0 1 0 5h-2M8 3v2M12 3v2" /></symbol>
+        <symbol id="i-scissors" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5" /><circle cx="6" cy="18" r="2.5" /><path d="M8 7.5 20 17M8 16.5 20 7" /></symbol>
+        <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6zM9 8V6a3 3 0 0 1 6 0v2" /></symbol>
+        <symbol id="i-cross" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4" /><path d="M12 8v8M8 12h8" /></symbol>
+        <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.5 6.5a4 4 0 0 0-5 5L4 17l3 3 5.5-5.5a4 4 0 0 0 5-5L15 12l-3-3z" /></symbol>
+        <symbol id="i-building" viewBox="0 0 24 24"><path d="M5 21V4h9v17M14 9h5v12M3 21h18M8 8h3M8 12h3M8 16h3" /></symbol>
+        <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" /></symbol>
+        <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6" /><path d="m16 16 5 5" /></symbol>
+        <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18" /></symbol>
+        <symbol id="i-cup" viewBox="0 0 24 24"><path d="M5 8h11v6a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5zM16 10h2a2.5 2.5 0 0 1 0 5h-2M8 3v2M12 3v2" /></symbol>
+        <symbol id="i-scissors" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5" /><circle cx="6" cy="18" r="2.5" /><path d="M8 7.5 20 17M8 16.5 20 7" /></symbol>
+        <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6zM9 8V6a3 3 0 0 1 6 0v2" /></symbol>
+        <symbol id="i-cross" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4" /><path d="M12 8v8M8 12h8" /></symbol>
+        <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.5 6.5a4 4 0 0 0-5 5L4 17l3 3 5.5-5.5a4 4 0 0 0 5-5L15 12l-3-3z" /></symbol>
+        <symbol id="i-building" viewBox="0 0 24 24"><path d="M5 21V4h9v17M14 9h5v12M3 21h18M8 8h3M8 12h3M8 16h3" /></symbol>
+        <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" /></symbol>
+        <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6" /><path d="m16 16 5 5" /></symbol>
+        <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18" /></symbol>
+        <symbol id="i-cup" viewBox="0 0 24 24"><path d="M5 8h11v6a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5zM16 10h2a2.5 2.5 0 0 1 0 5h-2M8 3v2M12 3v2" /></symbol>
+        <symbol id="i-scissors" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5" /><circle cx="6" cy="18" r="2.5" /><path d="M8 7.5 20 17M8 16.5 20 7" /></symbol>
+        <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6zM9 8V6a3 3 0 0 1 6 0v2" /></symbol>
+        <symbol id="i-cross" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4" /><path d="M12 8v8M8 12h8" /></symbol>
+        <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.5 6.5a4 4 0 0 0-5 5L4 17l3 3 5.5-5.5a4 4 0 0 0 5-5L15 12l-3-3z" /></symbol>
+        <symbol id="i-building" viewBox="0 0 24 24"><path d="M5 21V4h9v17M14 9h5v12M3 21h18M8 8h3M8 12h3M8 16h3" /></symbol>
+        <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" /></symbol>
+        <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6" /><path d="m16 16 5 5" /></symbol>
+        <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18" /></symbol>
+        <symbol id="i-cup" viewBox="0 0 24 24"><path d="M5 8h11v6a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5zM16 10h2a2.5 2.5 0 0 1 0 5h-2M8 3v2M12 3v2" /></symbol>
+        <symbol id="i-scissors" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5" /><circle cx="6" cy="18" r="2.5" /><path d="M8 7.5 20 17M8 16.5 20 7" /></symbol>
+        <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6zM9 8V6a3 3 0 0 1 6 0v2" /></symbol>
+        <symbol id="i-cross" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4" /><path d="M12 8v8M8 12h8" /></symbol>
+        <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.5 6.5a4 4 0 0 0-5 5L4 17l3 3 5.5-5.5a4 4 0 0 0 5-5L15 12l-3-3z" /></symbol>
+        <symbol id="i-building" viewBox="0 0 24 24"><path d="M5 21V4h9v17M14 9h5v12M3 21h18M8 8h3M8 12h3M8 16h3" /></symbol>
+        <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" /></symbol>
+        <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6" /><path d="m16 16 5 5" /></symbol>
+        <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18" /></symbol>
+        <symbol id="i-cup" viewBox="0 0 24 24"><path d="M5 8h11v6a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5zM16 10h2a2.5 2.5 0 0 1 0 5h-2M8 3v2M12 3v2" /></symbol>
+        <symbol id="i-scissors" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5" /><circle cx="6" cy="18" r="2.5" /><path d="M8 7.5 20 17M8 16.5 20 7" /></symbol>
+        <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6zM9 8V6a3 3 0 0 1 6 0v2" /></symbol>
+        <symbol id="i-cross" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4" /><path d="M12 8v8M8 12h8" /></symbol>
+        <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.5 6.5a4 4 0 0 0-5 5L4 17l3 3 5.5-5.5a4 4 0 0 0 5-5L15 12l-3-3z" /></symbol>
+        <symbol id="i-building" viewBox="0 0 24 24"><path d="M5 21V4h9v17M14 9h5v12M3 21h18M8 8h3M8 12h3M8 16h3" /></symbol>
+        <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" /></symbol>
+        <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6" /><path d="m16 16 5 5" /></symbol>
+        <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18" /></symbol>
+        <symbol id="l-scissors" viewBox="0 0 256 256"><path d="M40.2,95.8a28,28,0,1,1,39.6,0A28,28,0,0,1,40.2,95.8Zm0,64.4a28,28,0,1,0,39.6,0A28,28,0,0,0,40.2,160.2Z" opacity="0.2"/><path d="M157.73,113.13A8,8,0,0,1,159.82,102L227.48,55.7a8,8,0,0,1,9,13.21l-67.67,46.3a7.92,7.92,0,0,1-4.51,1.4A8,8,0,0,1,157.73,113.13Zm80.87,85.09a8,8,0,0,1-11.12,2.08L136,137.7,93.49,166.78a36,36,0,1,1-9-13.19L121.83,128,84.44,102.41a35.86,35.86,0,1,1,9-13.19l143,97.87A8,8,0,0,1,238.6,198.22ZM80,180a20,20,0,1,0-5.86,14.14A19.85,19.85,0,0,0,80,180ZM74.14,90.13a20,20,0,1,0-28.28,0A19.85,19.85,0,0,0,74.14,90.13Z"/></symbol>
+        <symbol id="l-spray-can" viewBox="0 0 256 256"><path d="M200,211.47V224a8,8,0,0,1-8,8H88a8,8,0,0,1-8-8V167.38a32,32,0,0,1,12-25l16-12.78a32,32,0,0,0,12-25V72h40A263.14,263.14,0,0,1,200,211.47Z" opacity="0.2"/><path d="M200,80a8,8,0,0,0,8-8,56.06,56.06,0,0,0-56-56H80A16,16,0,0,0,64,32V80a24,24,0,0,1-24,24,8,8,0,0,0,0,16A40,40,0,0,0,80,80h32v24.62a23.87,23.87,0,0,1-9,18.74L87,136.15a39.79,39.79,0,0,0-15,31.23V224a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V211.47A270.88,270.88,0,0,0,174,80ZM80,32h72a40.08,40.08,0,0,1,39.2,32H80ZM192,211.47V224H88V167.38a23.87,23.87,0,0,1,9-18.74l16-12.79a39.79,39.79,0,0,0,15-31.23V80h27.52A254.86,254.86,0,0,1,192,211.47Z"/></symbol>
+        <symbol id="l-coffee" viewBox="0 0 256 256"><path d="M208,88v48a88,88,0,0,1-51.3,80H83.3A88,88,0,0,1,32,136V88Z" opacity="0.2"/><path d="M80,56V24a8,8,0,0,1,16,0V56a8,8,0,0,1-16,0Zm40,8a8,8,0,0,0,8-8V24a8,8,0,0,0-16,0V56A8,8,0,0,0,120,64Zm32,0a8,8,0,0,0,8-8V24a8,8,0,0,0-16,0V56A8,8,0,0,0,152,64Zm96,56v8a40,40,0,0,1-37.51,39.91,96.59,96.59,0,0,1-27,40.09H208a8,8,0,0,1,0,16H32a8,8,0,0,1,0-16H56.54A96.3,96.3,0,0,1,24,136V88a8,8,0,0,1,8-8H208A40,40,0,0,1,248,120ZM200,96H40v40a80.27,80.27,0,0,0,45.12,72h69.76A80.27,80.27,0,0,0,200,136Zm32,24a24,24,0,0,0-16-22.62V136a95.78,95.78,0,0,1-1.2,15A24,24,0,0,0,232,128Z"/></symbol>
+        <symbol id="l-shopping-bag" viewBox="0 0 256 256"><path d="M224,56V200a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V56a8,8,0,0,1,8-8H216A8,8,0,0,1,224,56Z" opacity="0.2"/><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM176,88a48,48,0,0,1-96,0,8,8,0,0,1,16,0,32,32,0,0,0,64,0,8,8,0,0,1,16,0Z"/></symbol>
+        <symbol id="l-stethoscope" viewBox="0 0 256 256"><path d="M240,160a32,32,0,1,1-32-32A32,32,0,0,1,240,160Z" opacity="0.2"/><path d="M220,160a12,12,0,1,1-12-12A12,12,0,0,1,220,160Zm-4.55,39.29A48.08,48.08,0,0,1,168,240H144a48.05,48.05,0,0,1-48-48V151.49A64,64,0,0,1,40,88V40a8,8,0,0,1,8-8H72a8,8,0,0,1,0,16H56V88a48,48,0,0,0,48.64,48c26.11-.34,47.36-22.25,47.36-48.83V48H136a8,8,0,0,1,0-16h24a8,8,0,0,1,8,8V87.17c0,32.84-24.53,60.29-56,64.31V192a32,32,0,0,0,32,32h24a32.06,32.06,0,0,0,31.22-25,40,40,0,1,1,16.23.27ZM232,160a24,24,0,1,0-24,24A24,24,0,0,0,232,160Z"/></symbol>
+        <symbol id="l-wrench" viewBox="0 0 256 256"><path d="M245.66,129,217,157.66a8,8,0,0,1-11.3,0L168.1,120l-28,28-32-32,28-28L80,31.78a87.81,87.81,0,0,1,98.31,18l67.35,67.89A8,8,0,0,1,245.66,129Z" opacity="0.2"/><path d="M251.34,112,183.88,44.08a96.1,96.1,0,0,0-135.77,0l-.09.09L34.25,58.4A8,8,0,0,0,45.74,69.53L59.47,55.35a79.92,79.92,0,0,1,18.71-13.9L124.68,88l-96,96a16,16,0,0,0,0,22.63l20.69,20.69a16,16,0,0,0,22.63,0l96-96,14.34,14.34h0L200,163.3a16,16,0,0,0,22.63,0l28.69-28.69A16,16,0,0,0,251.34,112ZM60.68,216,40,195.31l68-68L128.68,148ZM162.34,114.32,140,136.67,119.31,116l22.35-22.35a8,8,0,0,0,0-11.32L94.32,35a80,80,0,0,1,78.23,20.41l44.22,44.51L188,128.66l-14.34-14.34A8,8,0,0,0,162.34,114.32Zm49,37.66-12-12L228,111.25l12,12Z"/></symbol>
+        <symbol id="l-dumbbell" viewBox="0 0 256 256"><path d="M96,64V192a8,8,0,0,1-8,8H64a8,8,0,0,1-8-8V64a8,8,0,0,1,8-8H88A8,8,0,0,1,96,64Zm96-8H168a8,8,0,0,0-8,8V192a8,8,0,0,0,8,8h24a8,8,0,0,0,8-8V64A8,8,0,0,0,192,56Z" opacity="0.2"/><path d="M248,120h-8V88a16,16,0,0,0-16-16H208V64a16,16,0,0,0-16-16H168a16,16,0,0,0-16,16v56H104V64A16,16,0,0,0,88,48H64A16,16,0,0,0,48,64v8H32A16,16,0,0,0,16,88v32H8a8,8,0,0,0,0,16h8v32a16,16,0,0,0,16,16H48v8a16,16,0,0,0,16,16H88a16,16,0,0,0,16-16V136h48v56a16,16,0,0,0,16,16h24a16,16,0,0,0,16-16v-8h16a16,16,0,0,0,16-16V136h8a8,8,0,0,0,0-16ZM32,168V88H48v80Zm56,24H64V64H88V192Zm104,0H168V64h24V175.83c0,.06,0,.11,0,.17s0,.12,0,.17V192Zm32-24H208V88h16Z"/></symbol>
+        <symbol id="l-building-2" viewBox="0 0 256 256"><path d="M136,32V216H40V85.35a8,8,0,0,1,3.56-6.66l80-53.33A8,8,0,0,1,136,32Z" opacity="0.2"/><path d="M240,208H224V96a16,16,0,0,0-16-16H144V32a16,16,0,0,0-24.88-13.32L39.12,72A16,16,0,0,0,32,85.34V208H16a8,8,0,0,0,0,16H240a8,8,0,0,0,0-16ZM208,96V208H144V96ZM48,85.34,128,32V208H48ZM112,112v16a8,8,0,0,1-16,0V112a8,8,0,1,1,16,0Zm-32,0v16a8,8,0,0,1-16,0V112a8,8,0,1,1,16,0Zm0,56v16a8,8,0,0,1-16,0V168a8,8,0,0,1,16,0Zm32,0v16a8,8,0,0,1-16,0V168a8,8,0,0,1,16,0Z"/></symbol>
+        <symbol id="l-sparkles" viewBox="0 0 256 256"><path d="M194.82,151.43l-55.09,20.3-20.3,55.09a7.92,7.92,0,0,1-14.86,0l-20.3-55.09-55.09-20.3a7.92,7.92,0,0,1,0-14.86l55.09-20.3,20.3-55.09a7.92,7.92,0,0,1,14.86,0l20.3,55.09,55.09,20.3A7.92,7.92,0,0,1,194.82,151.43Z" opacity="0.2"/><path d="M197.58,129.06,146,110l-19-51.62a15.92,15.92,0,0,0-29.88,0L78,110l-51.62,19a15.92,15.92,0,0,0,0,29.88L78,178l19,51.62a15.92,15.92,0,0,0,29.88,0L146,178l51.62-19a15.92,15.92,0,0,0,0-29.88ZM137,164.22a8,8,0,0,0-4.74,4.74L112,223.85,91.78,169A8,8,0,0,0,87,164.22L32.15,144,87,123.78A8,8,0,0,0,91.78,119L112,64.15,132.22,119a8,8,0,0,0,4.74,4.74L191.85,144ZM144,40a8,8,0,0,1,8-8h16V16a8,8,0,0,1,16,0V32h16a8,8,0,0,1,0,16H184V64a8,8,0,0,1-16,0V48H152A8,8,0,0,1,144,40ZM248,88a8,8,0,0,1-8,8h-8v8a8,8,0,0,1-16,0V96h-8a8,8,0,0,1,0-16h8V72a8,8,0,0,1,16,0v8h8A8,8,0,0,1,248,88Z"/></symbol>
+        <symbol id="l-calendar-days" viewBox="0 0 256 256"><path d="M216,48V88H40V48a8,8,0,0,1,8-8H208A8,8,0,0,1,216,48Z" opacity="0.2"/><path d="M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM72,48v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80H48V48ZM208,208H48V96H208V208Zm-68-76a12,12,0,1,1-12-12A12,12,0,0,1,140,132Zm44,0a12,12,0,1,1-12-12A12,12,0,0,1,184,132ZM96,172a12,12,0,1,1-12-12A12,12,0,0,1,96,172Zm44,0a12,12,0,1,1-12-12A12,12,0,0,1,140,172Zm44,0a12,12,0,1,1-12-12A12,12,0,0,1,184,172Z"/></symbol>
+        <symbol id="l-bot" viewBox="0 0 256 256"><path d="M200,56H56A24,24,0,0,0,32,80V192a24,24,0,0,0,24,24H200a24,24,0,0,0,24-24V80A24,24,0,0,0,200,56ZM164,184H92a20,20,0,0,1,0-40h72a20,20,0,0,1,0,40Z" opacity="0.2"/><path d="M200,48H136V16a8,8,0,0,0-16,0V48H56A32,32,0,0,0,24,80V192a32,32,0,0,0,32,32H200a32,32,0,0,0,32-32V80A32,32,0,0,0,200,48Zm16,144a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V80A16,16,0,0,1,56,64H200a16,16,0,0,1,16,16ZM72,108a12,12,0,1,1,12,12A12,12,0,0,1,72,108Zm88,0a12,12,0,1,1,12,12A12,12,0,0,1,160,108Zm4,28H92a28,28,0,0,0,0,56h72a28,28,0,0,0,0-56Zm-24,16v24H116V152ZM80,164a12,12,0,0,1,12-12h8v24H92A12,12,0,0,1,80,164Zm84,12h-8V152h8a12,12,0,0,1,0,24Z"/></symbol>
+        <symbol id="l-image" viewBox="0 0 256 256"><path d="M224,56V178.06l-39.72-39.72a8,8,0,0,0-11.31,0L147.31,164,97.66,114.34a8,8,0,0,0-11.32,0L32,168.69V56a8,8,0,0,1,8-8H216A8,8,0,0,1,224,56Z" opacity="0.2"/><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,16V158.75l-26.07-26.06a16,16,0,0,0-22.63,0l-20,20-44-44a16,16,0,0,0-22.62,0L40,149.37V56ZM40,172l52-52,80,80H40Zm176,28H194.63l-36-36,20-20L216,181.38V200ZM144,100a12,12,0,1,1,12,12A12,12,0,0,1,144,100Z"/></symbol>
+        <symbol id="l-chart-column" viewBox="0 0 256 256"><path d="M208,40V208H152V40Z" opacity="0.2"/><path d="M224,200h-8V40a8,8,0,0,0-8-8H152a8,8,0,0,0-8,8V80H96a8,8,0,0,0-8,8v40H48a8,8,0,0,0-8,8v64H32a8,8,0,0,0,0,16H224a8,8,0,0,0,0-16ZM160,48h40V200H160ZM104,96h40V200H104ZM56,144H88v56H56Z"/></symbol>
+        <symbol id="l-file-text" viewBox="0 0 256 256"><path d="M208,88H152V32Z" opacity="0.2"/><path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Zm-32-80a8,8,0,0,1-8,8H96a8,8,0,0,1,0-16h64A8,8,0,0,1,168,136Zm0,32a8,8,0,0,1-8,8H96a8,8,0,0,1,0-16h64A8,8,0,0,1,168,168Z"/></symbol>
+        <symbol id="l-star" viewBox="0 0 256 256"><path d="M229.06,108.79l-48.7,42,14.88,62.79a8.4,8.4,0,0,1-12.52,9.17L128,189.09,73.28,222.74a8.4,8.4,0,0,1-12.52-9.17l14.88-62.79-48.7-42A8.46,8.46,0,0,1,31.73,94L95.64,88.8l24.62-59.6a8.36,8.36,0,0,1,15.48,0l24.62,59.6L224.27,94A8.46,8.46,0,0,1,229.06,108.79Z" opacity="0.2"/><path d="M239.18,97.26A16.38,16.38,0,0,0,224.92,86l-59-4.76L143.14,26.15a16.36,16.36,0,0,0-30.27,0L90.11,81.23,31.08,86a16.46,16.46,0,0,0-9.37,28.86l45,38.83L53,211.75a16.38,16.38,0,0,0,24.5,17.82L128,198.49l50.53,31.08A16.4,16.4,0,0,0,203,211.75l-13.76-58.07,45-38.83A16.43,16.43,0,0,0,239.18,97.26Zm-15.34,5.47-48.7,42a8,8,0,0,0-2.56,7.91l14.88,62.8a.37.37,0,0,1-.17.48c-.18.14-.23.11-.38,0l-54.72-33.65a8,8,0,0,0-8.38,0L69.09,215.94c-.15.09-.19.12-.38,0a.37.37,0,0,1-.17-.48l14.88-62.8a8,8,0,0,0-2.56-7.91l-48.7-42c-.12-.1-.23-.19-.13-.5s.18-.27.33-.29l63.92-5.16A8,8,0,0,0,103,91.86l24.62-59.61c.08-.17.11-.25.35-.25s.27.08.35.25L153,91.86a8,8,0,0,0,6.75,4.92l63.92,5.16c.15,0,.24,0,.33.29S224,102.63,223.84,102.73Z"/></symbol>
+        <symbol id="l-search" viewBox="0 0 256 256"><path d="M192,112a80,80,0,1,1-80-80A80,80,0,0,1,192,112Z" opacity="0.2"/><path d="M229.66,218.34,179.6,168.28a88.21,88.21,0,1,0-11.32,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/></symbol>
+        <symbol id="l-globe" viewBox="0 0 256 256"><path d="M224,128a96,96,0,1,1-96-96A96,96,0,0,1,224,128Z" opacity="0.2"/><path d="M128,24h0A104,104,0,1,0,232,128,104.12,104.12,0,0,0,128,24Zm88,104a87.61,87.61,0,0,1-3.33,24H174.16a157.44,157.44,0,0,0,0-48h38.51A87.61,87.61,0,0,1,216,128ZM102,168H154a115.11,115.11,0,0,1-26,45A115.27,115.27,0,0,1,102,168Zm-3.9-16a140.84,140.84,0,0,1,0-48h59.88a140.84,140.84,0,0,1,0,48ZM40,128a87.61,87.61,0,0,1,3.33-24H81.84a157.44,157.44,0,0,0,0,48H43.33A87.61,87.61,0,0,1,40,128ZM154,88H102a115.11,115.11,0,0,1,26-45A115.27,115.27,0,0,1,154,88Zm52.33,0H170.71a135.28,135.28,0,0,0-22.3-45.6A88.29,88.29,0,0,1,206.37,88ZM107.59,42.4A135.28,135.28,0,0,0,85.29,88H49.63A88.29,88.29,0,0,1,107.59,42.4ZM49.63,168H85.29a135.28,135.28,0,0,0,22.3,45.6A88.29,88.29,0,0,1,49.63,168Zm98.78,45.6a135.28,135.28,0,0,0,22.3-45.6h35.66A88.29,88.29,0,0,1,148.41,213.6Z"/></symbol>
+        <symbol id="l-contact" viewBox="0 0 256 256"><path d="M208,32H64a8,8,0,0,0-8,8V216a8,8,0,0,0,8,8H208a8,8,0,0,0,8-8V40A8,8,0,0,0,208,32ZM136,144a32,32,0,1,1,32-32A32,32,0,0,1,136,144Z" opacity="0.2"/><path d="M83.19,174.4a8,8,0,0,0,11.21-1.6,52,52,0,0,1,83.2,0,8,8,0,1,0,12.8-9.6A67.88,67.88,0,0,0,163,141.51a40,40,0,1,0-53.94,0A67.88,67.88,0,0,0,81.6,163.2,8,8,0,0,0,83.19,174.4ZM112,112a24,24,0,1,1,24,24A24,24,0,0,1,112,112Zm96-88H64A16,16,0,0,0,48,40V64H32a8,8,0,0,0,0,16H48v40H32a8,8,0,0,0,0,16H48v40H32a8,8,0,0,0,0,16H48v24a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V40A16,16,0,0,0,208,24Zm0,192H64V40H208Z"/></symbol>
+        <symbol id="l-bell-ring" viewBox="0 0 256 256"><path d="M208,192H48a8,8,0,0,1-6.88-12C47.71,168.6,56,147.81,56,112a72,72,0,0,1,144,0c0,35.82,8.3,56.6,14.9,68A8,8,0,0,1,208,192Z" opacity="0.2"/><path d="M224,71.1a8,8,0,0,1-10.78-3.42,94.13,94.13,0,0,0-33.46-36.91,8,8,0,1,1,8.54-13.54,111.46,111.46,0,0,1,39.12,43.09A8,8,0,0,1,224,71.1ZM35.71,72a8,8,0,0,0,7.1-4.32A94.13,94.13,0,0,1,76.27,30.77a8,8,0,1,0-8.54-13.54A111.46,111.46,0,0,0,28.61,60.32,8,8,0,0,0,35.71,72Zm186.1,103.94A16,16,0,0,1,208,200H167.2a40,40,0,0,1-78.4,0H48a16,16,0,0,1-13.79-24.06C43.22,160.39,48,138.28,48,112a80,80,0,0,1,160,0C208,138.27,212.78,160.38,221.81,175.94ZM150.62,200H105.38a24,24,0,0,0,45.24,0ZM208,184c-10.64-18.27-16-42.49-16-72a64,64,0,0,0-128,0c0,29.52-5.38,53.74-16,72Z"/></symbol>
+        <symbol id="l-languages" viewBox="0 0 256 256"><path d="M224,184H144l40-80ZM96,127.56h0A95.78,95.78,0,0,0,128,56H64A95.78,95.78,0,0,0,96,127.56Z" opacity="0.2"/><path d="M247.15,212.42l-56-112a8,8,0,0,0-14.31,0l-21.71,43.43A88,88,0,0,1,108,126.93,103.65,103.65,0,0,0,135.69,64H160a8,8,0,0,0,0-16H104V32a8,8,0,0,0-16,0V48H32a8,8,0,0,0,0,16h87.63A87.7,87.7,0,0,1,96,116.35a87.74,87.74,0,0,1-19-31,8,8,0,1,0-15.08,5.34A103.63,103.63,0,0,0,84,127a87.55,87.55,0,0,1-52,17,8,8,0,0,0,0,16,103.46,103.46,0,0,0,64-22.08,104.18,104.18,0,0,0,51.44,21.31l-26.6,53.19a8,8,0,0,0,14.31,7.16L148.94,192h70.11l13.79,27.58A8,8,0,0,0,240,224a8,8,0,0,0,7.15-11.58ZM156.94,176,184,121.89,211.05,176Z"/></symbol>
+        <symbol id="l-message-square-more" viewBox="0 0 256 256"><path d="M224,128A96,96,0,0,1,79.93,211.11h0L42.54,223.58a8,8,0,0,1-10.12-10.12l12.47-37.39h0A96,96,0,1,1,224,128Z" opacity="0.2"/><path d="M128,24A104,104,0,0,0,36.18,176.88L24.83,210.93a16,16,0,0,0,20.24,20.24l34.05-11.35A104,104,0,1,0,128,24Zm0,192a87.87,87.87,0,0,1-44.06-11.81,8,8,0,0,0-4-1.08,7.85,7.85,0,0,0-2.53.42L40,216,52.47,178.6a8,8,0,0,0-.66-6.54A88,88,0,1,1,128,216Zm12-88a12,12,0,1,1-12-12A12,12,0,0,1,140,128Zm-44,0a12,12,0,1,1-12-12A12,12,0,0,1,96,128Zm88,0a12,12,0,1,1-12-12A12,12,0,0,1,184,128Z"/></symbol>
+        <symbol id="l-chevron-left" viewBox="0 0 256 256"><path d="M160,48V208L80,128Z" opacity="0.2"/><path d="M163.06,40.61a8,8,0,0,0-8.72,1.73l-80,80a8,8,0,0,0,0,11.32l80,80A8,8,0,0,0,168,208V48A8,8,0,0,0,163.06,40.61ZM152,188.69,91.31,128,152,67.31Z"/></symbol>
+        <symbol id="l-chevron-right" viewBox="0 0 256 256"><path d="M176,128,96,208V48Z" opacity="0.2"/><path d="M181.66,122.34l-80-80A8,8,0,0,0,88,48V208a8,8,0,0,0,13.66,5.66l80-80A8,8,0,0,0,181.66,122.34ZM104,188.69V67.31L164.69,128Z"/></symbol>
       </defs>
     </svg>
 
@@ -156,7 +252,6 @@
           <a class="logo" href="#top" aria-label="Kostin Automation"><i>K</i><span>Kostin Automation</span></a>
           <ul class="nav__links">
             <li><a href="#services" data-i18n="nav.services">What I do</a></li>
-            <li><a href="#pricing" data-i18n="nav.pricing">Prices</a></li>
           </ul>
           <div class="lang" role="group" aria-label="Language">
             <button type="button" data-lang="en" aria-pressed="true">EN</button>
@@ -172,253 +267,546 @@
     <main id="main">
       <div id="home">
       <section class="hero" id="top">
-        <div class="wrap hero__grid">
-          <div>
-            <h1 class="rv" data-i18n-html="hero.h1">I put <mark>AI</mark> to work in your business.</h1>
-            <div class="vchips rv" style="--i: 1"><button type="button" class="vchip" data-v="cafe" aria-pressed="false"><svg class="ico"><use href="#i-cup" /></svg><span data-i18n="v.cafe">Cafes</span></button><button type="button" class="vchip" data-v="salon" aria-pressed="false"><svg class="ico"><use href="#i-scissors" /></svg><span data-i18n="v.salon">Salons</span></button><button type="button" class="vchip" data-v="shop" aria-pressed="false"><svg class="ico"><use href="#i-bag" /></svg><span data-i18n="v.shop">Shops</span></button><button type="button" class="vchip" data-v="clinic" aria-pressed="false"><svg class="ico"><use href="#i-cross" /></svg><span data-i18n="v.clinic">Clinics</span></button><button type="button" class="vchip" data-v="craft" aria-pressed="false"><svg class="ico"><use href="#i-wrench" /></svg><span data-i18n="v.craft">Trades</span></button><button type="button" class="vchip" data-v="office" aria-pressed="false"><svg class="ico"><use href="#i-building" /></svg><span data-i18n="v.office">Offices</span></button></div>
-            <div class="hero__cta rv" style="--i: 2">
-              <a class="btn btn--ink" href="#services"><svg class="ico"><use href="#i-spark" /></svg><span data-i18n="hero.cta">Choose a service</span></a>
-              <a class="btn btn--ghost" href="https://t.me/onomamichail" target="_blank" rel="noopener"><svg class="ico"><use href="#i-send" /></svg><span data-i18n="hero.write">Write on Telegram</span></a>
-            </div>
-            <p class="about rv" style="--i: 3"><i>K</i><span data-i18n="ab.line">Mikhail, Germany. I write in 4 languages.</span></p>
-          </div>
-          <div class="collage" aria-hidden="true">
-            <div class="cg cg--chat rv">
-              <div class="bub bub--u"><span data-i18n="co.1">Free slot on Friday?</span></div>
-              <div class="bub bub--b"><span data-i18n="co.2">Booked for 16:30 ✓</span></div>
-            </div>
-            <div class="cg cg--rep rv" style="--i: 1">
-              <div class="bars"><i style="--h: 35%"></i><i style="--h: 55%"></i><i style="--h: 45%"></i><i style="--h: 80%"></i><i style="--h: 100%"></i></div>
-              <span class="cap" data-i18n="co.3">Weekly report is ready</span>
-            </div>
-            <div class="cg cg--rev rv" style="--i: 2">
-              <div class="stars">★★★★★</div>
-              <span class="cap" data-i18n="co.4">Review answered</span>
-            </div>
-            <div class="cg cg--post rv" style="--i: 3">
-              <span class="cg__ico"><svg class="ico"><use href="#i-cal" /></svg></span>
-              <span data-i18n="co.5">Post published</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="services" style="padding-top: 0">
+        <div class="hero__bg" aria-hidden="true"></div>
         <div class="wrap">
-          <h2 class="rv" data-i18n="svc.h2">What I do</h2>
-          <p class="lead rv" data-i18n="svc.sub">Tap what you need</p>
-          <div class="cards" id="work">
-            <a class="card rv" style="--i: 0" data-vs="cafe craft salon shop" href="#/social">
-              <span class="card__ico"><svg class="ico"><use href="#i-cal" /></svg></span>
-              <h3 data-i18n="sv.social.h">Social media</h3>
-              <span class="card__foot"><span class="card__price"><span data-i18n="pr.from">from</span> €100 <span data-i18n="pr.mo">/ month</span></span><span class="card__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span></span>
-            </a>
-            <a class="card rv" style="--i: 1" data-vs="cafe clinic salon shop" href="#/bot">
-              <span class="card__ico"><svg class="ico"><use href="#i-bot" /></svg></span>
-              <h3 data-i18n="sv.bot.h">Chatbot and booking</h3>
-              <span class="card__foot"><span class="card__price"><span data-i18n="pr.from">from</span> €790</span><span class="card__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span></span>
-            </a>
-            <a class="card rv" style="--i: 2" data-vs="cafe salon shop" href="#/content">
-              <span class="card__ico"><svg class="ico"><use href="#i-img" /></svg></span>
-              <h3 data-i18n="sv.content.h">Photos, video, texts</h3>
-              <span class="card__foot"><span class="card__price"><span data-i18n="pr.from">from</span> €5</span><span class="card__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span></span>
-            </a>
-            <a class="card rv" style="--i: 3" data-vs="cafe clinic office shop" href="#/reports">
-              <span class="card__ico"><svg class="ico"><use href="#i-chart" /></svg></span>
-              <h3 data-i18n="sv.reports.h">Reports and spreadsheets</h3>
-              <span class="card__foot"><span class="card__price"><span data-i18n="pr.from">from</span> €190</span><span class="card__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span></span>
-            </a>
-            <a class="card rv" style="--i: 0" data-vs="clinic craft office shop" href="#/docs">
-              <span class="card__ico"><svg class="ico"><use href="#i-file" /></svg></span>
-              <h3 data-i18n="sv.docs.h">Emails and documents</h3>
-              <span class="card__foot"><span class="card__price"><span data-i18n="pr.from">from</span> €190</span><span class="card__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span></span>
-            </a>
-            <a class="card rv" style="--i: 1" data-vs="cafe clinic salon shop" href="#/reviews">
-              <span class="card__ico"><svg class="ico"><use href="#i-star" /></svg></span>
-              <h3 data-i18n="sv.reviews.h">Reviews and reputation</h3>
-              <span class="card__foot"><span class="card__price"><span data-i18n="pr.from">from</span> €150</span><span class="card__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span></span>
-            </a>
-            <a class="card rv" style="--i: 2" data-vs="cafe craft office shop" href="#/data">
-              <span class="card__ico"><svg class="ico"><use href="#i-search" /></svg></span>
-              <h3 data-i18n="sv.data.h">Data and price monitoring</h3>
-              <span class="card__foot"><span class="card__price"><span data-i18n="pr.from">from</span> €290</span><span class="card__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span></span>
-            </a>
-            <a class="card rv" style="--i: 3" data-vs="cafe craft salon shop" href="#/site">
-              <span class="card__ico"><svg class="ico"><use href="#i-globe" /></svg></span>
-              <h3 data-i18n="sv.site.h">Website and SEO</h3>
-              <span class="card__foot"><span class="card__price"><span data-i18n="pr.from">from</span> €290</span><span class="card__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span></span>
-            </a>
-            <a class="card rv" style="--i: 0" data-vs="craft office salon shop" href="#/leads">
-              <span class="card__ico"><svg class="ico"><use href="#i-card" /></svg></span>
-              <h3 data-i18n="sv.leads.h">Leads and requests</h3>
-              <span class="card__foot"><span class="card__price"><span data-i18n="pr.from">from</span> €290</span><span class="card__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span></span>
-            </a>
-            <a class="card rv" style="--i: 1" data-vs="cafe clinic salon shop" href="#/mail">
-              <span class="card__ico"><svg class="ico"><use href="#i-send" /></svg></span>
-              <h3 data-i18n="sv.mail.h">Reminders and mailings</h3>
-              <span class="card__foot"><span class="card__price"><span data-i18n="pr.from">from</span> €190</span><span class="card__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span></span>
-            </a>
-            <a class="card rv" style="--i: 2" data-vs="cafe clinic office shop" href="#/translate">
-              <span class="card__ico"><svg class="ico"><use href="#i-msg" /></svg></span>
-              <h3 data-i18n="sv.translate.h">Translation, 4 languages</h3>
-              <span class="card__foot"><span class="card__price"><span data-i18n="pr.from">from</span> €49</span><span class="card__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span></span>
-            </a>
-            <a class="card rv" style="--i: 3" data-vs="clinic craft office shop" href="#/assistant">
-              <span class="card__ico"><svg class="ico"><use href="#i-user" /></svg></span>
-              <h3 data-i18n="sv.assistant.h">AI helper for your team</h3>
-              <span class="card__foot"><span class="card__price"><span data-i18n="pr.from">from</span> €490</span><span class="card__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span></span>
-            </a>
-          </div>
-          <a class="custom rv" href="#contact" data-order="custom">
-            <span class="card__ico"><svg class="ico"><use href="#i-spark" /></svg></span>
-            <div class="custom__t">
-              <h3 data-i18n="cu.h">Have a task to automate?</h3>
-              <p data-i18n="cu.p">Describe it. If I can solve it, I will build it for you, turnkey.</p>
-            </div>
-            <span class="btn btn--ink"><span data-i18n="cu.btn">Describe the task</span><svg class="ico"><use href="#i-arrow" /></svg></span>
-          </a>
+          <h1 class="rv" data-i18n-html="hero.h1">I put <mark>AI</mark> to work in your business.</h1>
+          <p class="hero__ask rv" style="--i: 1"><b data-i18n="hero.ask">What is your business?</b></p>
         </div>
-      </section>
-
-      <section class="how" id="how">
-        <div class="wrap">
-          <h2 class="h2--sm rv" data-i18n="how.h2">How it works</h2>
-          <ol class="steps">
-            <li class="step rv"><span class="step__ico"><svg class="ico"><use href="#i-msg" /></svg></span><span data-i18n="how.1">Write what you need</span></li>
-            <li class="steps__arr" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></li>
-            <li class="step rv" style="--i: 1"><span class="step__ico"><svg class="ico"><use href="#i-spark" /></svg></span><span data-i18n="how.2">I suggest a solution and a price</span></li>
-            <li class="steps__arr" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></li>
-            <li class="step rv" style="--i: 2"><span class="step__ico"><svg class="ico"><use href="#i-check" /></svg></span><span data-i18n="how.3">You get a working result</span></li>
-          </ol>
-        </div>
-      </section>
-
-      <section id="pricing">
-        <div class="wrap">
-          <h2 class="rv" data-i18n="pr.h2">Prices</h2>
-          <div class="menu">
-            <a class="pm rv" style="--i: 1" href="#contact" data-order="bot">
-              <small data-i18n="sv.bot.h">Chatbot and booking</small>
-              <em class="pm__d" data-i18n="d.bot">Answers and books clients 24/7</em>
-              <div class="pm__price"><span data-i18n="pr.from">from</span> <b>€790</b></div>
-              <span class="pm__go"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></span>
-            </a>
-            <a class="pm rv" style="--i: 2" href="#contact" data-order="photo">
-              <small data-i18n="pm.photo">Product photo</small>
-              <em class="pm__d" data-i18n="pm.photo.d">One photo turned into a finished ad</em>
-              <div class="pm__price"><b>€5</b></div>
-              <span class="pm__go"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></span>
-            </a>
-            <a class="pm rv" style="--i: 2" href="#contact" data-order="video">
-              <small data-i18n="pm.video">Video ad</small>
-              <em class="pm__d" data-i18n="pm.video.d">15 seconds, vertical</em>
-              <div class="pm__price"><span data-i18n="pr.from">from</span> <b>€79</b></div>
-              <span class="pm__go"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></span>
-            </a>
-            <a class="pm rv" style="--i: 3" href="#contact" data-order="reports">
-              <small data-i18n="sv.reports.h">Reports and spreadsheets</small>
-              <em class="pm__d" data-i18n="d.reports">Numbers collected and sent to you</em>
-              <div class="pm__price"><span data-i18n="pr.from">from</span> <b>€190</b></div>
-              <span class="pm__go"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></span>
-            </a>
-            <a class="pm rv" style="--i: 0" href="#contact" data-order="docs">
-              <small data-i18n="sv.docs.h">Emails and documents</small>
-              <em class="pm__d" data-i18n="d.docs">Letters and papers written for you</em>
-              <div class="pm__price"><span data-i18n="pr.from">from</span> <b>€190</b></div>
-              <span class="pm__go"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></span>
-            </a>
-            <a class="pm rv" style="--i: 1" href="#contact" data-order="reviews">
-              <small data-i18n="sv.reviews.h">Reviews and reputation</small>
-              <em class="pm__d" data-i18n="d.reviews">Replies and ratings on autopilot</em>
-              <div class="pm__price"><span data-i18n="pr.from">from</span> <b>€150</b></div>
-              <span class="pm__go"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></span>
-            </a>
-            <a class="pm rv" style="--i: 2" href="#contact" data-order="data">
-              <small data-i18n="sv.data.h">Data and price monitoring</small>
-              <em class="pm__d" data-i18n="d.data">Prices and leads collected for you</em>
-              <div class="pm__price"><span data-i18n="pr.from">from</span> <b>€290</b></div>
-              <span class="pm__go"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></span>
-            </a>
-            <a class="pm rv" style="--i: 3" href="#contact" data-order="site">
-              <small data-i18n="sv.site.h">Website and SEO</small>
-              <em class="pm__d" data-i18n="d.site">A site that brings clients</em>
-              <div class="pm__price"><span data-i18n="pr.from">from</span> <b>€290</b></div>
-              <span class="pm__go"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></span>
-            </a>
-            <a class="pm rv" style="--i: 0" href="#contact" data-order="leads">
-              <small data-i18n="sv.leads.h">Leads and requests</small>
-              <em class="pm__d" data-i18n="d.leads">Every request in one place</em>
-              <div class="pm__price"><span data-i18n="pr.from">from</span> <b>€290</b></div>
-              <span class="pm__go"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></span>
-            </a>
-            <a class="pm rv" style="--i: 1" href="#contact" data-order="mail">
-              <small data-i18n="sv.mail.h">Reminders and mailings</small>
-              <em class="pm__d" data-i18n="d.mail">Messages go out on time</em>
-              <div class="pm__price"><span data-i18n="pr.from">from</span> <b>€190</b></div>
-              <span class="pm__go"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></span>
-            </a>
-            <a class="pm rv" style="--i: 2" href="#contact" data-order="translate">
-              <small data-i18n="sv.translate.h">Translation, 4 languages</small>
-              <em class="pm__d" data-i18n="d.translate">Texts in 4 languages</em>
-              <div class="pm__price"><span data-i18n="pr.from">from</span> <b>€49</b></div>
-              <span class="pm__go"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></span>
-            </a>
-            <a class="pm rv" style="--i: 3" href="#contact" data-order="assistant">
-              <small data-i18n="sv.assistant.h">AI helper for your team</small>
-              <em class="pm__d" data-i18n="d.assistant">Answers your team's questions</em>
-              <div class="pm__price"><span data-i18n="pr.from">from</span> <b>€490</b></div>
-              <span class="pm__go"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></span>
-            </a>
-          </div>
-          <div class="pgroup">
-            <h3 class="sub rv" data-i18n="pr.sub">Social media, per month</h3>
-            <div class="plans">
-              <a class="plan rv" style="--i: 0" href="#contact" data-order="plan1">
-                <small data-i18n="pl.1">Start</small>
-                <div class="plan__price"><b>€100</b> <span data-i18n="pr.mo">/ month</span></div>
-                <ul class="plan__list">
-                  <li><svg class="ico"><use href="#i-img" /></svg><span data-i18n="pr.1.a">8 posts</span></li>
-                  <li><svg class="ico"><use href="#i-play" /></svg><span data-i18n="pr.1.b">2 reels</span></li>
-                  <li><svg class="ico"><use href="#i-user" /></svg><span data-i18n="pr.1.c">You publish yourself</span></li>
-                </ul>
-                <span class="plan__go"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+        <div id="services" class="rv" style="--i: 2">
+          <div class="car" id="work" data-car>
+            <button class="car__btn car__btn--prev" type="button" aria-label="Previous" data-i18n-aria="car.prev"><svg class="ico ph"><use href="#l-chevron-left" /></svg></button>
+            <div class="car__track" tabindex="0">
+              <a class="cc cc--n" href="#/for/salon">
+                <span class="cc__art"><svg class="ico ph"><use href="#l-scissors" /></svg></span>
+                <h3 data-i18n="n.salon">Beauty and massage</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
               </a>
-              <a class="plan plan--hot rv" style="--i: 1" href="#contact" data-order="plan2">
-                <small data-i18n="pl.2">Growth</small>
-                <div class="plan__price"><b>€250</b> <span data-i18n="pr.mo">/ month</span></div>
-                <ul class="plan__list">
-                  <li><svg class="ico"><use href="#i-img" /></svg><span data-i18n="pr.2.a">16 posts</span></li>
-                  <li><svg class="ico"><use href="#i-play" /></svg><span data-i18n="pr.2.b">4 reels</span></li>
-                  <li><svg class="ico"><use href="#i-check" /></svg><span data-i18n="pr.2.c">I publish for you</span></li>
-                </ul>
-                <span class="plan__go"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+              <a class="cc cc--n" href="#/for/cafe">
+                <span class="cc__art"><svg class="ico ph"><use href="#l-coffee" /></svg></span>
+                <h3 data-i18n="n.cafe">Cafes and restaurants</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
               </a>
-              <a class="plan rv" style="--i: 2" href="#contact" data-order="plan3">
-                <small data-i18n="pl.3">Max</small>
-                <div class="plan__price"><b>€400</b> <span data-i18n="pr.mo">/ month</span></div>
-                <ul class="plan__list">
-                  <li><svg class="ico"><use href="#i-img" /></svg><span data-i18n="pr.3.a">30 posts, one a day</span></li>
-                  <li><svg class="ico"><use href="#i-play" /></svg><span data-i18n="pr.3.b">8 reels</span></li>
-                  <li><svg class="ico"><use href="#i-check" /></svg><span data-i18n="pr.3.c">I publish for you</span></li>
-                </ul>
-                <span class="plan__go"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+              <a class="cc cc--n" href="#/for/shop">
+                <span class="cc__art"><svg class="ico ph"><use href="#l-shopping-bag" /></svg></span>
+                <h3 data-i18n="n.shop">Shops</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--n" href="#/for/trades">
+                <span class="cc__art"><svg class="ico ph"><use href="#l-wrench" /></svg></span>
+                <h3 data-i18n="n.trades">Repair and trades</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--n" href="#/for/fitness">
+                <span class="cc__art"><svg class="ico ph"><use href="#l-dumbbell" /></svg></span>
+                <h3 data-i18n="n.fitness">Sport and fitness</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--n" href="#/for/clinic">
+                <span class="cc__art"><svg class="ico ph"><use href="#l-stethoscope" /></svg></span>
+                <h3 data-i18n="n.clinic">Clinics and doctors</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--n" href="#/for/cleaning">
+                <span class="cc__art"><svg class="ico ph"><use href="#l-spray-can" /></svg></span>
+                <h3 data-i18n="n.cleaning">Cleaning</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--n" href="#/for/office">
+                <span class="cc__art"><svg class="ico ph"><use href="#l-building-2" /></svg></span>
+                <h3 data-i18n="n.office">Offices and B2B</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--n" href="#/for/other">
+                <span class="cc__art"><svg class="ico ph"><use href="#l-sparkles" /></svg></span>
+                <h3 data-i18n="n.other">Something else</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
               </a>
             </div>
-            <p class="legend rv" data-i18n="pr.legend">Post = picture with caption. Reel = short video.</p>
+            <div class="car__dots" aria-hidden="true"></div>
+            <button class="car__btn car__btn--next" type="button" aria-label="Next" data-i18n-aria="car.next"><svg class="ico ph"><use href="#l-chevron-right" /></svg></button>
+          </div>
+        </div>
+        <div class="wrap">
+          <div class="hero__cta rv" style="--i: 3">
+            <a class="btn btn--ghost" href="https://t.me/onomamichail" target="_blank" rel="noopener"><svg class="ico"><use href="#i-send" /></svg><span data-i18n="hero.write">Write on Telegram</span></a>
           </div>
         </div>
       </section>
 
       </div>
       <div id="views">
+      <section class="svc nv" id="n-salon" hidden>
+        <div class="wrap">
+          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="nv.back">All businesses</span></a>
+          <header class="svc__head">
+            <span class="card__ico card__ico--big"><svg class="ico ph"><use href="#l-scissors" /></svg></span>
+            <h2 class="svc__h" data-i18n="n.salon" tabindex="-1">Beauty and massage</h2>
+          </header>
+        </div>
+        <div class="car" data-car>
+            <button class="car__btn car__btn--prev" type="button" aria-label="Previous" data-i18n-aria="car.prev"><svg class="ico ph"><use href="#l-chevron-left" /></svg></button>
+            <div class="car__track" tabindex="0">
+              <a class="cc cc--s" href="#/for/salon/bot">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-bot" /></svg></span>
+                <h3 data-i18n="sv.bot.h">Chatbot and booking</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/salon/mail">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-bell-ring" /></svg></span>
+                <h3 data-i18n="sv.mail.h">Reminders and mailings</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/salon/social">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-calendar-days" /></svg></span>
+                <h3 data-i18n="sv.social.h">Social media</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/salon/reviews">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-star" /></svg></span>
+                <h3 data-i18n="sv.reviews.h">Reviews and reputation</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/salon/site">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-globe" /></svg></span>
+                <h3 data-i18n="sv.site.h">Website and SEO</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s cc--own" href="#contact" data-order="custom">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-sparkles" /></svg></span>
+                <h3 data-i18n="cu.h">Your own task?</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+            </div>
+            <div class="car__dots" aria-hidden="true"></div>
+            <button class="car__btn car__btn--next" type="button" aria-label="Next" data-i18n-aria="car.next"><svg class="ico ph"><use href="#l-chevron-right" /></svg></button>
+          </div>
+      </section>
+      <section class="svc nv" id="n-cafe" hidden>
+        <div class="wrap">
+          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="nv.back">All businesses</span></a>
+          <header class="svc__head">
+            <span class="card__ico card__ico--big"><svg class="ico ph"><use href="#l-coffee" /></svg></span>
+            <h2 class="svc__h" data-i18n="n.cafe" tabindex="-1">Cafes and restaurants</h2>
+          </header>
+        </div>
+        <div class="car" data-car>
+            <button class="car__btn car__btn--prev" type="button" aria-label="Previous" data-i18n-aria="car.prev"><svg class="ico ph"><use href="#l-chevron-left" /></svg></button>
+            <div class="car__track" tabindex="0">
+              <a class="cc cc--s" href="#/for/cafe/bot">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-bot" /></svg></span>
+                <h3 data-i18n="sv.bot.h">Chatbot and booking</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/cafe/social">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-calendar-days" /></svg></span>
+                <h3 data-i18n="sv.social.h">Social media</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/cafe/reviews">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-star" /></svg></span>
+                <h3 data-i18n="sv.reviews.h">Reviews and reputation</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/cafe/translate">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-languages" /></svg></span>
+                <h3 data-i18n="sv.translate.h">Translation, 4 languages</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/cafe/reports">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-chart-column" /></svg></span>
+                <h3 data-i18n="sv.reports.h">Reports and spreadsheets</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s cc--own" href="#contact" data-order="custom">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-sparkles" /></svg></span>
+                <h3 data-i18n="cu.h">Your own task?</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+            </div>
+            <div class="car__dots" aria-hidden="true"></div>
+            <button class="car__btn car__btn--next" type="button" aria-label="Next" data-i18n-aria="car.next"><svg class="ico ph"><use href="#l-chevron-right" /></svg></button>
+          </div>
+      </section>
+      <section class="svc nv" id="n-shop" hidden>
+        <div class="wrap">
+          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="nv.back">All businesses</span></a>
+          <header class="svc__head">
+            <span class="card__ico card__ico--big"><svg class="ico ph"><use href="#l-shopping-bag" /></svg></span>
+            <h2 class="svc__h" data-i18n="n.shop" tabindex="-1">Shops</h2>
+          </header>
+        </div>
+        <div class="car" data-car>
+            <button class="car__btn car__btn--prev" type="button" aria-label="Previous" data-i18n-aria="car.prev"><svg class="ico ph"><use href="#l-chevron-left" /></svg></button>
+            <div class="car__track" tabindex="0">
+              <a class="cc cc--s" href="#/for/shop/bot">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-bot" /></svg></span>
+                <h3 data-i18n="sv.bot.h">Chatbot and booking</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/shop/content">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-image" /></svg></span>
+                <h3 data-i18n="sv.content.h">Photos, video, texts</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/shop/data">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-search" /></svg></span>
+                <h3 data-i18n="sv.data.h">Data and price monitoring</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/shop/translate">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-languages" /></svg></span>
+                <h3 data-i18n="sv.translate.h">Translation, 4 languages</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/shop/mail">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-bell-ring" /></svg></span>
+                <h3 data-i18n="sv.mail.h">Reminders and mailings</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s cc--own" href="#contact" data-order="custom">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-sparkles" /></svg></span>
+                <h3 data-i18n="cu.h">Your own task?</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+            </div>
+            <div class="car__dots" aria-hidden="true"></div>
+            <button class="car__btn car__btn--next" type="button" aria-label="Next" data-i18n-aria="car.next"><svg class="ico ph"><use href="#l-chevron-right" /></svg></button>
+          </div>
+      </section>
+      <section class="svc nv" id="n-trades" hidden>
+        <div class="wrap">
+          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="nv.back">All businesses</span></a>
+          <header class="svc__head">
+            <span class="card__ico card__ico--big"><svg class="ico ph"><use href="#l-wrench" /></svg></span>
+            <h2 class="svc__h" data-i18n="n.trades" tabindex="-1">Repair and trades</h2>
+          </header>
+        </div>
+        <div class="car" data-car>
+            <button class="car__btn car__btn--prev" type="button" aria-label="Previous" data-i18n-aria="car.prev"><svg class="ico ph"><use href="#l-chevron-left" /></svg></button>
+            <div class="car__track" tabindex="0">
+              <a class="cc cc--s" href="#/for/trades/leads">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-contact" /></svg></span>
+                <h3 data-i18n="sv.leads.h">Leads and requests</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/trades/docs">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-file-text" /></svg></span>
+                <h3 data-i18n="sv.docs.h">Emails and documents</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/trades/site">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-globe" /></svg></span>
+                <h3 data-i18n="sv.site.h">Website and SEO</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/trades/social">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-calendar-days" /></svg></span>
+                <h3 data-i18n="sv.social.h">Social media</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/trades/assistant">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-message-square-more" /></svg></span>
+                <h3 data-i18n="sv.assistant.h">AI helper for your team</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s cc--own" href="#contact" data-order="custom">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-sparkles" /></svg></span>
+                <h3 data-i18n="cu.h">Your own task?</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+            </div>
+            <div class="car__dots" aria-hidden="true"></div>
+            <button class="car__btn car__btn--next" type="button" aria-label="Next" data-i18n-aria="car.next"><svg class="ico ph"><use href="#l-chevron-right" /></svg></button>
+          </div>
+      </section>
+      <section class="svc nv" id="n-fitness" hidden>
+        <div class="wrap">
+          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="nv.back">All businesses</span></a>
+          <header class="svc__head">
+            <span class="card__ico card__ico--big"><svg class="ico ph"><use href="#l-dumbbell" /></svg></span>
+            <h2 class="svc__h" data-i18n="n.fitness" tabindex="-1">Sport and fitness</h2>
+          </header>
+        </div>
+        <div class="car" data-car>
+            <button class="car__btn car__btn--prev" type="button" aria-label="Previous" data-i18n-aria="car.prev"><svg class="ico ph"><use href="#l-chevron-left" /></svg></button>
+            <div class="car__track" tabindex="0">
+              <a class="cc cc--s" href="#/for/fitness/bot">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-bot" /></svg></span>
+                <h3 data-i18n="sv.bot.h">Chatbot and booking</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/fitness/mail">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-bell-ring" /></svg></span>
+                <h3 data-i18n="sv.mail.h">Reminders and mailings</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/fitness/social">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-calendar-days" /></svg></span>
+                <h3 data-i18n="sv.social.h">Social media</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/fitness/reports">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-chart-column" /></svg></span>
+                <h3 data-i18n="sv.reports.h">Reports and spreadsheets</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/fitness/reviews">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-star" /></svg></span>
+                <h3 data-i18n="sv.reviews.h">Reviews and reputation</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s cc--own" href="#contact" data-order="custom">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-sparkles" /></svg></span>
+                <h3 data-i18n="cu.h">Your own task?</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+            </div>
+            <div class="car__dots" aria-hidden="true"></div>
+            <button class="car__btn car__btn--next" type="button" aria-label="Next" data-i18n-aria="car.next"><svg class="ico ph"><use href="#l-chevron-right" /></svg></button>
+          </div>
+      </section>
+      <section class="svc nv" id="n-clinic" hidden>
+        <div class="wrap">
+          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="nv.back">All businesses</span></a>
+          <header class="svc__head">
+            <span class="card__ico card__ico--big"><svg class="ico ph"><use href="#l-stethoscope" /></svg></span>
+            <h2 class="svc__h" data-i18n="n.clinic" tabindex="-1">Clinics and doctors</h2>
+          </header>
+        </div>
+        <div class="car" data-car>
+            <button class="car__btn car__btn--prev" type="button" aria-label="Previous" data-i18n-aria="car.prev"><svg class="ico ph"><use href="#l-chevron-left" /></svg></button>
+            <div class="car__track" tabindex="0">
+              <a class="cc cc--s" href="#/for/clinic/bot">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-bot" /></svg></span>
+                <h3 data-i18n="sv.bot.h">Chatbot and booking</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/clinic/mail">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-bell-ring" /></svg></span>
+                <h3 data-i18n="sv.mail.h">Reminders and mailings</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/clinic/docs">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-file-text" /></svg></span>
+                <h3 data-i18n="sv.docs.h">Emails and documents</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/clinic/translate">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-languages" /></svg></span>
+                <h3 data-i18n="sv.translate.h">Translation, 4 languages</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/clinic/reviews">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-star" /></svg></span>
+                <h3 data-i18n="sv.reviews.h">Reviews and reputation</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s cc--own" href="#contact" data-order="custom">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-sparkles" /></svg></span>
+                <h3 data-i18n="cu.h">Your own task?</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+            </div>
+            <div class="car__dots" aria-hidden="true"></div>
+            <button class="car__btn car__btn--next" type="button" aria-label="Next" data-i18n-aria="car.next"><svg class="ico ph"><use href="#l-chevron-right" /></svg></button>
+          </div>
+      </section>
+      <section class="svc nv" id="n-cleaning" hidden>
+        <div class="wrap">
+          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="nv.back">All businesses</span></a>
+          <header class="svc__head">
+            <span class="card__ico card__ico--big"><svg class="ico ph"><use href="#l-spray-can" /></svg></span>
+            <h2 class="svc__h" data-i18n="n.cleaning" tabindex="-1">Cleaning</h2>
+          </header>
+        </div>
+        <div class="car" data-car>
+            <button class="car__btn car__btn--prev" type="button" aria-label="Previous" data-i18n-aria="car.prev"><svg class="ico ph"><use href="#l-chevron-left" /></svg></button>
+            <div class="car__track" tabindex="0">
+              <a class="cc cc--s" href="#/for/cleaning/leads">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-contact" /></svg></span>
+                <h3 data-i18n="sv.leads.h">Leads and requests</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/cleaning/bot">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-bot" /></svg></span>
+                <h3 data-i18n="sv.bot.h">Chatbot and booking</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/cleaning/mail">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-bell-ring" /></svg></span>
+                <h3 data-i18n="sv.mail.h">Reminders and mailings</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/cleaning/docs">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-file-text" /></svg></span>
+                <h3 data-i18n="sv.docs.h">Emails and documents</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/cleaning/reviews">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-star" /></svg></span>
+                <h3 data-i18n="sv.reviews.h">Reviews and reputation</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s cc--own" href="#contact" data-order="custom">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-sparkles" /></svg></span>
+                <h3 data-i18n="cu.h">Your own task?</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+            </div>
+            <div class="car__dots" aria-hidden="true"></div>
+            <button class="car__btn car__btn--next" type="button" aria-label="Next" data-i18n-aria="car.next"><svg class="ico ph"><use href="#l-chevron-right" /></svg></button>
+          </div>
+      </section>
+      <section class="svc nv" id="n-office" hidden>
+        <div class="wrap">
+          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="nv.back">All businesses</span></a>
+          <header class="svc__head">
+            <span class="card__ico card__ico--big"><svg class="ico ph"><use href="#l-building-2" /></svg></span>
+            <h2 class="svc__h" data-i18n="n.office" tabindex="-1">Offices and B2B</h2>
+          </header>
+        </div>
+        <div class="car" data-car>
+            <button class="car__btn car__btn--prev" type="button" aria-label="Previous" data-i18n-aria="car.prev"><svg class="ico ph"><use href="#l-chevron-left" /></svg></button>
+            <div class="car__track" tabindex="0">
+              <a class="cc cc--s" href="#/for/office/leads">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-contact" /></svg></span>
+                <h3 data-i18n="sv.leads.h">Leads and requests</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/office/docs">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-file-text" /></svg></span>
+                <h3 data-i18n="sv.docs.h">Emails and documents</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/office/reports">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-chart-column" /></svg></span>
+                <h3 data-i18n="sv.reports.h">Reports and spreadsheets</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/office/data">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-search" /></svg></span>
+                <h3 data-i18n="sv.data.h">Data and price monitoring</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/office/assistant">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-message-square-more" /></svg></span>
+                <h3 data-i18n="sv.assistant.h">AI helper for your team</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s cc--own" href="#contact" data-order="custom">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-sparkles" /></svg></span>
+                <h3 data-i18n="cu.h">Your own task?</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+            </div>
+            <div class="car__dots" aria-hidden="true"></div>
+            <button class="car__btn car__btn--next" type="button" aria-label="Next" data-i18n-aria="car.next"><svg class="ico ph"><use href="#l-chevron-right" /></svg></button>
+          </div>
+      </section>
+      <section class="svc nv" id="n-other" hidden>
+        <div class="wrap">
+          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="nv.back">All businesses</span></a>
+          <header class="svc__head">
+            <span class="card__ico card__ico--big"><svg class="ico ph"><use href="#l-sparkles" /></svg></span>
+            <h2 class="svc__h" data-i18n="n.other" tabindex="-1">Something else</h2>
+          </header>
+        </div>
+        <div class="car" data-car>
+            <button class="car__btn car__btn--prev" type="button" aria-label="Previous" data-i18n-aria="car.prev"><svg class="ico ph"><use href="#l-chevron-left" /></svg></button>
+            <div class="car__track" tabindex="0">
+              <a class="cc cc--s" href="#/for/other/social">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-calendar-days" /></svg></span>
+                <h3 data-i18n="sv.social.h">Social media</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/other/bot">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-bot" /></svg></span>
+                <h3 data-i18n="sv.bot.h">Chatbot and booking</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/other/content">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-image" /></svg></span>
+                <h3 data-i18n="sv.content.h">Photos, video, texts</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/other/reports">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-chart-column" /></svg></span>
+                <h3 data-i18n="sv.reports.h">Reports and spreadsheets</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/other/docs">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-file-text" /></svg></span>
+                <h3 data-i18n="sv.docs.h">Emails and documents</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/other/reviews">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-star" /></svg></span>
+                <h3 data-i18n="sv.reviews.h">Reviews and reputation</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/other/data">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-search" /></svg></span>
+                <h3 data-i18n="sv.data.h">Data and price monitoring</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/other/site">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-globe" /></svg></span>
+                <h3 data-i18n="sv.site.h">Website and SEO</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/other/leads">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-contact" /></svg></span>
+                <h3 data-i18n="sv.leads.h">Leads and requests</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/other/mail">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-bell-ring" /></svg></span>
+                <h3 data-i18n="sv.mail.h">Reminders and mailings</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/other/translate">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-languages" /></svg></span>
+                <h3 data-i18n="sv.translate.h">Translation, 4 languages</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s" href="#/for/other/assistant">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-message-square-more" /></svg></span>
+                <h3 data-i18n="sv.assistant.h">AI helper for your team</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+              <a class="cc cc--s cc--own" href="#contact" data-order="custom">
+                <span class="cc__art cc__art--s"><svg class="ico ph"><use href="#l-sparkles" /></svg></span>
+                <h3 data-i18n="cu.h">Your own task?</h3>
+                <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
+              </a>
+            </div>
+            <div class="car__dots" aria-hidden="true"></div>
+            <button class="car__btn car__btn--next" type="button" aria-label="Next" data-i18n-aria="car.next"><svg class="ico ph"><use href="#l-chevron-right" /></svg></button>
+          </div>
+      </section>
+      <section class="svc l3" id="l3" hidden>
+        <div class="wrap">
+          <a class="back" id="l3back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span id="l3nb"></span></a>
+          <header class="svc__head">
+            <span class="card__ico card__ico--big" id="l3ico"></span>
+            <h2 class="svc__h" id="l3h" tabindex="-1"></h2>
+          </header>
+          <p class="l3__line" id="l3line"></p>
+          <div class="l3__demo" id="l3demo"></div>
+          <div class="l3__buy">
+            <span class="l3__price" id="l3price"></span>
+            <a class="btn btn--ink" href="#contact" id="l3order" data-order=""><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></a>
+          </div>
+        </div>
+      </section>
       <section class="svc" id="v-social" hidden>
         <div class="wrap">
-          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="v.back">All services</span></a>
+          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="v.back">Back</span></a>
           <header class="svc__head">
             <span class="card__ico card__ico--big"><svg class="ico"><use href="#i-cal" /></svg></span>
             <h2 class="svc__h" data-i18n="sv.social.h" tabindex="-1">Social media</h2>
             <div class="svc__buy">
-              <span class="card__price"><span data-i18n="pr.from">from</span> €100 <span data-i18n="pr.mo">/ month</span></span>
+              <span class="card__price"><span data-i18n="pr.from">from</span> €10 <span data-i18n="pr.mo">/ month</span></span>
               <a class="btn btn--ink" href="#contact" data-order="social"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></a>
             </div>
           </header>
@@ -440,7 +828,7 @@
             <div class="plans">
               <a class="plan rv" style="--i: 0" href="#contact" data-order="plan1">
                 <small data-i18n="pl.1">Start</small>
-                <div class="plan__price"><b>€100</b> <span data-i18n="pr.mo">/ month</span></div>
+                <div class="plan__price"><b>€10</b> <span data-i18n="pr.mo">/ month</span></div>
                 <ul class="plan__list">
                   <li><svg class="ico"><use href="#i-img" /></svg><span data-i18n="pr.1.a">8 posts</span></li>
                   <li><svg class="ico"><use href="#i-play" /></svg><span data-i18n="pr.1.b">2 reels</span></li>
@@ -450,7 +838,7 @@
               </a>
               <a class="plan plan--hot rv" style="--i: 1" href="#contact" data-order="plan2">
                 <small data-i18n="pl.2">Growth</small>
-                <div class="plan__price"><b>€250</b> <span data-i18n="pr.mo">/ month</span></div>
+                <div class="plan__price"><b>€25</b> <span data-i18n="pr.mo">/ month</span></div>
                 <ul class="plan__list">
                   <li><svg class="ico"><use href="#i-img" /></svg><span data-i18n="pr.2.a">16 posts</span></li>
                   <li><svg class="ico"><use href="#i-play" /></svg><span data-i18n="pr.2.b">4 reels</span></li>
@@ -460,7 +848,7 @@
               </a>
               <a class="plan rv" style="--i: 2" href="#contact" data-order="plan3">
                 <small data-i18n="pl.3">Max</small>
-                <div class="plan__price"><b>€400</b> <span data-i18n="pr.mo">/ month</span></div>
+                <div class="plan__price"><b>€40</b> <span data-i18n="pr.mo">/ month</span></div>
                 <ul class="plan__list">
                   <li><svg class="ico"><use href="#i-img" /></svg><span data-i18n="pr.3.a">30 posts, one a day</span></li>
                   <li><svg class="ico"><use href="#i-play" /></svg><span data-i18n="pr.3.b">8 reels</span></li>
@@ -472,19 +860,19 @@
             <p class="legend rv" data-i18n="pr.legend">Post = picture with caption. Reel = short video.</p>
           </div>
           <a class="custom custom--sm rv" href="#contact" data-order="custom">
-            <div class="custom__t"><h3 data-i18n="v.other">Need something else?</h3><p data-i18n="cu.p">Describe it. If I can solve it, I will build it for you, turnkey.</p></div>
-            <span class="btn btn--ghost"><span data-i18n="cu.btn">Describe the task</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+            <div class="custom__t"><h3 data-i18n="v.other">Need something else?</h3><p data-i18n="cu.p">I will tell you if I can automate it and for how much.</p></div>
+            <span class="btn btn--ghost"><span data-i18n="cu.btn">Describe</span><svg class="ico"><use href="#i-arrow" /></svg></span>
           </a>
         </div>
       </section>
       <section class="svc" id="v-bot" hidden>
         <div class="wrap">
-          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="v.back">All services</span></a>
+          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="v.back">Back</span></a>
           <header class="svc__head">
             <span class="card__ico card__ico--big"><svg class="ico"><use href="#i-bot" /></svg></span>
             <h2 class="svc__h" data-i18n="sv.bot.h" tabindex="-1">Chatbot and booking</h2>
             <div class="svc__buy">
-              <span class="card__price"><span data-i18n="pr.from">from</span> €790</span>
+              <span class="card__price"><span data-i18n="pr.from">from</span> €79</span>
               <a class="btn btn--ink" href="#contact" data-order="bot"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></a>
             </div>
           </header>
@@ -502,19 +890,19 @@
             <div class="svc__demo"><div class="demo"><div class="chat" id="chat"></div></div></div>
           </div>
           <a class="custom custom--sm rv" href="#contact" data-order="custom">
-            <div class="custom__t"><h3 data-i18n="v.other">Need something else?</h3><p data-i18n="cu.p">Describe it. If I can solve it, I will build it for you, turnkey.</p></div>
-            <span class="btn btn--ghost"><span data-i18n="cu.btn">Describe the task</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+            <div class="custom__t"><h3 data-i18n="v.other">Need something else?</h3><p data-i18n="cu.p">I will tell you if I can automate it and for how much.</p></div>
+            <span class="btn btn--ghost"><span data-i18n="cu.btn">Describe</span><svg class="ico"><use href="#i-arrow" /></svg></span>
           </a>
         </div>
       </section>
       <section class="svc" id="v-content" hidden>
         <div class="wrap">
-          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="v.back">All services</span></a>
+          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="v.back">Back</span></a>
           <header class="svc__head">
             <span class="card__ico card__ico--big"><svg class="ico"><use href="#i-img" /></svg></span>
             <h2 class="svc__h" data-i18n="sv.content.h" tabindex="-1">Photos, video, texts</h2>
             <div class="svc__buy">
-              <span class="card__price"><span data-i18n="pr.from">from</span> €5</span>
+              <span class="card__price"><span data-i18n="pr.from">from</span> €1</span>
               <a class="btn btn--ink" href="#contact" data-order="content"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></a>
             </div>
           </header>
@@ -546,13 +934,13 @@
             <a class="pm rv" style="--i: 0" href="#contact" data-order="photo">
               <small data-i18n="pm.photo">Product photo</small>
               <em class="pm__d" data-i18n="pm.photo.d">One photo turned into a finished ad</em>
-              <div class="pm__price"><b>€5</b></div>
+              <div class="pm__price"><b>€1</b></div>
               <span class="pm__go"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></span>
             </a>
             <a class="pm rv" style="--i: 1" href="#contact" data-order="video">
               <small data-i18n="pm.video">Video ad</small>
               <em class="pm__d" data-i18n="pm.video.d">15 seconds, vertical</em>
-              <div class="pm__price"><span data-i18n="pr.from">from</span> <b>€79</b></div>
+              <div class="pm__price"><span data-i18n="pr.from">from</span> <b>€8</b></div>
               <span class="pm__go"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></span>
             </a>
           </div>
@@ -568,19 +956,19 @@
             <div class="wall rv" style="--i: 1" id="wall" role="img" aria-label="Product image samples"></div>
           </div>
           <a class="custom custom--sm rv" href="#contact" data-order="custom">
-            <div class="custom__t"><h3 data-i18n="v.other">Need something else?</h3><p data-i18n="cu.p">Describe it. If I can solve it, I will build it for you, turnkey.</p></div>
-            <span class="btn btn--ghost"><span data-i18n="cu.btn">Describe the task</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+            <div class="custom__t"><h3 data-i18n="v.other">Need something else?</h3><p data-i18n="cu.p">I will tell you if I can automate it and for how much.</p></div>
+            <span class="btn btn--ghost"><span data-i18n="cu.btn">Describe</span><svg class="ico"><use href="#i-arrow" /></svg></span>
           </a>
         </div>
       </section>
       <section class="svc" id="v-reports" hidden>
         <div class="wrap">
-          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="v.back">All services</span></a>
+          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="v.back">Back</span></a>
           <header class="svc__head">
             <span class="card__ico card__ico--big"><svg class="ico"><use href="#i-chart" /></svg></span>
             <h2 class="svc__h" data-i18n="sv.reports.h" tabindex="-1">Reports and spreadsheets</h2>
             <div class="svc__buy">
-              <span class="card__price"><span data-i18n="pr.from">from</span> €190</span>
+              <span class="card__price"><span data-i18n="pr.from">from</span> €19</span>
               <a class="btn btn--ink" href="#contact" data-order="reports"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></a>
             </div>
           </header>
@@ -598,19 +986,19 @@
             <div class="svc__demo"><div class="demo"><div class="term"><div id="term"></div></div></div></div>
           </div>
           <a class="custom custom--sm rv" href="#contact" data-order="custom">
-            <div class="custom__t"><h3 data-i18n="v.other">Need something else?</h3><p data-i18n="cu.p">Describe it. If I can solve it, I will build it for you, turnkey.</p></div>
-            <span class="btn btn--ghost"><span data-i18n="cu.btn">Describe the task</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+            <div class="custom__t"><h3 data-i18n="v.other">Need something else?</h3><p data-i18n="cu.p">I will tell you if I can automate it and for how much.</p></div>
+            <span class="btn btn--ghost"><span data-i18n="cu.btn">Describe</span><svg class="ico"><use href="#i-arrow" /></svg></span>
           </a>
         </div>
       </section>
       <section class="svc" id="v-docs" hidden>
         <div class="wrap">
-          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="v.back">All services</span></a>
+          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="v.back">Back</span></a>
           <header class="svc__head">
             <span class="card__ico card__ico--big"><svg class="ico"><use href="#i-file" /></svg></span>
             <h2 class="svc__h" data-i18n="sv.docs.h" tabindex="-1">Emails and documents</h2>
             <div class="svc__buy">
-              <span class="card__price"><span data-i18n="pr.from">from</span> €190</span>
+              <span class="card__price"><span data-i18n="pr.from">from</span> €19</span>
               <a class="btn btn--ink" href="#contact" data-order="docs"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></a>
             </div>
           </header>
@@ -627,19 +1015,19 @@
             </div>
           </div>
           <a class="custom custom--sm rv" href="#contact" data-order="custom">
-            <div class="custom__t"><h3 data-i18n="v.other">Need something else?</h3><p data-i18n="cu.p">Describe it. If I can solve it, I will build it for you, turnkey.</p></div>
-            <span class="btn btn--ghost"><span data-i18n="cu.btn">Describe the task</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+            <div class="custom__t"><h3 data-i18n="v.other">Need something else?</h3><p data-i18n="cu.p">I will tell you if I can automate it and for how much.</p></div>
+            <span class="btn btn--ghost"><span data-i18n="cu.btn">Describe</span><svg class="ico"><use href="#i-arrow" /></svg></span>
           </a>
         </div>
       </section>
       <section class="svc" id="v-reviews" hidden>
         <div class="wrap">
-          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="v.back">All services</span></a>
+          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="v.back">Back</span></a>
           <header class="svc__head">
             <span class="card__ico card__ico--big"><svg class="ico"><use href="#i-star" /></svg></span>
             <h2 class="svc__h" data-i18n="sv.reviews.h" tabindex="-1">Reviews and reputation</h2>
             <div class="svc__buy">
-              <span class="card__price"><span data-i18n="pr.from">from</span> €150</span>
+              <span class="card__price"><span data-i18n="pr.from">from</span> €15</span>
               <a class="btn btn--ink" href="#contact" data-order="reviews"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></a>
             </div>
           </header>
@@ -656,19 +1044,19 @@
             </div>
           </div>
           <a class="custom custom--sm rv" href="#contact" data-order="custom">
-            <div class="custom__t"><h3 data-i18n="v.other">Need something else?</h3><p data-i18n="cu.p">Describe it. If I can solve it, I will build it for you, turnkey.</p></div>
-            <span class="btn btn--ghost"><span data-i18n="cu.btn">Describe the task</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+            <div class="custom__t"><h3 data-i18n="v.other">Need something else?</h3><p data-i18n="cu.p">I will tell you if I can automate it and for how much.</p></div>
+            <span class="btn btn--ghost"><span data-i18n="cu.btn">Describe</span><svg class="ico"><use href="#i-arrow" /></svg></span>
           </a>
         </div>
       </section>
       <section class="svc" id="v-data" hidden>
         <div class="wrap">
-          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="v.back">All services</span></a>
+          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="v.back">Back</span></a>
           <header class="svc__head">
             <span class="card__ico card__ico--big"><svg class="ico"><use href="#i-search" /></svg></span>
             <h2 class="svc__h" data-i18n="sv.data.h" tabindex="-1">Data and price monitoring</h2>
             <div class="svc__buy">
-              <span class="card__price"><span data-i18n="pr.from">from</span> €290</span>
+              <span class="card__price"><span data-i18n="pr.from">from</span> €29</span>
               <a class="btn btn--ink" href="#contact" data-order="data"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></a>
             </div>
           </header>
@@ -685,19 +1073,19 @@
             </div>
           </div>
           <a class="custom custom--sm rv" href="#contact" data-order="custom">
-            <div class="custom__t"><h3 data-i18n="v.other">Need something else?</h3><p data-i18n="cu.p">Describe it. If I can solve it, I will build it for you, turnkey.</p></div>
-            <span class="btn btn--ghost"><span data-i18n="cu.btn">Describe the task</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+            <div class="custom__t"><h3 data-i18n="v.other">Need something else?</h3><p data-i18n="cu.p">I will tell you if I can automate it and for how much.</p></div>
+            <span class="btn btn--ghost"><span data-i18n="cu.btn">Describe</span><svg class="ico"><use href="#i-arrow" /></svg></span>
           </a>
         </div>
       </section>
       <section class="svc" id="v-site" hidden>
         <div class="wrap">
-          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="v.back">All services</span></a>
+          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="v.back">Back</span></a>
           <header class="svc__head">
             <span class="card__ico card__ico--big"><svg class="ico"><use href="#i-globe" /></svg></span>
             <h2 class="svc__h" data-i18n="sv.site.h" tabindex="-1">Website and SEO</h2>
             <div class="svc__buy">
-              <span class="card__price"><span data-i18n="pr.from">from</span> €290</span>
+              <span class="card__price"><span data-i18n="pr.from">from</span> €29</span>
               <a class="btn btn--ink" href="#contact" data-order="site"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></a>
             </div>
           </header>
@@ -714,19 +1102,19 @@
             </div>
           </div>
           <a class="custom custom--sm rv" href="#contact" data-order="custom">
-            <div class="custom__t"><h3 data-i18n="v.other">Need something else?</h3><p data-i18n="cu.p">Describe it. If I can solve it, I will build it for you, turnkey.</p></div>
-            <span class="btn btn--ghost"><span data-i18n="cu.btn">Describe the task</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+            <div class="custom__t"><h3 data-i18n="v.other">Need something else?</h3><p data-i18n="cu.p">I will tell you if I can automate it and for how much.</p></div>
+            <span class="btn btn--ghost"><span data-i18n="cu.btn">Describe</span><svg class="ico"><use href="#i-arrow" /></svg></span>
           </a>
         </div>
       </section>
       <section class="svc" id="v-leads" hidden>
         <div class="wrap">
-          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="v.back">All services</span></a>
+          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="v.back">Back</span></a>
           <header class="svc__head">
             <span class="card__ico card__ico--big"><svg class="ico"><use href="#i-card" /></svg></span>
             <h2 class="svc__h" data-i18n="sv.leads.h" tabindex="-1">Leads and requests</h2>
             <div class="svc__buy">
-              <span class="card__price"><span data-i18n="pr.from">from</span> €290</span>
+              <span class="card__price"><span data-i18n="pr.from">from</span> €29</span>
               <a class="btn btn--ink" href="#contact" data-order="leads"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></a>
             </div>
           </header>
@@ -743,19 +1131,19 @@
             </div>
           </div>
           <a class="custom custom--sm rv" href="#contact" data-order="custom">
-            <div class="custom__t"><h3 data-i18n="v.other">Need something else?</h3><p data-i18n="cu.p">Describe it. If I can solve it, I will build it for you, turnkey.</p></div>
-            <span class="btn btn--ghost"><span data-i18n="cu.btn">Describe the task</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+            <div class="custom__t"><h3 data-i18n="v.other">Need something else?</h3><p data-i18n="cu.p">I will tell you if I can automate it and for how much.</p></div>
+            <span class="btn btn--ghost"><span data-i18n="cu.btn">Describe</span><svg class="ico"><use href="#i-arrow" /></svg></span>
           </a>
         </div>
       </section>
       <section class="svc" id="v-mail" hidden>
         <div class="wrap">
-          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="v.back">All services</span></a>
+          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="v.back">Back</span></a>
           <header class="svc__head">
             <span class="card__ico card__ico--big"><svg class="ico"><use href="#i-send" /></svg></span>
             <h2 class="svc__h" data-i18n="sv.mail.h" tabindex="-1">Reminders and mailings</h2>
             <div class="svc__buy">
-              <span class="card__price"><span data-i18n="pr.from">from</span> €190</span>
+              <span class="card__price"><span data-i18n="pr.from">from</span> €19</span>
               <a class="btn btn--ink" href="#contact" data-order="mail"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></a>
             </div>
           </header>
@@ -772,19 +1160,19 @@
             </div>
           </div>
           <a class="custom custom--sm rv" href="#contact" data-order="custom">
-            <div class="custom__t"><h3 data-i18n="v.other">Need something else?</h3><p data-i18n="cu.p">Describe it. If I can solve it, I will build it for you, turnkey.</p></div>
-            <span class="btn btn--ghost"><span data-i18n="cu.btn">Describe the task</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+            <div class="custom__t"><h3 data-i18n="v.other">Need something else?</h3><p data-i18n="cu.p">I will tell you if I can automate it and for how much.</p></div>
+            <span class="btn btn--ghost"><span data-i18n="cu.btn">Describe</span><svg class="ico"><use href="#i-arrow" /></svg></span>
           </a>
         </div>
       </section>
       <section class="svc" id="v-translate" hidden>
         <div class="wrap">
-          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="v.back">All services</span></a>
+          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="v.back">Back</span></a>
           <header class="svc__head">
             <span class="card__ico card__ico--big"><svg class="ico"><use href="#i-msg" /></svg></span>
             <h2 class="svc__h" data-i18n="sv.translate.h" tabindex="-1">Translation, 4 languages</h2>
             <div class="svc__buy">
-              <span class="card__price"><span data-i18n="pr.from">from</span> €49</span>
+              <span class="card__price"><span data-i18n="pr.from">from</span> €5</span>
               <a class="btn btn--ink" href="#contact" data-order="translate"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></a>
             </div>
           </header>
@@ -801,19 +1189,19 @@
             </div>
           </div>
           <a class="custom custom--sm rv" href="#contact" data-order="custom">
-            <div class="custom__t"><h3 data-i18n="v.other">Need something else?</h3><p data-i18n="cu.p">Describe it. If I can solve it, I will build it for you, turnkey.</p></div>
-            <span class="btn btn--ghost"><span data-i18n="cu.btn">Describe the task</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+            <div class="custom__t"><h3 data-i18n="v.other">Need something else?</h3><p data-i18n="cu.p">I will tell you if I can automate it and for how much.</p></div>
+            <span class="btn btn--ghost"><span data-i18n="cu.btn">Describe</span><svg class="ico"><use href="#i-arrow" /></svg></span>
           </a>
         </div>
       </section>
       <section class="svc" id="v-assistant" hidden>
         <div class="wrap">
-          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="v.back">All services</span></a>
+          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="v.back">Back</span></a>
           <header class="svc__head">
             <span class="card__ico card__ico--big"><svg class="ico"><use href="#i-user" /></svg></span>
             <h2 class="svc__h" data-i18n="sv.assistant.h" tabindex="-1">AI helper for your team</h2>
             <div class="svc__buy">
-              <span class="card__price"><span data-i18n="pr.from">from</span> €490</span>
+              <span class="card__price"><span data-i18n="pr.from">from</span> €49</span>
               <a class="btn btn--ink" href="#contact" data-order="assistant"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></a>
             </div>
           </header>
@@ -830,8 +1218,8 @@
             </div>
           </div>
           <a class="custom custom--sm rv" href="#contact" data-order="custom">
-            <div class="custom__t"><h3 data-i18n="v.other">Need something else?</h3><p data-i18n="cu.p">Describe it. If I can solve it, I will build it for you, turnkey.</p></div>
-            <span class="btn btn--ghost"><span data-i18n="cu.btn">Describe the task</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+            <div class="custom__t"><h3 data-i18n="v.other">Need something else?</h3><p data-i18n="cu.p">I will tell you if I can automate it and for how much.</p></div>
+            <span class="btn btn--ghost"><span data-i18n="cu.btn">Describe</span><svg class="ico"><use href="#i-arrow" /></svg></span>
           </a>
         </div>
       </section>
@@ -841,7 +1229,7 @@
           <div class="contact">
             <div class="rv">
               <h2 data-i18n="ct.h2">Write to me</h2>
-              <p class="contact__sub" data-i18n="ct.sub">Tell me what you want to automate. I reply within a day.</p>
+              <p class="contact__sub" data-i18n="ct.sub">I reply within a day.</p>
               <div class="order" id="order" hidden>
                 <span data-i18n="ct.pick">Chosen:</span> <b id="orderLabel"></b>
                 <button type="button" id="orderClear" aria-label="Clear choice" data-i18n-aria="ct.clear">×</button>
@@ -868,10 +1256,7 @@
           <footer class="foot">
             <span>© 2026 Mikhail Kostin</span>
             <nav aria-label="Footer">
-              <a href="https://t.me/onomamichail" target="_blank" rel="noopener">Telegram @onomamichail</a>
-              <a href="https://wa.me/491709094298" target="_blank" rel="noopener">WhatsApp +49 170 9094298</a>
               <a href="mailto:kostinmihail40@gmail.com">kostinmihail40@gmail.com</a>
-              <a href="https://github.com/m1hamuha" rel="noopener">GitHub</a>
             </nav>
           </footer>
         </div>
@@ -884,6 +1269,10 @@
     </div>
 
     <script src="./i18n.js"></script>
+    <script>window.FUNNEL = {"niches": {"salon": [["bot", "s.bot.1"], ["mail", "s.mail.2"], ["social", "s.social.2"], ["reviews", "s.reviews.2"], ["site", "s.site.2"]], "cafe": [["bot", "s.bot.2"], ["social", "s.social.1"], ["reviews", "s.reviews.1"], ["translate", "s.translate.1"], ["reports", "s.reports.2"]], "shop": [["bot", "s.bot.3"], ["content", "s.content.1"], ["data", "s.data.1"], ["translate", "s.translate.2"], ["mail", "s.mail.4"]], "trades": [["leads", "s.leads.4"], ["docs", "s.docs.2"], ["site", "s.site.1"], ["social", "s.social.4"], ["assistant", "s.assistant.3"]], "fitness": [["bot", "nl.fitness.bot"], ["mail", "nl.fitness.mail"], ["social", "nl.fitness.social"], ["reports", "nl.fitness.reports"], ["reviews", "nl.fitness.reviews"]], "clinic": [["bot", "s.bot.4"], ["mail", "s.mail.1"], ["docs", "s.docs.3"], ["translate", "s.translate.3"], ["reviews", "s.reviews.3"]], "cleaning": [["leads", "nl.cleaning.leads"], ["bot", "nl.cleaning.bot"], ["mail", "nl.cleaning.mail"], ["docs", "nl.cleaning.docs"], ["reviews", "nl.cleaning.reviews"]], "office": [["leads", "s.leads.2"], ["docs", "s.docs.1"], ["reports", "s.reports.3"], ["data", "s.data.2"], ["assistant", "s.assistant.1"]], "other": [["social", "d.social"], ["bot", "d.bot"], ["content", "d.content"], ["reports", "d.reports"], ["docs", "d.docs"], ["reviews", "d.reviews"], ["data", "d.data"], ["site", "d.site"], ["leads", "d.leads"], ["mail", "d.mail"], ["translate", "d.translate"], ["assistant", "d.assistant"]]}, "icons": {"salon": "scissors", "cafe": "coffee", "shop": "shopping-bag", "trades": "wrench", "fitness": "dumbbell", "clinic": "stethoscope", "cleaning": "spray-can", "office": "building-2", "other": "sparkles"}, "sv": {"social": {"icon": "calendar-days", "amt": "€10", "per": true}, "bot": {"icon": "bot", "amt": "€79", "per": false}, "content": {"icon": "image", "amt": "€1", "per": false}, "reports": {"icon": "chart-column", "amt": "€19", "per": false}, "docs": {"icon": "file-text", "amt": "€19", "per": false}, "reviews": {"icon": "star", "amt": "€15", "per": false}, "data": {"icon": "search", "amt": "€29", "per": false}, "site": {"icon": "globe", "amt": "€29", "per": false}, "leads": {"icon": "contact", "amt": "€29", "per": false}, "mail": {"icon": "bell-ring", "amt": "€19", "per": false}, "translate": {"icon": "languages", "amt": "€5", "per": false}, "assistant": {"icon": "message-square-more", "amt": "€49", "per": false}}};</script>
     <script src="./app.js"></script>
+    <script src="./vendor/gsap.min.js" defer></script>
+    <script src="./vendor/ScrollTrigger.min.js" defer></script>
+    <script src="./motion.js" defer></script>
   </body>
 </html>
