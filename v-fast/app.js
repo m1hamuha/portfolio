@@ -318,12 +318,12 @@
   var order = null, typed = false;
   /* id -> [name key, "from" prefix?, amount] ; plans are named under social media */
   var ORD = {
-    social: ["sv.social.h", 1, "€100"], bot: ["sv.bot.h", 1, "€790"], content: ["sv.content.h", 1, "€5"],
-    reports: ["sv.reports.h", 1, "€190"], docs: ["sv.docs.h", 1, "€190"], reviews: ["sv.reviews.h", 1, "€150"],
-    data: ["sv.data.h", 1, "€290"], site: ["sv.site.h", 1, "€290"], leads: ["sv.leads.h", 1, "€290"], mail: ["sv.mail.h", 1, "€190"],
-    translate: ["sv.translate.h", 1, "€49"], assistant: ["sv.assistant.h", 1, "€490"], custom: ["sv.custom.h", 0, ""],
-    photo: ["pm.photo", 0, "€5"], video: ["pm.video", 1, "€79"],
-    plan1: ["pl.1", 0, "€100 " ], plan2: ["pl.2", 0, "€250 "], plan3: ["pl.3", 0, "€400 "]
+    social: ["sv.social.h", 1, "€10"], bot: ["sv.bot.h", 1, "€79"], content: ["sv.content.h", 1, "€1"],
+    reports: ["sv.reports.h", 1, "€19"], docs: ["sv.docs.h", 1, "€19"], reviews: ["sv.reviews.h", 1, "€15"],
+    data: ["sv.data.h", 1, "€29"], site: ["sv.site.h", 1, "€29"], leads: ["sv.leads.h", 1, "€29"], mail: ["sv.mail.h", 1, "€19"],
+    translate: ["sv.translate.h", 1, "€5"], assistant: ["sv.assistant.h", 1, "€49"], custom: ["sv.custom.h", 0, ""],
+    photo: ["pm.photo", 0, "€1"], video: ["pm.video", 1, "€8"],
+    plan1: ["pl.1", 0, "€10 " ], plan2: ["pl.2", 0, "€25 "], plan3: ["pl.3", 0, "€40 "]
   };
   function labelFor(id) {
     var o = ORD[id], name = t(o[0]);
