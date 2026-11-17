@@ -8,6 +8,7 @@
   var lang = "en";
   var timers = {};
   var resay = function () {};
+  var refillL3 = function () {};
   var relocWall = function () {};
   var PAIRS = ["can", "candle", "sneaker"];
 
@@ -54,6 +55,7 @@
       history.replaceState(null, "", u);
     }
     resay();
+    refillL3();
     relocWall();
     paintOrder();
     startChat();
@@ -411,7 +413,7 @@
     new IntersectionObserver(function (es) {
       if (es[0].isIntersecting && !inited && track.clientWidth > 0) {
         inited = true;
-        var cs = cards(), c = cs[Math.min(1, cs.length - 1)];
+        var cs = cards(), c = cs[window.innerWidth < 760 ? 0 : Math.min(1, cs.length - 1)];
         if (c) track.scrollLeft = c.offsetLeft - (track.clientWidth - c.offsetWidth) / 2;
       }
       queue();
@@ -419,33 +421,68 @@
     queue();
   });
 
-  /* ---------- pages inside the page ----------
-     #/social, #/bot ... open that service's page; any other hash shows the home page.
-     Browser back/forward work, and the home page remembers where the visitor was. */
+  /* ---------- pages inside the page: one step at a time ----------
+     home (pick a business) > #/for/<business> (pick a task) > #/for/<business>/<task> (example, price, order)
+     > contact. Each level shows only what that step needs. #contact on its own is the contact page. */
   var home = $("#home"), views = $("#views"), current = null, homeY = 0;
+  var F = window.FUNNEL || { niches: {}, sv: {}, icons: {} };
+  var l3 = $("#l3"), l3demo = $("#l3demo"), l3ctx = null;
   var LEGACY = { "#creatives": "#/content" };
+  function svg(name) { return '<svg class="ico"><use href="#l-' + name + '" /></svg>'; }
+  /* demos live in the old service pages; lend them to the level-3 page while it shows */
+  function demoFor(sid) {
+    if (sid === "social") return $("#v-social .pgroup");
+    var d = $("#v-" + sid + " .svc__demo > *");
+    return d || null;
+  }
+  var lent = null, lentFrom = null;
+  function giveBack() { if (lent && lentFrom) lentFrom.appendChild(lent); lent = lentFrom = null; }
+  function fillL3() {
+    if (!l3ctx) return;
+    var n = l3ctx[0], sid = l3ctx[1], row = (F.niches[n] || []).filter(function (x) { return x[0] === sid; })[0], sv = F.sv[sid];
+    if (!row || !sv) return;
+    $("#l3nb").textContent = t("n." + n);
+    $("#l3back").setAttribute("href", "#/for/" + n);
+    $("#l3ico").innerHTML = svg(sv.icon);
+    $("#l3h").textContent = t("sv." + sid + ".h");
+    $("#l3line").textContent = t(row[1]);
+    $("#l3price").innerHTML = sid === "social" ? "" : '<span>' + t("pr.from") + '</span> <b>' + sv.amt + '</b> <span>' + (sv.per ? t("pr.mo") : t("pr.once")) + "</span>";
+    $("#l3order").dataset.order = sid;
+  }
+  refillL3 = fillL3;
+  function show(sec, key) {
+    if (current === null) homeY = window.pageYOffset;
+    $$(".svc").forEach(function (v) { v.hidden = v !== sec; });
+    home.hidden = true; views.hidden = false;
+    current = key;
+    window.scrollTo({ top: 0, behavior: "instant" });
+    $$(".rv", sec).forEach(function (el) { el.classList.add("in"); });
+    var hd = $(".svc__h", sec); if (hd) hd.focus({ preventScroll: true });
+  }
   function route() {
     var h = LEGACY[location.hash] || location.hash;
     if (h !== location.hash) { history.replaceState(null, "", h); }
-    var m = h.match(/^#\/([a-z]+)$/), sec = m && $("#v-" + m[1]), nm = h.match(/^#\/for\/([a-z]+)$/);
-    if (nm && $("#n-" + nm[1])) { sec = $("#n-" + nm[1]); m = [h, "for"]; ctxNiche = nm[1]; }
-    else if (sec) { var bk = $(".back", sec); if (bk) bk.setAttribute("href", ctxNiche ? "#/for/" + ctxNiche : "#services"); }
-    if (sec) {
-      if (current === null) homeY = window.pageYOffset;
-      $$(".svc").forEach(function (v) { v.hidden = v !== sec; });
-      home.hidden = true; views.hidden = false;
-      current = m[1];
-      window.scrollTo({ top: 0, behavior: "instant" });
-      $$(".rv", sec).forEach(function (el) { el.classList.add("in"); });
-      var V = { salon: "salon", cafe: "cafe", shop: "shop", clinic: "clinic", trades: "craft", office: "office" }[ctxNiche];
-      $$(".task", sec).forEach(function (li) { li.classList.toggle("hit", !!V && !!$('[data-i18n="v.' + V + '"]', li)); });
-      var ul = $(".tasks", sec); if (ul) $$(".task.hit", ul).forEach(function (li) { ul.insertBefore(li, ul.firstChild); });
-      var hd = $(".svc__h", sec); if (hd) hd.focus({ preventScroll: true });
+    var root = document.documentElement;
+    var m3 = h.match(/^#\/for\/([a-z]+)\/([a-z]+)$/), m2 = h.match(/^#\/for\/([a-z]+)$/), m1 = h.match(/^#\/([a-z]+)$/);
+    root.classList.remove("lvl3", "ctpage");
+    if (m3 && F.niches[m3[1]]) {
+      giveBack();
+      ctxNiche = m3[1]; l3ctx = [m3[1], m3[2]]; fillL3();
+      var d = demoFor(m3[2]); if (d) { lentFrom = d.parentNode; lent = d; l3demo.appendChild(d); }
+      root.classList.add("lvl3");
+      show(l3, h); return;
+    }
+    if (m2 && $("#n-" + m2[1])) { giveBack(); ctxNiche = m2[1]; show($("#n-" + m2[1]), h); return; }
+    if (m1 && $("#v-" + m1[1])) { giveBack(); show($("#v-" + m1[1]), h); root.classList.add("lvl3"); return; }
+    if (h === "#contact") {
+      root.classList.add(current !== null ? "lvl3" : "ctpage");
+      if (current === null) { home.hidden = true; views.hidden = true; }
+      var ct = $("#contact"); requestAnimationFrame(function () { ct.scrollIntoView({ behavior: reduce ? "auto" : "smooth" }); });
       return;
     }
-    if (h === "#contact" && current !== null) return; /* the contact block is shared; stay on the page */
+    giveBack();
     var wasView = current !== null;
-    current = null; ctxNiche = null;
+    current = null; ctxNiche = null; l3ctx = null;
     $$(".svc").forEach(function (v) { v.hidden = true; });
     views.hidden = true; home.hidden = false;
     var target = h.length > 1 && document.getElementById(h.slice(1));
