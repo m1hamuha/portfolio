@@ -450,3 +450,18 @@ h1 { font-size: clamp(2.3rem, 6vw, 5.2rem); max-width: 14em; }
 @media (prefers-reduced-motion: reduce) { .hero__bg { animation: none; } .road__p { stroke-dashoffset: 0; transition: none; } }
 .no-js .car__track { flex-wrap: wrap; overflow: visible; padding-inline: var(--pad); }
 .step > span:last-child { min-width: 0; overflow-wrap: anywhere; }
+
+/* content gathers around the centre: centred hero and headings, arrows sit under the middle card */
+.hero .wrap { text-align: center; }
+.hero h1 { margin-inline: auto; }
+.hero__cta { justify-content: center; }
+.car__track { padding-bottom: 5rem; }
+.car__btn { top: auto; bottom: 0.9rem; transform: none; }
+.car__btn:hover { transform: scale(1.1); }
+.car__btn--prev { left: calc(50% - 3.7rem); right: auto; }
+.car__btn--next { left: calc(50% + 0.5rem); right: auto; }
+.nv .svc__head { justify-content: center; text-align: center; }
+.nv .svc__h { flex: 0 1 auto; }
+.nv .lead, .how h2 { text-align: center; }
+.nv .back { display: flex; justify-content: center; }
+@media (max-width: 760px) { .car__track { padding-bottom: 2.5rem; } }
