@@ -380,3 +380,72 @@ h1, .svc__h { overflow-wrap: anywhere; hyphens: auto; }
 .cg { min-width: 0; } .stars { letter-spacing: 0.08em; }
 .about { display: flex; align-items: center; gap: 0.7rem; margin-top: 1.25rem; color: var(--muted); font-weight: 600; }
 .about i { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 0.6rem; background: var(--ink); color: var(--paper); font-style: normal; font-family: var(--f-display); font-weight: 800; }
+
+/* ===== niche-first funnel ===== */
+.hero { min-height: 0; display: block; padding-block: 7rem 3rem; position: relative; overflow: hidden; }
+.hero .wrap { position: relative; z-index: 1; }
+h1 { font-size: clamp(2.3rem, 6vw, 5.2rem); max-width: 14em; }
+.hero__ask { margin-top: 1.25rem; margin-bottom: clamp(1rem, 2.5vw, 1.75rem); font-size: clamp(1.1rem, 1.9vw, 1.5rem); color: var(--muted); }
+.hero__ask b { color: var(--ink); font-family: var(--f-display); font-weight: 800; letter-spacing: -0.02em; margin-right: 0.4rem; }
+.hero__cta { margin-top: 1rem; }
+.hero__bg { position: absolute; inset: -20% -10% auto; height: 120%; z-index: 0; pointer-events: none;
+  background: radial-gradient(40% 35% at 20% 25%, rgba(112, 39, 255, 0.28), transparent 70%), radial-gradient(35% 30% at 85% 60%, rgba(216, 255, 0, 0.08), transparent 70%);
+  animation: drift 18s ease-in-out infinite alternate; }
+@keyframes drift { to { transform: translate3d(3%, 4%, 0) scale(1.08); } }
+
+/* 3D carousel: native scroll-snap, cards tilt by their distance from the centre (see app.js) */
+.car { position: relative; --cw: clamp(15rem, 72vw, 19rem); }
+.car__track { display: flex; gap: clamp(0.8rem, 2vw, 1.5rem); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 1.5rem max(var(--pad), calc(50% - var(--cw) / 2)) 2.5rem; perspective: 1100px; overscroll-behavior-x: contain; cursor: grab; -webkit-overflow-scrolling: touch; }
+.car__track::-webkit-scrollbar { display: none; }
+.car__track.drag { cursor: grabbing; scroll-snap-type: none; }
+.car__track:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
+.car__btn { position: absolute; top: 50%; z-index: 5; transform: translateY(-50%); display: grid; place-items: center; width: 3.2rem; height: 3.2rem; border-radius: 50%; background: var(--accent); color: var(--on); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5); transition: transform 0.2s var(--spring); }
+.car__btn:hover { transform: translateY(-50%) scale(1.1); }
+.car__btn--prev { left: 0.75rem; }
+.car__btn--next { right: 0.75rem; }
+.car__btn .ico { width: 1.5rem; height: 1.5rem; }
+.cc { flex: none; width: var(--cw); scroll-snap-align: center; display: flex; flex-direction: column; gap: 1rem; min-height: 22rem; padding: 1.4rem; border-radius: var(--r-lg); background: linear-gradient(160deg, #1c1c1c, #101010); border: 1px solid var(--line); will-change: transform; transition: border-color 0.3s, box-shadow 0.3s; }
+.cc:hover, .cc.mid { border-color: var(--accent); }
+.cc.mid { box-shadow: 0 18px 50px rgba(112, 39, 255, 0.35); }
+.cc h3 { font-size: clamp(1.3rem, 2vw, 1.7rem); line-height: 1.1; }
+.cc__art { position: relative; display: grid; place-items: center; width: 8.5rem; height: 8.5rem; margin: 0.5rem auto 0.25rem; border-radius: 50%; color: var(--accent);
+  background: radial-gradient(circle at 35% 30%, rgba(112, 39, 255, 0.85), rgba(112, 39, 255, 0.15) 70%); box-shadow: 0 0 0 10px rgba(112, 39, 255, 0.12), 0 0 0 22px rgba(112, 39, 255, 0.06); }
+.cc__art .ico { width: 3.6rem; height: 3.6rem; stroke-width: 1.6; filter: drop-shadow(0 0 12px rgba(216, 255, 0, 0.5)); }
+.cc--n h3 { text-align: center; }
+.cc__go { margin-top: auto; display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; font-weight: 700; color: var(--accent); }
+.cc__go .ico { transition: transform 0.25s var(--ease); }
+.cc:hover .cc__go .ico { transform: translateX(5px); }
+.cc--s { min-height: 24rem; }
+.cc__art--s { width: 5rem; height: 5rem; margin: 0; align-self: flex-start; box-shadow: 0 0 0 6px rgba(112, 39, 255, 0.12); }
+.cc__art--s .ico { width: 2.2rem; height: 2.2rem; }
+.cc__line { color: var(--ink); line-height: 1.4; font-size: 1.05rem; }
+.cc__price { margin-top: auto; font-family: var(--f-display); font-weight: 800; font-size: 1.5rem; letter-spacing: -0.03em; color: var(--accent); }
+.cc__price span { font-family: var(--f-body); font-weight: 500; font-size: 0.9rem; letter-spacing: 0; opacity: 0.7; }
+.cc__act { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
+.cc__act .btn { min-height: 3rem; padding: 0.6rem 1.2rem; font-size: 1rem; box-shadow: none; }
+.cc__more { display: inline-flex; align-items: center; gap: 0.25rem; font-weight: 700; font-size: 0.95rem; color: var(--muted); }
+.cc__more:hover { color: var(--accent); }
+.cc__more .ico { width: 1.1rem; height: 1.1rem; }
+.lead--nv { margin-top: 0; }
+.nv .custom { margin-top: 0; }
+.custom-sec { padding-block: 0 var(--sec); }
+.custom-sec .custom { margin-top: 0; }
+
+/* the route as a road: a line draws itself behind the three steps */
+.roadmap { position: relative; }
+.road { position: absolute; left: 0; top: 50%; width: 100%; height: 6rem; transform: translateY(-50%); z-index: 0; overflow: visible; }
+.road__p { fill: none; stroke: var(--accent); stroke-width: 3; stroke-dasharray: 1; stroke-dashoffset: 1; stroke-linecap: round; vector-effect: non-scaling-stroke; opacity: 0.55; transition: stroke-dashoffset 2.2s var(--ease); }
+.roadmap:has(.step.in) .road__p { stroke-dashoffset: 0; }
+.steps { position: relative; z-index: 1; }
+.step { background: #121212; }
+@media (max-width: 760px) {
+  .hero { padding-block: 5.5rem 2rem; }
+  h1 { font-size: clamp(2rem, 10vw, 3rem); }
+  .car__btn { display: none; }
+  .cc { min-height: 20rem; }
+  .cc__art { width: 7rem; height: 7rem; }
+  .cc__art .ico { width: 3rem; height: 3rem; }
+  .road { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .hero__bg { animation: none; } .road__p { stroke-dashoffset: 0; transition: none; } }
+.no-js .car__track { flex-wrap: wrap; overflow: visible; padding-inline: var(--pad); }

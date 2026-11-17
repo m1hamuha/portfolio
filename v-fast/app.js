@@ -312,6 +312,7 @@
      Tapping "Order" on a page or a price card remembers what was chosen, shows it
      next to the messenger buttons and prefills the WhatsApp text and the form. */
   var WA = "https://wa.me/491709094298";
+  var ctxNiche = null;
   var order = null, typed = false;
   /* id -> [name key, "from" prefix?, amount] ; plans are named under social media */
   var ORD = {
@@ -324,8 +325,9 @@
   };
   function labelFor(id) {
     var o = ORD[id], name = t(o[0]);
-    if (id.indexOf("plan") === 0) return t("sv.social.h") + ", " + name + ": " + o[2] + t("pr.mo");
-    return o[2] ? name + ": " + (o[1] ? t("pr.from") + " " : "") + o[2] : name;
+    var pre = ctxNiche ? t("n." + ctxNiche) + ": " : "";
+    if (id.indexOf("plan") === 0) return pre + t("sv.social.h") + ", " + name + ": " + o[2] + t("pr.mo");
+    return pre + (o[2] ? name + ": " + (o[1] ? t("pr.from") + " " : "") + o[2] : name);
   }
   function paintOrder() {
     var box = $("#order"), lab = $("#orderLabel"), ta = $('#form [name="message"]');
@@ -348,18 +350,61 @@
     new IntersectionObserver(function (es) { inContact = es[0].isIntersecting; sync(); }, { threshold: 0.1 }).observe(contact);
   })();
 
-  /* ---------- "who is it for" chips: tap one and only the services that fit that business stay bright ---------- */
-  (function () {
-    var chips = $$(".vchip"), cards = $$(".card[data-vs]"), on = null;
-    chips.forEach(function (c) {
-      c.addEventListener("click", function () {
-        on = on === c.dataset.v ? null : c.dataset.v;
-        chips.forEach(function (x) { x.setAttribute("aria-pressed", String(x.dataset.v === on)); });
-        cards.forEach(function (k) { k.classList.toggle("dim", !!on && k.dataset.vs.split(" ").indexOf(on) < 0); });
-        if (on) $("#services").scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
+  /* ---------- 3D carousels ----------
+     Native scroll-snap does the moving; every frame each card is tilted and scaled by how far
+     it sits from the centre. Mouse drag, arrow buttons and keyboard all work. */
+  $$("[data-car]").forEach(function (car) {
+    var track = $(".car__track", car), prev = $(".car__btn--prev", car), next = $(".car__btn--next", car), raf = 0;
+    function cards() { return $$(".cc", track); }
+    function paint() {
+      raf = 0;
+      var mid = track.getBoundingClientRect(), cx = mid.left + mid.width / 2, best = null, bd = 1e9;
+      cards().forEach(function (c) {
+        var r = c.getBoundingClientRect(), d = (r.left + r.width / 2 - cx) / r.width, a = Math.abs(d);
+        if (!reduce && mid.width > 0) {
+          c.style.transform = "translateZ(" + (-Math.min(a, 2) * 70) + "px) rotateY(" + Math.max(-48, Math.min(48, -d * 30)) + "deg) scale(" + (1 - Math.min(a, 2) * 0.07) + ")";
+          c.style.opacity = String(1 - Math.min(a, 2.5) * 0.16);
+        }
+        if (a < bd) { bd = a; best = c; }
       });
+      cards().forEach(function (c) { c.classList.toggle("mid", c === best); });
+    }
+    function queue() { if (!raf) raf = requestAnimationFrame(paint); }
+    function step(dir) {
+      var c = cards()[0]; if (!c) return;
+      track.scrollBy({ left: dir * (c.getBoundingClientRect().width + 16), behavior: reduce ? "auto" : "smooth" });
+    }
+    track.addEventListener("scroll", queue, { passive: true });
+    window.addEventListener("resize", queue);
+    if (prev) prev.addEventListener("click", function () { step(-1); });
+    if (next) next.addEventListener("click", function () { step(1); });
+    track.addEventListener("keydown", function (e) { if (e.key === "ArrowRight") { step(1); e.preventDefault(); } if (e.key === "ArrowLeft") { step(-1); e.preventDefault(); } });
+    /* mouse drag (touch already scrolls natively); a drag must not count as a click */
+    var down = false, sx = 0, sl = 0, moved = false;
+    track.addEventListener("pointerdown", function (e) { if (e.pointerType !== "mouse") return; down = true; moved = false; sx = e.clientX; sl = track.scrollLeft; });
+    window.addEventListener("pointermove", function (e) {
+      if (!down) return;
+      var dx = e.clientX - sx;
+      if (Math.abs(dx) > 5) { moved = true; track.classList.add("drag"); }
+      if (moved) track.scrollLeft = sl - dx;
     });
-  })();
+    window.addEventListener("pointerup", function () {
+      if (!down) return; down = false; track.classList.remove("drag");
+      if (moved) { var c = cards()[0], w = c ? c.getBoundingClientRect().width + 16 : 1; track.scrollTo({ left: Math.round(track.scrollLeft / w) * w, behavior: "smooth" }); }
+    });
+    track.addEventListener("click", function (e) { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
+    /* centre the first card once visible, so the neighbours show on both sides */
+    var inited = false;
+    new IntersectionObserver(function (es) {
+      if (es[0].isIntersecting && !inited && track.clientWidth > 0) {
+        inited = true;
+        var cs = cards(), c = cs[Math.min(1, cs.length - 1)];
+        if (c) track.scrollLeft = c.offsetLeft - (track.clientWidth - c.offsetWidth) / 2;
+      }
+      queue();
+    }, { threshold: 0.1 }).observe(car);
+    queue();
+  });
 
   /* ---------- pages inside the page ----------
      #/social, #/bot ... open that service's page; any other hash shows the home page.
@@ -369,7 +414,9 @@
   function route() {
     var h = LEGACY[location.hash] || location.hash;
     if (h !== location.hash) { history.replaceState(null, "", h); }
-    var m = h.match(/^#\/([a-z]+)$/), sec = m && $("#v-" + m[1]);
+    var m = h.match(/^#\/([a-z]+)$/), sec = m && $("#v-" + m[1]), nm = h.match(/^#\/for\/([a-z]+)$/);
+    if (nm && $("#n-" + nm[1])) { sec = $("#n-" + nm[1]); m = [h, "for"]; ctxNiche = nm[1]; }
+    else if (sec) { var bk = $(".back", sec); if (bk) bk.setAttribute("href", ctxNiche ? "#/for/" + ctxNiche : "#services"); }
     if (sec) {
       if (current === null) homeY = window.pageYOffset;
       $$(".svc").forEach(function (v) { v.hidden = v !== sec; });
@@ -381,7 +428,7 @@
     }
     if (h === "#contact" && current !== null) return; /* the contact block is shared; stay on the page */
     var wasView = current !== null;
-    current = null;
+    current = null; ctxNiche = null;
     $$(".svc").forEach(function (v) { v.hidden = true; });
     views.hidden = true; home.hidden = false;
     var target = h.length > 1 && document.getElementById(h.slice(1));
