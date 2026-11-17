@@ -61,6 +61,6 @@
     var sec = document.querySelector(".svc:not([hidden])");
     if (!sec) { window.ScrollTrigger.refresh(); return; }
     anim(sec.querySelectorAll(".svc__head, .l3__line, .l3__demo, .l3__buy"), { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.08, ease: "expo.out" });
-    anim(sec.querySelectorAll(".car__track"), { x: 120, opacity: 0 }, { x: 0, opacity: 1, duration: 1, ease: "expo.out", delay: 0.1 });
+    anim(sec.querySelectorAll(".car__track"), { x: 60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.8, ease: "expo.out", delay: 0.1 });
   });
 })();

@@ -448,6 +448,7 @@
     $("#l3line").textContent = t(row[1]);
     $("#l3price").innerHTML = sid === "social" ? "" : '<span>' + t("pr.from") + '</span> <b>' + sv.amt + '</b> <span>' + (sv.per ? t("pr.mo") : t("pr.once")) + "</span>";
     $("#l3order").dataset.order = sid;
+    $(".l3__buy").hidden = sid === "social"; /* social media has its own three plans, each with Order */
   }
   refillL3 = fillL3;
   function show(sec, key) {

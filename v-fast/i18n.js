@@ -17,7 +17,7 @@ window.I18N = {
     "v.craft": "Trades",
     "v.office": "Offices",
     "co.1": "Free slot on Friday?",
-    "co.2": "Booked for 16:30 ✓",
+    "co.2": "Booked for 16:30",
     "co.3": "Weekly report is ready",
     "co.4": "Review answered",
     "co.5": "Post published",
@@ -194,8 +194,8 @@ window.I18N = {
     "nl.fitness.reviews": "Collects reviews and keeps the rating high",
     "pr.once": "one-off",
     "l3.ex": "How it works for you",
-    chat: [["u", "Hi! Any free slot on Friday?"], ["b", "Hi! Friday 14:00 or 16:30 are free. Which one?"], ["u", "16:30 please"], ["b", "Booked ✓ Confirmation sent."]],
-    term: [["cmd", "Weekly report"], ["ok", "✓ 1,284 orders checked"], ["ok", "✓ 37 profit leaks found"], ["ok", "✓ Report sent to Telegram"], ["dim", "Done in 3 seconds"]],
+    chat: [["u", "Hi! Any free slot on Friday?"], ["b", "Hi! Friday 14:00 or 16:30 are free. Which one?"], ["u", "16:30 please"], ["b", "Booked Confirmation sent."]],
+    term: [["cmd", "Weekly report"], ["ok", "1,284 orders checked"], ["ok", "37 profit leaks found"], ["ok", "Report sent to Telegram"], ["dim", "Done in 3 seconds"]],
   },
 
   de: {
@@ -215,7 +215,7 @@ window.I18N = {
     "v.craft": "Handwerk",
     "v.office": "Büros",
     "co.1": "Freitag noch was frei?",
-    "co.2": "Gebucht für 16:30 ✓",
+    "co.2": "Gebucht für 16:30",
     "co.3": "Wochenbericht ist fertig",
     "co.4": "Bewertung beantwortet",
     "co.5": "Post veröffentlicht",
@@ -392,8 +392,8 @@ window.I18N = {
     "nl.fitness.reviews": "Sammelt Bewertungen und hält das Rating hoch",
     "pr.once": "einmalig",
     "l3.ex": "So läuft es bei dir",
-    chat: [["u", "Hi! Ist am Freitag noch was frei?"], ["b", "Hi! Freitag 14:00 oder 16:30 ist frei. Was passt?"], ["u", "16:30 bitte"], ["b", "Gebucht ✓ Bestätigung ist raus."]],
-    term: [["cmd", "Wochenbericht"], ["ok", "✓ 1.284 Bestellungen geprüft"], ["ok", "✓ 37 Gewinnlecks gefunden"], ["ok", "✓ Bericht an Telegram gesendet"], ["dim", "Fertig in 3 Sekunden"]],
+    chat: [["u", "Hi! Ist am Freitag noch was frei?"], ["b", "Hi! Freitag 14:00 oder 16:30 ist frei. Was passt?"], ["u", "16:30 bitte"], ["b", "Gebucht Bestätigung ist raus."]],
+    term: [["cmd", "Wochenbericht"], ["ok", "1.284 Bestellungen geprüft"], ["ok", "37 Gewinnlecks gefunden"], ["ok", "Bericht an Telegram gesendet"], ["dim", "Fertig in 3 Sekunden"]],
   },
 
   uk: {
@@ -413,7 +413,7 @@ window.I18N = {
     "v.craft": "Майстри",
     "v.office": "Офіси",
     "co.1": "Є вікно в п'ятницю?",
-    "co.2": "Записав на 16:30 ✓",
+    "co.2": "Записав на 16:30",
     "co.3": "Звіт за тиждень готовий",
     "co.4": "На відгук відповіли",
     "co.5": "Пост опубліковано",
@@ -590,8 +590,8 @@ window.I18N = {
     "nl.fitness.reviews": "Збирає відгуки й тримає рейтинг високим",
     "pr.once": "разово",
     "l3.ex": "Як це працює у тебе",
-    chat: [["u", "Привіт! Є вільний час у п'ятницю?"], ["b", "Привіт! У п'ятницю вільно о 14:00 та 16:30. Що зручніше?"], ["u", "16:30"], ["b", "Записав ✓ Підтвердження надіслано."]],
-    term: [["cmd", "Звіт за тиждень"], ["ok", "✓ Перевірено 1 284 замовлення"], ["ok", "✓ Знайдено 37 втрат прибутку"], ["ok", "✓ Звіт надіслано в Telegram"], ["dim", "Готово за 3 секунди"]],
+    chat: [["u", "Привіт! Є вільний час у п'ятницю?"], ["b", "Привіт! У п'ятницю вільно о 14:00 та 16:30. Що зручніше?"], ["u", "16:30"], ["b", "Записав Підтвердження надіслано."]],
+    term: [["cmd", "Звіт за тиждень"], ["ok", "Перевірено 1 284 замовлення"], ["ok", "Знайдено 37 втрат прибутку"], ["ok", "Звіт надіслано в Telegram"], ["dim", "Готово за 3 секунди"]],
   },
 
   ru: {
@@ -611,7 +611,7 @@ window.I18N = {
     "v.craft": "Мастера",
     "v.office": "Офисы",
     "co.1": "Есть окно в пятницу?",
-    "co.2": "Записал на 16:30 ✓",
+    "co.2": "Записал на 16:30",
     "co.3": "Отчёт за неделю готов",
     "co.4": "На отзыв ответили",
     "co.5": "Пост опубликован",
@@ -788,7 +788,7 @@ window.I18N = {
     "nl.fitness.reviews": "Собирает отзывы и держит рейтинг высоким",
     "pr.once": "разово",
     "l3.ex": "Как это работает у тебя",
-    chat: [["u", "Привет! Есть окно в пятницу?"], ["b", "Привет! В пятницу свободно в 14:00 и 16:30. Что удобнее?"], ["u", "16:30"], ["b", "Записал ✓ Подтверждение отправил."]],
-    term: [["cmd", "Отчёт за неделю"], ["ok", "✓ Проверено 1 284 заказа"], ["ok", "✓ Найдено 37 утечек прибыли"], ["ok", "✓ Отчёт отправлен в Telegram"], ["dim", "Готово за 3 секунды"]],
+    chat: [["u", "Привет! Есть окно в пятницу?"], ["b", "Привет! В пятницу свободно в 14:00 и 16:30. Что удобнее?"], ["u", "16:30"], ["b", "Записал Подтверждение отправил."]],
+    term: [["cmd", "Отчёт за неделю"], ["ok", "Проверено 1 284 заказа"], ["ok", "Найдено 37 утечек прибыли"], ["ok", "Отчёт отправлен в Telegram"], ["dim", "Готово за 3 секунды"]],
   },
 };
