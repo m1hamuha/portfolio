@@ -378,3 +378,5 @@ h1 { font-size: clamp(2.5rem, 7vw, 6.4rem); line-height: 1.06; }
 @media (max-width: 760px) { .foot { margin-bottom: 4.5rem; } }
 h1, .svc__h { overflow-wrap: anywhere; hyphens: auto; }
 .cg { min-width: 0; } .stars { letter-spacing: 0.08em; }
+.about { display: flex; align-items: center; gap: 0.7rem; margin-top: 1.25rem; color: var(--muted); font-weight: 600; }
+.about i { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 0.6rem; background: var(--ink); color: var(--paper); font-style: normal; font-family: var(--f-display); font-weight: 800; }
