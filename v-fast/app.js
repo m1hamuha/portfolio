@@ -428,7 +428,7 @@
   var F = window.FUNNEL || { niches: {}, sv: {}, icons: {} };
   var l3 = $("#l3"), l3demo = $("#l3demo"), l3ctx = null;
   var LEGACY = { "#creatives": "#/content" };
-  function svg(name) { return '<svg class="ico"><use href="#l-' + name + '" /></svg>'; }
+  function svg(name) { return '<svg class="ico ph"><use href="#l-' + name + '" /></svg>'; }
   /* demos live in the old service pages; lend them to the level-3 page while it shows */
   function demoFor(sid) {
     if (sid === "social") return $("#v-social .pgroup");
@@ -492,6 +492,15 @@
   }
   window.addEventListener("hashchange", route);
   if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+
+  /* spotlight border: the card edge brightens where the cursor is */
+  document.addEventListener("pointermove", function (e) {
+    var c = e.target.closest && e.target.closest(".cc");
+    if (!c) return;
+    var r = c.getBoundingClientRect();
+    c.style.setProperty("--mx", (e.clientX - r.left) + "px");
+    c.style.setProperty("--my", (e.clientY - r.top) + "px");
+  }, { passive: true });
 
   setLang(pickLang(), false);
   route();
