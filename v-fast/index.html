@@ -129,6 +129,15 @@
         <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" /></symbol>
         <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6" /><path d="m16 16 5 5" /></symbol>
         <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18" /></symbol>
+        <symbol id="i-cup" viewBox="0 0 24 24"><path d="M5 8h11v6a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5zM16 10h2a2.5 2.5 0 0 1 0 5h-2M8 3v2M12 3v2" /></symbol>
+        <symbol id="i-scissors" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5" /><circle cx="6" cy="18" r="2.5" /><path d="M8 7.5 20 17M8 16.5 20 7" /></symbol>
+        <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6zM9 8V6a3 3 0 0 1 6 0v2" /></symbol>
+        <symbol id="i-cross" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4" /><path d="M12 8v8M8 12h8" /></symbol>
+        <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.5 6.5a4 4 0 0 0-5 5L4 17l3 3 5.5-5.5a4 4 0 0 0 5-5L15 12l-3-3z" /></symbol>
+        <symbol id="i-building" viewBox="0 0 24 24"><path d="M5 21V4h9v17M14 9h5v12M3 21h18M8 8h3M8 12h3M8 16h3" /></symbol>
+        <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" /></symbol>
+        <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6" /><path d="m16 16 5 5" /></symbol>
+        <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18" /></symbol>
       </defs>
     </svg>
 
@@ -157,7 +166,7 @@
         <div class="wrap hero__grid">
           <div>
             <h1 class="rv" data-i18n-html="hero.h1">I put <mark>AI</mark> to work in your business.</h1>
-            <div class="vchips rv" style="--i: 1"><span class="vchip"><svg class="ico"><use href="#i-cup" /></svg><span data-i18n="v.cafe">Cafes</span></span><span class="vchip"><svg class="ico"><use href="#i-scissors" /></svg><span data-i18n="v.salon">Salons</span></span><span class="vchip"><svg class="ico"><use href="#i-bag" /></svg><span data-i18n="v.shop">Shops</span></span><span class="vchip"><svg class="ico"><use href="#i-cross" /></svg><span data-i18n="v.clinic">Clinics</span></span><span class="vchip"><svg class="ico"><use href="#i-wrench" /></svg><span data-i18n="v.craft">Trades</span></span><span class="vchip"><svg class="ico"><use href="#i-building" /></svg><span data-i18n="v.office">Offices</span></span></div>
+            <div class="vchips rv" style="--i: 1"><button type="button" class="vchip" data-v="cafe" aria-pressed="false"><svg class="ico"><use href="#i-cup" /></svg><span data-i18n="v.cafe">Cafes</span></button><button type="button" class="vchip" data-v="salon" aria-pressed="false"><svg class="ico"><use href="#i-scissors" /></svg><span data-i18n="v.salon">Salons</span></button><button type="button" class="vchip" data-v="shop" aria-pressed="false"><svg class="ico"><use href="#i-bag" /></svg><span data-i18n="v.shop">Shops</span></button><button type="button" class="vchip" data-v="clinic" aria-pressed="false"><svg class="ico"><use href="#i-cross" /></svg><span data-i18n="v.clinic">Clinics</span></button><button type="button" class="vchip" data-v="craft" aria-pressed="false"><svg class="ico"><use href="#i-wrench" /></svg><span data-i18n="v.craft">Trades</span></button><button type="button" class="vchip" data-v="office" aria-pressed="false"><svg class="ico"><use href="#i-building" /></svg><span data-i18n="v.office">Offices</span></button></div>
             <div class="hero__cta rv" style="--i: 2">
               <a class="btn btn--ink" href="#services"><svg class="ico"><use href="#i-spark" /></svg><span data-i18n="hero.cta">Choose a service</span></a>
               <a class="btn btn--ghost" href="https://t.me/onomamichail" target="_blank" rel="noopener"><svg class="ico"><use href="#i-send" /></svg><span data-i18n="hero.write">Write on Telegram</span></a>
@@ -189,45 +198,65 @@
           <h2 class="rv" data-i18n="svc.h2">What I do</h2>
           <p class="lead rv" data-i18n="svc.sub">Tap what you need</p>
           <div class="cards" id="work">
-            <a class="card rv" style="--i: 0" href="#/social">
+            <a class="card rv" style="--i: 0" data-vs="cafe craft salon shop" href="#/social">
               <span class="card__ico"><svg class="ico"><use href="#i-cal" /></svg></span>
               <h3 data-i18n="sv.social.h">Social media</h3>
               <span class="card__foot"><span class="card__price"><span data-i18n="pr.from">from</span> €100 <span data-i18n="pr.mo">/ month</span></span><span class="card__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span></span>
             </a>
-            <a class="card rv" style="--i: 1" href="#/bot">
+            <a class="card rv" style="--i: 1" data-vs="cafe clinic salon shop" href="#/bot">
               <span class="card__ico"><svg class="ico"><use href="#i-bot" /></svg></span>
               <h3 data-i18n="sv.bot.h">Chatbot and booking</h3>
               <span class="card__foot"><span class="card__price"><span data-i18n="pr.from">from</span> €790</span><span class="card__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span></span>
             </a>
-            <a class="card rv" style="--i: 2" href="#/content">
+            <a class="card rv" style="--i: 2" data-vs="cafe salon shop" href="#/content">
               <span class="card__ico"><svg class="ico"><use href="#i-img" /></svg></span>
               <h3 data-i18n="sv.content.h">Photos, video, texts</h3>
               <span class="card__foot"><span class="card__price"><span data-i18n="pr.from">from</span> €5</span><span class="card__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span></span>
             </a>
-            <a class="card rv" style="--i: 3" href="#/reports">
+            <a class="card rv" style="--i: 3" data-vs="cafe clinic office shop" href="#/reports">
               <span class="card__ico"><svg class="ico"><use href="#i-chart" /></svg></span>
               <h3 data-i18n="sv.reports.h">Reports and spreadsheets</h3>
               <span class="card__foot"><span class="card__price"><span data-i18n="pr.from">from</span> €190</span><span class="card__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span></span>
             </a>
-            <a class="card rv" style="--i: 0" href="#/docs">
+            <a class="card rv" style="--i: 0" data-vs="clinic craft office shop" href="#/docs">
               <span class="card__ico"><svg class="ico"><use href="#i-file" /></svg></span>
               <h3 data-i18n="sv.docs.h">Emails and documents</h3>
               <span class="card__foot"><span class="card__price"><span data-i18n="pr.from">from</span> €190</span><span class="card__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span></span>
             </a>
-            <a class="card rv" style="--i: 1" href="#/reviews">
+            <a class="card rv" style="--i: 1" data-vs="cafe clinic salon shop" href="#/reviews">
               <span class="card__ico"><svg class="ico"><use href="#i-star" /></svg></span>
               <h3 data-i18n="sv.reviews.h">Reviews and reputation</h3>
               <span class="card__foot"><span class="card__price"><span data-i18n="pr.from">from</span> €150</span><span class="card__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span></span>
             </a>
-            <a class="card rv" style="--i: 2" href="#/data">
+            <a class="card rv" style="--i: 2" data-vs="cafe craft office shop" href="#/data">
               <span class="card__ico"><svg class="ico"><use href="#i-search" /></svg></span>
               <h3 data-i18n="sv.data.h">Data and price monitoring</h3>
               <span class="card__foot"><span class="card__price"><span data-i18n="pr.from">from</span> €290</span><span class="card__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span></span>
             </a>
-            <a class="card rv" style="--i: 3" href="#/site">
+            <a class="card rv" style="--i: 3" data-vs="cafe craft salon shop" href="#/site">
               <span class="card__ico"><svg class="ico"><use href="#i-globe" /></svg></span>
               <h3 data-i18n="sv.site.h">Website and SEO</h3>
               <span class="card__foot"><span class="card__price"><span data-i18n="pr.from">from</span> €290</span><span class="card__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span></span>
+            </a>
+            <a class="card rv" style="--i: 0" data-vs="craft office salon shop" href="#/leads">
+              <span class="card__ico"><svg class="ico"><use href="#i-card" /></svg></span>
+              <h3 data-i18n="sv.leads.h">Leads and requests</h3>
+              <span class="card__foot"><span class="card__price"><span data-i18n="pr.from">from</span> €290</span><span class="card__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span></span>
+            </a>
+            <a class="card rv" style="--i: 1" data-vs="cafe clinic salon shop" href="#/mail">
+              <span class="card__ico"><svg class="ico"><use href="#i-send" /></svg></span>
+              <h3 data-i18n="sv.mail.h">Reminders and mailings</h3>
+              <span class="card__foot"><span class="card__price"><span data-i18n="pr.from">from</span> €190</span><span class="card__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span></span>
+            </a>
+            <a class="card rv" style="--i: 2" data-vs="cafe clinic office shop" href="#/translate">
+              <span class="card__ico"><svg class="ico"><use href="#i-msg" /></svg></span>
+              <h3 data-i18n="sv.translate.h">Translation, 4 languages</h3>
+              <span class="card__foot"><span class="card__price"><span data-i18n="pr.from">from</span> €49</span><span class="card__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span></span>
+            </a>
+            <a class="card rv" style="--i: 3" data-vs="clinic craft office shop" href="#/assistant">
+              <span class="card__ico"><svg class="ico"><use href="#i-user" /></svg></span>
+              <h3 data-i18n="sv.assistant.h">AI helper for your team</h3>
+              <span class="card__foot"><span class="card__price"><span data-i18n="pr.from">from</span> €490</span><span class="card__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span></span>
             </a>
           </div>
           <a class="custom rv" href="#contact" data-order="custom">
@@ -306,6 +335,30 @@
               <div class="pm__price"><span data-i18n="pr.from">from</span> <b>€290</b></div>
               <span class="pm__go"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></span>
             </a>
+            <a class="pm rv" style="--i: 0" href="#contact" data-order="leads">
+              <small data-i18n="sv.leads.h">Leads and requests</small>
+              <em class="pm__d" data-i18n="d.leads">Every request in one place</em>
+              <div class="pm__price"><span data-i18n="pr.from">from</span> <b>€290</b></div>
+              <span class="pm__go"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+            </a>
+            <a class="pm rv" style="--i: 1" href="#contact" data-order="mail">
+              <small data-i18n="sv.mail.h">Reminders and mailings</small>
+              <em class="pm__d" data-i18n="d.mail">Messages go out on time</em>
+              <div class="pm__price"><span data-i18n="pr.from">from</span> <b>€190</b></div>
+              <span class="pm__go"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+            </a>
+            <a class="pm rv" style="--i: 2" href="#contact" data-order="translate">
+              <small data-i18n="sv.translate.h">Translation, 4 languages</small>
+              <em class="pm__d" data-i18n="d.translate">Texts in 4 languages</em>
+              <div class="pm__price"><span data-i18n="pr.from">from</span> <b>€49</b></div>
+              <span class="pm__go"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+            </a>
+            <a class="pm rv" style="--i: 3" href="#contact" data-order="assistant">
+              <small data-i18n="sv.assistant.h">AI helper for your team</small>
+              <em class="pm__d" data-i18n="d.assistant">Answers your team's questions</em>
+              <div class="pm__price"><span data-i18n="pr.from">from</span> <b>€490</b></div>
+              <span class="pm__go"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+            </a>
           </div>
           <div class="pgroup">
             <h3 class="sub rv" data-i18n="pr.sub">Social media, per month</h3>
@@ -359,6 +412,7 @@
               <a class="btn btn--ink" href="#contact" data-order="social"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></a>
             </div>
           </header>
+          <p class="example rv"><b data-i18n="v.ex">Example</b> <span data-i18n="e.social">A cafe gets a fresh post with photo and caption every morning, and the owner never touches the phone.</span></p>
           <div class="svc__body svc__body--demo">
             <div>
               <h3 class="sub sub--first rv" data-i18n="v.tasks">What it does</h3>
@@ -424,6 +478,7 @@
               <a class="btn btn--ink" href="#contact" data-order="bot"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></a>
             </div>
           </header>
+          <p class="example rv"><b data-i18n="v.ex">Example</b> <span data-i18n="e.bot">A client writes at night and asks for Friday. The bot offers free slots, books one and reminds the day before.</span></p>
           <div class="svc__body svc__body--demo">
             <div>
               <h3 class="sub sub--first rv" data-i18n="v.tasks">What it does</h3>
@@ -453,6 +508,7 @@
               <a class="btn btn--ink" href="#contact" data-order="content"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></a>
             </div>
           </header>
+          <p class="example rv"><b data-i18n="v.ex">Example</b> <span data-i18n="e.content">You send one photo of a product and get a finished ad picture back.</span></p>
           <div class="svc__body svc__body--demo">
             <div>
               <h3 class="sub sub--first rv" data-i18n="v.tasks">What it does</h3>
@@ -518,6 +574,7 @@
               <a class="btn btn--ink" href="#contact" data-order="reports"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></a>
             </div>
           </header>
+          <p class="example rv"><b data-i18n="v.ex">Example</b> <span data-i18n="e.reports">Every Monday morning last week's sales arrive in your Telegram as a short report.</span></p>
           <div class="svc__body svc__body--demo">
             <div>
               <h3 class="sub sub--first rv" data-i18n="v.tasks">What it does</h3>
@@ -547,6 +604,7 @@
               <a class="btn btn--ink" href="#contact" data-order="docs"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></a>
             </div>
           </header>
+          <p class="example rv"><b data-i18n="v.ex">Example</b> <span data-i18n="e.docs">A request comes in by email. You get a drafted reply and check and send it in one click.</span></p>
           <div class="svc__body">
             <div>
               <h3 class="sub sub--first rv" data-i18n="v.tasks">What it does</h3>
@@ -575,6 +633,7 @@
               <a class="btn btn--ink" href="#contact" data-order="reviews"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></a>
             </div>
           </header>
+          <p class="example rv"><b data-i18n="v.ex">Example</b> <span data-i18n="e.reviews">A guest leaves a 5 star review and a polite personal reply is already posted.</span></p>
           <div class="svc__body">
             <div>
               <h3 class="sub sub--first rv" data-i18n="v.tasks">What it does</h3>
@@ -603,6 +662,7 @@
               <a class="btn btn--ink" href="#contact" data-order="data"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></a>
             </div>
           </header>
+          <p class="example rv"><b data-i18n="v.ex">Example</b> <span data-i18n="e.data">A competitor lowers a price and you get a message with the old and the new price.</span></p>
           <div class="svc__body">
             <div>
               <h3 class="sub sub--first rv" data-i18n="v.tasks">What it does</h3>
@@ -631,6 +691,7 @@
               <a class="btn btn--ink" href="#contact" data-order="site"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></a>
             </div>
           </header>
+          <p class="example rv"><b data-i18n="v.ex">Example</b> <span data-i18n="e.site">A one page site with your services, prices and a booking button, in your language and in German.</span></p>
           <div class="svc__body">
             <div>
               <h3 class="sub sub--first rv" data-i18n="v.tasks">What it does</h3>
@@ -639,6 +700,122 @@
               <li class="task rv" style="--i: 1"><span class="tag"><svg class="ico"><use href="#i-scissors" /></svg><span data-i18n="v.salon">Salons</span></span><span data-i18n="s.site.2">Online booking right on the site</span></li>
               <li class="task rv" style="--i: 2"><span class="tag"><svg class="ico"><use href="#i-bag" /></svg><span data-i18n="v.shop">Shops</span></span><span data-i18n="s.site.3">Product descriptions in 4 languages</span></li>
               <li class="task rv" style="--i: 3"><span class="tag"><svg class="ico"><use href="#i-cup" /></svg><span data-i18n="v.cafe">Cafes</span></span><span data-i18n="s.site.4">Menu and offers that update themselves</span></li>
+              </ul>
+            </div>
+          </div>
+          <a class="custom custom--sm rv" href="#contact" data-order="custom">
+            <div class="custom__t"><h3 data-i18n="v.other">Need something else?</h3><p data-i18n="cu.p">Describe it. If I can solve it, I will build it for you, turnkey.</p></div>
+            <span class="btn btn--ghost"><span data-i18n="cu.btn">Describe the task</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+          </a>
+        </div>
+      </section>
+      <section class="svc" id="v-leads" hidden>
+        <div class="wrap">
+          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="v.back">All services</span></a>
+          <header class="svc__head">
+            <span class="card__ico card__ico--big"><svg class="ico"><use href="#i-card" /></svg></span>
+            <h2 class="svc__h" data-i18n="sv.leads.h" tabindex="-1">Leads and requests</h2>
+            <div class="svc__buy">
+              <span class="card__price"><span data-i18n="pr.from">from</span> €290</span>
+              <a class="btn btn--ink" href="#contact" data-order="leads"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></a>
+            </div>
+          </header>
+          <p class="example rv"><b data-i18n="v.ex">Example</b> <span data-i18n="e.leads">A request from Instagram or the site lands in a table and you get a ping with the contact.</span></p>
+          <div class="svc__body">
+            <div>
+              <h3 class="sub sub--first rv" data-i18n="v.tasks">What it does</h3>
+              <ul class="tasks">
+              <li class="task rv" style="--i: 0"><span class="tag"><svg class="ico"><use href="#i-bag" /></svg><span data-i18n="v.shop">Shops</span></span><span data-i18n="s.leads.1">Saves every request into a table with its source</span></li>
+              <li class="task rv" style="--i: 1"><span class="tag"><svg class="ico"><use href="#i-building" /></svg><span data-i18n="v.office">Offices</span></span><span data-i18n="s.leads.2">Pings you the moment a new client writes</span></li>
+              <li class="task rv" style="--i: 2"><span class="tag"><svg class="ico"><use href="#i-scissors" /></svg><span data-i18n="v.salon">Salons</span></span><span data-i18n="s.leads.3">Collects Instagram, Telegram and site requests in one place</span></li>
+              <li class="task rv" style="--i: 3"><span class="tag"><svg class="ico"><use href="#i-wrench" /></svg><span data-i18n="v.craft">Trades</span></span><span data-i18n="s.leads.4">Reminds you to follow up with a client</span></li>
+              </ul>
+            </div>
+          </div>
+          <a class="custom custom--sm rv" href="#contact" data-order="custom">
+            <div class="custom__t"><h3 data-i18n="v.other">Need something else?</h3><p data-i18n="cu.p">Describe it. If I can solve it, I will build it for you, turnkey.</p></div>
+            <span class="btn btn--ghost"><span data-i18n="cu.btn">Describe the task</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+          </a>
+        </div>
+      </section>
+      <section class="svc" id="v-mail" hidden>
+        <div class="wrap">
+          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="v.back">All services</span></a>
+          <header class="svc__head">
+            <span class="card__ico card__ico--big"><svg class="ico"><use href="#i-send" /></svg></span>
+            <h2 class="svc__h" data-i18n="sv.mail.h" tabindex="-1">Reminders and mailings</h2>
+            <div class="svc__buy">
+              <span class="card__price"><span data-i18n="pr.from">from</span> €190</span>
+              <a class="btn btn--ink" href="#contact" data-order="mail"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></a>
+            </div>
+          </header>
+          <p class="example rv"><b data-i18n="v.ex">Example</b> <span data-i18n="e.mail">Clients get a reminder before the visit and an offer a month later, and you send nothing by hand.</span></p>
+          <div class="svc__body">
+            <div>
+              <h3 class="sub sub--first rv" data-i18n="v.tasks">What it does</h3>
+              <ul class="tasks">
+              <li class="task rv" style="--i: 0"><span class="tag"><svg class="ico"><use href="#i-cross" /></svg><span data-i18n="v.clinic">Clinics</span></span><span data-i18n="s.mail.1">Reminds about a visit the day before</span></li>
+              <li class="task rv" style="--i: 1"><span class="tag"><svg class="ico"><use href="#i-scissors" /></svg><span data-i18n="v.salon">Salons</span></span><span data-i18n="s.mail.2">Invites clients back after a month</span></li>
+              <li class="task rv" style="--i: 2"><span class="tag"><svg class="ico"><use href="#i-cup" /></svg><span data-i18n="v.cafe">Cafes</span></span><span data-i18n="s.mail.3">Sends the weekly offer to regulars</span></li>
+              <li class="task rv" style="--i: 3"><span class="tag"><svg class="ico"><use href="#i-bag" /></svg><span data-i18n="v.shop">Shops</span></span><span data-i18n="s.mail.4">Tells customers when an item is back in stock</span></li>
+              </ul>
+            </div>
+          </div>
+          <a class="custom custom--sm rv" href="#contact" data-order="custom">
+            <div class="custom__t"><h3 data-i18n="v.other">Need something else?</h3><p data-i18n="cu.p">Describe it. If I can solve it, I will build it for you, turnkey.</p></div>
+            <span class="btn btn--ghost"><span data-i18n="cu.btn">Describe the task</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+          </a>
+        </div>
+      </section>
+      <section class="svc" id="v-translate" hidden>
+        <div class="wrap">
+          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="v.back">All services</span></a>
+          <header class="svc__head">
+            <span class="card__ico card__ico--big"><svg class="ico"><use href="#i-msg" /></svg></span>
+            <h2 class="svc__h" data-i18n="sv.translate.h" tabindex="-1">Translation, 4 languages</h2>
+            <div class="svc__buy">
+              <span class="card__price"><span data-i18n="pr.from">from</span> €49</span>
+              <a class="btn btn--ink" href="#contact" data-order="translate"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></a>
+            </div>
+          </header>
+          <p class="example rv"><b data-i18n="v.ex">Example</b> <span data-i18n="e.translate">Your menu, price list or site appears in German, English, Ukrainian and Russian, ready to use.</span></p>
+          <div class="svc__body">
+            <div>
+              <h3 class="sub sub--first rv" data-i18n="v.tasks">What it does</h3>
+              <ul class="tasks">
+              <li class="task rv" style="--i: 0"><span class="tag"><svg class="ico"><use href="#i-cup" /></svg><span data-i18n="v.cafe">Cafes</span></span><span data-i18n="s.translate.1">Menu in German, English, Ukrainian and Russian</span></li>
+              <li class="task rv" style="--i: 1"><span class="tag"><svg class="ico"><use href="#i-bag" /></svg><span data-i18n="v.shop">Shops</span></span><span data-i18n="s.translate.2">Product texts in 4 languages</span></li>
+              <li class="task rv" style="--i: 2"><span class="tag"><svg class="ico"><use href="#i-cross" /></svg><span data-i18n="v.clinic">Clinics</span></span><span data-i18n="s.translate.3">Forms and info sheets for patients</span></li>
+              <li class="task rv" style="--i: 3"><span class="tag"><svg class="ico"><use href="#i-building" /></svg><span data-i18n="v.office">Offices</span></span><span data-i18n="s.translate.4">Letters and offers in the client's language</span></li>
+              </ul>
+            </div>
+          </div>
+          <a class="custom custom--sm rv" href="#contact" data-order="custom">
+            <div class="custom__t"><h3 data-i18n="v.other">Need something else?</h3><p data-i18n="cu.p">Describe it. If I can solve it, I will build it for you, turnkey.</p></div>
+            <span class="btn btn--ghost"><span data-i18n="cu.btn">Describe the task</span><svg class="ico"><use href="#i-arrow" /></svg></span>
+          </a>
+        </div>
+      </section>
+      <section class="svc" id="v-assistant" hidden>
+        <div class="wrap">
+          <a class="back" href="#services"><svg class="ico"><use href="#i-arrow" /></svg><span data-i18n="v.back">All services</span></a>
+          <header class="svc__head">
+            <span class="card__ico card__ico--big"><svg class="ico"><use href="#i-user" /></svg></span>
+            <h2 class="svc__h" data-i18n="sv.assistant.h" tabindex="-1">AI helper for your team</h2>
+            <div class="svc__buy">
+              <span class="card__price"><span data-i18n="pr.from">from</span> €490</span>
+              <a class="btn btn--ink" href="#contact" data-order="assistant"><span data-i18n="pr.order">Order</span><svg class="ico"><use href="#i-arrow" /></svg></a>
+            </div>
+          </header>
+          <p class="example rv"><b data-i18n="v.ex">Example</b> <span data-i18n="e.assistant">Your team asks one chat helper about prices, rules and templates instead of asking you.</span></p>
+          <div class="svc__body">
+            <div>
+              <h3 class="sub sub--first rv" data-i18n="v.tasks">What it does</h3>
+              <ul class="tasks">
+              <li class="task rv" style="--i: 0"><span class="tag"><svg class="ico"><use href="#i-building" /></svg><span data-i18n="v.office">Offices</span></span><span data-i18n="s.assistant.1">Answers team questions about your rules and prices</span></li>
+              <li class="task rv" style="--i: 1"><span class="tag"><svg class="ico"><use href="#i-bag" /></svg><span data-i18n="v.shop">Shops</span></span><span data-i18n="s.assistant.2">Writes customer replies from your templates</span></li>
+              <li class="task rv" style="--i: 2"><span class="tag"><svg class="ico"><use href="#i-wrench" /></svg><span data-i18n="v.craft">Trades</span></span><span data-i18n="s.assistant.3">Helps price a job and draft the offer</span></li>
+              <li class="task rv" style="--i: 3"><span class="tag"><svg class="ico"><use href="#i-cross" /></svg><span data-i18n="v.clinic">Clinics</span></span><span data-i18n="s.assistant.4">Finds the right paper in your documents</span></li>
               </ul>
             </div>
           </div>

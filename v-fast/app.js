@@ -317,7 +317,8 @@
   var ORD = {
     social: ["sv.social.h", 1, "€100"], bot: ["sv.bot.h", 1, "€790"], content: ["sv.content.h", 1, "€5"],
     reports: ["sv.reports.h", 1, "€190"], docs: ["sv.docs.h", 1, "€190"], reviews: ["sv.reviews.h", 1, "€150"],
-    data: ["sv.data.h", 1, "€290"], site: ["sv.site.h", 1, "€290"], custom: ["sv.custom.h", 0, ""],
+    data: ["sv.data.h", 1, "€290"], site: ["sv.site.h", 1, "€290"], leads: ["sv.leads.h", 1, "€290"], mail: ["sv.mail.h", 1, "€190"],
+    translate: ["sv.translate.h", 1, "€49"], assistant: ["sv.assistant.h", 1, "€490"], custom: ["sv.custom.h", 0, ""],
     photo: ["pm.photo", 0, "€5"], video: ["pm.video", 1, "€79"],
     plan1: ["pl.1", 0, "€100 " ], plan2: ["pl.2", 0, "€250 "], plan3: ["pl.3", 0, "€400 "]
   };
@@ -345,6 +346,19 @@
     function sync() { dock.classList.toggle("on", away && !inContact); }
     new IntersectionObserver(function (es) { away = !es[0].isIntersecting; sync(); }).observe(first);
     new IntersectionObserver(function (es) { inContact = es[0].isIntersecting; sync(); }, { threshold: 0.1 }).observe(contact);
+  })();
+
+  /* ---------- "who is it for" chips: tap one and only the services that fit that business stay bright ---------- */
+  (function () {
+    var chips = $$(".vchip"), cards = $$(".card[data-vs]"), on = null;
+    chips.forEach(function (c) {
+      c.addEventListener("click", function () {
+        on = on === c.dataset.v ? null : c.dataset.v;
+        chips.forEach(function (x) { x.setAttribute("aria-pressed", String(x.dataset.v === on)); });
+        cards.forEach(function (k) { k.classList.toggle("dim", !!on && k.dataset.vs.split(" ").indexOf(on) < 0); });
+        if (on) $("#services").scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
+      });
+    });
   })();
 
   /* ---------- pages inside the page ----------

@@ -107,11 +107,15 @@ h1 { font-size: clamp(2.5rem, 7vw, 6.4rem); line-height: 1.06; }
 .hero__cta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.9rem; margin-top: clamp(1.5rem, 3.5vw, 2.5rem); }
 .vchips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: clamp(1.25rem, 3vw, 2rem); }
 .vchip { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.45rem 0.9rem; border-radius: var(--r-full); border: 1px solid var(--line); font-weight: 600; font-size: 0.95rem; }
+.vchip { background: none; color: var(--ink); cursor: pointer; transition: background 0.2s, border-color 0.2s; }
+.vchip:hover { border-color: var(--accent); }
+.vchip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on); }
+.vchip[aria-pressed="true"] .ico { color: var(--on); }
 .vchip .ico { width: 1.1rem; height: 1.1rem; color: var(--accent); }
 .btn--ghost { background: transparent; color: var(--ink); border: 2px solid var(--line); box-shadow: none; }
 .btn--ghost:hover { border-color: var(--accent); color: var(--accent); }
 
-.collage { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); width: 100%; max-width: 32rem; justify-self: end; }
+.collage { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap); width: 100%; max-width: 32rem; justify-self: end; }
 .cg { display: flex; flex-direction: column; justify-content: center; gap: 0.7rem; padding: 1.15rem 1.25rem; border-radius: var(--r-lg); background: var(--card); border: 1px solid var(--line); font-weight: 600; animation: bob 6s ease-in-out infinite; }
 .cg--chat { grid-column: 1 / -1; box-shadow: 10px 10px 0 var(--olive); }
 .cg--chat .bub { max-width: 80%; }
@@ -321,7 +325,9 @@ h1 { font-size: clamp(2.5rem, 7vw, 6.4rem); line-height: 1.06; }
   .nav { position: absolute; }
   .nav__bar { padding-right: 0.6rem; }
   .hero { min-height: 0; padding-block: 6rem 2.5rem; }
-  .hero__grid, .contact { grid-template-columns: 1fr; }
+  .hero__grid, .contact { grid-template-columns: minmax(0, 1fr); }
+  h1 { font-size: clamp(2.1rem, 11vw, 3.2rem); }
+  .svc__h { font-size: clamp(1.6rem, 8.5vw, 2.4rem); }
   .hero__cta .btn { flex: 1 1 100%; }
   .collage { justify-self: stretch; max-width: none; }
   .cards { grid-template-columns: minmax(0, 1fr); gap: 0.7rem; }
@@ -365,3 +371,10 @@ h1 { font-size: clamp(2.5rem, 7vw, 6.4rem); line-height: 1.06; }
   .cg { animation: none; }
 }
 .svc__h:focus { outline: none; }
+.card.dim { opacity: 0.3; }
+.card { transition: transform 0.4s var(--ease), border-color 0.3s, opacity 0.3s; }
+.example { margin-bottom: var(--gap); padding: 1rem 1.25rem; border-radius: var(--r-md); background: rgba(112, 39, 255, 0.28); border: 1px solid rgba(112, 39, 255, 0.6); font-size: clamp(1rem, 1.5vw, 1.2rem); line-height: 1.4; }
+.example b { margin-right: 0.4rem; color: var(--accent); }
+@media (max-width: 760px) { .foot { margin-bottom: 4.5rem; } }
+h1, .svc__h { overflow-wrap: anywhere; hyphens: auto; }
+.cg { min-width: 0; } .stars { letter-spacing: 0.08em; }
