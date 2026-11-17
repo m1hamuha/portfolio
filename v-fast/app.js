@@ -546,7 +546,31 @@
       a.addEventListener("click", function () { if (order) { /* contact order chip is set by the shared handler */ } close(); });
       log.appendChild(a); log.scrollTop = log.scrollHeight;
     }
-    function answer(text) {
+    /* what the visitor said, in the visitor's words, wrapped as a ready message to the owner */
+    function draftFor(q) { return t("bot.tpl").replace("{q}", q); }
+    function showDraft(text) {
+      var wrap = document.createElement("div"); wrap.className = "bot__draft";
+      var ta = document.createElement("textarea"); ta.value = text; ta.rows = 4; ta.maxLength = 800; ta.setAttribute("aria-label", t("bot.draft"));
+      var row = document.createElement("div"); row.className = "bot__send3";
+      var tg = document.createElement("button"); tg.type = "button"; tg.className = "bot__ch"; tg.textContent = "Telegram";
+      var wa = document.createElement("a"); wa.className = "bot__ch"; wa.target = "_blank"; wa.rel = "noopener"; wa.textContent = "WhatsApp";
+      var ml = document.createElement("a"); ml.className = "bot__ch"; ml.textContent = "Email";
+      function sync() {
+        var v = ta.value.trim();
+        wa.href = "https://wa.me/491709094298?text=" + encodeURIComponent(v);
+        ml.href = "mailto:kostinmihail40@gmail.com?subject=" + encodeURIComponent(t("bot.subject")) + "&body=" + encodeURIComponent(v);
+      }
+      ta.addEventListener("input", sync); sync();
+      tg.addEventListener("click", function () {
+        /* a Telegram link cannot carry text, so the text goes to the clipboard first */
+        function go() { say("b", t("bot.copied")); window.open("https://t.me/onomamichail", "_blank", "noopener"); }
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value.trim()).then(go, go); else { ta.select(); try { document.execCommand("copy"); } catch (e) {} go(); }
+      });
+      row.appendChild(tg); row.appendChild(wa); row.appendChild(ml);
+      wrap.appendChild(ta); wrap.appendChild(row);
+      log.appendChild(wrap); log.scrollTop = log.scrollHeight;
+    }
+    function local(text) {
       var ts = toks(text), n = best(ts, NKT), sid = best(ts, SKT), F = window.FUNNEL || { niches: {} };
       if (n && sid) {
         var has = (F.niches[n] || []).some(function (r) { return r[0] === sid; });
@@ -557,9 +581,34 @@
       } else if (sid) {
         say("b", t("bot.found")); link("#/" + sid, t("sv." + sid + ".h"));
       } else {
-        say("b", t("bot.none")); link("#contact", t("cu.btn"), "custom");
+        say("b", t("bot.draft")); showDraft(draftFor(text));
       }
     }
+    /* with an AI address set, the model understands any wording; if it is down, the local matcher answers */
+    var meta = $('meta[name="chat-api"]'), API = meta ? meta.getAttribute("content") : "", hist = [];
+    function ask(text) {
+      hist.push({ role: "user", content: text });
+      var wait = say("b", t("bot.think")); wait.classList.add("bub--t"); wait.innerHTML = "<i></i><i></i><i></i>";
+      var ctl = new AbortController(), to = setTimeout(function () { ctl.abort(); }, 12000);
+      fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, signal: ctl.signal, body: JSON.stringify({ lang: lang, messages: hist.slice(-6) }) })
+        .then(function (r) { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
+        .then(function (j) {
+          clearTimeout(to); wait.remove();
+          if (!j || typeof j.reply !== "string") throw new Error("bad");
+          say("b", j.reply); hist.push({ role: "assistant", content: j.reply });
+          var F = window.FUNNEL || { niches: {} };
+          if (j.service && (j.niche || F.sv && F.sv[j.service])) {
+            var has = j.niche && (F.niches[j.niche] || []).some(function (r) { return r[0] === j.service; });
+            link(has ? "#/for/" + j.niche + "/" + j.service : "#/" + j.service, t("sv." + j.service + ".h") + (j.niche ? ", " + t("n." + j.niche) : ""));
+          } else if (j.niche) {
+            link("#/for/" + j.niche, t("n." + j.niche));
+          } else if (j.draft) {
+            showDraft(j.draft);
+          }
+        })
+        .catch(function () { clearTimeout(to); wait.remove(); local(text); });
+    }
+    function answer(text) { if (API) ask(text); else local(text); }
     function open() { box.hidden = false; fab.setAttribute("aria-expanded", "true"); fab.classList.add("on"); setTimeout(function () { inp.focus(); }, 50); }
     function close() { box.hidden = true; fab.setAttribute("aria-expanded", "false"); fab.classList.remove("on"); stopMic(); }
     fab.addEventListener("click", function () { box.hidden ? open() : close(); });

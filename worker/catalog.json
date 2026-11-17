@@ -1,0 +1,147 @@
+{
+ "niches": {
+  "salon": "Beauty and massage",
+  "cafe": "Cafes and restaurants",
+  "shop": "Shops",
+  "trades": "Repair and trades",
+  "fitness": "Sport and fitness",
+  "clinic": "Clinics and doctors",
+  "cleaning": "Cleaning",
+  "office": "Offices and B2B",
+  "other": "Something else"
+ },
+ "services": {
+  "social": {
+   "name": "Social media",
+   "from": "€10",
+   "per_month": true
+  },
+  "bot": {
+   "name": "Chatbot and booking",
+   "from": "€79",
+   "per_month": false
+  },
+  "content": {
+   "name": "Photos, video, texts",
+   "from": "€1",
+   "per_month": false
+  },
+  "reports": {
+   "name": "Reports and spreadsheets",
+   "from": "€19",
+   "per_month": false
+  },
+  "docs": {
+   "name": "Emails and documents",
+   "from": "€19",
+   "per_month": false
+  },
+  "reviews": {
+   "name": "Reviews and reputation",
+   "from": "€15",
+   "per_month": false
+  },
+  "data": {
+   "name": "Data and price monitoring",
+   "from": "€29",
+   "per_month": false
+  },
+  "site": {
+   "name": "Website and SEO",
+   "from": "€29",
+   "per_month": false
+  },
+  "leads": {
+   "name": "Leads and requests",
+   "from": "€29",
+   "per_month": false
+  },
+  "mail": {
+   "name": "Reminders and mailings",
+   "from": "€19",
+   "per_month": false
+  },
+  "translate": {
+   "name": "Translation, 4 languages",
+   "from": "€5",
+   "per_month": false
+  },
+  "assistant": {
+   "name": "AI helper for your team",
+   "from": "€49",
+   "per_month": false
+  }
+ },
+ "offered": {
+  "salon": [
+   "bot",
+   "mail",
+   "social",
+   "reviews",
+   "site"
+  ],
+  "cafe": [
+   "bot",
+   "social",
+   "reviews",
+   "translate",
+   "reports"
+  ],
+  "shop": [
+   "bot",
+   "content",
+   "data",
+   "translate",
+   "mail"
+  ],
+  "trades": [
+   "leads",
+   "docs",
+   "site",
+   "social",
+   "assistant"
+  ],
+  "fitness": [
+   "bot",
+   "mail",
+   "social",
+   "reports",
+   "reviews"
+  ],
+  "clinic": [
+   "bot",
+   "mail",
+   "docs",
+   "translate",
+   "reviews"
+  ],
+  "cleaning": [
+   "leads",
+   "bot",
+   "mail",
+   "docs",
+   "reviews"
+  ],
+  "office": [
+   "leads",
+   "docs",
+   "reports",
+   "data",
+   "assistant"
+  ],
+  "other": [
+   "social",
+   "bot",
+   "content",
+   "reports",
+   "docs",
+   "reviews",
+   "data",
+   "site",
+   "leads",
+   "mail",
+   "translate",
+   "assistant"
+  ]
+ }
+}
