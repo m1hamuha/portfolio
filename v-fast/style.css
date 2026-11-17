@@ -1,4 +1,4 @@
-/* Kostin Automation — AI integration portfolio.
+/* Kostin Automation : AI integration portfolio.
    One idea per screen: big type, one object, one action. */
 
 @font-face { font-family: "Unbounded"; src: url("./fonts/unbounded-latin-wght-normal.woff2") format("woff2"); font-weight: 200 900; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
@@ -100,14 +100,33 @@ h1 mark { position: relative; z-index: -1; }
 .lang button { min-width: 2.125rem; min-height: 2.1rem; padding: 0.3rem 0.5rem; border-radius: var(--r-full); font-family: var(--f-mono); font-size: 0.72rem; font-weight: 600; color: var(--muted); }
 .lang button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
 
-/* 1 — Hero: one line, one button, one object */
+/* 1 — Hero: one line, the audience, one button, a collage of what gets automated */
 .hero { min-height: 100svh; display: grid; align-items: center; padding-block: 6.5rem 3rem; }
 .hero__grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(1.5rem, 5vw, 5rem); align-items: center; }
 h1 { font-size: clamp(2.5rem, 7vw, 6.4rem); line-height: 1.06; }
-.hero__cta { display: flex; align-items: center; gap: 0.9rem; margin-top: clamp(1.75rem, 4vw, 3rem); }
+.hero__cta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.9rem; margin-top: clamp(1.5rem, 3.5vw, 2.5rem); }
+.vchips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: clamp(1.25rem, 3vw, 2rem); }
+.vchip { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.45rem 0.9rem; border-radius: var(--r-full); border: 1px solid var(--line); font-weight: 600; font-size: 0.95rem; }
+.vchip .ico { width: 1.1rem; height: 1.1rem; color: var(--accent); }
+.btn--ghost { background: transparent; color: var(--ink); border: 2px solid var(--line); box-shadow: none; }
+.btn--ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+.collage { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); width: 100%; max-width: 32rem; justify-self: end; }
+.cg { display: flex; flex-direction: column; justify-content: center; gap: 0.7rem; padding: 1.15rem 1.25rem; border-radius: var(--r-lg); background: var(--card); border: 1px solid var(--line); font-weight: 600; animation: bob 6s ease-in-out infinite; }
+.cg--chat { grid-column: 1 / -1; box-shadow: 10px 10px 0 var(--olive); }
+.cg--chat .bub { max-width: 80%; }
+.cg--rep { animation-delay: -2s; }
+.cg--rev { animation-delay: -4s; }
+.cg--post { grid-column: 1 / -1; flex-direction: row; align-items: center; animation-delay: -1s; }
+.cg .cap { font-size: 0.95rem; line-height: 1.25; }
+.cg__ico { display: grid; place-items: center; width: 2.6rem; height: 2.6rem; border-radius: 50%; background: var(--accent); color: var(--on); flex: none; }
+.bars { display: flex; align-items: flex-end; gap: 6px; height: 4rem; }
+.bars i { flex: 1; height: var(--h); border-radius: 4px 4px 0 0; background: var(--accent); }
+.stars { color: var(--accent); font-size: 1.5rem; letter-spacing: 0.15em; line-height: 1; }
+@keyframes bob { 50% { transform: translateY(-8px); } }
 
 .cmp { position: relative; border-radius: var(--r-lg); overflow: hidden; aspect-ratio: 4 / 5; --pos: 50%; background: var(--ink-2); user-select: none; }
-.hero .cmp { width: 100%; max-width: min(34rem, 62svh); justify-self: end; box-shadow: 14px 14px 0 var(--olive); }
+.svc .cmp { width: 100%; max-width: min(30rem, 72svh); box-shadow: 12px 12px 0 var(--olive); }
 .cmp img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
 .cmp__before { position: absolute; inset: 0; pointer-events: none; clip-path: inset(0 calc(100% - var(--pos)) 0 0); }
 .cmp__line { position: absolute; z-index: 2; top: 0; bottom: 0; left: var(--pos); width: 3px; background: #fff; transform: translateX(-50%); pointer-events: none; box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); }
@@ -119,21 +138,20 @@ h1 { font-size: clamp(2.5rem, 7vw, 6.4rem); line-height: 1.06; }
 .cmp__lbl--b { left: 1rem; background: var(--paper); color: var(--ink); }
 .cmp__lbl--a { right: 1rem; background: var(--accent); color: var(--on); }
 
-/* 2 — What you get: four tiles, each a title, a price tag and a live demo; the whole tile is a link to its price */
-.quad { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--gap); }
-.tile { position: relative; overflow: hidden; border-radius: var(--r-lg); padding: clamp(1.25rem, 2.4vw, 2rem); min-height: 19rem; display: flex; align-items: center; gap: clamp(1rem, 2vw, 1.75rem); background: var(--card); border: 1px solid var(--line); transition: transform 0.4s var(--ease), border-color 0.3s; }
-.tile:hover { transform: translateY(-6px); border-color: var(--accent); }
-.tile__txt { flex: 0 0 40%; align-self: stretch; display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; }
-.tile h3 { font-size: clamp(1.4rem, 2.3vw, 2.1rem); }
-.tile__price { padding: 0.4rem 0.85rem; border-radius: var(--r-full); border: 1.5px solid var(--accent); color: var(--accent); font-weight: 700; font-size: 0.95rem; white-space: nowrap; }
-.tile__go { margin-top: auto; display: grid; place-items: center; width: 3rem; height: 3rem; border-radius: 50%; background: var(--accent); color: var(--on); transition: transform 0.35s var(--spring); }
-.tile:hover .tile__go { transform: rotate(-45deg) scale(1.1); }
-.tile__viz { flex: 1; min-width: 0; }
-
-.ba { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 0.6rem; transition: opacity 0.3s; }
-.ba.out { opacity: 0; }
-.ba img { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--r-md); }
-.ba__arrow { display: grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: 50%; background: var(--accent); color: var(--on); }
+/* 2 — What I do: a catalog of tiles, each one a link to its own page */
+.lead { margin-top: -1.5rem; margin-bottom: clamp(1.25rem, 3vw, 2rem); font-size: clamp(1.1rem, 1.8vw, 1.4rem); color: var(--muted); }
+.cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap); }
+.card { position: relative; display: flex; flex-direction: column; gap: 1rem; min-height: 15.5rem; padding: clamp(1.1rem, 2vw, 1.6rem); border-radius: var(--r-lg); background: var(--card); border: 1px solid var(--line); transition: transform 0.4s var(--ease), border-color 0.3s; }
+.card:hover { transform: translateY(-6px); border-color: var(--accent); }
+.card h3 { font-size: clamp(1.15rem, 1.7vw, 1.55rem); line-height: 1.1; }
+.card__ico { display: grid; place-items: center; flex: none; width: 3.4rem; height: 3.4rem; border-radius: 50%; background: var(--accent); color: var(--on); }
+.card__ico .ico { width: 1.6rem; height: 1.6rem; }
+.card__ico--big { width: 4.5rem; height: 4.5rem; }
+.card__ico--big .ico { width: 2.1rem; height: 2.1rem; }
+.card__foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
+.card__price { font-weight: 700; color: var(--accent); }
+.card__go { display: grid; place-items: center; flex: none; width: 2.6rem; height: 2.6rem; border-radius: 50%; border: 1.5px solid var(--accent); color: var(--accent); transition: transform 0.35s var(--spring), background 0.25s, color 0.25s; }
+.card:hover .card__go { transform: rotate(-45deg); background: var(--accent); color: var(--on); }
 
 .cal { background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); padding: 0.8rem; transform: rotate(-1.5deg); }
 .cal__grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
@@ -192,7 +210,7 @@ h1 { font-size: clamp(2.5rem, 7vw, 6.4rem); line-height: 1.06; }
 .how__cta { margin-top: 1.75rem; }
 
 /* 4 — Prices: numbers first, every card leads to the order */
-.menu { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gap); }
+.menu { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap); }
 .pm { display: flex; flex-direction: column; gap: 0.5rem; min-height: 13rem; padding: clamp(1rem, 1.8vw, 1.5rem); border-radius: var(--r-lg); background: var(--card); border: 1px solid var(--line); transition: transform 0.4s var(--ease), border-color 0.3s; }
 .pm:hover, .plan:hover, .custom:hover { transform: translateY(-6px); border-color: var(--accent); }
 .pm small { font-weight: 700; font-size: clamp(0.95rem, 1.2vw, 1.1rem); line-height: 1.2; }
@@ -216,11 +234,35 @@ h1 { font-size: clamp(2.5rem, 7vw, 6.4rem); line-height: 1.06; }
 .plan--hot { border-color: var(--accent); }
 .legend { margin-top: 1rem; font-size: 0.85rem; color: var(--muted); }
 
-.custom { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem 2rem; margin-top: var(--gap); padding: clamp(1.25rem, 3vw, 2rem); border-radius: var(--r-lg); border: 1.5px dashed var(--accent); transition: transform 0.4s var(--ease), background 0.3s; }
+.custom { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; margin-top: var(--gap); padding: clamp(1.25rem, 3vw, 2rem); border-radius: var(--r-lg); border: 1.5px dashed var(--accent); transition: transform 0.4s var(--ease), background 0.3s; }
 .custom:hover { background: rgba(216, 255, 0, 0.06); }
-.custom h3 { font-size: clamp(1.3rem, 2.4vw, 2rem); }
-.custom p { margin-top: 0.35rem; color: var(--muted); }
+.custom__t { flex: 1 1 16rem; }
+.custom h3 { font-size: clamp(1.3rem, 2.6vw, 2.2rem); }
+.custom p { margin-top: 0.4rem; color: var(--muted); }
 .custom .btn { box-shadow: none; }
+.custom--sm { margin-top: clamp(2rem, 4vw, 3rem); }
+
+/* a service page: heading with price and order, then the tasks (tagged by kind of business) next to a live demo */
+#home[hidden], #views[hidden], .svc[hidden] { display: none; }
+.svc { padding-block: 6.5rem var(--sec); }
+.back { display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; font-weight: 700; color: var(--accent); }
+.back .ico { transform: rotate(180deg); }
+.svc__head { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; margin-bottom: clamp(1.5rem, 3vw, 2.5rem); }
+.svc__h { flex: 1 1 18rem; margin: 0; font-size: clamp(2rem, 5.2vw, 4.4rem); }
+.svc__buy { display: flex; flex-wrap: wrap; align-items: center; gap: 0.9rem 1.2rem; }
+.svc__buy .card__price { font-size: 1.3rem; }
+.svc__body { display: grid; gap: var(--gap); }
+.svc__body--demo { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); align-items: start; }
+.sub--first { margin-top: 0; }
+.tasks { list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap); }
+.svc__body--demo .tasks { grid-template-columns: 1fr; }
+.task { display: flex; flex-direction: column; gap: 0.8rem; padding: 1.2rem 1.3rem; border-radius: var(--r-lg); background: var(--card); border: 1px solid var(--line); font-family: var(--f-display); font-weight: 700; font-size: clamp(1.05rem, 1.7vw, 1.4rem); line-height: 1.15; letter-spacing: -0.02em; }
+.tag { align-self: flex-start; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.75rem; border-radius: var(--r-full); background: rgba(112, 39, 255, 0.4); font-family: var(--f-body); font-weight: 600; font-size: 0.8rem; letter-spacing: 0; }
+.tag .ico { width: 1rem; height: 1rem; }
+.demo { padding: clamp(1rem, 2vw, 1.5rem); border-radius: var(--r-lg); background: var(--card); border: 1px solid var(--line); }
+.svc__demo { display: flex; justify-content: flex-end; }
+.svc__demo > * { width: 100%; }
+.menu--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: clamp(2rem, 4vw, 3rem); }
 
 /* the card the visitor jumps to from a tile flashes once */
 .pm:target, .plan:target, .custom:target, .pgroup:target .plan { animation: flash 1.8s var(--ease) 1; }
@@ -259,17 +301,18 @@ h1 { font-size: clamp(2.5rem, 7vw, 6.4rem); line-height: 1.06; }
 .rv { opacity: 0; transform: translateY(28px); transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); transition-delay: calc(var(--i, 0) * 90ms); }
 .rv.in { opacity: 1; transform: none; }
 .no-js .rv { opacity: 1; transform: none; }
-.no-js .lang, .no-js .wall, .no-js .tile__viz, .no-js .reel__next, .no-js .reel__bars, .no-js .dock { display: none; }
+.no-js .lang, .no-js .wall, .no-js .collage, .no-js .reel__next, .no-js .reel__bars, .no-js .dock { display: none; }
 .no-js .show { grid-template-columns: auto; }
+.no-js #views, .no-js .svc { display: none; }
 
 .dock { display: none; }
 @media (max-width: 1080px) {
-  .tile { flex-direction: column; align-items: stretch; min-height: 0; gap: 1rem; }
-  .tile__txt { flex: none; }
-  .tile h3 { padding-right: 3.6rem; }
-  .tile__go { position: absolute; top: 1.25rem; right: 1.25rem; margin: 0; }
-  .menu { grid-template-columns: repeat(2, 1fr); }
+  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .menu { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .plans { grid-template-columns: 1fr; }
+  .svc__body--demo { grid-template-columns: 1fr; }
+  .svc__demo { justify-content: flex-start; }
+  .svc .cmp { max-width: min(26rem, 100%); }
   .wall { grid-template-columns: 1fr 1fr; }
   .wall__col:nth-child(3) { display: none; }
 }
@@ -277,16 +320,27 @@ h1 { font-size: clamp(2.5rem, 7vw, 6.4rem); line-height: 1.06; }
   .nav__links, .logo span, .nav .btn { display: none; }
   .nav { position: absolute; }
   .nav__bar { padding-right: 0.6rem; }
-  .hero { padding-block: 6rem 2.5rem; }
+  .hero { min-height: 0; padding-block: 6rem 2.5rem; }
   .hero__grid, .contact { grid-template-columns: 1fr; }
-  .hero .cmp { max-width: 100%; justify-self: stretch; box-shadow: 8px 8px 0 var(--olive); margin-top: 0.5rem; max-height: calc(100svh - 21rem); min-height: 15rem; }
-  .hero__cta .btn--ink { flex: 1; }
-  .quad { grid-template-columns: 1fr; }
+  .hero__cta .btn { flex: 1 1 100%; }
+  .collage { justify-self: stretch; max-width: none; }
+  .cards { grid-template-columns: minmax(0, 1fr); gap: 0.7rem; }
+  .card { flex-direction: row; align-items: center; min-height: 0; gap: 0.9rem; padding: 0.9rem 1rem; }
+  .card h3 { flex: 1; font-size: 1.1rem; }
+  .card__ico { width: 3rem; height: 3rem; }
+  .card__foot { margin: 0; flex-direction: column; align-items: flex-end; gap: 0.4rem; }
+  .card__go { width: 2.2rem; height: 2.2rem; }
+  .card__price { font-size: 0.85rem; text-align: right; }
+  .card h3 { min-width: 0; }
+  .custom .btn { width: 100%; }
+  .tasks { grid-template-columns: 1fr; }
+  .svc { padding-top: 5.5rem; }
+  .svc__buy, .svc__buy .btn { width: 100%; }
+  .svc .cmp { max-width: 100%; box-shadow: 8px 8px 0 var(--olive); }
   .term { min-height: 0; }
   .steps { grid-template-columns: 1fr; }
   .steps__arr { justify-self: center; }
   .steps__arr .ico { transform: rotate(90deg); }
-  .how__cta { width: 100%; }
   .show { grid-template-columns: 1fr; height: auto; }
   .reel { width: min(100%, 42svh); height: auto; aspect-ratio: 9 / 16; margin-inline: auto; }
   .wall { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; height: clamp(17rem, 90vw, 24rem); mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent); }
@@ -294,11 +348,8 @@ h1 { font-size: clamp(2.5rem, 7vw, 6.4rem); line-height: 1.06; }
   .wall__track { inset: 0 auto 0 0; display: flex; animation-name: wallLeft; }
   .wall__col:nth-child(2) .wall__track { animation-name: wallRight; }
   .wall img { width: auto; height: 100%; }
-  .menu { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .pm { min-height: 11.5rem; }
   .pm__price { font-size: clamp(1.7rem, 9.5vw, 2.8rem); }
-  .plans { grid-template-columns: 1fr; }
-  .custom .btn { width: 100%; }
   .msgs .btn { flex: 1; padding-inline: 1rem; }
   .form { box-shadow: 6px 6px 0 var(--olive); }
   .dock { display: flex; gap: 0.6rem; position: fixed; left: 0; right: 0; bottom: 0; z-index: 45; padding: 0.7rem var(--pad) calc(0.7rem + env(safe-area-inset-bottom)); background: linear-gradient(transparent, rgba(0, 0, 0, 0.9) 35%); transform: translateY(115%); transition: transform 0.35s var(--ease); }
@@ -311,4 +362,6 @@ h1 { font-size: clamp(2.5rem, 7vw, 6.4rem); line-height: 1.06; }
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
   .rv { opacity: 1; transform: none; }
   .wall__track { animation: none; }
+  .cg { animation: none; }
 }
+.svc__h:focus { outline: none; }
