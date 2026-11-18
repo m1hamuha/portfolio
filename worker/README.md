@@ -29,7 +29,7 @@ Until the address is set, the site uses the built-in word matcher, so nothing br
 - Burst guard: 12 requests per minute per address inside the Worker. For a hard limit, add one
   Cloudflare rate limiting rule (the free plan allows one) for the Worker route.
 - Messages are cut to 400 characters and the last 6 turns; the model cannot add anything outside the catalog.
-- The model name is in `DEFAULT_MODEL` in `index.js` (or the `MODEL` variable). Check the current
+- Models are tried in order from `MODELS` in `index.js` (or the `MODEL` variable first). Check the current
   list at https://developers.cloudflare.com/workers-ai/models/ and pick a multilingual one.
 - To refresh the catalog after services change, run the page generator, which rewrites `catalog.json`.
 

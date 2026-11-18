@@ -3,7 +3,8 @@
    against the real catalog, so nothing outside it can ever reach the page. No keys live in the site. */
 import CATALOG from "./catalog.json" with { type: "json" };
 
-const DEFAULT_MODEL = "@cf/google/gemma-3-12b-it"; /* multilingual; change via the MODEL variable if needed */
+/* tried in order: the first one that answers wins, so a renamed or retired model never breaks the assistant */
+const MODELS = ["@cf/google/gemma-3-12b-it", "@cf/meta/llama-3.3-70b-instruct-fp8-fast", "@cf/meta/llama-3.1-8b-instruct"];
 const LANG_NAME = { ru: "Russian", uk: "Ukrainian", de: "German", en: "English" };
 const hits = new Map(); /* per-isolate burst guard; add a Cloudflare rate limiting rule for a hard limit */
 
@@ -90,16 +91,15 @@ export default {
       .slice(-6).map((m) => ({ role: m.role, content: m.content.slice(0, 400) }));
     if (!msgs.length || msgs[msgs.length - 1].role !== "user") return json({ error: "empty" }, 400, headers);
 
-    try {
-      const out = await env.AI.run(env.MODEL || DEFAULT_MODEL, {
-        messages: [{ role: "system", content: systemPrompt(lang) }, ...msgs],
-        max_tokens: 350, temperature: 0.2,
-      });
-      const res = sanitize(out && (out.response || (out.choices && out.choices[0] && out.choices[0].message && out.choices[0].message.content)));
-      if (!res.reply) return json({ error: "empty answer" }, 502, headers);
-      return json(res, 200, headers);
-    } catch (e) {
-      return json({ error: "ai" }, 502, headers);
+    const messages = [{ role: "system", content: systemPrompt(lang) }, ...msgs];
+    const list = env.MODEL ? [env.MODEL, ...MODELS] : MODELS;
+    for (const model of list) {
+      try {
+        const out = await env.AI.run(model, { messages, max_tokens: 350, temperature: 0.2 });
+        const res = sanitize(out && (out.response || (out.choices && out.choices[0] && out.choices[0].message && out.choices[0].message.content)));
+        if (res.reply) return json(res, 200, headers);
+      } catch (e) { /* try the next model */ }
     }
+    return json({ error: "ai" }, 502, headers);
   },
 };
