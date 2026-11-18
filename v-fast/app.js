@@ -47,6 +47,7 @@
     $$("[data-i18n]").forEach(function (el) { el.textContent = t(el.dataset.i18n); });
     $$("[data-i18n-html]").forEach(function (el) { el.innerHTML = t(el.dataset.i18nHtml); });
     $$("[data-i18n-aria]").forEach(function (el) { el.setAttribute("aria-label", t(el.dataset.i18nAria)); });
+    $$("[data-i18n-ph]").forEach(function (el) { el.setAttribute("placeholder", t(el.dataset.i18nPh)); });
     $$(".lang button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.lang === lang)); });
     if (persist) {
       try { localStorage.setItem("lang", lang); } catch (e) {}
@@ -492,6 +493,151 @@
   }
   window.addEventListener("hashchange", route);
   if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+
+  /* ---------- "find your service": a small assistant, text or voice, in the visitor's language ----------
+     No server and no key: it understands the words locally (keywords in all four languages) and
+     sends the visitor to the right business and task. Voice uses the browser's own speech recognition. */
+  (function () {
+    var fab = $("#botFab"), box = $("#bot"), log = $("#botLog"), form = $("#botForm"), inp = $("#botIn"), mic = $("#botMic");
+    if (!fab) return;
+    var NK = {
+      salon: "салон красот парикмахер стрижк барбер маникюр ногт педикюр бров ресниц косметолог массаж спа beauty hair barber nail brow lash massage spa friseur kosmetik nagel перукар манікюр нігт масаж краса",
+      cafe: "кафе ресторан кофейн бар пекарн пицц суши еда столик меню cafe restaurant coffee bakery pizza food menu table café speisekarte bäckerei кав'ярн піц їжа",
+      shop: "магазин товар маркетплейс одежд обув склад shop store ecommerce marketplace clothes products laden onlineshop kleidung ware одяг",
+      trades: "ремонт мастер сантехник электрик строител отделк мебел автосервис шиномонтаж repair handyman plumber electrician builder trades carpenter handwerk reparatur klempner elektriker майстер сантехнік електрик будівель",
+      fitness: "фитнес спорт тренер тренировк зал йог бассейн танц fitness gym trainer yoga studio pool dance fitnessstudio training фітнес зал йога",
+      clinic: "клиник врач стоматолог зубн медицин пациент доктор психолог clinic doctor dentist medical patient practice therapist praxis arzt zahnarzt клінік лікар пацієнт",
+      cleaning: "клининг уборк убор чистк мойк химчистк cleaning cleaner janitor window reinigung putz fenster прибиранн клінінг",
+      office: "офис бухгалтер юрист компани фирма агентств консалт бизнес office accountant lawyer company agency consulting firm büro buchhalter anwalt firma agentur офіс компані фірм"
+    };
+    var SK = {
+      social: "соцсет инстаграм instagram пост рилс reels контент тикток tiktok подписчик публикац social followers posts facebook соцмереж інстаграм публікац підписник",
+      bot: "бот чатбот запис записыва бронь брониров whatsapp telegram мессенджер booking appointment chatbot reservation termin buchung бронюв",
+      content: "фото видео картинк реклам баннер описани карточк photo video image banner copy description foto bild werbung beschreibung відео опис",
+      reports: "отчёт отчет таблиц excel эксель учёт учет касс продаж аналитик report spreadsheet sheet accounting sales analytics bericht tabelle buchhaltung umsatz звіт облік",
+      docs: "письм почт документ договор счёт счет накладн предложени email mail letter contract invoice offer brief dokument vertrag rechnung angebot лист договір рахунок",
+      reviews: "отзыв рейтинг репутац google review rating reputation stars bewertung rezension відгук",
+      data: "парсинг парсер мониторинг цен конкурент данные собрать скрап scrape monitoring price competitor data crawl preis konkurrent daten моніторинг ціни дані",
+      site: "сайт лендинг визитк seo веб страниц website landing homepage webseite лендінг сторінк",
+      leads: "лид crm клиенты контакт обращени lead leads inquiry anfrage kontakte заявк клієнт",
+      mail: "напомин рассылк уведомлен вернуть reminder newsletter mailing notification remind erinnerung benachrichtigung нагад розсилк сповіщ",
+      translate: "перевод перевест язык немецк английск translate translation language übersetz sprache переклад мов",
+      assistant: "помощник ассистент ии нейросет сотрудник команд assistant helper staff gpt assistent ki mitarbeiter помічник асистент штучн"
+    };
+    function toks(x) { return x.toLowerCase().replace(/[^\p{L}\p{N}']+/gu, " ").split(" ").filter(function (w) { return w.length >= 3; }); }
+    function prep(o) { var r = {}; Object.keys(o).forEach(function (k) { r[k] = toks(o[k]); }); return r; }
+    var NKT = prep(NK), SKT = prep(SK);
+    function score(ts, kws) {
+      var n = 0;
+      kws.forEach(function (k) { ts.forEach(function (w) { if (w === k || (k.length >= 4 && w.length >= 4 && w.slice(0, 5) === k.slice(0, 5))) n++; }); });
+      return n;
+    }
+    function best(ts, table) {
+      var id = null, top = 0;
+      Object.keys(table).forEach(function (k) { var s = score(ts, table[k]); if (s > top) { top = s; id = k; } });
+      return id;
+    }
+    function say(kind, text) { var b = document.createElement("div"); b.className = "bub bub--" + kind; b.textContent = text; log.appendChild(b); log.scrollTop = log.scrollHeight; return b; }
+    function link(href, label, order) {
+      var a = document.createElement("a"); a.className = "bot__go"; a.href = href;
+      a.innerHTML = "<span></span>" + '<svg class="ico"><use href="#i-arrow" /></svg>';
+      a.firstChild.textContent = label;
+      if (order) a.dataset.order = order;
+      a.addEventListener("click", function () { if (order) { /* contact order chip is set by the shared handler */ } close(); });
+      log.appendChild(a); log.scrollTop = log.scrollHeight;
+    }
+    /* what the visitor said, in the visitor's words, wrapped as a ready message to the owner */
+    function draftFor(q) { return t("bot.tpl").replace("{q}", q); }
+    function showDraft(text) {
+      var wrap = document.createElement("div"); wrap.className = "bot__draft";
+      var ta = document.createElement("textarea"); ta.value = text; ta.rows = 4; ta.maxLength = 800; ta.setAttribute("aria-label", t("bot.draft"));
+      var row = document.createElement("div"); row.className = "bot__send3";
+      var tg = document.createElement("button"); tg.type = "button"; tg.className = "bot__ch"; tg.textContent = "Telegram";
+      var wa = document.createElement("a"); wa.className = "bot__ch"; wa.target = "_blank"; wa.rel = "noopener"; wa.textContent = "WhatsApp";
+      var ml = document.createElement("a"); ml.className = "bot__ch"; ml.textContent = "Email";
+      function sync() {
+        var v = ta.value.trim();
+        wa.href = "https://wa.me/491709094298?text=" + encodeURIComponent(v);
+        ml.href = "mailto:kostinmihail40@gmail.com?subject=" + encodeURIComponent(t("bot.subject")) + "&body=" + encodeURIComponent(v);
+      }
+      ta.addEventListener("input", sync); sync();
+      tg.addEventListener("click", function () {
+        /* a Telegram link cannot carry text, so the text goes to the clipboard first */
+        function go() { say("b", t("bot.copied")); window.open("https://t.me/onomamichail", "_blank", "noopener"); }
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value.trim()).then(go, go); else { ta.select(); try { document.execCommand("copy"); } catch (e) {} go(); }
+      });
+      row.appendChild(tg); row.appendChild(wa); row.appendChild(ml);
+      wrap.appendChild(ta); wrap.appendChild(row);
+      log.appendChild(wrap); log.scrollTop = log.scrollHeight;
+    }
+    function local(text) {
+      var ts = toks(text), n = best(ts, NKT), sid = best(ts, SKT), F = window.FUNNEL || { niches: {} };
+      if (n && sid) {
+        var has = (F.niches[n] || []).some(function (r) { return r[0] === sid; });
+        say("b", t("bot.found"));
+        link(has ? "#/for/" + n + "/" + sid : "#/for/" + n, t("sv." + sid + ".h") + ", " + t("n." + n));
+      } else if (n) {
+        say("b", t("bot.niche")); link("#/for/" + n, t("n." + n));
+      } else if (sid) {
+        say("b", t("bot.found")); link("#/" + sid, t("sv." + sid + ".h"));
+      } else {
+        say("b", t("bot.draft")); showDraft(draftFor(text));
+      }
+    }
+    /* with an AI address set, the model understands any wording; if it is down, the local matcher answers */
+    var meta = $('meta[name="chat-api"]'), API = meta ? meta.getAttribute("content") : "", hist = [];
+    function ask(text) {
+      hist.push({ role: "user", content: text });
+      var wait = say("b", t("bot.think")); wait.classList.add("bub--t"); wait.innerHTML = "<i></i><i></i><i></i>";
+      var ctl = new AbortController(), to = setTimeout(function () { ctl.abort(); }, 12000);
+      fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, signal: ctl.signal, body: JSON.stringify({ lang: lang, messages: hist.slice(-6) }) })
+        .then(function (r) { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
+        .then(function (j) {
+          clearTimeout(to); wait.remove();
+          if (!j || typeof j.reply !== "string") throw new Error("bad");
+          say("b", j.reply); hist.push({ role: "assistant", content: j.reply });
+          var F = window.FUNNEL || { niches: {} };
+          if (j.service && (j.niche || F.sv && F.sv[j.service])) {
+            var has = j.niche && (F.niches[j.niche] || []).some(function (r) { return r[0] === j.service; });
+            link(has ? "#/for/" + j.niche + "/" + j.service : "#/" + j.service, t("sv." + j.service + ".h") + (j.niche ? ", " + t("n." + j.niche) : ""));
+          } else if (j.niche) {
+            link("#/for/" + j.niche, t("n." + j.niche));
+          } else if (j.draft) {
+            showDraft(j.draft);
+          }
+        })
+        .catch(function () { clearTimeout(to); wait.remove(); local(text); });
+    }
+    function answer(text) { if (API) ask(text); else local(text); }
+    function open() { box.hidden = false; fab.setAttribute("aria-expanded", "true"); fab.classList.add("on"); setTimeout(function () { inp.focus(); }, 50); }
+    function close() { box.hidden = true; fab.setAttribute("aria-expanded", "false"); fab.classList.remove("on"); stopMic(); }
+    fab.addEventListener("click", function () { box.hidden ? open() : close(); });
+    $("#botClose").addEventListener("click", close);
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !box.hidden) close(); });
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var v = inp.value.trim(); if (!v) return;
+      say("u", v); inp.value = ""; answer(v);
+    });
+    /* voice */
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition, rec = null, hot = false;
+    var CODES = { en: "en-US", de: "de-DE", uk: "uk-UA", ru: "ru-RU" };
+    function stopMic() { hot = false; mic.classList.remove("on"); if (rec) { try { rec.stop(); } catch (e) {} } }
+    mic.addEventListener("click", function () {
+      if (!SR) { say("b", t("bot.nomic")); return; }
+      if (hot) { stopMic(); return; }
+      rec = new SR(); rec.lang = CODES[lang] || "en-US"; rec.interimResults = true; rec.maxAlternatives = 1; rec.continuous = false;
+      var finalText = "";
+      rec.onresult = function (e) {
+        var s = ""; for (var i = e.resultIndex; i < e.results.length; i++) { s += e.results[i][0].transcript; if (e.results[i].isFinal) finalText = s; }
+        inp.value = s;
+      };
+      rec.onend = function () { var v = (finalText || inp.value).trim(); hot = false; mic.classList.remove("on"); inp.placeholder = t("bot.ph"); if (v) { say("u", v); inp.value = ""; answer(v); } };
+      rec.onerror = function () { hot = false; mic.classList.remove("on"); inp.placeholder = t("bot.ph"); };
+      hot = true; mic.classList.add("on"); inp.placeholder = t("bot.listen");
+      try { rec.start(); } catch (e) { hot = false; mic.classList.remove("on"); }
+    });
+  })();
 
   /* spotlight border: the card edge brightens where the cursor is */
   document.addEventListener("pointermove", function (e) {

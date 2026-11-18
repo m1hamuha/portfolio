@@ -1,0 +1,10 @@
+name = "portfolio-assistant"
+main = "index.js"
+compatibility_date = "2025-01-01"
+
+[ai]
+binding = "AI"
+
+[vars]
+ALLOW_ORIGIN = "https://m1hamuha.github.io"
+# MODEL = "@cf/google/gemma-3-12b-it"
