@@ -615,3 +615,5 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
 .bot__ch { flex: 1; display: grid; place-items: center; min-height: 2.8rem; padding: 0.4rem 0.6rem; border-radius: var(--r-full); background: var(--accent); color: var(--on); font-weight: 700; font-size: 0.95rem; }
 .bot__ch:nth-child(n+2) { background: transparent; color: var(--ink); border: 1.5px solid var(--line); }
 .bot__ch:nth-child(n+2):hover { border-color: var(--accent); color: var(--accent); }
+.car__track { user-select: none; -webkit-user-select: none; }
+.car__track a, .car__track img { -webkit-user-drag: none; }
