@@ -389,6 +389,8 @@
     if (next) next.addEventListener("click", function () { step(1); });
     track.addEventListener("keydown", function (e) { if (e.key === "ArrowRight") { step(1); e.preventDefault(); } if (e.key === "ArrowLeft") { step(-1); e.preventDefault(); } });
     /* mouse drag (touch already scrolls natively); a drag must not count as a click */
+    /* links and images are natively draggable; that stole the mouse drag, so switch it off */
+    track.addEventListener("dragstart", function (e) { e.preventDefault(); });
     var down = false, sx = 0, sl = 0, moved = false;
     track.addEventListener("pointerdown", function (e) { if (e.pointerType !== "mouse") return; down = true; moved = false; sx = e.clientX; sl = track.scrollLeft; });
     window.addEventListener("pointermove", function (e) {
