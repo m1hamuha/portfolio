@@ -15,7 +15,7 @@
   function loadScene() {
     if (!host) return;
     /* fixed full-screen background */
-    import("./scene.min.js").then(function (m) {
+    import("./scene.min.js?v=63337202").then(function (m) {
       var scene = m.start(host, { reduce: reduce });
       if (!scene) return;
       document.documentElement.classList.add("has-gl");
@@ -61,6 +61,5 @@
     var sec = document.querySelector(".svc:not([hidden])");
     if (!sec) { window.ScrollTrigger.refresh(); return; }
     anim(sec.querySelectorAll(".svc__head, .l3__line, .l3__demo, .l3__buy"), { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.08, ease: "expo.out" });
-    anim(sec.querySelectorAll(".car__track"), { x: 60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.8, ease: "expo.out", delay: 0.1 });
   });
 })();

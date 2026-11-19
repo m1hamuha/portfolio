@@ -664,3 +664,46 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
 .mk__bub--a { align-self: flex-end; background: rgba(216, 255, 0, 0.12); border-radius: 1.1rem 1.1rem 0.3rem 1.1rem; }
 @media (prefers-reduced-motion: reduce) { .mk .ln, .mk__spark path { animation: none; transform: none; stroke-dashoffset: 0; } }
 .car__track { scroll-snap-type: none; }
+
+/* ===== carousel moved by transform (no browser scrolling) ===== */
+.car { perspective: 1100px; }
+.car__track { position: relative; width: max-content; overflow: visible; padding-inline: 0; perspective: none; transform-style: preserve-3d; touch-action: pan-y; will-change: transform; scroll-snap-type: none; }
+.car__track.drag { cursor: grabbing; }
+.cc { scroll-snap-align: none; }
+.car__dots i { cursor: pointer; }
+.no-js .car__track { width: auto; }
+@media (max-width: 760px) { .nv .car__track { width: auto; padding-inline: var(--pad); transform: none !important; touch-action: auto; } }
+
+/* ===== vector motion: orbit rings, flowing lines, a sweep of light ===== */
+.cc__art, .card__ico--big { position: relative; }
+.cc__art::before { content: ""; position: absolute; inset: -9px; border-radius: 50%; border: 1.5px dashed rgba(216, 255, 0, 0.35); animation: spin 26s linear infinite; }
+.cc__art::after { content: ""; position: absolute; inset: -9px; border-radius: 50%; background: radial-gradient(circle 4px at 50% 0, var(--accent) 98%, transparent) no-repeat; opacity: 0; animation: spin 5s linear infinite; }
+.cc.mid .cc__art::after { opacity: 1; }
+.cc.mid .cc__art::before { border-color: rgba(216, 255, 0, 0.7); animation-duration: 12s; }
+.cc.mid .cc__art .ico { animation: pop 0.5s var(--spring); }
+.card__ico--big::before { content: ""; position: absolute; inset: -8px; border-radius: 50%; border: 1.5px dashed rgba(216, 255, 0, 0.5); animation: spin 14s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pop { 0% { transform: scale(0.6) rotate(-12deg); } 100% { transform: none; } }
+.cc__mini .ico { transition: transform 0.4s var(--spring); }
+.cc.mid .cc__mini .ico { animation: hop 1.6s ease-in-out infinite; }
+.cc.mid .cc__mini .ico:nth-child(2) { animation-delay: 0.12s; } .cc.mid .cc__mini .ico:nth-child(3) { animation-delay: 0.24s; }
+.cc.mid .cc__mini .ico:nth-child(4) { animation-delay: 0.36s; } .cc.mid .cc__mini .ico:nth-child(5) { animation-delay: 0.48s; }
+@keyframes hop { 0%, 60%, 100% { transform: none; } 30% { transform: translateY(-5px); } }
+/* headline: a band of light crosses the lime word once */
+h1 mark { background: linear-gradient(100deg, transparent 40%, #fff 50%, transparent 60%) 120% 0 / 250% 100% no-repeat, var(--accent); -webkit-background-clip: text; background-clip: text; color: transparent; animation: sweep 2.2s var(--ease) 0.6s both; }
+@keyframes sweep { to { background-position: -60% 0; } }
+/* task page: a line of energy runs from the example into the demo and on to the price */
+.l3__line::after, .l3__demo::after { content: ""; display: block; width: 2px; height: 2.2rem; margin: 0.9rem auto 0; background: repeating-linear-gradient(var(--accent) 0 6px, transparent 6px 12px); background-size: 2px 12px; animation: flow 0.7s linear infinite; opacity: 0.8; }
+.l3__demo { flex-direction: column; align-items: center; margin-bottom: 0.9rem; }
+.l3__line { margin-bottom: 0.9rem; }
+@keyframes flow { to { background-position: 0 12px; } }
+.l3__price b { display: inline-block; min-width: 2.4ch; font-variant-numeric: tabular-nums; }
+/* demos breathe: bars and lines keep a slow pulse after they draw in */
+.mk .ln.lime { animation: lnIn 0.9s var(--ease) both, glowln 3s ease-in-out 1.2s infinite; }
+@keyframes glowln { 50% { opacity: 0.55; } }
+.mk__stars { animation: starpop 0.9s var(--spring) both; }
+@keyframes starpop { from { letter-spacing: -0.6em; opacity: 0; } }
+.mk__pill { animation: slidein 0.7s var(--ease) both; } .mk__pill:nth-child(2) { animation-delay: 0.15s; } .mk__pill:nth-child(3) { animation-delay: 0.3s; }
+@keyframes slidein { from { transform: translateX(-24px); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { h1 mark { animation: none; background: none; color: var(--accent); } }
+h1 mark { text-shadow: none; }
