@@ -371,7 +371,8 @@
           c.style.transform = "translateZ(" + (-Math.min(a, 2) * 70) + "px) rotateY(" + Math.max(-48, Math.min(48, -d * 30)) + "deg) scale(" + (1 - Math.min(a, 2) * 0.07) + ")";
           c.style.opacity = String(1 - Math.min(a, 2.5) * 0.16);
         }
-        if (a < bd) { bd = a; best = c; }
+        var od = Math.abs(c.offsetLeft + c.offsetWidth / 2 - (track.scrollLeft + track.clientWidth / 2));
+        if (od < bd) { bd = od; best = c; }
       });
       cards().forEach(function (c, k) {
         c.classList.toggle("mid", c === best);
@@ -379,11 +380,31 @@
       });
     }
     function queue() { if (!raf) raf = requestAnimationFrame(paint); }
-    function step(dir) {
-      var c = cards()[0]; if (!c) return;
-      track.scrollBy({ left: dir * (c.getBoundingClientRect().width + 16), behavior: reduce ? "auto" : "smooth" });
+    function idxMid() { var cs = cards(), i = 0; cs.forEach(function (c, k) { if (c.classList.contains("mid")) i = k; }); return i; }
+    function goTo(i) {
+      var cs = cards(); if (!cs.length) return;
+      i = Math.max(0, Math.min(cs.length - 1, i));
+      var c = cs[i];
+      track.scrollTo({ left: c.offsetLeft - (track.clientWidth - c.offsetWidth) / 2, behavior: reduce ? "auto" : "smooth" });
     }
-    track.addEventListener("scroll", queue, { passive: true });
+    function step(dir) { goTo(idxMid() + dir); }
+    if (dots) dots.addEventListener("click", function (e) { var k = Array.prototype.indexOf.call(dots.children, e.target); if (k > -1) goTo(k); });
+    /* CSS scroll-snap measures the tilted cards, so the snap points moved and arrows skipped cards;
+       snapping is done here instead, from the real layout positions, once the scrolling has settled */
+    var settleT = 0, touching = false;
+    function nearest() {
+      var cs = cards(), mid = track.scrollLeft + track.clientWidth / 2, bi = 0, bd = 1e9;
+      cs.forEach(function (c, k) { var d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid); if (d < bd) { bd = d; bi = k; } });
+      return bi;
+    }
+    function settle() {
+      if (touching || track.classList.contains("drag") || listMode()) return;
+      var c = cards()[nearest()]; if (!c) return;
+      if (Math.abs(track.scrollLeft - (c.offsetLeft - (track.clientWidth - c.offsetWidth) / 2)) > 2) goTo(nearest());
+    }
+    track.addEventListener("touchstart", function () { touching = true; }, { passive: true });
+    track.addEventListener("touchend", function () { touching = false; clearTimeout(settleT); settleT = setTimeout(settle, 160); }, { passive: true });
+    track.addEventListener("scroll", function () { queue(); clearTimeout(settleT); settleT = setTimeout(settle, 140); }, { passive: true });
     window.addEventListener("resize", queue);
     if (prev) prev.addEventListener("click", function () { step(-1); });
     if (next) next.addEventListener("click", function () { step(1); });
@@ -401,14 +422,14 @@
     });
     window.addEventListener("pointerup", function () {
       if (!down) return; down = false; track.classList.remove("drag");
-      if (moved) { var c = cards()[0], w = c ? c.getBoundingClientRect().width + 16 : 1; track.scrollTo({ left: Math.round(track.scrollLeft / w) * w, behavior: "smooth" }); }
+      if (moved) { var cs = cards(), mid = track.scrollLeft + track.clientWidth / 2, bi = 0, bd = 1e9; cs.forEach(function (c, k) { var d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid); if (d < bd) { bd = d; bi = k; } }); goTo(bi); }
     });
     track.addEventListener("click", function (e) {
       if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; return; }
       var c = e.target.closest(".cc");
       if (c && !listMode() && !c.classList.contains("mid")) {
         e.preventDefault(); e.stopPropagation();
-        track.scrollTo({ left: c.offsetLeft - (track.clientWidth - c.offsetWidth) / 2, behavior: reduce ? "auto" : "smooth" });
+        goTo(cards().indexOf(c));
       }
     }, true);
     /* centre the first card once visible, so the neighbours show on both sides */
