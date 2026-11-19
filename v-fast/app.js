@@ -354,95 +354,112 @@
   })();
 
   /* ---------- 3D carousels ----------
-     Native scroll-snap does the moving; every frame each card is tilted and scaled by how far
-     it sits from the centre. Mouse drag, arrow buttons and keyboard all work. */
+     The carousel keeps its own position (an index and a pixel offset) and moves the track with a
+     transform. It does not use the browser's scrolling at all, so it behaves the same in every
+     browser. Arrows, dots, keyboard, wheel, mouse drag and touch swipe all change the same index. */
   $$("[data-car]").forEach(function (car) {
-    var track = $(".car__track", car), prev = $(".car__btn--prev", car), next = $(".car__btn--next", car), raf = 0;
-    function cards() { return $$(".cc", track); }
-    var dots = $(".car__dots", car);
-    if (dots) dots.innerHTML = cards().map(function () { return "<i></i>"; }).join("");
+    var track = $(".car__track", car), prev = $(".car__btn--prev", car), next = $(".car__btn--next", car), dots = $(".car__dots", car);
+    var cs = $$(".cc", track), idx = 0, x = 0, raf = 0, ready = false, dragging = false, tilt = null;
+    if (!cs.length) return;
+    if (dots) dots.innerHTML = cs.map(function () { return "<i></i>"; }).join("");
     function listMode() { return getComputedStyle(track).flexDirection === "column"; }
+    function centre(k) { return cs[k].offsetLeft + cs[k].offsetWidth / 2; }
+    function target(k) { return car.clientWidth / 2 - centre(k); }
+    function nearest() { var mid = car.clientWidth / 2 - x, bi = 0, bd = 1e9; cs.forEach(function (c, k) { var d = Math.abs(centre(k) - mid); if (d < bd) { bd = d; bi = k; } }); return bi; }
     function paint() {
-      raf = 0;
-      var mid = track.getBoundingClientRect(), cx = mid.left + mid.width / 2, best = null, bd = 1e9;
-      cards().forEach(function (c) {
-        var r = c.getBoundingClientRect(), d = (r.left + r.width / 2 - cx) / r.width, a = Math.abs(d);
-        if (!reduce && mid.width > 0 && !listMode()) {
-          c.style.transform = "translateZ(" + (-Math.min(a, 2) * 70) + "px) rotateY(" + Math.max(-48, Math.min(48, -d * 30)) + "deg) scale(" + (1 - Math.min(a, 2) * 0.07) + ")";
-          c.style.opacity = String(1 - Math.min(a, 2.5) * 0.16);
+      if (listMode()) { track.style.transform = ""; cs.forEach(function (c) { c.style.transform = ""; c.style.opacity = ""; c.classList.remove("mid"); }); return; }
+      var cw = car.clientWidth, w = cs[0].offsetWidth || 1, m = nearest();
+      track.style.transform = "translate3d(" + x.toFixed(1) + "px,0,0)";
+      cs.forEach(function (c, k) {
+        var d = (centre(k) + x - cw / 2) / w, a = Math.abs(d), tr;
+        if (reduce) tr = "";
+        else {
+          tr = "translateZ(" + (-Math.min(a, 2) * 70).toFixed(1) + "px) rotateY(" + Math.max(-48, Math.min(48, -d * 30)).toFixed(2) + "deg) scale(" + (1 - Math.min(a, 2) * 0.07).toFixed(3) + ")";
+          if (k === m && tilt && !dragging) tr += " rotateX(" + (-tilt[1] * 7).toFixed(2) + "deg) rotateY(" + (tilt[0] * 9).toFixed(2) + "deg)";
         }
-        var od = Math.abs(c.offsetLeft + c.offsetWidth / 2 - (track.scrollLeft + track.clientWidth / 2));
-        if (od < bd) { bd = od; best = c; }
-      });
-      cards().forEach(function (c, k) {
-        c.classList.toggle("mid", c === best);
-        if (dots && dots.children[k]) dots.children[k].classList.toggle("on", c === best);
+        c.style.transform = tr;
+        c.style.opacity = String(1 - Math.min(a, 2.5) * 0.16);
+        c.classList.toggle("mid", k === m);
+        if (dots && dots.children[k]) dots.children[k].classList.toggle("on", k === m);
       });
     }
-    function queue() { if (!raf) raf = requestAnimationFrame(paint); }
-    function idxMid() { var cs = cards(), i = 0; cs.forEach(function (c, k) { if (c.classList.contains("mid")) i = k; }); return i; }
-    function goTo(i) {
-      var cs = cards(); if (!cs.length) return;
-      i = Math.max(0, Math.min(cs.length - 1, i));
-      var c = cs[i];
-      track.scrollTo({ left: c.offsetLeft - (track.clientWidth - c.offsetWidth) / 2, behavior: reduce ? "auto" : "smooth" });
+    var lastT = 0;
+    function tick(now) {
+      raf = 0;
+      if (dragging) { paint(); return; }
+      var tx = target(idx), d = tx - x, dt = Math.min((now - (lastT || now)) / 1000, 0.1); lastT = now;
+      if (Math.abs(d) < 0.4 || reduce) { x = tx; lastT = 0; paint(); return; }
+      x += d * (1 - Math.exp(-dt * 11)); paint(); /* time based, so slow devices arrive just as fast */
+      raf = requestAnimationFrame(tick);
     }
-    function step(dir) { goTo(idxMid() + dir); }
-    if (dots) dots.addEventListener("click", function (e) { var k = Array.prototype.indexOf.call(dots.children, e.target); if (k > -1) goTo(k); });
-    /* CSS scroll-snap measures the tilted cards, so the snap points moved and arrows skipped cards;
-       snapping is done here instead, from the real layout positions, once the scrolling has settled */
-    var settleT = 0, touching = false;
-    function nearest() {
-      var cs = cards(), mid = track.scrollLeft + track.clientWidth / 2, bi = 0, bd = 1e9;
-      cs.forEach(function (c, k) { var d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid); if (d < bd) { bd = d; bi = k; } });
-      return bi;
+    function run() { if (!raf) { lastT = 0; raf = requestAnimationFrame(tick); } }
+    function go(k) { idx = Math.max(0, Math.min(cs.length - 1, k)); run(); }
+    function init() {
+      if (ready || !car.clientWidth || listMode()) { paint(); return; }
+      ready = true; idx = window.innerWidth < 760 ? 0 : Math.min(1, cs.length - 1); x = target(idx); paint();
     }
-    function settle() {
-      if (touching || track.classList.contains("drag") || listMode()) return;
-      var c = cards()[nearest()]; if (!c) return;
-      if (Math.abs(track.scrollLeft - (c.offsetLeft - (track.clientWidth - c.offsetWidth) / 2)) > 2) goTo(nearest());
-    }
-    track.addEventListener("touchstart", function () { touching = true; }, { passive: true });
-    track.addEventListener("touchend", function () { touching = false; clearTimeout(settleT); settleT = setTimeout(settle, 160); }, { passive: true });
-    track.addEventListener("scroll", function () { queue(); clearTimeout(settleT); settleT = setTimeout(settle, 140); }, { passive: true });
-    window.addEventListener("resize", queue);
-    if (prev) prev.addEventListener("click", function () { step(-1); });
-    if (next) next.addEventListener("click", function () { step(1); });
-    track.addEventListener("keydown", function (e) { if (e.key === "ArrowRight") { step(1); e.preventDefault(); } if (e.key === "ArrowLeft") { step(-1); e.preventDefault(); } });
-    /* mouse drag (touch already scrolls natively); a drag must not count as a click */
-    /* links and images are natively draggable; that stole the mouse drag, so switch it off */
+    if (prev) prev.addEventListener("click", function () { go(idx - 1); });
+    if (next) next.addEventListener("click", function () { go(idx + 1); });
+    if (dots) dots.addEventListener("click", function (e) { var k = Array.prototype.indexOf.call(dots.children, e.target); if (k > -1) go(k); });
+    track.addEventListener("keydown", function (e) { if (e.key === "ArrowRight") { go(idx + 1); e.preventDefault(); } if (e.key === "ArrowLeft") { go(idx - 1); e.preventDefault(); } });
+    /* wheel: a sideways gesture (trackpad, shift+wheel) moves one card at a time; vertical wheel scrolls the page */
+    var acc = 0, cool = 0;
+    car.addEventListener("wheel", function (e) {
+      if (listMode()) return;
+      var dx = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : (e.shiftKey ? e.deltaY : 0);
+      if (!dx) return;
+      e.preventDefault();
+      var now = Date.now(); if (now < cool) return;
+      acc += dx;
+      if (Math.abs(acc) > 40) { go(idx + (acc > 0 ? 1 : -1)); acc = 0; cool = now + 320; }
+    }, { passive: false });
+    /* drag with mouse, swipe with a finger: same code, pointer events */
+    var down = false, sx = 0, sy = 0, x0 = 0, moved = false, pid = null;
     track.addEventListener("dragstart", function (e) { e.preventDefault(); });
-    var down = false, sx = 0, sl = 0, moved = false;
-    track.addEventListener("pointerdown", function (e) { if (e.pointerType !== "mouse") return; down = true; moved = false; sx = e.clientX; sl = track.scrollLeft; });
+    track.addEventListener("pointerdown", function (e) {
+      if (listMode() || (e.pointerType === "mouse" && e.button !== 0)) return;
+      down = true; moved = false; sx = e.clientX; sy = e.clientY; x0 = x; pid = e.pointerId;
+    });
     window.addEventListener("pointermove", function (e) {
-      if (!down) return;
-      var dx = e.clientX - sx;
-      if (Math.abs(dx) > 5) { moved = true; track.classList.add("drag"); }
-      if (moved) track.scrollLeft = sl - dx;
+      if (!down || e.pointerId !== pid) return;
+      var dx = e.clientX - sx, dy = e.clientY - sy;
+      if (!dragging) {
+        if (Math.abs(dx) < 6 || Math.abs(dx) < Math.abs(dy)) return;
+        dragging = true; moved = true; track.classList.add("drag");
+        if (raf) { cancelAnimationFrame(raf); raf = 0; }
+      }
+      x = Math.max(target(cs.length - 1) - 90, Math.min(target(0) + 90, x0 + dx));
+      paint();
     });
-    window.addEventListener("pointerup", function () {
-      if (!down) return; down = false; track.classList.remove("drag");
-      if (moved) { var cs = cards(), mid = track.scrollLeft + track.clientWidth / 2, bi = 0, bd = 1e9; cs.forEach(function (c, k) { var d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid); if (d < bd) { bd = d; bi = k; } }); goTo(bi); }
-    });
+    function release(e) {
+      if (!down || (e && e.pointerId !== pid)) return;
+      down = false;
+      if (!dragging) return;
+      dragging = false; track.classList.remove("drag");
+      var dx = e ? e.clientX - sx : 0, k = nearest();
+      if (k === idx && Math.abs(dx) > 40) k = idx + (dx < 0 ? 1 : -1); /* a short flick still moves one card */
+      go(k);
+    }
+    window.addEventListener("pointerup", release);
+    window.addEventListener("pointercancel", release);
     track.addEventListener("click", function (e) {
       if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; return; }
-      var c = e.target.closest(".cc");
-      if (c && !listMode() && !c.classList.contains("mid")) {
-        e.preventDefault(); e.stopPropagation();
-        goTo(cards().indexOf(c));
-      }
+      if (listMode()) return;
+      var c = e.target.closest(".cc"), k = cs.indexOf(c);
+      if (c && k !== nearest()) { e.preventDefault(); e.stopPropagation(); go(k); }
     }, true);
-    /* centre the first card once visible, so the neighbours show on both sides */
-    var inited = false;
-    new IntersectionObserver(function (es) {
-      if (es[0].isIntersecting && !inited && track.clientWidth > 0) {
-        inited = true;
-        var cs = cards(), c = cs[window.innerWidth < 760 ? 0 : Math.min(1, cs.length - 1)];
-        if (c) track.scrollLeft = c.offsetLeft - (track.clientWidth - c.offsetWidth) / 2;
-      }
-      queue();
-    }, { threshold: 0.1 }).observe(car);
-    queue();
+    /* the centre card leans toward the cursor */
+    car.addEventListener("pointermove", function (e) {
+      if (e.pointerType !== "mouse" || reduce || listMode()) return;
+      var c = cs[nearest()], r = c.getBoundingClientRect();
+      var inside = e.clientX > r.left && e.clientX < r.right && e.clientY > r.top && e.clientY < r.bottom;
+      tilt = inside ? [(e.clientX - r.left) / r.width - 0.5, (e.clientY - r.top) / r.height - 0.5] : null;
+      if (!raf && !dragging) paint();
+    });
+    car.addEventListener("pointerleave", function () { tilt = null; if (!raf) paint(); });
+    window.addEventListener("resize", function () { if (ready && !listMode()) { x = target(idx); } paint(); });
+    new IntersectionObserver(function () { init(); }, { threshold: 0.05 }).observe(car);
+    init();
   });
 
   /* ---------- pages inside the page: one step at a time ----------
@@ -472,6 +489,11 @@
     $("#l3line").textContent = t(row[1]);
     $("#l3price").innerHTML = sid === "social" ? "" : '<span>' + t("pr.from") + '</span> <b>' + sv.amt + '</b> <span>' + (sv.per ? t("pr.mo") : t("pr.once")) + "</span>";
     $("#l3order").dataset.order = sid;
+    var pb = $("#l3price b");
+    if (pb && !reduce) {
+      var num = parseInt(sv.amt.replace(/\D/g, ""), 10) || 0, t0 = performance.now();
+      (function up(now) { var p = Math.min((now - t0) / 700, 1), e = 1 - Math.pow(1 - p, 3); pb.textContent = "€" + Math.round(num * e); if (p < 1 && l3ctx && l3ctx[1] === sid) requestAnimationFrame(up); else pb.textContent = sv.amt; })(t0);
+    }
     $(".l3__buy").hidden = sid === "social"; /* social media has its own three plans, each with Order */
   }
   refillL3 = fillL3;
