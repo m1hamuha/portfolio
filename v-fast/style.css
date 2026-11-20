@@ -877,3 +877,4 @@ h1, h2, h3, .svc__h, .l3__line, .cc h3, .card h3 { letter-spacing: -0.012em; wor
 .hand.is-sent .scr--a .sbub--after::after { color: var(--on); }
 .scr--a { z-index: 1; pointer-events: none; } .hand.is-after .scr--a { pointer-events: auto; } .hand.is-after .scr--b { pointer-events: none; }
 @media (max-width: 760px) { .lvl3 .bot-fab { display: none; } }
+.mk-line span { min-width: 0; overflow-wrap: anywhere; } .mk-line span:last-child { white-space: normal; flex: 0 1 45%; } .mk-tr span, .mk-scrap, .mk-title { overflow-wrap: anywhere; min-width: 0; }
