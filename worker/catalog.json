@@ -82,21 +82,21 @@
    "bot",
    "mail",
    "social",
-   "site",
-   "reviews"
+   "reviews",
+   "site"
   ],
   "cafe": [
-   "bot",
    "reviews",
+   "bot",
+   "social",
    "site",
-   "mail",
-   "social"
+   "mail"
   ],
   "shop": [
-   "site",
-   "reviews",
    "bot",
-   "social"
+   "reviews",
+   "social",
+   "site"
   ],
   "trades": [
    "bot",
@@ -105,10 +105,10 @@
    "translate"
   ],
   "fitness": [
-   "mail",
    "bot",
-   "leads",
-   "social"
+   "mail",
+   "social",
+   "leads"
   ],
   "clinic": [
    "mail",
@@ -117,26 +117,26 @@
    "site"
   ],
   "cleaning": [
-   "bot",
    "hiring",
+   "bot",
    "reviews",
-   "reports",
-   "mail"
+   "mail",
+   "reports"
   ],
   "office": [
-   "reports",
    "leads",
    "docs",
+   "reports",
    "translate"
   ],
   "other": [
    "bot",
-   "site",
-   "reviews",
    "leads",
-   "social",
-   "reports",
+   "reviews",
    "mail",
+   "social",
+   "site",
+   "reports",
    "docs"
   ]
  }
