@@ -818,3 +818,7 @@ h1 mark { text-shadow: none; }
 .cc__top { position: absolute; top: -0.8rem; left: 50%; transform: translateX(-50%); padding: 0.3rem 0.8rem; border-radius: var(--r-full); background: var(--accent); color: var(--on); font-weight: 700; font-size: 0.75rem; white-space: nowrap; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5); }
 .cc--top { border-color: rgba(216, 255, 0, 0.55); overflow: visible; }
 @media (max-width: 760px) { .nv .cc__top { left: auto; right: 1rem; transform: none; } .nv .cc--top { margin-top: 0.6rem; } }
+/* the phone grows with its text: both screens share one grid cell */
+.hand { display: grid; height: auto; min-height: 20rem; }
+.scr { position: relative; inset: auto; grid-area: 1 / 1; margin: 6px; }
+@media (max-width: 760px) { .hand { min-height: 0; } }

@@ -81,63 +81,89 @@
   "salon": [
    "bot",
    "mail",
-   "social",
    "reviews",
-   "site"
-  ],
-  "cafe": [
-   "reviews",
-   "bot",
    "social",
    "site",
-   "mail"
+   "content"
+  ],
+  "cafe": [
+   "bot",
+   "mail",
+   "reviews",
+   "reports",
+   "social",
+   "hiring",
+   "site",
+   "content"
   ],
   "shop": [
-   "bot",
    "reviews",
+   "site",
+   "reports",
    "social",
-   "site"
+   "hiring",
+   "content",
+   "bot"
   ],
   "trades": [
    "bot",
    "docs",
+   "leads",
+   "reviews",
    "site",
-   "translate"
+   "mail",
+   "hiring",
+   "reports"
   ],
   "fitness": [
    "bot",
    "mail",
+   "leads",
    "social",
-   "leads"
+   "reviews",
+   "content",
+   "site",
+   "hiring"
   ],
   "clinic": [
    "mail",
    "bot",
    "reviews",
+   "hiring",
+   "leads",
    "site"
   ],
   "cleaning": [
    "hiring",
    "bot",
-   "reviews",
+   "leads",
    "mail",
-   "reports"
+   "reviews",
+   "docs",
+   "reports",
+   "site",
+   "assistant"
   ],
   "office": [
    "leads",
    "docs",
+   "bot",
+   "mail",
    "reports",
-   "translate"
+   "hiring",
+   "assistant"
   ],
   "other": [
    "bot",
-   "leads",
    "reviews",
+   "leads",
    "mail",
    "social",
-   "site",
    "reports",
-   "docs"
+   "site",
+   "hiring",
+   "docs",
+   "content"
   ]
  }
 }
