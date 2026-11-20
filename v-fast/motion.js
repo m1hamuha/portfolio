@@ -28,6 +28,7 @@
         var h = location.hash, nm = h.match(/^#\/for\/([a-z]+)/), sv = /^#\/[a-z]+$/.test(h);
         if (nm) { scene.focus(NICHES.indexOf(nm[1])); dim(/\/for\/[a-z]+\/[a-z]+/.test(h) ? 0.45 : 0.75); }
         else if (sv) { scene.focus(-1); dim(0.35); }
+        else if (h === "#contact") { scene.focus(-1); dim(0.35); }
         else { scene.focus(-1); dim(1); }
       }
       window.addEventListener("hashchange", sync);
