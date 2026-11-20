@@ -682,7 +682,13 @@
     if (target) target.scrollIntoView();
     else if (wasView) window.scrollTo({ top: homeY, behavior: "instant" });
   }
-  window.addEventListener("hashchange", route);
+  function routeAll() {
+    route();
+    var r = document.documentElement, was = r.classList.contains("at-home"), now = !home.hidden;
+    r.classList.toggle("at-home", now);
+    if (was !== now) window.dispatchEvent(new Event("resize")); /* sizes changed: carousels re-centre */
+  }
+  window.addEventListener("hashchange", routeAll);
   if ("scrollRestoration" in history) history.scrollRestoration = "manual";
 
   /* ---------- "find your service": a small assistant, text or voice, in the visitor's language ----------
@@ -841,5 +847,5 @@
   }, { passive: true });
 
   setLang(pickLang(), false);
-  route();
+  routeAll();
 })();
