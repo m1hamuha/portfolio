@@ -17,7 +17,7 @@
    "per_month": true
   },
   "bot": {
-   "name": "Chatbot and booking",
+   "name": "Answers and requests",
    "from": "€79",
    "per_month": false
   },
@@ -27,7 +27,7 @@
    "per_month": false
   },
   "reports": {
-   "name": "Reports and spreadsheets",
+   "name": "Spreadsheets and records",
    "from": "€19",
    "per_month": false
   },
@@ -47,7 +47,7 @@
    "per_month": false
   },
   "site": {
-   "name": "Website and SEO",
+   "name": "Website and Google Maps",
    "from": "€29",
    "per_month": false
   },
@@ -62,7 +62,7 @@
    "per_month": false
   },
   "translate": {
-   "name": "Translation, 4 languages",
+   "name": "Good German and translation",
    "from": "€5",
    "per_month": false
   },
@@ -70,64 +70,69 @@
    "name": "AI helper for your team",
    "from": "€49",
    "per_month": false
+  },
+  "hiring": {
+   "name": "Hiring help",
+   "from": "€15",
+   "per_month": false
   }
  },
  "offered": {
   "salon": [
    "bot",
    "mail",
-   "social",
    "reviews",
-   "site"
+   "site",
+   "docs"
   ],
   "cafe": [
-   "bot",
-   "social",
+   "site",
    "reviews",
-   "translate",
-   "reports"
+   "docs",
+   "bot",
+   "social"
   ],
   "shop": [
-   "bot",
+   "reviews",
+   "site",
    "content",
-   "data",
-   "translate",
-   "mail"
+   "social",
+   "translate"
   ],
   "trades": [
    "leads",
    "docs",
-   "site",
-   "social",
-   "assistant"
+   "reviews",
+   "translate",
+   "site"
   ],
   "fitness": [
-   "bot",
+   "leads",
    "mail",
+   "bot",
    "social",
-   "reports",
    "reviews"
   ],
   "clinic": [
-   "bot",
    "mail",
-   "docs",
    "translate",
+   "site",
+   "bot",
    "reviews"
   ],
   "cleaning": [
-   "leads",
    "bot",
-   "mail",
+   "leads",
+   "reports",
    "docs",
-   "reviews"
+   "hiring"
   ],
   "office": [
    "leads",
    "docs",
-   "reports",
-   "data",
-   "assistant"
+   "mail",
+   "translate",
+   "reports"
   ],
   "other": [
    "social",
@@ -141,7 +146,8 @@
    "leads",
    "mail",
    "translate",
-   "assistant"
+   "assistant",
+   "hiring"
   ]
  }
 }

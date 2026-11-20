@@ -322,7 +322,7 @@
     social: ["sv.social.h", 1, "€10"], bot: ["sv.bot.h", 1, "€79"], content: ["sv.content.h", 1, "€1"],
     reports: ["sv.reports.h", 1, "€19"], docs: ["sv.docs.h", 1, "€19"], reviews: ["sv.reviews.h", 1, "€15"],
     data: ["sv.data.h", 1, "€29"], site: ["sv.site.h", 1, "€29"], leads: ["sv.leads.h", 1, "€29"], mail: ["sv.mail.h", 1, "€19"],
-    translate: ["sv.translate.h", 1, "€5"], assistant: ["sv.assistant.h", 1, "€49"], custom: ["sv.custom.h", 0, ""],
+    translate: ["sv.translate.h", 1, "€5"], assistant: ["sv.assistant.h", 1, "€49"], hiring: ["sv.hiring.h", 1, "€15"], custom: ["sv.custom.h", 0, ""],
     photo: ["pm.photo", 0, "€1"], video: ["pm.video", 1, "€8"],
     plan1: ["pl.1", 0, "€10 " ], plan2: ["pl.2", 0, "€25 "], plan3: ["pl.3", 0, "€40 "]
   };
@@ -579,7 +579,8 @@
       leads: "лид crm клиенты контакт обращени lead leads inquiry anfrage kontakte заявк клієнт",
       mail: "напомин рассылк уведомлен вернуть reminder newsletter mailing notification remind erinnerung benachrichtigung нагад розсилк сповіщ",
       translate: "перевод перевест язык немецк английск translate translation language übersetz sprache переклад мов",
-      assistant: "помощник ассистент ии нейросет сотрудник команд assistant helper staff gpt assistent ki mitarbeiter помічник асистент штучн"
+      hiring: "сотрудник персонал ваканси найм нанять работник кандидат уборщиц официант staff hiring hire vacancy job candidate employee personal mitarbeiter stelle stellenanzeige bewerber працівник вакансі найняти кандидат",
+      assistant: "помощник ассистент ии нейросет команд assistant helper gpt assistent ki mitarbeiter помічник асистент штучн"
     };
     function toks(x) { return x.toLowerCase().replace(/[^\p{L}\p{N}']+/gu, " ").split(" ").filter(function (w) { return w.length >= 3; }); }
     function prep(o) { var r = {}; Object.keys(o).forEach(function (k) { r[k] = toks(o[k]); }); return r; }
