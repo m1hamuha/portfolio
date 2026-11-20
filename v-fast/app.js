@@ -507,11 +507,14 @@
     $("#l3h").textContent = t("sv." + sid + ".h");
     var c = content(n, sid);
     $("#l3line").textContent = c ? c.promise : t(row[1]);
-    $("#l3ex").hidden = !c; $("#l3steps").hidden = !c;
+    $("#scene").hidden = !c; $("#l3steps").hidden = !c;
     if (c) {
-      $("#exInL").textContent = c.exInLabel; $("#exIn").textContent = c.exIn;
-      $("#exOutL").textContent = c.exOutLabel; $("#exOut").textContent = c.exOut;
       $("#stGive").textContent = c.give; $("#stMake").textContent = c.make; $("#stGet").textContent = c.get;
+      scene = {
+        before: { label: c.beforeLabel || c.exInLabel, text: c.before || c.exIn, note: c.loss || "" },
+        after: { label: c.afterLabel || c.exOutLabel, text: c.after || c.exOut, note: c.gain || "" }
+      };
+      playScene();
     }
     $("#l3price").innerHTML = sid === "social" ? "" : '<span>' + t("pr.from") + '</span> <b>' + sv.amt + '</b> <span>' + (sv.per ? t("pr.mo") : t("pr.once")) + "</span>";
     $("#l3order").dataset.order = sid;
@@ -523,6 +526,44 @@
     $(".l3__buy").hidden = sid === "social"; /* social media has its own three plans, each with Order */
   }
   refillL3 = fillL3;
+
+  /* ---------- the "now / with me" phone scene ----------
+     It opens on today's situation, then by itself switches to the same moment solved:
+     the reply is typed in like a real message. Tapping the switch flips it by hand. */
+  var scene = null, scT = [], scState = "before";
+  function scClear() { scT.forEach(clearTimeout); scT = []; }
+  function scShow(which, animate) {
+    if (!scene) return;
+    scState = which;
+    var box = $("#scene"), d = scene[which], body = $("#scBody"), note = $("#scNote");
+    box.classList.toggle("is-after", which === "after");
+    $$(".scene__switch button").forEach(function (b) { b.setAttribute("aria-selected", String(b.dataset.s === which)); });
+    $("#scLabel").textContent = d.label || "";
+    note.textContent = d.note; note.className = "phone__note " + (which === "after" ? "gain" : "loss"); note.hidden = !d.note;
+    body.innerHTML = "";
+    var bub = document.createElement("div");
+    bub.className = "sbub sbub--" + which;
+    if (!animate || reduce) { bub.textContent = d.text; body.appendChild(bub); note.classList.add("in"); return; }
+    note.classList.remove("in");
+    if (which === "after") {
+      var dots = document.createElement("div"); dots.className = "sbub sbub--after sbub--dots"; dots.innerHTML = "<i></i><i></i><i></i>";
+      body.appendChild(dots);
+      scT.push(setTimeout(function () {
+        body.replaceChild(bub, dots);
+        var i = 0, txt = d.text;
+        (function type() { bub.textContent = txt.slice(0, i += 2); if (i < txt.length) scT.push(setTimeout(type, 18)); else note.classList.add("in"); })();
+      }, 700));
+    } else {
+      bub.textContent = d.text; body.appendChild(bub);
+      scT.push(setTimeout(function () { note.classList.add("in"); }, 500));
+    }
+  }
+  function playScene() {
+    scClear(); scShow("before", true);
+    if (!reduce) scT.push(setTimeout(function () { scShow("after", true); }, 3400));
+  }
+  $$(".scene__switch button").forEach(function (b) { b.addEventListener("click", function () { scClear(); scShow(b.dataset.s, true); }); });
+  $("#scReplay").addEventListener("click", playScene);
   function show(sec, key) {
     if (current === null) homeY = window.pageYOffset;
     $$(".svc").forEach(function (v) { v.hidden = v !== sec; });

@@ -742,3 +742,36 @@ h1 mark { text-shadow: none; }
 }
 @media (prefers-reduced-motion: reduce) { .ex__in, .ex__out, .ex__arrow { animation: none; } }
 .hero h1 { font-size: clamp(1.9rem, 4.1vw, 3.7rem); max-width: 22em; line-height: 1.08; }
+
+/* ===== "now / with me" phone scene ===== */
+.ex { display: none !important; }
+.scene { display: flex; flex-direction: column; align-items: center; gap: 1rem; margin: 0 auto clamp(1.25rem, 3vw, 2rem); }
+.scene[hidden] { display: none; }
+.scene__switch { position: relative; display: grid; grid-template-columns: 1fr 1fr; padding: 4px; border-radius: var(--r-full); background: #161615; border: 1px solid var(--line); }
+.scene__switch button { position: relative; z-index: 1; min-width: 7.5rem; padding: 0.55rem 1.1rem; border-radius: var(--r-full); font-weight: 700; font-size: 0.95rem; color: var(--muted); transition: color 0.3s; }
+.scene__switch button[aria-selected="true"] { color: var(--on); }
+.scene__knob { position: absolute; z-index: 0; top: 4px; bottom: 4px; left: 4px; width: calc(50% - 4px); border-radius: var(--r-full); background: #e9e9e4; transition: transform 0.45s var(--spring), background 0.3s; }
+.scene.is-after .scene__knob { transform: translateX(100%); background: var(--accent); }
+.phone { position: relative; width: min(100%, 23rem); min-height: 17rem; padding: 1.6rem 1rem 1rem; border-radius: 2.2rem; background: #0e0e0d; border: 1.5px solid rgba(255, 255, 255, 0.14); box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6), inset 0 0 0 6px #050505; display: flex; flex-direction: column; gap: 0.8rem; transition: border-color 0.5s, box-shadow 0.5s; }
+.scene.is-after .phone { border-color: rgba(216, 255, 0, 0.6); box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6), 0 0 60px rgba(216, 255, 0, 0.12), inset 0 0 0 6px #050505; }
+.phone__notch { position: absolute; top: 0.55rem; left: 50%; width: 5rem; height: 0.4rem; border-radius: 1rem; background: #1f1f1d; transform: translateX(-50%); }
+.phone__head { display: flex; align-items: center; gap: 0.5rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--line); font-size: 0.85rem; }
+.phone__head b { font-family: var(--f-mono); font-weight: 600; font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.phone__dot { width: 0.55rem; height: 0.55rem; border-radius: 50%; background: #8a8a85; transition: background 0.4s; }
+.scene.is-after .phone__dot { background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+.phone__body { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 0.5rem; }
+.sbub { max-width: 92%; padding: 0.8rem 1rem; border-radius: 1.2rem; font-size: 1rem; line-height: 1.45; text-align: left; animation: sbIn 0.45s var(--spring) both; }
+.sbub--before { align-self: flex-start; background: #1d1d1b; color: #d9d9d4; border-bottom-left-radius: 0.35rem; }
+.sbub--after { align-self: flex-end; background: var(--accent); color: var(--on); border-bottom-right-radius: 0.35rem; font-weight: 500; }
+.sbub--dots { display: inline-flex; gap: 5px; padding: 0.95rem 1rem; }
+.sbub--dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--on); animation: dot 1s infinite; }
+.sbub--dots i:nth-child(2) { animation-delay: 0.15s; } .sbub--dots i:nth-child(3) { animation-delay: 0.3s; }
+@keyframes sbIn { from { opacity: 0; transform: translateY(10px) scale(0.96); } }
+.phone__note { padding: 0.55rem 0.8rem; border-radius: 0.8rem; font-weight: 700; font-size: 0.92rem; text-align: left; opacity: 0; transform: translateY(6px); transition: opacity 0.4s, transform 0.4s var(--ease); }
+.phone__note.in { opacity: 1; transform: none; }
+.phone__note[hidden] { display: none; }
+.phone__note.loss { color: #ff9b8a; background: rgba(255, 110, 90, 0.08); }
+.phone__note.gain { color: var(--accent); background: rgba(216, 255, 0, 0.08); }
+.scene__replay { font-size: 0.85rem; font-weight: 600; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+.scene__replay:hover { color: var(--accent); }
+@media (prefers-reduced-motion: reduce) { .sbub, .phone__note { animation: none; transition: none; opacity: 1; transform: none; } }
