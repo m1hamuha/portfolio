@@ -895,3 +895,19 @@ h1, h2, h3, .svc__h, .l3__line, .cc h3, .card h3 { letter-spacing: -0.012em; wor
   .at-home .car__dots { margin-top: -0.4rem; }
   .at-home .hero__cta { display: none; } /* the menu already has "Write to me" */
 }
+
+/* computer: a business page is one screen too. Only the carousel moves, left and right. */
+@media (min-width: 1100px) {
+  html.at-niche { font-size: clamp(10px, min(1.25vw, 2vh), 21px); height: 100%; overflow: hidden; }
+  .at-niche body { height: 100%; overflow: hidden; }
+  .at-niche .svc.nv:not([hidden]) { height: 100svh; display: flex; flex-direction: column; justify-content: center; gap: 1.3rem; padding: 6.3rem 0 1.8rem; }
+  .at-niche .nv .back { margin: 0 0 1rem; font-size: 1.1rem; }
+  .at-niche .nv .svc__head { margin: 0; flex-wrap: nowrap; gap: 1.2rem; }
+  .at-niche .nv .svc__h { font-size: 3.6rem; line-height: 1.1; margin: 0; }
+  .at-niche .nv .card__ico--big { width: 4.4rem; height: 4.4rem; flex: none; }
+  .at-niche .nv .car { --cw: 18.5rem; }
+  .at-niche .nv .car__track { padding-top: 1.4rem; padding-bottom: 5rem; }
+  .at-niche .nv .cc--s { min-height: 0; height: 23.5rem; justify-content: center; }
+  .at-niche .nv .car__btn { bottom: 1.3rem; }
+  .at-niche .nv .car__dots { margin-top: -0.4rem; }
+}
