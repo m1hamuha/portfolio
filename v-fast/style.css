@@ -878,3 +878,20 @@ h1, h2, h3, .svc__h, .l3__line, .cc h3, .card h3 { letter-spacing: -0.012em; wor
 .scr--a { z-index: 1; pointer-events: none; } .hand.is-after .scr--a { pointer-events: auto; } .hand.is-after .scr--b { pointer-events: none; }
 @media (max-width: 760px) { .lvl3 .bot-fab { display: none; } }
 .mk-line span { min-width: 0; overflow-wrap: anywhere; } .mk-line span:last-child { white-space: normal; flex: 0 1 45%; } .mk-tr span, .mk-scrap, .mk-title { overflow-wrap: anywhere; min-width: 0; }
+
+/* computer: the first screen is exactly one screen and never scrolls. Everything on the page is
+   sized in rem, so the root size follows both the width and the height of the window. */
+@media (min-width: 1100px) {
+  html.at-home { font-size: clamp(10px, min(1.25vw, 2vh), 21px); height: 100%; overflow: hidden; }
+  .at-home body { height: 100%; overflow: hidden; }
+  .at-home .hero { height: 100svh; display: flex; flex-direction: column; justify-content: center; gap: 0.7rem; padding: 5rem 0 1rem; }
+  .at-home .hero h1 { font-size: 3.5rem; max-width: 26em; margin: 0 auto; }
+  .at-home .hero__ask { margin: 0; font-size: 1.4rem; }
+  .at-home .car { --cw: 17rem; }
+  .at-home .car__track { padding-top: 1.2rem; padding-bottom: 4.4rem; }
+  .at-home .cc--n { min-height: 0; height: 19.5rem; justify-content: center; }
+  .at-home .car__btn { bottom: 1.5rem; }
+  .at-home .car__dots { margin-top: -0.8rem; }
+  .at-home .hero__cta { margin-top: 0.2rem; }
+  .at-home .hero__cta .btn { min-height: 3rem; }
+}
