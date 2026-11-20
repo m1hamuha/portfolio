@@ -778,12 +778,12 @@ h1 mark { text-shadow: none; }
 
 /* ===== hands-on phone: drag between "without me" and "with me", press Send ===== */
 .scene__switch, .phone, .scene__replay { display: none !important; }
-.ph { position: relative; width: min(100%, 24rem); height: 20rem; border-radius: 2.2rem; background: #0e0e0d; border: 1.5px solid rgba(255, 255, 255, 0.14); box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6), inset 0 0 0 6px #050505; overflow: hidden; touch-action: pan-y; user-select: none; cursor: ew-resize; transition: border-color 0.4s; }
-.ph.is-after { border-color: rgba(216, 255, 0, 0.6); }
+.hand { position: relative; width: min(100%, 24rem); height: 20rem; border-radius: 2.2rem; background: #0e0e0d; border: 1.5px solid rgba(255, 255, 255, 0.14); box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6), inset 0 0 0 6px #050505; overflow: hidden; touch-action: pan-y; user-select: none; cursor: ew-resize; transition: border-color 0.4s; }
+.hand.is-after { border-color: rgba(216, 255, 0, 0.6); }
 .scr { position: absolute; inset: 6px; border-radius: 1.8rem; padding: 2.6rem 1.1rem 1rem; display: flex; flex-direction: column; gap: 0.7rem; }
 .scr--b { background: #121211; }
 .scr--a { background: #12140a; clip-path: inset(0 0 0 var(--pos)); }
-.ph.smooth .scr--a, .ph.smooth .ph__line, .ph.smooth .ph__knob { transition: clip-path 0.5s var(--ease), left 0.5s var(--ease); }
+.hand.smooth .scr--a, .hand.smooth .ph__line, .hand.smooth .ph__knob { transition: clip-path 0.5s var(--ease), left 0.5s var(--ease); }
 .scr__head { display: flex; align-items: center; gap: 0.5rem; padding-bottom: 0.55rem; border-bottom: 1px solid var(--line); }
 .scr__head b { font-family: var(--f-mono); font-weight: 600; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
 .scr__dot { width: 0.55rem; height: 0.55rem; border-radius: 50%; background: #8a8a85; }
@@ -809,5 +809,7 @@ h1 mark { text-shadow: none; }
 .ph__lbl--b { left: 0.8rem; background: #e9e9e4; color: var(--on); }
 .ph__lbl--a { right: 0.8rem; background: var(--accent); color: var(--on); }
 .scene__hint { font-size: 0.85rem; color: var(--muted); }
-@media (max-width: 760px) { .ph { height: 21rem; } }
+@media (max-width: 760px) { .hand { height: auto; min-height: 25rem; } }
 @media (prefers-reduced-motion: reduce) { .scr__send { animation: none; } }
+.hand { height: auto; min-height: 24rem; } .scr { overflow: hidden; }
+@media (max-width: 760px) { .hand { min-height: 27rem; } .sbub { font-size: 0.95rem; } }
