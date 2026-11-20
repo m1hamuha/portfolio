@@ -711,3 +711,33 @@ h1 mark { text-shadow: none; }
 /* each card carries its own perspective, so there is no shared 3D space for browsers to disagree about */
 .car { perspective: none; }
 .car__track { transform-style: flat; }
+
+/* ===== task page in plain words: a real situation and its result, then three steps ===== */
+.l3__line { max-width: 40rem; font-size: clamp(1.15rem, 2.2vw, 1.7rem); }
+.l3__line::after, .l3__demo::after { display: none; }
+.ex { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 1rem; max-width: 56rem; margin: 0 auto clamp(1.25rem, 3vw, 2rem); }
+.ex[hidden], .l3steps[hidden] { display: none; }
+.ex__in, .ex__out { padding: 1.1rem 1.25rem; border-radius: var(--r-lg); border: 1px solid var(--line); background: rgba(14, 14, 14, 0.9); text-align: left; }
+.ex__out { border-color: var(--accent); background: rgba(216, 255, 0, 0.07); }
+.ex small { display: block; margin-bottom: 0.45rem; font-family: var(--f-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.ex__out small { color: var(--accent); }
+.ex p { font-size: clamp(1rem, 1.5vw, 1.15rem); line-height: 1.4; }
+.ex__arrow { display: grid; place-items: center; width: 2.6rem; height: 2.6rem; border-radius: 50%; background: var(--accent); color: var(--on); }
+.ex__in { animation: exin 0.6s var(--ease) both; } .ex__arrow { animation: exin 0.6s var(--ease) 0.25s both; } .ex__out { animation: exin 0.6s var(--ease) 0.45s both; }
+@keyframes exin { from { opacity: 0; transform: translateY(14px); } }
+.l3steps { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gap); max-width: 56rem; margin: 0 auto clamp(1.5rem, 3vw, 2.25rem); }
+.l3steps li { display: flex; align-items: center; gap: 0.8rem; padding: 0.9rem 1rem; border-radius: var(--r-md); background: rgba(14, 14, 14, 0.9); border: 1px solid var(--line); text-align: left; }
+.l3steps span { display: grid; place-items: center; flex: none; width: 2.4rem; height: 2.4rem; border-radius: 50%; border: 1.5px solid var(--accent); color: var(--accent); }
+.l3steps p { font-weight: 600; line-height: 1.3; font-size: 0.98rem; }
+.l3__demo:empty { display: none; }
+.cc__what { color: var(--muted); font-size: 0.92rem; line-height: 1.35; }
+.cc__what[hidden] { display: none; }
+.cc--s { min-height: 18rem; }
+@media (max-width: 760px) {
+  .ex { grid-template-columns: 1fr; }
+  .ex__arrow { justify-self: center; transform: rotate(90deg); }
+  .l3steps { grid-template-columns: 1fr; gap: 0.6rem; }
+  .nv .cc--s { flex-wrap: wrap; }
+  .nv .cc--s .cc__what { order: 5; flex: 1 1 100%; text-align: left; }
+}
+@media (prefers-reduced-motion: reduce) { .ex__in, .ex__out, .ex__arrow { animation: none; } }
