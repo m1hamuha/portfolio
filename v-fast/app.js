@@ -685,8 +685,11 @@
   function routeAll() {
     route();
     var r = document.documentElement, was = r.classList.contains("at-home"), now = !home.hidden;
+    var nv = document.querySelector(".svc.nv:not([hidden])"), wasN = r.classList.contains("at-niche"), nowN = !now && !!nv;
     r.classList.toggle("at-home", now);
-    if (was !== now) window.dispatchEvent(new Event("resize")); /* sizes changed: carousels re-centre */
+    r.classList.toggle("at-niche", nowN);
+    if (nowN) window.scrollTo(0, 0);
+    if (was !== now || wasN !== nowN) window.dispatchEvent(new Event("resize")); /* sizes changed: carousels re-centre */
   }
   window.addEventListener("hashchange", routeAll);
   if ("scrollRestoration" in history) history.scrollRestoration = "manual";
