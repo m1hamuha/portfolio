@@ -911,3 +911,14 @@ h1, h2, h3, .svc__h, .l3__line, .cc h3, .card h3 { letter-spacing: -0.012em; wor
   .at-niche .nv .car__btn { bottom: 1.3rem; }
   .at-niche .nv .car__dots { margin-top: -0.4rem; }
 }
+
+/* phone: everything is sized in rem, so the whole page grows with the screen width.
+   320px keeps the base size; a usual 390px phone gets about 12% larger text, icons and buttons. */
+@media (max-width: 760px) {
+  html { font-size: clamp(16px, 4.6vw, 19.5px); }
+  .nv .cc__what { font-size: 1rem; line-height: 1.4; }
+  .cc__top { font-size: 0.82rem; }
+  .scene__hint { font-size: 0.95rem; }
+  .ph__lbl { font-size: 0.85rem; }
+  .lang button { font-size: 0.78rem; }
+}
