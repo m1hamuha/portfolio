@@ -273,6 +273,7 @@
     function say(kind, key, withMail) {
       last = [kind, key, withMail];
       msg.hidden = false;
+      if (kind !== "ok" && msg.scrollIntoView) setTimeout(function () { msg.scrollIntoView({ block: "center", behavior: "smooth" }); }, 50);
       msg.className = "form__msg " + kind;
       msg.textContent = t(key);
       if (withMail) {
@@ -318,7 +319,7 @@
      next to the messenger buttons and prefills the WhatsApp text and the form. */
   var WA = "https://wa.me/491709094298";
   var ctxNiche = null;
-  var order = null, typed = false;
+  var order = null, lastAuto = "", TG = "https://t.me/onomamichail";
   /* id -> [name key, "from" prefix?, amount] ; plans are named under social media */
   var ORD = {
     social: ["sv.social.h", 1, "€10"], bot: ["sv.bot.h", 1, "€79"], content: ["sv.content.h", 1, "€1"],
@@ -338,13 +339,16 @@
     var box = $("#order"), lab = $("#orderLabel"), ta = $('#form [name="message"]');
     lab.textContent = order ? labelFor(order) : "";
     box.hidden = !order;
-    if (!typed) ta.value = order ? t("wa.order") + lab.textContent : "";
-    var text = order ? t("wa.order") + lab.textContent : t("wa.hero");
+    var auto = order ? t("wa.order") + lab.textContent : "";
+    if (ta.value.indexOf(lastAuto) === 0) ta.value = auto + ta.value.slice(lastAuto.length);
+    lastAuto = auto;
+    var text = order ? auto : t("wa.hero");
     $$("[data-wa]").forEach(function (a) { a.href = WA + "?text=" + encodeURIComponent(text); });
+    $$('a[href^="' + TG + '"]').forEach(function (a) { a.href = TG + (order ? "?text=" + encodeURIComponent(auto) : ""); });
   }
-  $$("[data-order]").forEach(function (el) { el.addEventListener("click", function () { order = el.dataset.order; paintOrder(); }); });
+  var orderAt = null; /* the page the order was made on: coming back to it keeps the choice */
+  $$("[data-order]").forEach(function (el) { el.addEventListener("click", function () { order = el.dataset.order; orderAt = location.hash; paintOrder(); }); });
   $("#orderClear").addEventListener("click", function () { order = null; paintOrder(); });
-  $('#form [name="message"]').addEventListener("input", function () { typed = true; });
 
   /* phone only: a bar with both messengers appears once the first button has scrolled away */
   (function () {
@@ -395,14 +399,19 @@
       raf = requestAnimationFrame(tick);
     }
     function run() { if (!raf) { lastT = 0; raf = requestAnimationFrame(tick); } }
-    function go(k) { idx = Math.max(0, Math.min(cs.length - 1, k)); run(); }
+    function ends() { if (prev) prev.disabled = idx <= 0; if (next) next.disabled = idx >= cs.length - 1; }
+    function go(k) { idx = Math.max(0, Math.min(cs.length - 1, k)); ends(); run(); }
+    if (car.id === "work") window.addEventListener("car:show", function (e) {
+      var k = cs.findIndex(function (c) { return (c.getAttribute("href") || "").split("/").pop() === e.detail; });
+      if (k > -1 && ready) { idx = k; ends(); x = target(idx); paint(); }
+    });
     function init() {
       if (ready || !car.clientWidth || listMode()) { paint(); return; }
       ready = true;
       /* in a business, the card that costs the owner most is the one in the centre when the page opens */
       var top = cs.findIndex(function (c) { return c.classList.contains("cc--top"); });
       if (top === 0 && cs.length > 2 && window.innerWidth >= 760) { track.insertBefore(cs[1], cs[0]); cs = $$(".cc", track); top = 1; if (dots) dots.innerHTML = cs.map(function () { return "<i></i>"; }).join(""); }
-      idx = top > -1 ? top : (window.innerWidth < 760 ? 0 : Math.min(car.id === "work" ? 2 : 1, cs.length - 1)); /* home: two cards on each side */ x = target(idx); paint();
+      idx = top > -1 ? top : (window.innerWidth < 760 ? 0 : Math.min(car.id === "work" ? 2 : 1, cs.length - 1)); /* home: two cards on each side */ x = target(idx); ends(); paint();
     }
     if (prev) prev.addEventListener("click", function () { go(idx - 1); });
     if (next) next.addEventListener("click", function () { go(idx + 1); });
@@ -606,10 +615,11 @@
     var v = scene.v, B = $("#scBodyB"), A = $("#scBodyA"), type = v && DRAW[v.type] ? v.type : null;
     B.innerHTML = ""; A.innerHTML = "";
     if (type) {
-      $("#scLabelB").textContent = t("sc.t." + type); $("#scLabelA").textContent = t("sc.t." + type);
+      var sid = l3ctx ? l3ctx[1] : "", hd = t("sc.t.s." + sid) || t("sc.t." + type);
+      $("#scLabelB").textContent = hd; $("#scLabelA").textContent = hd;
       B.appendChild(DRAW[type](v, false)); A.appendChild(DRAW[type](v, true));
       $("#scLoss").textContent = v.loss || scene.before.note; $("#scGain").textContent = v.gain || scene.after.note;
-      $("#scSend span").textContent = t("sc.b." + type);
+      $("#scSend span").textContent = t("sc.b.s." + sid) || t("sc.b." + type);
     } else {
       $("#scLabelB").textContent = scene.before.label || ""; $("#scLabelA").textContent = scene.after.label || "";
       B.appendChild(el("div", "sbub sbub--before", scene.before.text || "")); A.appendChild(el("div", "sbub sbub--after", scene.after.text || ""));
@@ -628,7 +638,7 @@
     dragging = true; ph.setPointerCapture(e.pointerId); setPos(fromX(e.clientX), false);
   });
   ph.addEventListener("pointermove", function (e) { if (dragging) setPos(fromX(e.clientX), false); });
-  function end() { if (!dragging) return; dragging = false; setPos(pos < 50 ? 0 : 100, true); }
+  function end() { if (!dragging) return; dragging = false; setPos(pos < 50 ? 0 : 100, true); document.documentElement.classList.add("sc-used"); }
   ph.addEventListener("pointerup", end); ph.addEventListener("pointercancel", end);
   knob.addEventListener("keydown", function (e) {
     if (e.key === "ArrowLeft") { setPos(pos - 10, true); e.preventDefault(); }
@@ -643,12 +653,15 @@
     ph.classList.add("is-sent");
     var g = $("#scGain"); g.hidden = !g.textContent; g.classList.remove("in"); void g.offsetWidth; g.classList.add("in");
   });
+  var ys = {}, lastHash = location.hash;
+  function depth(h) { return h === "#contact" ? 3 : /^#\/for\/[a-z]+\/[a-z]+$/.test(h) || /^#\/[a-z]+$/.test(h) ? 2 : /^#\/for\//.test(h) ? 1 : 0; }
   function show(sec, key) {
     if (current === null) homeY = window.pageYOffset;
     $$(".svc").forEach(function (v) { v.hidden = v !== sec; });
     home.hidden = true; views.hidden = false;
     current = key;
-    window.scrollTo({ top: 0, behavior: "instant" });
+    var back = depth(key) < depth(lastHash) && ys[key];
+    window.scrollTo({ top: back || 0, behavior: "instant" });
     $$(".rv", sec).forEach(function (el) { el.classList.add("in"); });
     var hd = $(".svc__h", sec); if (hd) hd.focus({ preventScroll: true });
   }
@@ -658,6 +671,8 @@
     var root = document.documentElement;
     var m3 = h.match(/^#\/for\/([a-z]+)\/([a-z]+)$/), m2 = h.match(/^#\/for\/([a-z]+)$/), m1 = h.match(/^#\/([a-z]+)$/);
     root.classList.remove("lvl3", "ctpage");
+    if (h !== "#contact" && order && h !== orderAt) { order = null; paintOrder(); }
+    if (h !== "#contact") orderAt = null;
     if (m3 && F.niches[m3[1]]) {
       giveBack();
       ctxNiche = m3[1]; l3ctx = [m3[1], m3[2]]; fillL3();
@@ -682,8 +697,13 @@
     if (target) target.scrollIntoView();
     else if (wasView) window.scrollTo({ top: homeY, behavior: "instant" });
   }
+  window.addEventListener("scroll", function () { if (location.hash === lastHash) ys[lastHash] = window.pageYOffset; }, { passive: true });
   function routeAll() {
+    var from = lastHash.match(/^#\/for\/([a-z]+)$/);
     route();
+    lastHash = location.hash;
+    /* back to the list of businesses: the one the visitor came from is in the centre */
+    if (from && !home.hidden) window.dispatchEvent(new CustomEvent("car:show", { detail: from[1] }));
     var r = document.documentElement, was = r.classList.contains("at-home"), now = !home.hidden;
     var nv = document.querySelector(".svc.nv:not([hidden])"), wasN = r.classList.contains("at-niche"), nowN = !now && !!nv;
     r.classList.toggle("at-home", now);
@@ -703,7 +723,7 @@
     var NK = {
       salon: "салон красот парикмахер стрижк барбер маникюр ногт педикюр бров ресниц косметолог массаж спа beauty hair barber nail brow lash massage spa friseur kosmetik nagel перукар манікюр нігт масаж краса",
       cafe: "кафе ресторан кофейн бар пекарн пицц суши еда столик меню cafe restaurant coffee bakery pizza food menu table café speisekarte bäckerei кав'ярн піц їжа",
-      shop: "магазин товар маркетплейс одежд обув склад shop store ecommerce marketplace clothes products laden onlineshop kleidung ware одяг",
+      shop: "магазин цвет ларёк ларек киоск flower stall kiosk blumen квіт товар маркетплейс одежд обув склад shop store ecommerce marketplace clothes products laden onlineshop kleidung ware одяг",
       trades: "ремонт мастер сантехник электрик строител отделк мебел автосервис шиномонтаж repair handyman plumber electrician builder trades carpenter handwerk reparatur klempner elektriker майстер сантехнік електрик будівель",
       fitness: "фитнес спорт тренер тренировк зал йог бассейн танц fitness gym trainer yoga studio pool dance fitnessstudio training фітнес зал йога",
       clinic: "клиник врач стоматолог зубн медицин пациент доктор психолог clinic doctor dentist medical patient practice therapist praxis arzt zahnarzt клінік лікар пацієнт",
@@ -720,7 +740,7 @@
       data: "парсинг парсер мониторинг цен конкурент данные собрать скрап scrape monitoring price competitor data crawl preis konkurrent daten моніторинг ціни дані",
       site: "сайт лендинг визитк seo веб страниц website landing homepage webseite лендінг сторінк",
       leads: "лид crm клиенты контакт обращени lead leads inquiry anfrage kontakte заявк клієнт",
-      mail: "напомин рассылк уведомлен вернуть reminder newsletter mailing notification remind erinnerung benachrichtigung нагад розсилк сповіщ",
+      mail: "напомин неявк забыва приходят пропуска no-show forget vergess забува пропуска рассылк уведомлен вернуть reminder newsletter mailing notification remind erinnerung benachrichtigung нагад розсилк сповіщ",
       translate: "перевод перевест язык немецк английск translate translation language übersetz sprache переклад мов",
       hiring: "сотрудник персонал ваканси найм нанять работник кандидат уборщиц официант staff hiring hire vacancy job candidate employee personal mitarbeiter stelle stellenanzeige bewerber працівник вакансі найняти кандидат",
       assistant: "помощник ассистент ии нейросет команд assistant helper gpt assistent ki mitarbeiter помічник асистент штучн"
