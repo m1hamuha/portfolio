@@ -741,3 +741,4 @@ h1 mark { text-shadow: none; }
   .nv .cc--s .cc__what { order: 5; flex: 1 1 100%; text-align: left; }
 }
 @media (prefers-reduced-motion: reduce) { .ex__in, .ex__out, .ex__arrow { animation: none; } }
+.hero h1 { font-size: clamp(1.9rem, 4.1vw, 3.7rem); max-width: 22em; line-height: 1.08; }
