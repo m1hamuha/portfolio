@@ -7,42 +7,42 @@
   "fitness": "Sport and fitness",
   "clinic": "Clinics and doctors",
   "cleaning": "Cleaning",
-  "office": "Offices and B2B",
+  "office": "Offices and business services",
   "other": "Something else"
  },
  "services": {
   "social": {
-   "name": "Social media",
+   "name": "Social media posts",
    "from": "€10",
    "per_month": true
   },
   "bot": {
-   "name": "Answers and requests",
+   "name": "Replies and bookings",
    "from": "€79",
    "per_month": false
   },
   "content": {
-   "name": "Photos, video, texts",
+   "name": "Photos, videos and texts",
    "from": "€1",
    "per_month": false
   },
   "reports": {
-   "name": "Spreadsheets and records",
+   "name": "Spreadsheets and numbers",
    "from": "€19",
    "per_month": false
   },
   "docs": {
-   "name": "Emails and documents",
+   "name": "Letters and documents",
    "from": "€19",
    "per_month": false
   },
   "reviews": {
-   "name": "Reviews and reputation",
+   "name": "Reviews on Google Maps",
    "from": "€15",
    "per_month": false
   },
   "data": {
-   "name": "Data and price monitoring",
+   "name": "Price and contact lists",
    "from": "€29",
    "per_month": false
   },
@@ -52,27 +52,27 @@
    "per_month": false
   },
   "leads": {
-   "name": "Leads and requests",
+   "name": "All requests in one place",
    "from": "€29",
    "per_month": false
   },
   "mail": {
-   "name": "Reminders and mailings",
+   "name": "Reminders for customers",
    "from": "€19",
    "per_month": false
   },
   "translate": {
-   "name": "Good German and translation",
+   "name": "Translation and proofreading",
    "from": "€5",
    "per_month": false
   },
   "assistant": {
-   "name": "AI helper for your team",
+   "name": "Smart helper for your team",
    "from": "€49",
    "per_month": false
   },
   "hiring": {
-   "name": "Hiring help",
+   "name": "Finding new staff",
    "from": "€15",
    "per_month": false
   }
