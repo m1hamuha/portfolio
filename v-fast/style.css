@@ -963,3 +963,5 @@ h1, h2, h3, .svc__h, .l3__line, .cc h3, .card h3 { letter-spacing: -0.012em; wor
 .order > span { grid-column: 1; font-size: 0.85rem; color: var(--muted); }
 .order b { grid-column: 1; line-height: 1.3; }
 .order button { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+/* the row of small task icons never leaves its card: it wraps onto a second row */
+.cc__mini { flex-wrap: wrap; max-width: 100%; row-gap: 0.45rem; }
