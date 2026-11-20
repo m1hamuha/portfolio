@@ -516,7 +516,8 @@
       $("#stGive").textContent = c.give; $("#stMake").textContent = c.make; $("#stGet").textContent = c.get;
       scene = {
         before: { label: c.beforeLabel || c.exInLabel, text: c.before || c.exIn, note: c.loss || "" },
-        after: { label: c.afterLabel || c.exOutLabel, text: c.after || c.exOut, note: c.gain || "" }
+        after: { label: c.afterLabel || c.exOutLabel, text: c.after || c.exOut, note: c.gain || "" },
+        v: c.v || null
       };
       playScene();
     }
@@ -543,23 +544,87 @@
     ph.style.setProperty("--pos", pos + "%");
     knob.setAttribute("aria-valuenow", String(Math.round(100 - pos)));
     ph.classList.toggle("is-after", pos < 45);
+    capNow();
   }
+  /* Each kind of service has its own mock-up inside the phone: a review card, a post, a map
+     listing, a booking slot, a table, a document, a chat. Text is always set with textContent. */
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function add(p) { for (var i = 1; i < arguments.length; i++) if (arguments[i]) p.appendChild(arguments[i]); return p; }
+  function cells(line) { return String(line || "").split(/\s+·\s+/); }
+  var DRAW = {
+    chat: function (v, after) {
+      var w = el("div", "mk-chat");
+      add(w, el("small", "mk-from", v.who), el("div", "sbub sbub--before", after ? v.a1 : v.b1));
+      if (!after) add(w, el("div", "mk-status bad", v.b2));
+      else { add(w, el("div", "sbub sbub--after", v.a2)); if (v.a3) add(w, el("div", "sbub sbub--before", v.a3)); }
+      return w;
+    },
+    reminder: function (v, after) {
+      var w = el("div", "mk-rem"), slot = add(el("div", "mk-slot"), el("b", "", v.who));
+      if (!after) { add(slot, el("span", "mk-status bad", v.b1)); add(w, slot, v.b2 ? el("p", "mk-muted", v.b2) : null); }
+      else { add(w, el("div", "mk-note", v.a1), v.a2 ? el("div", "sbub sbub--before", v.a2) : null); add(slot, el("span", "mk-status good", v.a3)); add(w, slot); }
+      return w;
+    },
+    review: function (v, after) {
+      var w = el("div", "mk-card"), n = Math.max(1, Math.min(5, Math.round(v.stars || 2)));
+      add(w, add(el("div", "mk-rhead"), el("i", "mk-ava", (v.who || "?").charAt(0)), el("b", "", v.who), el("span", "mk-stars", "★★★★★".slice(0, n) + "☆☆☆☆☆".slice(0, 5 - n))), el("p", "", after ? v.a1 : v.b1));
+      if (!after) add(w, el("div", "mk-status bad", v.b2));
+      else add(w, add(el("div", "mk-reply"), el("small", "", t("sc.owner")), el("p", "", v.a2)));
+      return w;
+    },
+    post: function (v, after) {
+      var w = el("div", "mk-card mk-post");
+      add(w, add(el("div", "mk-rhead"), el("i", "mk-ava", (v.who || "?").charAt(0)), el("b", "", v.who)));
+      if (!after) add(w, el("div", "mk-img old", v.b1), el("p", "mk-muted", v.b2));
+      else add(w, el("div", "mk-img", v.a1), el("p", "", v.a2), el("small", "mk-when", v.a3));
+      return w;
+    },
+    listing: function (v, after) {
+      var w = el("div", "mk-card mk-listing");
+      add(w, el("b", "mk-title", v.who));
+      if (!after) [v.b1, v.b2, v.b3].forEach(function (x) { if (x) add(w, el("p", "mk-row bad", x)); });
+      else add(w, el("p", "mk-row good", v.a1), el("p", "mk-row good", v.a2), v.a3 ? el("span", "mk-btn", v.a3) : null);
+      return w;
+    },
+    list: function (v, after) {
+      var w = el("div", after ? "mk-table" : "mk-mess");
+      if (!after) [v.b1, v.b2, v.b3].forEach(function (x, k) { if (x) add(w, el("div", "mk-scrap s" + k, x)); });
+      else { add(w, el("b", "mk-title", v.who)); [v.a1, v.a2, v.a3].forEach(function (x) { if (!x) return; var r = el("div", "mk-tr"); cells(x).forEach(function (c) { add(r, el("span", "", c)); }); add(w, r); }); }
+      return w;
+    },
+    doc: function (v, after) {
+      var w = el("div", after ? "mk-sheet" : "mk-rem");
+      if (!after) add(w, el("div", "mk-scrap s1", v.b1), el("div", "mk-status bad", v.b2));
+      else { add(w, el("b", "mk-title", v.who)); [v.a1, v.a2].forEach(function (x) { if (!x) return; var c = cells(x), r = el("div", "mk-line"); add(r, el("span", "", c[0]), el("span", "", c.slice(1).join(" · "))); add(w, r); }); add(w, el("div", "mk-total", v.a3)); }
+      return w;
+    }
+  };
+  function capNow() { var v = scene && scene.v, cap = $("#scCap"); if (!cap) return; cap.textContent = v ? (pos < 45 ? v.capA : v.capB) : ""; cap.hidden = !v; }
   function playScene() {
     if (!scene) return;
     sent = false;
-    $("#scLabelB").textContent = scene.before.label || ""; $("#scTextB").textContent = scene.before.text || "";
-    $("#scLabelA").textContent = scene.after.label || ""; $("#scTextA").textContent = scene.after.text || "";
-    $("#scLoss").textContent = scene.before.note; $("#scLoss").hidden = !scene.before.note;
-    $("#scGain").textContent = scene.after.note; $("#scGain").hidden = true;
-    $("#scTextA").classList.remove("sent"); $("#scSend").classList.remove("done"); $("#scSend").disabled = false;
-    $("#scSend span").textContent = t("sc.send");
+    var v = scene.v, B = $("#scBodyB"), A = $("#scBodyA"), type = v && DRAW[v.type] ? v.type : null;
+    B.innerHTML = ""; A.innerHTML = "";
+    if (type) {
+      $("#scLabelB").textContent = t("sc.t." + type); $("#scLabelA").textContent = t("sc.t." + type);
+      B.appendChild(DRAW[type](v, false)); A.appendChild(DRAW[type](v, true));
+      $("#scLoss").textContent = v.loss || scene.before.note; $("#scGain").textContent = v.gain || scene.after.note;
+      $("#scSend span").textContent = t("sc.b." + type);
+    } else {
+      $("#scLabelB").textContent = scene.before.label || ""; $("#scLabelA").textContent = scene.after.label || "";
+      B.appendChild(el("div", "sbub sbub--before", scene.before.text || "")); A.appendChild(el("div", "sbub sbub--after", scene.after.text || ""));
+      $("#scLoss").textContent = scene.before.note; $("#scGain").textContent = scene.after.note;
+      $("#scSend span").textContent = t("sc.send");
+    }
+    $("#scLoss").hidden = !$("#scLoss").textContent; $("#scGain").hidden = true;
+    $("#ph").classList.remove("is-sent"); $("#scSend").classList.remove("done"); $("#scSend").disabled = false;
     setPos(86, false);
     if (!reduce) setTimeout(function () { setPos(70, true); setTimeout(function () { setPos(86, true); }, 450); }, 900); /* "this moves" */
   }
   function fromX(x) { var r = ph.getBoundingClientRect(); return ((x - r.left) / r.width) * 100; }
   var dragging = false;
   ph.addEventListener("pointerdown", function (e) {
-    if (e.target.closest("#scSend")) return;
+    if (e.target.closest("#scSend, .ph__lbl")) return;
     dragging = true; ph.setPointerCapture(e.pointerId); setPos(fromX(e.clientX), false);
   });
   ph.addEventListener("pointermove", function (e) { if (dragging) setPos(fromX(e.clientX), false); });
@@ -574,9 +639,9 @@
   $$(".ph__lbl").forEach(function (l) { l.addEventListener("click", function (e) { e.stopPropagation(); setPos(l.classList.contains("ph__lbl--a") ? 0 : 100, true); }); });
   $("#scSend").addEventListener("click", function () {
     if (sent) return; sent = true;
-    var b = $("#scSend"); b.classList.add("done"); b.disabled = true; $("span", b).textContent = t("sc.sent");
-    $("#scTextA").classList.add("sent");
-    var g = $("#scGain"); g.hidden = !scene.after.note; g.classList.remove("in"); void g.offsetWidth; g.classList.add("in");
+    var b = $("#scSend"); b.classList.add("done"); b.disabled = true; $("span", b).textContent = t("sc.done");
+    ph.classList.add("is-sent");
+    var g = $("#scGain"); g.hidden = !g.textContent; g.classList.remove("in"); void g.offsetWidth; g.classList.add("in");
   });
   function show(sec, key) {
     if (current === null) homeY = window.pageYOffset;
