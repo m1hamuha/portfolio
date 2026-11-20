@@ -507,11 +507,14 @@
     $("#l3h").textContent = t("sv." + sid + ".h");
     var c = content(n, sid);
     $("#l3line").textContent = c ? c.promise : t(row[1]);
-    $("#l3ex").hidden = !c; $("#l3steps").hidden = !c;
+    $("#scene").hidden = !c; $("#l3steps").hidden = !c;
     if (c) {
-      $("#exInL").textContent = c.exInLabel; $("#exIn").textContent = c.exIn;
-      $("#exOutL").textContent = c.exOutLabel; $("#exOut").textContent = c.exOut;
       $("#stGive").textContent = c.give; $("#stMake").textContent = c.make; $("#stGet").textContent = c.get;
+      scene = {
+        before: { label: c.beforeLabel || c.exInLabel, text: c.before || c.exIn, note: c.loss || "" },
+        after: { label: c.afterLabel || c.exOutLabel, text: c.after || c.exOut, note: c.gain || "" }
+      };
+      playScene();
     }
     $("#l3price").innerHTML = sid === "social" ? "" : '<span>' + t("pr.from") + '</span> <b>' + sv.amt + '</b> <span>' + (sv.per ? t("pr.mo") : t("pr.once")) + "</span>";
     $("#l3order").dataset.order = sid;
@@ -523,6 +526,54 @@
     $(".l3__buy").hidden = sid === "social"; /* social media has its own three plans, each with Order */
   }
   refillL3 = fillL3;
+
+  /* ---------- "without me / with me": a phone the visitor handles ----------
+     Two screens of the same moment sit on top of each other. Dragging the handle (mouse, finger
+     or arrow keys) uncovers the "with me" screen; on it a Send button really sends: the message
+     gets a tick and the gain appears. Nothing plays by itself except one small nudge of the handle. */
+  var scene = null, pos = 86, sent = false;
+  var ph = $("#ph"), knob = $("#phKnob");
+  function setPos(v, smooth) {
+    pos = Math.max(0, Math.min(100, v));
+    ph.classList.toggle("smooth", !!smooth);
+    ph.style.setProperty("--pos", pos + "%");
+    knob.setAttribute("aria-valuenow", String(Math.round(100 - pos)));
+    ph.classList.toggle("is-after", pos < 45);
+  }
+  function playScene() {
+    if (!scene) return;
+    sent = false;
+    $("#scLabelB").textContent = scene.before.label || ""; $("#scTextB").textContent = scene.before.text || "";
+    $("#scLabelA").textContent = scene.after.label || ""; $("#scTextA").textContent = scene.after.text || "";
+    $("#scLoss").textContent = scene.before.note; $("#scLoss").hidden = !scene.before.note;
+    $("#scGain").textContent = scene.after.note; $("#scGain").hidden = true;
+    $("#scTextA").classList.remove("sent"); $("#scSend").classList.remove("done"); $("#scSend").disabled = false;
+    $("#scSend span").textContent = t("sc.send");
+    setPos(86, false);
+    if (!reduce) setTimeout(function () { setPos(70, true); setTimeout(function () { setPos(86, true); }, 450); }, 900); /* "this moves" */
+  }
+  function fromX(x) { var r = ph.getBoundingClientRect(); return ((x - r.left) / r.width) * 100; }
+  var dragging = false;
+  ph.addEventListener("pointerdown", function (e) {
+    if (e.target.closest("#scSend")) return;
+    dragging = true; ph.setPointerCapture(e.pointerId); setPos(fromX(e.clientX), false);
+  });
+  ph.addEventListener("pointermove", function (e) { if (dragging) setPos(fromX(e.clientX), false); });
+  function end() { if (!dragging) return; dragging = false; setPos(pos < 50 ? 0 : 100, true); }
+  ph.addEventListener("pointerup", end); ph.addEventListener("pointercancel", end);
+  knob.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowLeft") { setPos(pos - 10, true); e.preventDefault(); }
+    if (e.key === "ArrowRight") { setPos(pos + 10, true); e.preventDefault(); }
+    if (e.key === "Home") { setPos(0, true); e.preventDefault(); }
+    if (e.key === "End") { setPos(100, true); e.preventDefault(); }
+  });
+  $$(".ph__lbl").forEach(function (l) { l.addEventListener("click", function (e) { e.stopPropagation(); setPos(l.classList.contains("ph__lbl--a") ? 0 : 100, true); }); });
+  $("#scSend").addEventListener("click", function () {
+    if (sent) return; sent = true;
+    var b = $("#scSend"); b.classList.add("done"); b.disabled = true; $("span", b).textContent = t("sc.sent");
+    $("#scTextA").classList.add("sent");
+    var g = $("#scGain"); g.hidden = !scene.after.note; g.classList.remove("in"); void g.offsetWidth; g.classList.add("in");
+  });
   function show(sec, key) {
     if (current === null) homeY = window.pageYOffset;
     $$(".svc").forEach(function (v) { v.hidden = v !== sec; });
