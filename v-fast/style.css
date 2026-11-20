@@ -830,3 +830,8 @@ h1 mark { text-shadow: none; }
 /* Piazzolla headlines: a little air between words, less negative tracking than the old wide face */
 h1, h2, h3, .svc__h, .l3__line, .cc h3, .card h3 { letter-spacing: -0.012em; word-spacing: 0.06em; }
 .scr--b { padding-right: 3.4rem; }
+
+/* bigger on computer screens: everything is sized in rem, so the root size scales the whole page */
+@media (min-width: 1100px) { html { font-size: 18px; } }
+@media (min-width: 1500px) { html { font-size: 19.5px; } }
+@media (min-width: 1900px) { html { font-size: 21px; } }
