@@ -707,3 +707,7 @@ h1 mark { background: linear-gradient(100deg, transparent 40%, #fff 50%, transpa
 @keyframes slidein { from { transform: translateX(-24px); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { h1 mark { animation: none; background: none; color: var(--accent); } }
 h1 mark { text-shadow: none; }
+
+/* each card carries its own perspective, so there is no shared 3D space for browsers to disagree about */
+.car { perspective: none; }
+.car__track { transform-style: flat; }

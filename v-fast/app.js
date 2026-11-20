@@ -374,7 +374,7 @@
         var d = (centre(k) + x - cw / 2) / w, a = Math.abs(d), tr;
         if (reduce) tr = "";
         else {
-          tr = "translateZ(" + (-Math.min(a, 2) * 70).toFixed(1) + "px) rotateY(" + Math.max(-48, Math.min(48, -d * 30)).toFixed(2) + "deg) scale(" + (1 - Math.min(a, 2) * 0.07).toFixed(3) + ")";
+          tr = "perspective(1100px) translateZ(" + (-Math.min(a, 2) * 70).toFixed(1) + "px) rotateY(" + Math.max(-48, Math.min(48, -d * 30)).toFixed(2) + "deg) scale(" + (1 - Math.min(a, 2) * 0.07).toFixed(3) + ")";
           if (k === m && tilt && !dragging) tr += " rotateX(" + (-tilt[1] * 7).toFixed(2) + "deg) rotateY(" + (tilt[0] * 9).toFixed(2) + "deg)";
         }
         c.style.transform = tr;
@@ -442,11 +442,23 @@
     }
     window.addEventListener("pointerup", release);
     window.addEventListener("pointercancel", release);
-    track.addEventListener("click", function (e) {
+    /* Clicks are resolved by position, not by what the browser says was hit: with 3D transforms
+       some browsers (Firefox) report the wrong element, and the card could not be opened. */
+    var passing = false;
+    car.addEventListener("click", function (e) {
+      if (passing || listMode()) return;
+      if (e.target.closest && e.target.closest(".car__btn, .car__dots")) return;
       if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; return; }
-      if (listMode()) return;
-      var c = e.target.closest(".cc"), k = cs.indexOf(c);
-      if (c && k !== nearest()) { e.preventDefault(); e.stopPropagation(); go(k); }
+      var r = car.getBoundingClientRect(), tr = track.getBoundingClientRect(), lx = e.clientX - r.left, w = cs[0].offsetWidth, k = -1;
+      if (e.clientY < tr.top || e.clientY > tr.bottom) return;
+      cs.forEach(function (c, n) { if (Math.abs(centre(n) + x - lx) <= w / 2) k = n; });
+      if (k < 0) return;
+      e.preventDefault(); e.stopPropagation();
+      if (k !== nearest()) { go(k); return; }
+      /* centre card: an inner control (Order, Details) keeps its own action, otherwise open the card */
+      var inner = e.target.closest && e.target.closest("a, button"), card = cs[k];
+      var el = inner && card.contains(inner) ? inner : (card.matches("a") ? card : $("a", card));
+      if (el) { passing = true; el.click(); passing = false; }
     }, true);
     /* the centre card leans toward the cursor */
     car.addEventListener("pointermove", function (e) {
