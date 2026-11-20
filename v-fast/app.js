@@ -9,6 +9,7 @@
   var timers = {};
   var resay = function () {};
   var refillL3 = function () {};
+  var repaintCards = function () {};
   var relocWall = function () {};
   var PAIRS = ["can", "candle", "sneaker"];
 
@@ -57,6 +58,7 @@
     }
     resay();
     refillL3();
+    repaintCards();
     relocWall();
     paintOrder();
     startChat();
@@ -483,11 +485,16 @@
   var LEGACY = { "#creatives": "#/content" };
   function svg(name) { return '<svg class="ico ph"><use href="#l-' + name + '" /></svg>'; }
   /* demos live in the old service pages; lend them to the level-3 page while it shows */
-  function demoFor(sid) {
-    if (sid === "social") return $("#v-social .pgroup");
-    var d = $("#v-" + sid + " .svc__demo > *");
-    return d || null;
+  function demoFor(sid) { return sid === "social" ? $("#v-social .pgroup") : null; }
+  /* plain-language page text: per language, business and service; falls back to English, then to nothing */
+  function content(n, sid) {
+    var C = window.CONTENT || {};
+    return (C[lang] && C[lang][n] && C[lang][n][sid]) || (C.en && C.en[n] && C.en[n][sid]) || (C[lang] && C[lang].other && C[lang].other[sid]) || null;
   }
+  function paintCards() {
+    $$("[data-c]").forEach(function (el) { var p = el.dataset.c.split("."), c = content(p[0], p[1]); el.textContent = c ? c.promise : ""; el.hidden = !c; });
+  }
+  repaintCards = paintCards;
   var lent = null, lentFrom = null;
   function giveBack() { if (lent && lentFrom) lentFrom.appendChild(lent); lent = lentFrom = null; }
   function fillL3() {
@@ -498,7 +505,14 @@
     $("#l3back").setAttribute("href", "#/for/" + n);
     $("#l3ico").innerHTML = svg(sv.icon);
     $("#l3h").textContent = t("sv." + sid + ".h");
-    $("#l3line").textContent = t(row[1]);
+    var c = content(n, sid);
+    $("#l3line").textContent = c ? c.promise : t(row[1]);
+    $("#l3ex").hidden = !c; $("#l3steps").hidden = !c;
+    if (c) {
+      $("#exInL").textContent = c.exInLabel; $("#exIn").textContent = c.exIn;
+      $("#exOutL").textContent = c.exOutLabel; $("#exOut").textContent = c.exOut;
+      $("#stGive").textContent = c.give; $("#stMake").textContent = c.make; $("#stGet").textContent = c.get;
+    }
     $("#l3price").innerHTML = sid === "social" ? "" : '<span>' + t("pr.from") + '</span> <b>' + sv.amt + '</b> <span>' + (sv.per ? t("pr.mo") : t("pr.once")) + "</span>";
     $("#l3order").dataset.order = sid;
     var pb = $("#l3price b");
