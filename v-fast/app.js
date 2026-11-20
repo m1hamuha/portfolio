@@ -527,43 +527,53 @@
   }
   refillL3 = fillL3;
 
-  /* ---------- the "now / with me" phone scene ----------
-     It opens on today's situation, then by itself switches to the same moment solved:
-     the reply is typed in like a real message. Tapping the switch flips it by hand. */
-  var scene = null, scT = [], scState = "before";
-  function scClear() { scT.forEach(clearTimeout); scT = []; }
-  function scShow(which, animate) {
-    if (!scene) return;
-    scState = which;
-    var box = $("#scene"), d = scene[which], body = $("#scBody"), note = $("#scNote");
-    box.classList.toggle("is-after", which === "after");
-    $$(".scene__switch button").forEach(function (b) { b.setAttribute("aria-selected", String(b.dataset.s === which)); });
-    $("#scLabel").textContent = d.label || "";
-    note.textContent = d.note; note.className = "phone__note " + (which === "after" ? "gain" : "loss"); note.hidden = !d.note;
-    body.innerHTML = "";
-    var bub = document.createElement("div");
-    bub.className = "sbub sbub--" + which;
-    if (!animate || reduce) { bub.textContent = d.text; body.appendChild(bub); note.classList.add("in"); return; }
-    note.classList.remove("in");
-    if (which === "after") {
-      var dots = document.createElement("div"); dots.className = "sbub sbub--after sbub--dots"; dots.innerHTML = "<i></i><i></i><i></i>";
-      body.appendChild(dots);
-      scT.push(setTimeout(function () {
-        body.replaceChild(bub, dots);
-        var i = 0, txt = d.text;
-        (function type() { bub.textContent = txt.slice(0, i += 2); if (i < txt.length) scT.push(setTimeout(type, 18)); else note.classList.add("in"); })();
-      }, 700));
-    } else {
-      bub.textContent = d.text; body.appendChild(bub);
-      scT.push(setTimeout(function () { note.classList.add("in"); }, 500));
-    }
+  /* ---------- "without me / with me": a phone the visitor handles ----------
+     Two screens of the same moment sit on top of each other. Dragging the handle (mouse, finger
+     or arrow keys) uncovers the "with me" screen; on it a Send button really sends: the message
+     gets a tick and the gain appears. Nothing plays by itself except one small nudge of the handle. */
+  var scene = null, pos = 86, sent = false;
+  var ph = $("#ph"), knob = $("#phKnob");
+  function setPos(v, smooth) {
+    pos = Math.max(0, Math.min(100, v));
+    ph.classList.toggle("smooth", !!smooth);
+    ph.style.setProperty("--pos", pos + "%");
+    knob.setAttribute("aria-valuenow", String(Math.round(100 - pos)));
+    ph.classList.toggle("is-after", pos < 45);
   }
   function playScene() {
-    scClear(); scShow("before", true);
-    if (!reduce) scT.push(setTimeout(function () { scShow("after", true); }, 3400));
+    if (!scene) return;
+    sent = false;
+    $("#scLabelB").textContent = scene.before.label || ""; $("#scTextB").textContent = scene.before.text || "";
+    $("#scLabelA").textContent = scene.after.label || ""; $("#scTextA").textContent = scene.after.text || "";
+    $("#scLoss").textContent = scene.before.note; $("#scLoss").hidden = !scene.before.note;
+    $("#scGain").textContent = scene.after.note; $("#scGain").hidden = true;
+    $("#scTextA").classList.remove("sent"); $("#scSend").classList.remove("done"); $("#scSend").disabled = false;
+    $("#scSend span").textContent = t("sc.send");
+    setPos(86, false);
+    if (!reduce) setTimeout(function () { setPos(70, true); setTimeout(function () { setPos(86, true); }, 450); }, 900); /* "this moves" */
   }
-  $$(".scene__switch button").forEach(function (b) { b.addEventListener("click", function () { scClear(); scShow(b.dataset.s, true); }); });
-  $("#scReplay").addEventListener("click", playScene);
+  function fromX(x) { var r = ph.getBoundingClientRect(); return ((x - r.left) / r.width) * 100; }
+  var dragging = false;
+  ph.addEventListener("pointerdown", function (e) {
+    if (e.target.closest("#scSend")) return;
+    dragging = true; ph.setPointerCapture(e.pointerId); setPos(fromX(e.clientX), false);
+  });
+  ph.addEventListener("pointermove", function (e) { if (dragging) setPos(fromX(e.clientX), false); });
+  function end() { if (!dragging) return; dragging = false; setPos(pos < 50 ? 0 : 100, true); }
+  ph.addEventListener("pointerup", end); ph.addEventListener("pointercancel", end);
+  knob.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowLeft") { setPos(pos - 10, true); e.preventDefault(); }
+    if (e.key === "ArrowRight") { setPos(pos + 10, true); e.preventDefault(); }
+    if (e.key === "Home") { setPos(0, true); e.preventDefault(); }
+    if (e.key === "End") { setPos(100, true); e.preventDefault(); }
+  });
+  $$(".ph__lbl").forEach(function (l) { l.addEventListener("click", function (e) { e.stopPropagation(); setPos(l.classList.contains("ph__lbl--a") ? 0 : 100, true); }); });
+  $("#scSend").addEventListener("click", function () {
+    if (sent) return; sent = true;
+    var b = $("#scSend"); b.classList.add("done"); b.disabled = true; $("span", b).textContent = t("sc.sent");
+    $("#scTextA").classList.add("sent");
+    var g = $("#scGain"); g.hidden = !scene.after.note; g.classList.remove("in"); void g.offsetWidth; g.classList.add("in");
+  });
   function show(sec, key) {
     if (current === null) homeY = window.pageYOffset;
     $$(".svc").forEach(function (v) { v.hidden = v !== sec; });
