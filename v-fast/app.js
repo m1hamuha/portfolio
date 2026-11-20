@@ -398,7 +398,11 @@
     function go(k) { idx = Math.max(0, Math.min(cs.length - 1, k)); run(); }
     function init() {
       if (ready || !car.clientWidth || listMode()) { paint(); return; }
-      ready = true; idx = window.innerWidth < 760 ? 0 : Math.min(1, cs.length - 1); x = target(idx); paint();
+      ready = true;
+      /* in a business, the card that costs the owner most is the one in the centre when the page opens */
+      var top = cs.findIndex(function (c) { return c.classList.contains("cc--top"); });
+      if (top === 0 && cs.length > 2 && window.innerWidth >= 760) { track.insertBefore(cs[1], cs[0]); cs = $$(".cc", track); top = 1; if (dots) dots.innerHTML = cs.map(function () { return "<i></i>"; }).join(""); }
+      idx = top > -1 ? top : (window.innerWidth < 760 ? 0 : Math.min(1, cs.length - 1)); x = target(idx); paint();
     }
     if (prev) prev.addEventListener("click", function () { go(idx - 1); });
     if (next) next.addEventListener("click", function () { go(idx + 1); });
