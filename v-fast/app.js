@@ -46,6 +46,8 @@
     var canon = $('link[rel="canonical"]');
     if (canon) canon.href = "https://m1hamuha.github.io/portfolio/v-fast/" + (lang === "en" ? "" : "?lang=" + lang);
     $$("[data-i18n]").forEach(function (el) { el.textContent = t(el.dataset.i18n); });
+    if (window.firmLadRepaint) window.firmLadRepaint();
+    if (window.firmExRepaint) window.firmExRepaint();
     $$("[data-i18n-html]").forEach(function (el) { el.innerHTML = t(el.dataset.i18nHtml); });
     $$("[data-i18n-aria]").forEach(function (el) { el.setAttribute("aria-label", t(el.dataset.i18nAria)); });
     $$("[data-i18n-ph]").forEach(function (el) { el.setAttribute("placeholder", t(el.dataset.i18nPh)); });
@@ -346,14 +348,16 @@
     social: ["sv.social.h", 1, "€10"], bot: ["sv.bot.h", 1, "€79"], content: ["sv.content.h", 1, "€1"],
     reports: ["sv.reports.h", 1, "€19"], docs: ["sv.docs.h", 1, "€19"], reviews: ["sv.reviews.h", 1, "€15"],
     data: ["sv.data.h", 1, "€29"], site: ["sv.site.h", 1, "€29"], leads: ["sv.leads.h", 1, "€29"], mail: ["sv.mail.h", 1, "€19"],
-    translate: ["sv.translate.h", 1, "€5"], assistant: ["sv.assistant.h", 1, "€49"], hiring: ["sv.hiring.h", 1, "€15"], custom: ["sv.custom.h", 0, ""],
+    translate: ["sv.translate.h", 1, "€5"], assistant: ["sv.assistant.h", 1, "€49"], hiring: ["sv.hiring.h", 1, "€15"], custom: ["sv.custom.h", 0, ""], firm: ["firm.order", 1, "€300"], firmtry: ["firm.lad.1", 1, "€49"], firmsetup: ["firm.setup", 1, "€300"], firmcare: ["firm.lad.3", 1, "€99"],
     photo: ["pm.photo", 0, "€1"], video: ["pm.video", 1, "€8"],
     plan1: ["pl.1", 0, "€10 " ], plan2: ["pl.2", 0, "€25 "], plan3: ["pl.3", 0, "€40 "]
   };
   function labelFor(id) {
     var o = ORD[id], name = t(o[0]);
-    var pre = ctxNiche ? t("n." + ctxNiche) + ": " : "";
-    var nb = function (x) { return x.replace(/ /g, "\u00a0"); };
+    var isFirm = id.indexOf("firm") === 0, pre = ctxNiche && !isFirm ? t("n." + ctxNiche) + ": " : "";
+    var nb = function (x) { return x.replace(/ /g, " "); };
+    /* company offers never take a business prefix; a picked price step is named after the offer */
+    if (isFirm) return id === "firm" ? name : t("firm.order") + ": " + name;
     if (id.indexOf("plan") === 0) return pre + t("sv.social.h") + ", " + name + ": " + nb(o[2] + t("pr.mo"));
     if (id === "content") return pre + name + ": " + nb("€1 " + t("pr.photo"));
     if (id === "social") return pre + name + ": " + nb(t("pr.from") + " " + o[2] + " " + t("pr.mo"));
@@ -364,7 +368,7 @@
     var box = $("#order"), lab = $("#orderLabel"), ta = $('#form [name="message"]');
     lab.textContent = order ? labelFor(order) : "";
     box.hidden = !order;
-    var auto = order ? t("wa.order") + lab.textContent : "";
+    var auto = order ? (order.indexOf("firm") === 0 ? t("firm.talk") : t("wa.order")) + lab.textContent : "";
     if (ta.value.indexOf(lastAuto) === 0) ta.value = auto + ta.value.slice(lastAuto.length);
     lastAuto = auto;
     var text = order ? auto : t("wa.hero");
@@ -377,6 +381,155 @@
   var orderAt = null; /* the page the order was made on: coming back to it keeps the choice */
   $$("[data-order]").forEach(function (el) { el.addEventListener("click", function () { if (!el.dataset.order) return; order = el.dataset.order; orderAt = location.hash; paintOrder(); }); });
   $("#orderClear").addEventListener("click", function () { order = null; paintOrder(); });
+
+  /* ---------- company page: six pictures, the whole list opens under "Full list" ---------- */
+  /* company page: price steps. Pick one, the ball hops onto it and the button below names it. */
+  (function () {
+    var lad = $("#firmLad"), go = $("#firmLadGo");
+    if (!lad || !go) return;
+    var steps = $$(".firm-lad__s", lad), ball = $(".firm-lad__ball", lad), name = $("#firmLadName"), cur = steps[0];
+    function place() {
+      if (!lad.offsetParent) { ball.classList.remove("is-on"); return; }
+    var phone = window.matchMedia("(max-width: 760px)").matches;
+      ball.style.left = (phone ? cur.offsetLeft + cur.offsetWidth - 6 : cur.offsetLeft + cur.offsetWidth / 2) + "px";
+      ball.style.top = cur.offsetTop + "px";
+      ball.classList.add("is-on");
+    }
+    function pick(b) {
+      cur = b;
+      steps.forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+      go.dataset.order = b.dataset.pick;
+      name.textContent = $(".firm-lad__n", b).textContent + ", " + $(".firm-lad__p", b).textContent.replace(/\s+/g, "\u00a0").trim();
+      place();
+    }
+    steps.forEach(function (b) { b.addEventListener("click", function () { pick(b); }); });
+    window.addEventListener("resize", place);
+    window.addEventListener("hashchange", function () { setTimeout(place, 60); });
+    /* the page can open on another route and show later: place the ball once it has a real size */
+    if ("ResizeObserver" in window) new ResizeObserver(place).observe(lad);
+    pick(cur);
+    window.firmLadRepaint = function () { pick(cur); };
+  })();
+
+  /* company page: several examples in one window. The bar under the card names the next one and flips to it. */
+  (function () {
+    var ex = $("#firmEx");
+    if (!ex) return;
+    var panels = $$(".firm-ex__view > .firm-log", ex), cur = 0, timers = [], seen = {};
+    var nName = $("#firmExNextName");
+    function light(p) {
+      timers.forEach(clearTimeout); timers = [];
+      if (!p.classList.contains("firm-log--ex")) return;
+      var rows = $$(".firm-log__list li", p);
+      if (seen[p.id] || reduce) { rows.forEach(function (r) { r.classList.add("is-on"); }); return; }
+      seen[p.id] = 1;
+      rows.forEach(function (r, i) { timers.push(setTimeout(function () { r.classList.add("is-on"); }, 250 + i * 160)); });
+    }
+    function bar() {
+      var nx = (cur + 1) % panels.length, p = panels[nx];
+      nName.textContent = $(".firm-log__head b", p).textContent;
+    }
+    function go(n) {
+      n = (n + panels.length) % panels.length;
+      ex.classList.add("is-used");
+      if (n === cur) return;
+      var down = n === (cur + 1) % panels.length;
+      panels.forEach(function (p, i) {
+        p.classList.toggle("is-cur", i === n); p.inert = i !== n;
+        /* the card that leaves goes the way the visitor pushed it; the others wait on the side they will come from */
+        p.dataset.pos = i === n ? "" : i === cur ? (down ? "above" : "below") : (down ? "below" : "above");
+      });
+      cur = n; light(panels[n]); bar();
+    }
+    panels.forEach(function (p, i) { if (p.classList.contains("firm-log--ex")) p.classList.add("is-live"); p.inert = i !== 0; });
+    $("#firmExNext").addEventListener("click", function () { go(cur + 1); });
+    $("#firmExPrev").addEventListener("click", function () { go(cur - 1); });
+    $$(".firm-log__n", ex).forEach(function (b) { b.addEventListener("click", function () {
+        go(cur + 1);
+        /* keep the keyboard on the same control of the new card; if it cannot take focus yet, use the bar */
+        var nb = $(".firm-log__n", panels[cur]);
+        requestAnimationFrame(function () { nb.focus({ preventScroll: true }); if (document.activeElement !== nb) $("#firmExNext").focus({ preventScroll: true }); });
+      }); });
+    bar();
+    window.firmExRepaint = bar;
+  })();
+
+  /* company page: the night is a slider. Drag the sun and the morning numbers grow. */
+  (function () {
+    var sky = $(".firm-log__sky"), inp = $("#firmNight");
+    if (!sky || !inp) return;
+    var fig = sky.closest(".firm-log"), knob = $(".firm-night__knob", sky), clip = $("#firmNightClip rect"), clock = $("#firmClock");
+    var rows = $$(".firm-log__list li[data-n]", fig), done = $(".firm-log__done", fig), raf = 0, touched = false, wait = 0, val = 100;
+    function bx(u) { var m = 1 - u; return 24 * m * m * m + 300 * u * m * m + 900 * u * u * m + 376 * u * u * u; }
+    function by(u) { var m = 1 - u; return 78 * m * m * m - 18 * u * m * m - 18 * u * u * m + 78 * u * u * u; }
+    function paint(v) {
+      v = Math.max(0, Math.min(100, v));
+      var x = 24 + 3.52 * v, lo = 0, hi = 1, u = 0.5;
+      for (var i = 0; i < 20; i++) { u = (lo + hi) / 2; if (bx(u) < x) lo = u; else hi = u; }
+      knob.setAttribute("transform", "translate(" + x.toFixed(1) + " " + by(u).toFixed(1) + ")");
+      clip.setAttribute("width", x.toFixed(1));
+      var min = (18 * 60 + Math.round(v * 0.84) * 10) % 1440, txt = ("0" + Math.floor(min / 60)).slice(-2) + ":" + ("0" + (min % 60)).slice(-2);
+      clock.textContent = txt; inp.setAttribute("aria-valuetext", txt);
+      rows.forEach(function (li) {
+        var n = +li.dataset.n, on = v >= +li.dataset.at;
+        /* only the big number counts up; "1 report" must never read as half a report */
+        if (n > 9) { n = Math.round(n * Math.min(1, v / +li.dataset.at)); on = n > 0; }
+        $("b", li).textContent = n; li.classList.toggle("is-on", on);
+      });
+      done.classList.toggle("is-on", v >= 99);
+    }
+    function set(v) { val = Math.max(0, Math.min(100, v)); inp.value = val; paint(val); }
+    function stop() { cancelAnimationFrame(raf); raf = 0; clearTimeout(wait); if (!touched) { touched = true; fig.classList.add("is-touched"); } }
+    /* the night keeps going: from wherever the sun is, on to the morning */
+    function play(from) {
+      var t0 = 0, span = (100 - from) * 42;
+      cancelAnimationFrame(raf);
+      if (reduce || span <= 0) return;
+      raf = requestAnimationFrame(function step(ts) {
+        if (!t0) t0 = ts;
+        var p = Math.min(1, (ts - t0) / span);
+        set(from + (100 - from) * p);
+        raf = p < 1 ? requestAnimationFrame(step) : 0;
+      });
+    }
+    function resume() { clearTimeout(wait); wait = setTimeout(function () { play(val); }, 900); }
+    function at(e) { var r = sky.getBoundingClientRect(); return ((e.clientX - r.left) / r.width * 400 - 24) / 3.52; }
+    sky.addEventListener("pointerdown", function (e) { stop(); sky.classList.add("is-drag"); try { sky.setPointerCapture(e.pointerId); } catch (x) {} set(at(e)); });
+    sky.addEventListener("pointermove", function (e) { if (sky.classList.contains("is-drag")) set(at(e)); });
+    ["pointerup", "pointercancel"].forEach(function (k) { sky.addEventListener(k, function () { if (sky.classList.contains("is-drag")) { sky.classList.remove("is-drag"); resume(); } }); });
+    inp.addEventListener("input", function () { stop(); val = +inp.value; paint(val); });
+    inp.addEventListener("focus", function () { if (inp.matches(":focus-visible")) sky.classList.add("is-focus"); });
+    inp.addEventListener("blur", function () { sky.classList.remove("is-focus"); if (touched) resume(); });
+    fig.classList.add("is-live");
+    if (reduce || !("IntersectionObserver" in window)) { paint(100); return; }
+    set(0);
+    var io = new IntersectionObserver(function (en) {
+      if (!en[0].isIntersecting) return;
+      io.disconnect();
+      if (!touched) play(0);
+    }, { threshold: 0.5 });
+    io.observe(sky);
+  })();
+
+  (function () {
+    var more = $("#firmMore"), full = $("#firmFull");
+    if (!more || !full) return;
+    var hitT = 0;
+    /* the picked category glows, then lets go slowly once the visitor has had time to find it */
+    function hit(el) {
+      $$(".firm-fc.is-hit").forEach(function (x) { x.classList.remove("is-hit"); });
+      el.classList.add("is-hit"); clearTimeout(hitT);
+      hitT = setTimeout(function () { el.classList.remove("is-hit"); }, 5200);
+    }
+    function open(on, to) {
+      full.hidden = !on; more.setAttribute("aria-expanded", String(on));
+      var el = on && to ? $("#fc-" + to) : null;
+      if (el) { el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" }); el.focus({ preventScroll: true }); hit(el); }
+    }
+    more.addEventListener("click", function () { open(full.hidden); });
+    $("#firmLess").addEventListener("click", function () { open(false); more.focus({ preventScroll: true }); more.scrollIntoView({ behavior: "auto", block: "center" }); });
+    $$(".firm-cat").forEach(function (b) { b.addEventListener("click", function () { open(true, b.dataset.cat); }); });
+  })();
 
   /* phone only: a bar with both messengers appears once the first button has scrolled away */
   (function () {
@@ -589,9 +742,9 @@
   /* ---------- "without me / with me": a phone the visitor handles ----------
      Two screens of the same moment sit on top of each other. Dragging the handle (mouse, finger
      or arrow keys) uncovers the "with me" screen; on it a Send button really sends: the message
-     gets a tick and the gain appears. Nothing plays by itself except one small nudge of the handle. */
+     gets a tick and the gain appears. Nothing plays by itself except a small nudge of the handle, repeated until it is moved. */
   var scene = null, pos = 86, sent = false, nudge = [];
-  function stopNudge() { nudge.forEach(clearTimeout); nudge = []; }
+  function stopNudge() { nudge.forEach(clearTimeout); nudge = []; if (ph) ph.classList.remove("is-idle"); }
   var ph = $("#ph"), knob = $("#phKnob");
   function setPos(v, smooth) {
     pos = Math.max(0, Math.min(100, v));
@@ -675,44 +828,62 @@
     }
     $("#scLoss").hidden = !$("#scLoss").textContent; $("#scGain").hidden = true;
     $("#ph").classList.remove("is-sent"); $("#scSend").classList.remove("done"); $("#scSend").disabled = false; $("#scSend").style.minHeight = "";
+    var wasIdle = ph.classList.contains("is-idle");
     stopNudge();
-    if (kp) { setPos(kp.pos, false); if (kp.sent) $("#scSend").click(); else if (kp.pos > 50) autoOpen(); return; }
-    if (reduce) { setPos(0, false); return; }
+    /* a repaint (language switch) must not switch the hint off for someone who has not moved the handle yet */
+    if (kp) { setPos(kp.pos, false); if (kp.sent) $("#scSend").click(); else if (wasIdle) { setPos(86, false); startNudge(); } return; }
     setPos(86, false);
-    autoOpen();
+    startNudge();
   }
-  /* whoever only reads still sees the result: after 2.5 s in view the "with me" screen opens once; any touch cancels it */
-  function autoOpen() {
-    stopNudge();
-    if (document.documentElement.classList.contains("sc-used")) return;
-    var shown = 0, iv = setInterval(function () {
-      if (pos <= 50 || l3.hidden) { clearInterval(iv); return; }
-      var r = ph.getBoundingClientRect(), vis = Math.min(innerHeight, r.bottom) - Math.max(0, r.top);
-      shown = !document.hidden && r.height && vis / r.height >= 0.35 ? shown + 250 : 0;
-      if (shown >= 2500) { clearInterval(iv); setPos(0, true); }
-    }, 250);
-    nudge.push(iv);
+  /* "this moves": the handle nudges, with a ring around it, until the visitor moves it themself.
+     The first nudge is the big one; repeats stay in the empty margin so they do not cover the text. */
+  var handled = false;
+  function startNudge() {
+    if (reduce) { if (!handled) ph.classList.add("is-idle"); return; }
+    if (handled) { nudge.push(setTimeout(function () { setPos(80, true); nudge.push(setTimeout(function () { setPos(86, true); }, 450)); }, 900)); return; }
+    ph.classList.add("is-idle");
+    (function again(delay, to) {
+      nudge.push(setTimeout(function () {
+        if (!ph.offsetParent) return;                         /* the page with the phone was left: stop */
+        var r = ph.getBoundingClientRect();
+        if (document.hidden || r.bottom < 0 || r.top > window.innerHeight) { again(1500, to); return; }   /* out of sight: wait */
+        setPos(to, true);
+        nudge.push(setTimeout(function () { setPos(86, true); again(4500, 80); }, 500));
+      }, delay));
+    })(900, 72);
   }
   /* after a tap the whole phone is on screen: between the menu and the round assistant button */
   function showDemo() { requestAnimationFrame(function () { var nav = $("#nav"), fab = $("#botFab"), top = (nav && getComputedStyle(nav).position === "fixed" ? nav.getBoundingClientRect().bottom : 0) + 8; var r = ph.getBoundingClientRect(), lim = (fab && fab.offsetWidth ? fab.offsetTop : innerHeight) - 12; var d = Math.min(r.bottom - lim, r.top - top); if (d > 4) scrollBy({ top: d, behavior: reduce ? "auto" : "smooth" }); }); }
   function fromX(x) { var r = ph.getBoundingClientRect(); return ((x - r.left) / r.width) * 100; }
-  var dragging = false;
+  var dragging = false, pend = null;
+  function grab(e) {
+    pend = null; handled = true; stopNudge(); ph.classList.add("drag");
+    dragging = true; try { ph.setPointerCapture(e.pointerId); } catch (x) {} setPos(fromX(e.clientX), false);
+  }
   ph.addEventListener("pointerdown", function (e) {
     if (e.target.closest("#scSend, .ph__lbl")) return;
-    stopNudge(); document.documentElement.classList.add("sc-used"); ph.classList.add("drag");
-    dragging = true; ph.setPointerCapture(e.pointerId); setPos(fromX(e.clientX), false);
+    /* a finger anywhere but on the handle may be the start of a page scroll: wait and see which way it goes */
+    if (e.pointerType === "touch" && !e.target.closest("#phKnob")) { pend = { x: e.clientX, y: e.clientY }; return; }
+    grab(e);
   });
-  ph.addEventListener("pointermove", function (e) { if (dragging) setPos(fromX(e.clientX), false); });
+  ph.addEventListener("pointermove", function (e) {
+    if (pend) {
+      var dx = Math.abs(e.clientX - pend.x), dy = Math.abs(e.clientY - pend.y);
+      if (dx > 8 && dx > dy) grab(e); else if (dy > 8) pend = null;
+    }
+    if (dragging) setPos(fromX(e.clientX), false);
+  });
   function end() { ph.classList.remove("drag"); if (!dragging) return; dragging = false; setPos(pos < 50 ? 0 : 100, true); document.documentElement.classList.add("sc-used"); if (pos < 50) showDemo(); }
-  ph.addEventListener("pointerup", end); ph.addEventListener("pointercancel", end);
+  ph.addEventListener("pointerup", function (e) { if (pend) grab(e); end(); });   /* a plain tap still jumps the divider */
+  ph.addEventListener("pointercancel", function () { pend = null; end(); });       /* the browser took the finger to scroll */
   knob.addEventListener("keydown", function (e) {
-    stopNudge();
+    if (/^(Arrow|Home|End)/.test(e.key)) { handled = true; stopNudge(); }
     if (e.key === "ArrowLeft") { setPos(pos - 10, true); e.preventDefault(); }
     if (e.key === "ArrowRight") { setPos(pos + 10, true); e.preventDefault(); }
     if (e.key === "Home") { setPos(0, true); e.preventDefault(); }
     if (e.key === "End") { setPos(100, true); e.preventDefault(); }
   });
-  $$(".ph__lbl").forEach(function (l) { l.addEventListener("click", function (e) { e.stopPropagation(); stopNudge(); document.documentElement.classList.add("sc-used"); var a = l.classList.contains("ph__lbl--a"); setPos(a ? 0 : 100, true); if (a) showDemo(); }); });
+  $$(".ph__lbl").forEach(function (l) { l.addEventListener("click", function (e) { e.stopPropagation(); handled = true; stopNudge(); var a = l.classList.contains("ph__lbl--a"); setPos(a ? 0 : 100, true); if (a) showDemo(); }); });
   $("#scSend").addEventListener("click", function () {
     if (sent) return; sent = true;
     var b = $("#scSend"); b.style.minHeight = b.offsetHeight + "px"; b.classList.add("done"); b.disabled = true; $("span", b).textContent = t("sc.done");
@@ -832,6 +1003,7 @@
     function toks(x) { return x.toLowerCase().replace(/[^\p{L}\p{N}']+/gu, " ").split(" ").filter(function (w) { return w.length >= 3; }); }
     function prep(o) { var r = {}; Object.keys(o).forEach(function (k) { r[k] = toks(o[k]); }); return r; }
     var NKT = prep(NK), SKT = prep(SK);
+    var FKT = toks("фирма фирмы фирму компания компании команда команды сотрудников отдел firma unternehmen betrieb team mitarbeiter abteilung company companies business team employees staff department фірма фірми компанія команда працівників відділ");
     function score(ts, kws) {
       var n = 0;
       kws.forEach(function (k) { ts.forEach(function (w) { if (w === k || (k.length >= 4 && w.length >= 4 && w.slice(0, 5) === k.slice(0, 5))) n++; }); });
@@ -889,6 +1061,8 @@
     }
     function local(text) {
       var ts = toks(text), n = best(ts, NKT), sid = best(ts, SKT), pay = score(ts, PAY) > 0;
+      /* a team or a company without a named task: the company page */
+      if (!sid && (!n || n === "office") && score(ts, FKT) > 0) { say("b", t("bot.found")); link("#/firm", t("firm.nav")); return; }
       if (sid) {
         say("b", t("bot.found"));
         link(taskHref(n, sid), t("sv." + sid + ".h") + (n ? ", " + t("n." + n) : ""));
