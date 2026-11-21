@@ -355,6 +355,20 @@
   $$("[data-order]").forEach(function (el) { el.addEventListener("click", function () { order = el.dataset.order; orderAt = location.hash; paintOrder(); }); });
   $("#orderClear").addEventListener("click", function () { order = null; paintOrder(); });
 
+  /* ---------- company page: six pictures, the whole list opens under "Full list" ---------- */
+  (function () {
+    var more = $("#firmMore"), full = $("#firmFull");
+    if (!more || !full) return;
+    function open(on, to) {
+      full.hidden = !on; more.setAttribute("aria-expanded", String(on));
+      var el = on && to ? $("#fc-" + to) : null;
+      if (el) { el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" }); el.focus({ preventScroll: true }); }
+    }
+    more.addEventListener("click", function () { open(full.hidden); });
+    $("#firmLess").addEventListener("click", function () { open(false); more.focus({ preventScroll: true }); more.scrollIntoView({ behavior: "auto", block: "center" }); });
+    $$(".firm-cat").forEach(function (b) { b.addEventListener("click", function () { open(true, b.dataset.cat); }); });
+  })();
+
   /* phone only: a bar with both messengers appears once the first button has scrolled away */
   (function () {
     var dock = $("#dock"), first = $(".hero__cta"), contact = $("#contact"), away = false, inContact = false;
