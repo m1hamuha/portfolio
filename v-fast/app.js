@@ -701,9 +701,9 @@
   /* ---------- "without me / with me": a phone the visitor handles ----------
      Two screens of the same moment sit on top of each other. Dragging the handle (mouse, finger
      or arrow keys) uncovers the "with me" screen; on it a Send button really sends: the message
-     gets a tick and the gain appears. Nothing plays by itself except one small nudge of the handle. */
+     gets a tick and the gain appears. Nothing plays by itself except a small nudge of the handle, repeated until it is moved. */
   var scene = null, pos = 86, sent = false, nudge = [];
-  function stopNudge() { nudge.forEach(clearTimeout); nudge = []; }
+  function stopNudge() { nudge.forEach(clearTimeout); nudge = []; if (ph) ph.classList.remove("is-idle"); }
   var ph = $("#ph"), knob = $("#phKnob");
   function setPos(v, smooth) {
     pos = Math.max(0, Math.min(100, v));
@@ -787,31 +787,62 @@
     }
     $("#scLoss").hidden = !$("#scLoss").textContent; $("#scGain").hidden = true;
     $("#ph").classList.remove("is-sent"); $("#scSend").classList.remove("done"); $("#scSend").disabled = false; $("#scSend").style.minHeight = "";
+    var wasIdle = ph.classList.contains("is-idle");
     stopNudge();
-    if (kp) { setPos(kp.pos, false); if (kp.sent) $("#scSend").click(); return; }
+    /* a repaint (language switch) must not switch the hint off for someone who has not moved the handle yet */
+    if (kp) { setPos(kp.pos, false); if (kp.sent) $("#scSend").click(); else if (wasIdle) { setPos(86, false); startNudge(); } return; }
     setPos(86, false);
-    if (!reduce) nudge.push(setTimeout(function () { setPos(70, true); nudge.push(setTimeout(function () { setPos(86, true); }, 450)); }, 900)); /* "this moves" */
+    startNudge();
+  }
+  /* "this moves": the handle nudges, with a ring around it, until the visitor moves it themself.
+     The first nudge is the big one; repeats stay in the empty margin so they do not cover the text. */
+  var handled = false;
+  function startNudge() {
+    if (reduce) { if (!handled) ph.classList.add("is-idle"); return; }
+    if (handled) { nudge.push(setTimeout(function () { setPos(80, true); nudge.push(setTimeout(function () { setPos(86, true); }, 450)); }, 900)); return; }
+    ph.classList.add("is-idle");
+    (function again(delay, to) {
+      nudge.push(setTimeout(function () {
+        if (!ph.offsetParent) return;                         /* the page with the phone was left: stop */
+        var r = ph.getBoundingClientRect();
+        if (document.hidden || r.bottom < 0 || r.top > window.innerHeight) { again(1500, to); return; }   /* out of sight: wait */
+        setPos(to, true);
+        nudge.push(setTimeout(function () { setPos(86, true); again(4500, 80); }, 500));
+      }, delay));
+    })(900, 72);
   }
   /* after a tap the whole phone is on screen: between the menu and the round assistant button */
   function showDemo() { requestAnimationFrame(function () { var nav = $("#nav"), fab = $("#botFab"), top = (nav && getComputedStyle(nav).position === "fixed" ? nav.getBoundingClientRect().bottom : 0) + 8; var r = ph.getBoundingClientRect(), lim = (fab && fab.offsetWidth ? fab.offsetTop : innerHeight) - 12; var d = Math.min(r.bottom - lim, r.top - top); if (d > 4) scrollBy({ top: d, behavior: reduce ? "auto" : "smooth" }); }); }
   function fromX(x) { var r = ph.getBoundingClientRect(); return ((x - r.left) / r.width) * 100; }
-  var dragging = false;
+  var dragging = false, pend = null;
+  function grab(e) {
+    pend = null; handled = true; stopNudge(); ph.classList.add("drag");
+    dragging = true; try { ph.setPointerCapture(e.pointerId); } catch (x) {} setPos(fromX(e.clientX), false);
+  }
   ph.addEventListener("pointerdown", function (e) {
     if (e.target.closest("#scSend, .ph__lbl")) return;
-    stopNudge(); ph.classList.add("drag");
-    dragging = true; ph.setPointerCapture(e.pointerId); setPos(fromX(e.clientX), false);
+    /* a finger anywhere but on the handle may be the start of a page scroll: wait and see which way it goes */
+    if (e.pointerType === "touch" && !e.target.closest("#phKnob")) { pend = { x: e.clientX, y: e.clientY }; return; }
+    grab(e);
   });
-  ph.addEventListener("pointermove", function (e) { if (dragging) setPos(fromX(e.clientX), false); });
+  ph.addEventListener("pointermove", function (e) {
+    if (pend) {
+      var dx = Math.abs(e.clientX - pend.x), dy = Math.abs(e.clientY - pend.y);
+      if (dx > 8 && dx > dy) grab(e); else if (dy > 8) pend = null;
+    }
+    if (dragging) setPos(fromX(e.clientX), false);
+  });
   function end() { ph.classList.remove("drag"); if (!dragging) return; dragging = false; setPos(pos < 50 ? 0 : 100, true); document.documentElement.classList.add("sc-used"); if (pos < 50) showDemo(); }
-  ph.addEventListener("pointerup", end); ph.addEventListener("pointercancel", end);
+  ph.addEventListener("pointerup", function (e) { if (pend) grab(e); end(); });   /* a plain tap still jumps the divider */
+  ph.addEventListener("pointercancel", function () { pend = null; end(); });       /* the browser took the finger to scroll */
   knob.addEventListener("keydown", function (e) {
-    stopNudge();
+    if (/^(Arrow|Home|End)/.test(e.key)) { handled = true; stopNudge(); }
     if (e.key === "ArrowLeft") { setPos(pos - 10, true); e.preventDefault(); }
     if (e.key === "ArrowRight") { setPos(pos + 10, true); e.preventDefault(); }
     if (e.key === "Home") { setPos(0, true); e.preventDefault(); }
     if (e.key === "End") { setPos(100, true); e.preventDefault(); }
   });
-  $$(".ph__lbl").forEach(function (l) { l.addEventListener("click", function (e) { e.stopPropagation(); stopNudge(); var a = l.classList.contains("ph__lbl--a"); setPos(a ? 0 : 100, true); if (a) showDemo(); }); });
+  $$(".ph__lbl").forEach(function (l) { l.addEventListener("click", function (e) { e.stopPropagation(); handled = true; stopNudge(); var a = l.classList.contains("ph__lbl--a"); setPos(a ? 0 : 100, true); if (a) showDemo(); }); });
   $("#scSend").addEventListener("click", function () {
     if (sent) return; sent = true;
     var b = $("#scSend"); b.style.minHeight = b.offsetHeight + "px"; b.classList.add("done"); b.disabled = true; $("span", b).textContent = t("sc.done");
