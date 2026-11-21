@@ -356,6 +356,56 @@
   $("#orderClear").addEventListener("click", function () { order = null; paintOrder(); });
 
   /* ---------- company page: six pictures, the whole list opens under "Full list" ---------- */
+  /* company page: the night is a slider. Drag the sun and the morning numbers grow. */
+  (function () {
+    var sky = $(".firm-log__sky"), inp = $("#firmNight");
+    if (!sky || !inp) return;
+    var fig = sky.closest(".firm-log"), knob = $(".firm-night__knob", sky), clip = $("#firmNightClip rect"), clock = $("#firmClock");
+    var rows = $$(".firm-log__list li[data-n]", fig), done = $(".firm-log__done", fig), raf = 0, touched = false;
+    function bx(u) { var m = 1 - u; return 24 * m * m * m + 300 * u * m * m + 900 * u * u * m + 376 * u * u * u; }
+    function by(u) { var m = 1 - u; return 78 * m * m * m - 18 * u * m * m - 18 * u * u * m + 78 * u * u * u; }
+    function paint(v) {
+      v = Math.max(0, Math.min(100, v));
+      var x = 24 + 3.52 * v, lo = 0, hi = 1, u = 0.5;
+      for (var i = 0; i < 20; i++) { u = (lo + hi) / 2; if (bx(u) < x) lo = u; else hi = u; }
+      knob.setAttribute("transform", "translate(" + x.toFixed(1) + " " + by(u).toFixed(1) + ")");
+      clip.setAttribute("width", x.toFixed(1));
+      var min = (22 * 60 + Math.round(v * 0.6) * 10) % 1440, txt = ("0" + Math.floor(min / 60)).slice(-2) + ":" + ("0" + (min % 60)).slice(-2);
+      clock.textContent = txt; inp.setAttribute("aria-valuetext", txt);
+      rows.forEach(function (li) {
+        var n = +li.dataset.n, on = v >= +li.dataset.at;
+        /* only the big number counts up; "1 report" must never read as half a report */
+        if (n > 9) { n = Math.round(n * Math.min(1, v / +li.dataset.at)); on = n > 0; }
+        $("b", li).textContent = n; li.classList.toggle("is-on", on);
+      });
+      done.classList.toggle("is-on", v >= 99);
+    }
+    function set(v) { inp.value = v; paint(v); }
+    function stop() { cancelAnimationFrame(raf); raf = 0; if (!touched) { touched = true; fig.classList.add("is-touched"); } }
+    function at(e) { var r = sky.getBoundingClientRect(); return ((e.clientX - r.left) / r.width * 400 - 24) / 3.52; }
+    sky.addEventListener("pointerdown", function (e) { stop(); sky.classList.add("is-drag"); try { sky.setPointerCapture(e.pointerId); } catch (x) {} set(at(e)); });
+    sky.addEventListener("pointermove", function (e) { if (sky.classList.contains("is-drag")) set(at(e)); });
+    ["pointerup", "pointercancel"].forEach(function (k) { sky.addEventListener(k, function () { sky.classList.remove("is-drag"); }); });
+    inp.addEventListener("input", function () { stop(); paint(+inp.value); });
+    inp.addEventListener("focus", function () { if (inp.matches(":focus-visible")) sky.classList.add("is-focus"); });
+    inp.addEventListener("blur", function () { sky.classList.remove("is-focus"); });
+    fig.classList.add("is-live");
+    if (reduce || !("IntersectionObserver" in window)) { paint(100); return; }
+    set(0);
+    var io = new IntersectionObserver(function (en) {
+      if (!en[0].isIntersecting) return;
+      io.disconnect();
+      var t0 = 0;
+      raf = requestAnimationFrame(function step(ts) {
+        if (!t0) t0 = ts;
+        var p = Math.min(1, (ts - t0) / 4200);
+        set(100 * p);
+        raf = p < 1 ? requestAnimationFrame(step) : 0;
+      });
+    }, { threshold: 0.5 });
+    io.observe(sky);
+  })();
+
   (function () {
     var more = $("#firmMore"), full = $("#firmFull");
     if (!more || !full) return;
