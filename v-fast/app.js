@@ -46,6 +46,7 @@
     var canon = $('link[rel="canonical"]');
     if (canon) canon.href = "https://m1hamuha.github.io/portfolio/v-fast/" + (lang === "en" ? "" : "?lang=" + lang);
     $$("[data-i18n]").forEach(function (el) { el.textContent = t(el.dataset.i18n); });
+    if (window.firmLadRepaint) window.firmLadRepaint();
     $$("[data-i18n-html]").forEach(function (el) { el.innerHTML = t(el.dataset.i18nHtml); });
     $$("[data-i18n-aria]").forEach(function (el) { el.setAttribute("aria-label", t(el.dataset.i18nAria)); });
     $$("[data-i18n-ph]").forEach(function (el) { el.setAttribute("placeholder", t(el.dataset.i18nPh)); });
@@ -333,7 +334,7 @@
     var o = ORD[id], name = t(o[0]);
     var pre = ctxNiche && id !== "firm" ? t("n." + ctxNiche) + ": " : "";
     var nb = function (x) { return x.replace(/ /g, " "); };
-    if (id === "firm") return name + ": " + t("firm.setup").toLowerCase() + " " + nb(t("pr.from") + " €300") + " + " + nb(t("pr.from") + " €99 " + t("pr.mo"));
+    if (id === "firm") return name;
     if (id.indexOf("plan") === 0) return pre + t("sv.social.h") + ", " + name + ": " + nb(o[2] + t("pr.mo"));
     return pre + (o[2] ? name + ": " + nb((o[1] ? t("pr.from") + " " : "") + o[2]) : name);
   }
@@ -356,6 +357,31 @@
   $("#orderClear").addEventListener("click", function () { order = null; paintOrder(); });
 
   /* ---------- company page: six pictures, the whole list opens under "Full list" ---------- */
+  /* company page: price steps. Pick one, the ball hops onto it and the button below names it. */
+  (function () {
+    var lad = $("#firmLad"), go = $("#firmLadGo");
+    if (!lad || !go) return;
+    var steps = $$(".firm-lad__s", lad), ball = $(".firm-lad__ball", lad), name = $("#firmLadName"), cur = steps[0];
+    function place() {
+      var phone = window.matchMedia("(max-width: 760px)").matches;
+      ball.style.left = (phone ? cur.offsetLeft + cur.offsetWidth - 22 : cur.offsetLeft + cur.offsetWidth / 2) + "px";
+      ball.style.top = cur.offsetTop + "px";
+      ball.classList.add("is-on");
+    }
+    function pick(b) {
+      cur = b;
+      steps.forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+      go.dataset.order = b.dataset.pick;
+      name.textContent = $(".firm-lad__n", b).textContent + ", " + $(".firm-lad__p", b).textContent.replace(/\s+/g, " ").trim();
+      place();
+    }
+    steps.forEach(function (b) { b.addEventListener("click", function () { pick(b); }); });
+    window.addEventListener("resize", place);
+    window.addEventListener("hashchange", function () { setTimeout(place, 60); });
+    pick(cur);
+    window.firmLadRepaint = function () { pick(cur); };
+  })();
+
   /* company page: the night is a slider. Drag the sun and the morning numbers grow. */
   (function () {
     var sky = $(".firm-log__sky"), inp = $("#firmNight");
@@ -370,7 +396,7 @@
       for (var i = 0; i < 20; i++) { u = (lo + hi) / 2; if (bx(u) < x) lo = u; else hi = u; }
       knob.setAttribute("transform", "translate(" + x.toFixed(1) + " " + by(u).toFixed(1) + ")");
       clip.setAttribute("width", x.toFixed(1));
-      var min = (22 * 60 + Math.round(v * 0.6) * 10) % 1440, txt = ("0" + Math.floor(min / 60)).slice(-2) + ":" + ("0" + (min % 60)).slice(-2);
+      var min = (18 * 60 + Math.round(v * 0.84) * 10) % 1440, txt = ("0" + Math.floor(min / 60)).slice(-2) + ":" + ("0" + (min % 60)).slice(-2);
       clock.textContent = txt; inp.setAttribute("aria-valuetext", txt);
       rows.forEach(function (li) {
         var n = +li.dataset.n, on = v >= +li.dataset.at;
@@ -409,10 +435,17 @@
   (function () {
     var more = $("#firmMore"), full = $("#firmFull");
     if (!more || !full) return;
+    var hitT = 0;
+    /* the picked category glows, then lets go slowly once the visitor has had time to find it */
+    function hit(el) {
+      $$(".firm-fc.is-hit").forEach(function (x) { x.classList.remove("is-hit"); });
+      el.classList.add("is-hit"); clearTimeout(hitT);
+      hitT = setTimeout(function () { el.classList.remove("is-hit"); }, 5200);
+    }
     function open(on, to) {
       full.hidden = !on; more.setAttribute("aria-expanded", String(on));
       var el = on && to ? $("#fc-" + to) : null;
-      if (el) { el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" }); el.focus({ preventScroll: true }); }
+      if (el) { el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" }); el.focus({ preventScroll: true }); hit(el); }
     }
     more.addEventListener("click", function () { open(full.hidden); });
     $("#firmLess").addEventListener("click", function () { open(false); more.focus({ preventScroll: true }); more.scrollIntoView({ behavior: "auto", block: "center" }); });
