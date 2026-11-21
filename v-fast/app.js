@@ -701,9 +701,9 @@
   /* ---------- "without me / with me": a phone the visitor handles ----------
      Two screens of the same moment sit on top of each other. Dragging the handle (mouse, finger
      or arrow keys) uncovers the "with me" screen; on it a Send button really sends: the message
-     gets a tick and the gain appears. Nothing plays by itself except one small nudge of the handle. */
+     gets a tick and the gain appears. Nothing plays by itself except a small nudge of the handle, repeated until it is moved. */
   var scene = null, pos = 86, sent = false, nudge = [];
-  function stopNudge() { nudge.forEach(clearTimeout); nudge = []; }
+  function stopNudge() { nudge.forEach(clearTimeout); nudge = []; if (ph) ph.classList.remove("is-idle"); }
   var ph = $("#ph"), knob = $("#phKnob");
   function setPos(v, smooth) {
     pos = Math.max(0, Math.min(100, v));
@@ -790,7 +790,17 @@
     stopNudge();
     if (kp) { setPos(kp.pos, false); if (kp.sent) $("#scSend").click(); return; }
     setPos(86, false);
-    if (!reduce) nudge.push(setTimeout(function () { setPos(70, true); nudge.push(setTimeout(function () { setPos(86, true); }, 450)); }, 900)); /* "this moves" */
+    /* "this moves": the handle keeps nudging, with a ring around it, until the visitor moves it themself */
+    ph.classList.add("is-idle");
+    if (!reduce) (function again(delay) {
+      nudge.push(setTimeout(function () {
+        if (!ph.offsetParent) return;                         /* the page with the phone was left: stop */
+        var r = ph.getBoundingClientRect();
+        if (document.hidden || r.bottom < 0 || r.top > window.innerHeight) { again(1500); return; }   /* out of sight: wait */
+        setPos(72, true);
+        nudge.push(setTimeout(function () { setPos(86, true); again(3000); }, 500));
+      }, delay));
+    })(900);
   }
   /* after a tap the whole phone is on screen: between the menu and the round assistant button */
   function showDemo() { requestAnimationFrame(function () { var nav = $("#nav"), fab = $("#botFab"), top = (nav && getComputedStyle(nav).position === "fixed" ? nav.getBoundingClientRect().bottom : 0) + 8; var r = ph.getBoundingClientRect(), lim = (fab && fab.offsetWidth ? fab.offsetTop : innerHeight) - 12; var d = Math.min(r.bottom - lim, r.top - top); if (d > 4) scrollBy({ top: d, behavior: reduce ? "auto" : "smooth" }); }); }
