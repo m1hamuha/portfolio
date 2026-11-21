@@ -325,14 +325,15 @@
     social: ["sv.social.h", 1, "€10"], bot: ["sv.bot.h", 1, "€79"], content: ["sv.content.h", 1, "€1"],
     reports: ["sv.reports.h", 1, "€19"], docs: ["sv.docs.h", 1, "€19"], reviews: ["sv.reviews.h", 1, "€15"],
     data: ["sv.data.h", 1, "€29"], site: ["sv.site.h", 1, "€29"], leads: ["sv.leads.h", 1, "€29"], mail: ["sv.mail.h", 1, "€19"],
-    translate: ["sv.translate.h", 1, "€5"], assistant: ["sv.assistant.h", 1, "€49"], hiring: ["sv.hiring.h", 1, "€15"], custom: ["sv.custom.h", 0, ""],
+    translate: ["sv.translate.h", 1, "€5"], assistant: ["sv.assistant.h", 1, "€49"], hiring: ["sv.hiring.h", 1, "€15"], custom: ["sv.custom.h", 0, ""], firm: ["firm.order", 1, "€300"],
     photo: ["pm.photo", 0, "€1"], video: ["pm.video", 1, "€8"],
     plan1: ["pl.1", 0, "€10 " ], plan2: ["pl.2", 0, "€25 "], plan3: ["pl.3", 0, "€40 "]
   };
   function labelFor(id) {
     var o = ORD[id], name = t(o[0]);
-    var pre = ctxNiche ? t("n." + ctxNiche) + ": " : "";
-    var nb = function (x) { return x.replace(/ /g, "\u00a0"); };
+    var pre = ctxNiche && id !== "firm" ? t("n." + ctxNiche) + ": " : "";
+    var nb = function (x) { return x.replace(/ /g, " "); };
+    if (id === "firm") return name + ": " + t("firm.setup").toLowerCase() + " " + nb(t("pr.from") + " €300") + " + " + nb(t("pr.from") + " €99 " + t("pr.mo"));
     if (id.indexOf("plan") === 0) return pre + t("sv.social.h") + ", " + name + ": " + nb(o[2] + t("pr.mo"));
     return pre + (o[2] ? name + ": " + nb((o[1] ? t("pr.from") + " " : "") + o[2]) : name);
   }
@@ -341,7 +342,7 @@
     var box = $("#order"), lab = $("#orderLabel"), ta = $('#form [name="message"]');
     lab.textContent = order ? labelFor(order) : "";
     box.hidden = !order;
-    var auto = order ? t("wa.order") + lab.textContent : "";
+    var auto = order ? (order === "firm" ? t("firm.talk") : t("wa.order")) + lab.textContent : "";
     if (ta.value.indexOf(lastAuto) === 0) ta.value = auto + ta.value.slice(lastAuto.length);
     lastAuto = auto;
     var text = order ? auto : t("wa.hero");
@@ -353,6 +354,20 @@
   var orderAt = null; /* the page the order was made on: coming back to it keeps the choice */
   $$("[data-order]").forEach(function (el) { el.addEventListener("click", function () { order = el.dataset.order; orderAt = location.hash; paintOrder(); }); });
   $("#orderClear").addEventListener("click", function () { order = null; paintOrder(); });
+
+  /* ---------- company page: six pictures, the whole list opens under "Full list" ---------- */
+  (function () {
+    var more = $("#firmMore"), full = $("#firmFull");
+    if (!more || !full) return;
+    function open(on, to) {
+      full.hidden = !on; more.setAttribute("aria-expanded", String(on));
+      var el = on && to ? $("#fc-" + to) : null;
+      if (el) { el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" }); el.focus({ preventScroll: true }); }
+    }
+    more.addEventListener("click", function () { open(full.hidden); });
+    $("#firmLess").addEventListener("click", function () { open(false); more.focus({ preventScroll: true }); more.scrollIntoView({ behavior: "auto", block: "center" }); });
+    $$(".firm-cat").forEach(function (b) { b.addEventListener("click", function () { open(true, b.dataset.cat); }); });
+  })();
 
   /* phone only: a bar with both messengers appears once the first button has scrolled away */
   (function () {
@@ -772,6 +787,7 @@
     function toks(x) { return x.toLowerCase().replace(/[^\p{L}\p{N}']+/gu, " ").split(" ").filter(function (w) { return w.length >= 3; }); }
     function prep(o) { var r = {}; Object.keys(o).forEach(function (k) { r[k] = toks(o[k]); }); return r; }
     var NKT = prep(NK), SKT = prep(SK);
+    var FKT = toks("фирма фирмы фирму компания компании команда команды сотрудников отдел firma unternehmen betrieb team mitarbeiter abteilung company companies business team employees staff department фірма фірми компанія команда працівників відділ");
     function score(ts, kws) {
       var n = 0;
       kws.forEach(function (k) { ts.forEach(function (w) { if (w === k || (k.length >= 4 && w.length >= 4 && w.slice(0, 5) === k.slice(0, 5))) n++; }); });
@@ -817,6 +833,8 @@
     }
     function local(text) {
       var ts = toks(text), n = best(ts, NKT), sid = best(ts, SKT), F = window.FUNNEL || { niches: {} };
+      /* a team or a company without a named task: the company page */
+      if (!sid && (!n || n === "office") && score(ts, FKT) > 0) { say("b", t("bot.found")); link("#/firm", t("firm.nav")); return; }
       if (n && sid) {
         var has = (F.niches[n] || []).some(function (r) { return r[0] === sid; });
         say("b", t("bot.found"));
