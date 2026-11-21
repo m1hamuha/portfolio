@@ -324,13 +324,14 @@
     social: ["sv.social.h", 1, "€10"], bot: ["sv.bot.h", 1, "€79"], content: ["sv.content.h", 1, "€1"],
     reports: ["sv.reports.h", 1, "€19"], docs: ["sv.docs.h", 1, "€19"], reviews: ["sv.reviews.h", 1, "€15"],
     data: ["sv.data.h", 1, "€29"], site: ["sv.site.h", 1, "€29"], leads: ["sv.leads.h", 1, "€29"], mail: ["sv.mail.h", 1, "€19"],
-    translate: ["sv.translate.h", 1, "€5"], assistant: ["sv.assistant.h", 1, "€49"], hiring: ["sv.hiring.h", 1, "€15"], custom: ["sv.custom.h", 0, ""],
+    translate: ["sv.translate.h", 1, "€5"], assistant: ["sv.assistant.h", 1, "€49"], hiring: ["sv.hiring.h", 1, "€15"], custom: ["sv.custom.h", 0, ""], firm: ["firm.order", 1, "€300"],
     photo: ["pm.photo", 0, "€1"], video: ["pm.video", 1, "€8"],
     plan1: ["pl.1", 0, "€10 " ], plan2: ["pl.2", 0, "€25 "], plan3: ["pl.3", 0, "€40 "]
   };
   function labelFor(id) {
     var o = ORD[id], name = t(o[0]);
-    var pre = ctxNiche ? t("n." + ctxNiche) + ": " : "";
+    var pre = ctxNiche && id !== "firm" ? t("n." + ctxNiche) + ": " : "";
+    if (id === "firm") return name + ": " + t("firm.setup").toLowerCase() + " " + t("pr.from") + " €300 + " + t("pr.from") + " €99 " + t("pr.mo");
     if (id.indexOf("plan") === 0) return pre + t("sv.social.h") + ", " + name + ": " + o[2] + t("pr.mo");
     return pre + (o[2] ? name + ": " + (o[1] ? t("pr.from") + " " : "") + o[2] : name);
   }
@@ -338,8 +339,9 @@
     var box = $("#order"), lab = $("#orderLabel"), ta = $('#form [name="message"]');
     lab.textContent = order ? labelFor(order) : "";
     box.hidden = !order;
-    if (!typed) ta.value = order ? t("wa.order") + lab.textContent : "";
-    var text = order ? t("wa.order") + lab.textContent : t("wa.hero");
+    var lead = order === "firm" ? t("firm.talk") : t("wa.order");
+    if (!typed) ta.value = order ? lead + lab.textContent : "";
+    var text = order ? lead + lab.textContent : t("wa.hero");
     $$("[data-wa]").forEach(function (a) { a.href = WA + "?text=" + encodeURIComponent(text); });
   }
   $$("[data-order]").forEach(function (el) { el.addEventListener("click", function () { order = el.dataset.order; paintOrder(); }); });
@@ -353,6 +355,9 @@
     function sync() { dock.classList.toggle("on", away && !inContact); }
     new IntersectionObserver(function (es) { away = !es[0].isIntersecting; sync(); }).observe(first);
     new IntersectionObserver(function (es) { inContact = es[0].isIntersecting; sync(); }, { threshold: 0.1 }).observe(contact);
+    /* the company page has its own main button: keep the bar away while that button is on screen */
+    var own = $("#v-firm .firm__buy .btn");
+    if (own) new IntersectionObserver(function (es) { document.documentElement.classList.toggle("own-cta", es[0].isIntersecting); }).observe(own);
   })();
 
   /* ---------- 3D carousels ----------
@@ -725,6 +730,7 @@
     function toks(x) { return x.toLowerCase().replace(/[^\p{L}\p{N}']+/gu, " ").split(" ").filter(function (w) { return w.length >= 3; }); }
     function prep(o) { var r = {}; Object.keys(o).forEach(function (k) { r[k] = toks(o[k]); }); return r; }
     var NKT = prep(NK), SKT = prep(SK);
+    var FKT = toks("фирма фирмы фирму компания компании команда команды сотрудников отдел firma unternehmen betrieb team mitarbeiter abteilung company companies business team employees staff department фірма фірми компанія команда працівників відділ");
     function score(ts, kws) {
       var n = 0;
       kws.forEach(function (k) { ts.forEach(function (w) { if (w === k || (k.length >= 4 && w.length >= 4 && w.slice(0, 5) === k.slice(0, 5))) n++; }); });
@@ -770,6 +776,8 @@
     }
     function local(text) {
       var ts = toks(text), n = best(ts, NKT), sid = best(ts, SKT), F = window.FUNNEL || { niches: {} };
+      /* a team or a company without a named task: the company page */
+      if (!sid && (!n || n === "office") && score(ts, FKT) > 0) { say("b", t("bot.found")); link("#/firm", t("firm.nav")); return; }
       if (n && sid) {
         var has = (F.niches[n] || []).some(function (r) { return r[0] === sid; });
         say("b", t("bot.found"));
