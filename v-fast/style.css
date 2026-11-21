@@ -1292,3 +1292,34 @@ h1, h2, h3, .svc__h, .l3__line, .cc h3, .card h3 { letter-spacing: -0.012em; wor
 .firm-steps li small { margin-top: -0.35rem; font-family: var(--f-body); font-weight: 500; font-size: 0.9rem; letter-spacing: 0; color: var(--muted); }
 @media (max-width: 760px) { .firm-steps li small { font-size: 0.8rem; } }
 @media (prefers-reduced-motion: reduce) { .firm-fc, .firm-fc.is-hit { transition: none; } }
+
+/* ---- company page: several examples in one window, flipped up and down with the rail on the right ---- */
+.firm-ex { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: clamp(0.5rem, 1.2vw, 1rem); }
+.firm-ex__view { display: grid; min-width: 0; }
+.firm-ex__view > .firm-log { grid-area: 1 / 1; min-width: 0; display: flex; flex-direction: column; transition: opacity 0.4s var(--ease), transform 0.5s var(--ease), visibility 0s linear 0s; }
+.firm-ex__view > .firm-log figcaption { margin-top: auto; padding-top: 0.9rem; }
+.firm-ex__view > .firm-log:not(.is-cur) { opacity: 0; visibility: hidden; pointer-events: none; transition-delay: 0s, 0s, 0.5s; }
+.firm-ex__view > .firm-log[data-pos="above"] { transform: translateY(-2.5rem) scale(0.97); }
+.firm-ex__view > .firm-log[data-pos="below"] { transform: translateY(2.5rem) scale(0.97); }
+.firm-log__pic { display: grid; place-items: center; padding: 0.6rem 0 0.8rem; }
+.firm-log__pic .firm-art { width: min(100%, 13.5rem); }
+.firm-log--ex .firm-log__list li { grid-template-columns: 1.3rem 3.6ch minmax(0, 1fr); }
+.firm-log--ex .firm-log__list li.firm-log__done { grid-template-columns: 1.3rem auto minmax(0, 1fr); }
+.firm-ex__rail { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; }
+.firm-ex__tabs { position: relative; display: flex; flex-direction: column; gap: 0.55rem; }
+.firm-ex__tabs::before { content: ""; position: absolute; left: 50%; top: 1rem; bottom: 1rem; border-left: 2px dashed var(--line); }
+.firm-ex__tab, .firm-ex__next { position: relative; display: grid; place-items: center; width: 3rem; height: 3rem; border-radius: 50%; background: var(--card); border: 1px solid var(--line); color: var(--muted); cursor: pointer; transition: background-color 0.3s, color 0.3s, border-color 0.3s, transform 0.3s var(--ease); }
+.firm-ex__tab .ico, .firm-ex__next .ico { width: 1.3rem; height: 1.3rem; }
+.firm-ex__tab:hover, .firm-ex__next:hover { border-color: var(--accent); color: var(--accent); }
+.firm-ex__tab[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--on); transform: scale(1.12); box-shadow: 0 0 1.4rem -0.2rem rgba(216, 255, 0, 0.65); }
+.firm-ex__tab:focus-visible, .firm-ex__next:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.firm-ex__next { border-color: var(--accent); color: var(--accent); background: transparent; }
+.firm-ex:not(.is-used) .firm-ex__next .ico { animation: firmNudge 1.5s ease-in-out infinite; }
+@keyframes firmNudge { 50% { transform: translateY(0.3rem); } }
+.firm-ex__sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 760px) {
+  .firm-ex { gap: 0.45rem; }
+  .firm-ex__tab, .firm-ex__next { width: 2.75rem; height: 2.75rem; }
+  .firm-ex__view > .firm-log { padding: 1rem 0.85rem; }
+}
+@media (prefers-reduced-motion: reduce) { .firm-ex__view > .firm-log { transition: none; transform: none !important; } .firm-ex:not(.is-used) .firm-ex__next .ico { animation: none; } }

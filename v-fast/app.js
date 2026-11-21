@@ -386,6 +386,38 @@
     window.firmLadRepaint = function () { pick(cur); };
   })();
 
+  /* company page: several examples in one window. The rail on the right flips them up and down. */
+  (function () {
+    var ex = $("#firmEx");
+    if (!ex) return;
+    var tabs = $$(".firm-ex__tab", ex), panels = $$(".firm-ex__view > .firm-log", ex), cur = 0, timers = [];
+    function light(p) {
+      timers.forEach(clearTimeout); timers = [];
+      if (!p.classList.contains("firm-log--ex")) return;
+      var rows = $$(".firm-log__list li", p);
+      rows.forEach(function (r) { r.classList.remove("is-on"); });
+      rows.forEach(function (r, i) { timers.push(setTimeout(function () { r.classList.add("is-on"); }, reduce ? 0 : 450 + i * 380)); });
+    }
+    function go(n, focus) {
+      n = (n + panels.length) % panels.length;
+      ex.classList.add("is-used");
+      if (n !== cur) {
+        panels.forEach(function (p, i) { p.classList.toggle("is-cur", i === n); p.dataset.pos = i < n ? "above" : i > n ? "below" : ""; p.inert = i !== n; });
+        tabs.forEach(function (t, i) { t.setAttribute("aria-selected", String(i === n)); t.tabIndex = i === n ? 0 : -1; });
+        cur = n; light(panels[n]);
+      }
+      if (focus) tabs[n].focus();
+    }
+    panels.forEach(function (p, i) { if (p.classList.contains("firm-log--ex")) p.classList.add("is-live"); p.inert = i !== 0; });
+    tabs.forEach(function (t, i) {
+      t.addEventListener("click", function () { go(i); });
+      t.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); go(cur + (e.key === "ArrowDown" ? 1 : -1), true); }
+      });
+    });
+    $("#firmExNext").addEventListener("click", function () { go(cur + 1); });
+  })();
+
   /* company page: the night is a slider. Drag the sun and the morning numbers grow. */
   (function () {
     var sky = $(".firm-log__sky"), inp = $("#firmNight");
