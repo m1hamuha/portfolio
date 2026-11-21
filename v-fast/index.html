@@ -92,7 +92,7 @@
     </script>
     <link rel="preload" href="./fonts/piazzolla-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="./fonts/golos-text-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="./style.css?v=9dd17f35" />
+    <link rel="stylesheet" href="./style.css?v=a1452e2b" />
   </head>
   <body>
     <a class="skip" href="#main" data-i18n="skip">Skip to content</a>
@@ -1726,21 +1726,21 @@
               </header>
               <p class="firm__line" data-i18n="firm.line">AI handles your team's routine work overnight. By morning it's ready.</p>
               <div class="firm__buy">
-                <p class="firm__price"><span class="firm__setup"><span data-i18n="firm.setup">Setup</span> <b><span data-i18n="pr.from">from</span> €300</b></span><span class="firm__plus">+</span><span class="firm__mo"><b><span data-i18n="pr.from">from</span> €99</b> <span data-i18n="pr.mo">/ month</span></span></p>
                 <a class="btn btn--ink" href="#contact" data-order="firm"><span data-i18n="firm.cta">Talk about my company</span><svg class="ico" aria-hidden="true"><use href="#i-arrow" /></svg></a>
+                <ul class="firm__facts"><li><svg class="ico" aria-hidden="true"><use href="#f-calendar" /></svg><span data-i18n="firm.fact.1">First result in 2 weeks</span></li><li><svg class="ico" aria-hidden="true"><use href="#f-globe" /></svg><span data-i18n="firm.safe.1">Stored in the EU</span></li></ul>
               </div>
             </div>
             <figure class="firm-log" aria-labelledby="firmLogCap">
               <div class="firm-log__head"><span class="firm-log__dot" aria-hidden="true"></span><b data-i18n="firm.log.h">Night shift</b><output class="firm-log__clock" id="firmClock" for="firmNight">08:00</output></div>
-              <div class="firm-log__sky"><svg class="firm-night" viewBox="0 -8 400 108" aria-hidden="true" focusable="false"><defs><clipPath id="firmNightClip"><rect x="0" y="-20" width="400" height="140"/></clipPath></defs><path class="d" d="M24 78C100 -6 300 -6 376 78"/><path class="a firm-night__run" clip-path="url(#firmNightClip)" d="M24 78C100 -6 300 -6 376 78"/><path class="g moon" d="M30 70a12 12 0 1 1-12-14 9 9 0 0 0 12 14z"/><g class="firm-night__knob" transform="translate(376 78)"><circle class="firm-night__halo" r="19"/><circle class="af" r="11"/></g></svg><input type="range" class="firm-night__range" id="firmNight" min="0" max="100" value="100" aria-labelledby="firmDrag" /><span class="firm-log__t firm-log__t--a">22:00</span><span class="firm-log__drag" id="firmDrag" data-i18n="firm.log.drag">Drag the sun</span><span class="firm-log__t firm-log__t--b">08:00</span></div>
+              <div class="firm-log__sky"><svg class="firm-night" viewBox="0 -8 400 114" aria-hidden="true" focusable="false"><defs><clipPath id="firmNightClip"><rect x="0" y="-20" width="400" height="140"/></clipPath></defs><path class="d" d="M24 78C100 -6 300 -6 376 78"/><path class="a firm-night__run" clip-path="url(#firmNightClip)" d="M24 78C100 -6 300 -6 376 78"/><path class="g moon" d="M30 70a12 12 0 1 1-12-14 9 9 0 0 0 12 14z"/><g class="firm-night__knob" transform="translate(376 78)"><circle class="firm-night__halo" r="19"/><circle class="af" r="11"/></g></svg><input type="range" class="firm-night__range" id="firmNight" min="0" max="100" value="100" aria-labelledby="firmDrag" /><span class="firm-log__t firm-log__t--a">18:00</span><span class="firm-log__drag" id="firmDrag" data-i18n="firm.log.drag">Drag the sun</span><span class="firm-log__t firm-log__t--b">08:00</span></div>
               <ol class="firm-log__list">
                 <li class="rv" style="--i: 1" data-n="47" data-at="90"><svg class="ico" aria-hidden="true"><use href="#f-mail" /></svg><b>47</b><span data-i18n="firm.log.2">emails sorted</span></li>
                 <li class="rv" style="--i: 2" data-n="1" data-at="50"><svg class="ico" aria-hidden="true"><use href="#f-chart" /></svg><b>1</b><span data-i18n="firm.log.3">weekly report ready</span></li>
                 <li class="rv" style="--i: 3" data-n="3" data-at="70"><svg class="ico" aria-hidden="true"><use href="#f-coins" /></svg><b>3</b><span data-i18n="firm.log.4">invoices unpaid</span></li>
                 <li class="rv" style="--i: 4" data-n="2" data-at="85"><svg class="ico" aria-hidden="true"><use href="#f-checklist" /></svg><b>2</b><span data-i18n="firm.log.5">errors found in orders</span></li>
-                <li class="rv firm-log__done" style="--i: 5"><svg class="ico" aria-hidden="true"><use href="#f-bell" /></svg><time>08:00</time><span data-i18n="firm.log.6">Summary on your phone</span></li>
+                <li class="rv firm-log__done" style="--i: 5"><svg class="ico" aria-hidden="true"><use href="#f-bell" /></svg><span class="firm-log__when" data-i18n="firm.log.am">Morning</span><span data-i18n="firm.log.6">Summary on your phone</span></li>
               </ol>
-              <figcaption id="firmLogCap" data-i18n="firm.log.cap">An example night. Nothing is sent without you.</figcaption>
+              <figcaption id="firmLogCap" data-i18n="firm.log.cap">An example night. Nothing is decided without you.</figcaption>
             </figure>
           </div>
 
@@ -1809,18 +1809,20 @@
             <button type="button" class="btn btn--ghost firm-less" id="firmLess"><span data-i18n="firm.less">Show less</span><svg class="ico" aria-hidden="true"><use href="#f-chev" /></svg></button>
           </div>
 
-          <h3 class="sub" data-i18n="firm.lad.h">Price</h3>
-          <ol class="firm-lad">
-            <li class="firm-lad__s rv" style="--i: 0"><svg class="ico" aria-hidden="true"><use href="#f-chat" /></svg><a class="firm-lad__n" href="#contact" data-order="assistant" data-i18n="firm.lad.1">Trial</a><b class="firm-lad__p"><span data-i18n="pr.from">from</span> €49</b><span class="firm-lad__u" data-i18n="pr.once">paid once</span><span class="firm-lad__d" data-i18n="firm.lad.1s">One helper</span></li>
-            <li class="firm-lad__s rv" style="--i: 1"><svg class="ico" aria-hidden="true"><use href="#f-link" /></svg><a class="firm-lad__n" href="#contact" data-order="firm" data-i18n="firm.setup">Setup</a><b class="firm-lad__p"><span data-i18n="pr.from">from</span> €300</b><span class="firm-lad__u" data-i18n="pr.once">paid once</span><span class="firm-lad__d" data-i18n="firm.lad.2s">Several tasks, connected to your tools</span></li>
-            <li class="firm-lad__s rv" style="--i: 2"><svg class="ico" aria-hidden="true"><use href="#f-refresh" /></svg><a class="firm-lad__n" href="#contact" data-order="firm" data-i18n="firm.lad.3">Support</a><b class="firm-lad__p"><span data-i18n="pr.from">from</span> €99</b><span class="firm-lad__u" data-i18n="pr.mo">/ month</span><span class="firm-lad__d" data-i18n="firm.lad.3s">I check and fix</span></li>
-          </ol>
+          <h3 class="sub" id="firmLadH" data-i18n="firm.lad.h">Price</h3>
+          <div class="firm-lad rv" id="firmLad" role="group" aria-labelledby="firmLadH">
+            <button type="button" class="firm-lad__s" style="--i: 0" data-pick="firmtry" aria-pressed="true"><svg class="ico" aria-hidden="true"><use href="#f-chat" /></svg><span class="firm-lad__n" data-i18n="firm.lad.1">Trial</span><b class="firm-lad__p"><span data-i18n="pr.from">from</span> €49</b><span class="firm-lad__u" data-i18n="pr.once">paid once</span><span class="firm-lad__d" data-i18n="firm.lad.1s">One helper</span></button>
+            <button type="button" class="firm-lad__s" style="--i: 1" data-pick="firmsetup" aria-pressed="false"><svg class="ico" aria-hidden="true"><use href="#f-link" /></svg><span class="firm-lad__n" data-i18n="firm.setup">Setup</span><b class="firm-lad__p"><span data-i18n="pr.from">from</span> €300</b><span class="firm-lad__u" data-i18n="pr.once">paid once</span><span class="firm-lad__d" data-i18n="firm.lad.2s">Several tasks, connected to your tools</span></button>
+            <button type="button" class="firm-lad__s" style="--i: 2" data-pick="firmcare" aria-pressed="false"><svg class="ico" aria-hidden="true"><use href="#f-refresh" /></svg><span class="firm-lad__n" data-i18n="firm.lad.3">Support</span><b class="firm-lad__p"><span data-i18n="pr.from">from</span> €99</b><span class="firm-lad__u" data-i18n="pr.mo">/ month</span><span class="firm-lad__d" data-i18n="firm.lad.3s">I check and fix</span></button>
+            <span class="firm-lad__ball" aria-hidden="true"></span>
+          </div>
+          <a class="btn btn--ink firm-lad__go rv" id="firmLadGo" href="#contact" data-order="firmtry"><span data-i18n="firm.lad.go">Start:</span> <span class="firm-lad__goname" id="firmLadName" aria-live="polite"></span><svg class="ico" aria-hidden="true"><use href="#i-arrow" /></svg></a>
           <p class="firm-lad__note rv"><svg class="ico" aria-hidden="true"><use href="#f-coins" /></svg><span data-i18n="firm.lad.note">You pay for the server and the AI subscription yourself. I pick both to fit your tasks.</span></p>
           <h3 class="sub" data-i18n="firm.how">How we start</h3>
           <ol class="firm-steps">
-            <li class="rv" style="--i: 0"><span class="firm-steps__ico"><svg class="ico" aria-hidden="true"><use href="#f-compass" /></svg></span><span data-i18n="firm.step.1">One process first</span></li>
-            <li class="rv" style="--i: 1"><span class="firm-steps__ico"><svg class="ico" aria-hidden="true"><use href="#f-calendar" /></svg></span><span data-i18n="firm.step.2">First result in 2 weeks</span></li>
-            <li class="rv" style="--i: 2"><span class="firm-steps__ico"><svg class="ico" aria-hidden="true"><use href="#f-chart" /></svg></span><span data-i18n="firm.step.3">Numbers before and after</span></li>
+            <li class="rv" style="--i: 0"><span class="firm-steps__ico"><svg class="ico" aria-hidden="true"><use href="#f-chat" /></svg></span><a href="#contact" data-order="firm" data-i18n="firm.step.1">You write to me</a></li>
+            <li class="rv" style="--i: 1"><span class="firm-steps__ico"><svg class="ico" aria-hidden="true"><use href="#f-people" /></svg></span><span data-i18n="firm.step.2">We talk through the details</span></li>
+            <li class="rv" style="--i: 2"><span class="firm-steps__ico"><svg class="ico" aria-hidden="true"><use href="#f-chart" /></svg></span><span data-i18n="firm.step.3">First result</span><small data-i18n="firm.step.3s">2 weeks at most</small></li>
           </ol>
 
           <div class="firm-safe rv">
@@ -1898,10 +1900,10 @@
         <button type="submit" class="bot__send" aria-label="Send" data-i18n-aria="bot.send"><svg class="ico ph"><use href="#l-send-plane" /></svg></button>
       </form>
     </div>
-    <script src="./i18n.js?v=eecd5fb4"></script>
+    <script src="./i18n.js?v=3b56a53f"></script>
     <script>window.FUNNEL = {"niches": {"salon": [["bot", "nl.salon.bot"], ["mail", "nl.salon.mail"], ["reviews", "nl.salon.reviews"], ["social", "nl.salon.social"], ["site", "nl.salon.site"], ["content", "nl.salon.content"]], "cafe": [["bot", "nl.cafe.bot"], ["mail", "nl.cafe.mail"], ["reviews", "nl.cafe.reviews"], ["reports", "nl.cafe.reports"], ["social", "nl.cafe.social"], ["hiring", "nl.cafe.hiring"], ["site", "nl.cafe.site"], ["content", "nl.cafe.content"]], "shop": [["reviews", "nl.shop.reviews"], ["site", "nl.shop.site"], ["reports", "nl.shop.reports"], ["social", "nl.shop.social"], ["hiring", "nl.shop.hiring"], ["content", "nl.shop.content"], ["bot", "nl.shop.bot"]], "trades": [["bot", "nl.trades.bot"], ["docs", "nl.trades.docs"], ["leads", "nl.trades.leads"], ["reviews", "nl.trades.reviews"], ["site", "nl.trades.site"], ["mail", "nl.trades.mail"], ["hiring", "nl.trades.hiring"], ["reports", "nl.trades.reports"]], "fitness": [["bot", "nl.fitness.bot"], ["mail", "nl.fitness.mail"], ["leads", "nl.fitness.leads"], ["social", "nl.fitness.social"], ["reviews", "nl.fitness.reviews"], ["content", "nl.fitness.content"], ["site", "nl.fitness.site"], ["hiring", "nl.fitness.hiring"]], "clinic": [["mail", "nl.clinic.mail"], ["bot", "nl.clinic.bot"], ["reviews", "nl.clinic.reviews"], ["hiring", "nl.clinic.hiring"], ["leads", "nl.clinic.leads"], ["site", "nl.clinic.site"]], "cleaning": [["hiring", "nl.cleaning.hiring"], ["bot", "nl.cleaning.bot"], ["leads", "nl.cleaning.leads"], ["mail", "nl.cleaning.mail"], ["reviews", "nl.cleaning.reviews"], ["docs", "nl.cleaning.docs"], ["reports", "nl.cleaning.reports"], ["site", "nl.cleaning.site"], ["assistant", "nl.cleaning.assistant"]], "office": [["leads", "nl.office.leads"], ["docs", "nl.office.docs"], ["bot", "nl.office.bot"], ["mail", "nl.office.mail"], ["reports", "nl.office.reports"], ["hiring", "nl.office.hiring"], ["assistant", "nl.office.assistant"]], "other": [["bot", "d.bot"], ["reviews", "d.reviews"], ["leads", "d.leads"], ["mail", "d.mail"], ["social", "d.social"], ["reports", "d.reports"], ["site", "d.site"], ["hiring", "d.hiring"], ["docs", "d.docs"], ["content", "d.content"]]}, "icons": {"salon": "scissors", "cafe": "coffee", "shop": "shopping-bag", "trades": "wrench", "fitness": "dumbbell", "clinic": "stethoscope", "cleaning": "spray-can", "office": "building-2", "other": "sparkles"}, "sv": {"social": {"icon": "calendar-days", "amt": "€10", "per": true}, "bot": {"icon": "bot", "amt": "€79", "per": false}, "content": {"icon": "image", "amt": "€1", "per": false}, "reports": {"icon": "chart-column", "amt": "€19", "per": false}, "docs": {"icon": "file-text", "amt": "€19", "per": false}, "reviews": {"icon": "star", "amt": "€15", "per": false}, "data": {"icon": "search", "amt": "€29", "per": false}, "site": {"icon": "globe", "amt": "€29", "per": false}, "leads": {"icon": "contact", "amt": "€29", "per": false}, "mail": {"icon": "bell-ring", "amt": "€19", "per": false}, "translate": {"icon": "languages", "amt": "€5", "per": false}, "assistant": {"icon": "message-square-more", "amt": "€49", "per": false}, "hiring": {"icon": "hiring", "amt": "€15", "per": false}}};</script>
     <script src="./content.js?v=11ba40de"></script>
-    <script src="./app.js?v=aba2d9c0"></script>
+    <script src="./app.js?v=6c2fc2cf"></script>
     <script src="./vendor/gsap.min.js" defer></script>
     <script src="./vendor/ScrollTrigger.min.js" defer></script>
     <script src="./motion.js?v=1e4c495f" defer></script>

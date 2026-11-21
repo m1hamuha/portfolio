@@ -46,6 +46,7 @@
     var canon = $('link[rel="canonical"]');
     if (canon) canon.href = "https://m1hamuha.github.io/portfolio/v-fast/" + (lang === "en" ? "" : "?lang=" + lang);
     $$("[data-i18n]").forEach(function (el) { el.textContent = t(el.dataset.i18n); });
+    if (window.firmLadRepaint) window.firmLadRepaint();
     $$("[data-i18n-html]").forEach(function (el) { el.innerHTML = t(el.dataset.i18nHtml); });
     $$("[data-i18n-aria]").forEach(function (el) { el.setAttribute("aria-label", t(el.dataset.i18nAria)); });
     $$("[data-i18n-ph]").forEach(function (el) { el.setAttribute("placeholder", t(el.dataset.i18nPh)); });
@@ -325,15 +326,16 @@
     social: ["sv.social.h", 1, "€10"], bot: ["sv.bot.h", 1, "€79"], content: ["sv.content.h", 1, "€1"],
     reports: ["sv.reports.h", 1, "€19"], docs: ["sv.docs.h", 1, "€19"], reviews: ["sv.reviews.h", 1, "€15"],
     data: ["sv.data.h", 1, "€29"], site: ["sv.site.h", 1, "€29"], leads: ["sv.leads.h", 1, "€29"], mail: ["sv.mail.h", 1, "€19"],
-    translate: ["sv.translate.h", 1, "€5"], assistant: ["sv.assistant.h", 1, "€49"], hiring: ["sv.hiring.h", 1, "€15"], custom: ["sv.custom.h", 0, ""], firm: ["firm.order", 1, "€300"],
+    translate: ["sv.translate.h", 1, "€5"], assistant: ["sv.assistant.h", 1, "€49"], hiring: ["sv.hiring.h", 1, "€15"], custom: ["sv.custom.h", 0, ""], firm: ["firm.order", 1, "€300"], firmtry: ["firm.lad.1", 1, "€49"], firmsetup: ["firm.setup", 1, "€300"], firmcare: ["firm.lad.3", 1, "€99"],
     photo: ["pm.photo", 0, "€1"], video: ["pm.video", 1, "€8"],
     plan1: ["pl.1", 0, "€10 " ], plan2: ["pl.2", 0, "€25 "], plan3: ["pl.3", 0, "€40 "]
   };
   function labelFor(id) {
     var o = ORD[id], name = t(o[0]);
-    var pre = ctxNiche && id !== "firm" ? t("n." + ctxNiche) + ": " : "";
+    var isFirm = id.indexOf("firm") === 0, pre = ctxNiche && !isFirm ? t("n." + ctxNiche) + ": " : "";
     var nb = function (x) { return x.replace(/ /g, " "); };
-    if (id === "firm") return name + ": " + t("firm.setup").toLowerCase() + " " + nb(t("pr.from") + " €300") + " + " + nb(t("pr.from") + " €99 " + t("pr.mo"));
+    /* company offers never take a business prefix; a picked price step is named after the offer */
+    if (isFirm) return id === "firm" ? name : t("firm.order") + ": " + name;
     if (id.indexOf("plan") === 0) return pre + t("sv.social.h") + ", " + name + ": " + nb(o[2] + t("pr.mo"));
     return pre + (o[2] ? name + ": " + nb((o[1] ? t("pr.from") + " " : "") + o[2]) : name);
   }
@@ -342,7 +344,7 @@
     var box = $("#order"), lab = $("#orderLabel"), ta = $('#form [name="message"]');
     lab.textContent = order ? labelFor(order) : "";
     box.hidden = !order;
-    var auto = order ? (order === "firm" ? t("firm.talk") : t("wa.order")) + lab.textContent : "";
+    var auto = order ? (order.indexOf("firm") === 0 ? t("firm.talk") : t("wa.order")) + lab.textContent : "";
     if (ta.value.indexOf(lastAuto) === 0) ta.value = auto + ta.value.slice(lastAuto.length);
     lastAuto = auto;
     var text = order ? auto : t("wa.hero");
@@ -356,12 +358,40 @@
   $("#orderClear").addEventListener("click", function () { order = null; paintOrder(); });
 
   /* ---------- company page: six pictures, the whole list opens under "Full list" ---------- */
+  /* company page: price steps. Pick one, the ball hops onto it and the button below names it. */
+  (function () {
+    var lad = $("#firmLad"), go = $("#firmLadGo");
+    if (!lad || !go) return;
+    var steps = $$(".firm-lad__s", lad), ball = $(".firm-lad__ball", lad), name = $("#firmLadName"), cur = steps[0];
+    function place() {
+      if (!lad.offsetParent) { ball.classList.remove("is-on"); return; }
+    var phone = window.matchMedia("(max-width: 760px)").matches;
+      ball.style.left = (phone ? cur.offsetLeft + cur.offsetWidth - 6 : cur.offsetLeft + cur.offsetWidth / 2) + "px";
+      ball.style.top = cur.offsetTop + "px";
+      ball.classList.add("is-on");
+    }
+    function pick(b) {
+      cur = b;
+      steps.forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+      go.dataset.order = b.dataset.pick;
+      name.textContent = $(".firm-lad__n", b).textContent + ", " + $(".firm-lad__p", b).textContent.replace(/\s+/g, "\u00a0").trim();
+      place();
+    }
+    steps.forEach(function (b) { b.addEventListener("click", function () { pick(b); }); });
+    window.addEventListener("resize", place);
+    window.addEventListener("hashchange", function () { setTimeout(place, 60); });
+    /* the page can open on another route and show later: place the ball once it has a real size */
+    if ("ResizeObserver" in window) new ResizeObserver(place).observe(lad);
+    pick(cur);
+    window.firmLadRepaint = function () { pick(cur); };
+  })();
+
   /* company page: the night is a slider. Drag the sun and the morning numbers grow. */
   (function () {
     var sky = $(".firm-log__sky"), inp = $("#firmNight");
     if (!sky || !inp) return;
     var fig = sky.closest(".firm-log"), knob = $(".firm-night__knob", sky), clip = $("#firmNightClip rect"), clock = $("#firmClock");
-    var rows = $$(".firm-log__list li[data-n]", fig), done = $(".firm-log__done", fig), raf = 0, touched = false;
+    var rows = $$(".firm-log__list li[data-n]", fig), done = $(".firm-log__done", fig), raf = 0, touched = false, wait = 0, val = 100;
     function bx(u) { var m = 1 - u; return 24 * m * m * m + 300 * u * m * m + 900 * u * u * m + 376 * u * u * u; }
     function by(u) { var m = 1 - u; return 78 * m * m * m - 18 * u * m * m - 18 * u * u * m + 78 * u * u * u; }
     function paint(v) {
@@ -370,7 +400,7 @@
       for (var i = 0; i < 20; i++) { u = (lo + hi) / 2; if (bx(u) < x) lo = u; else hi = u; }
       knob.setAttribute("transform", "translate(" + x.toFixed(1) + " " + by(u).toFixed(1) + ")");
       clip.setAttribute("width", x.toFixed(1));
-      var min = (22 * 60 + Math.round(v * 0.6) * 10) % 1440, txt = ("0" + Math.floor(min / 60)).slice(-2) + ":" + ("0" + (min % 60)).slice(-2);
+      var min = (18 * 60 + Math.round(v * 0.84) * 10) % 1440, txt = ("0" + Math.floor(min / 60)).slice(-2) + ":" + ("0" + (min % 60)).slice(-2);
       clock.textContent = txt; inp.setAttribute("aria-valuetext", txt);
       rows.forEach(function (li) {
         var n = +li.dataset.n, on = v >= +li.dataset.at;
@@ -380,13 +410,26 @@
       });
       done.classList.toggle("is-on", v >= 99);
     }
-    function set(v) { inp.value = v; paint(v); }
-    function stop() { cancelAnimationFrame(raf); raf = 0; if (!touched) { touched = true; fig.classList.add("is-touched"); } }
+    function set(v) { val = Math.max(0, Math.min(100, v)); inp.value = val; paint(val); }
+    function stop() { cancelAnimationFrame(raf); raf = 0; clearTimeout(wait); if (!touched) { touched = true; fig.classList.add("is-touched"); } }
+    /* the night keeps going: from wherever the sun is, on to the morning */
+    function play(from) {
+      var t0 = 0, span = (100 - from) * 42;
+      cancelAnimationFrame(raf);
+      if (reduce || span <= 0) return;
+      raf = requestAnimationFrame(function step(ts) {
+        if (!t0) t0 = ts;
+        var p = Math.min(1, (ts - t0) / span);
+        set(from + (100 - from) * p);
+        raf = p < 1 ? requestAnimationFrame(step) : 0;
+      });
+    }
+    function resume() { clearTimeout(wait); wait = setTimeout(function () { play(val); }, 900); }
     function at(e) { var r = sky.getBoundingClientRect(); return ((e.clientX - r.left) / r.width * 400 - 24) / 3.52; }
     sky.addEventListener("pointerdown", function (e) { stop(); sky.classList.add("is-drag"); try { sky.setPointerCapture(e.pointerId); } catch (x) {} set(at(e)); });
     sky.addEventListener("pointermove", function (e) { if (sky.classList.contains("is-drag")) set(at(e)); });
-    ["pointerup", "pointercancel"].forEach(function (k) { sky.addEventListener(k, function () { sky.classList.remove("is-drag"); }); });
-    inp.addEventListener("input", function () { stop(); paint(+inp.value); });
+    ["pointerup", "pointercancel"].forEach(function (k) { sky.addEventListener(k, function () { if (sky.classList.contains("is-drag")) { sky.classList.remove("is-drag"); resume(); } }); });
+    inp.addEventListener("input", function () { stop(); val = +inp.value; paint(val); resume(); });
     inp.addEventListener("focus", function () { if (inp.matches(":focus-visible")) sky.classList.add("is-focus"); });
     inp.addEventListener("blur", function () { sky.classList.remove("is-focus"); });
     fig.classList.add("is-live");
@@ -395,13 +438,7 @@
     var io = new IntersectionObserver(function (en) {
       if (!en[0].isIntersecting) return;
       io.disconnect();
-      var t0 = 0;
-      raf = requestAnimationFrame(function step(ts) {
-        if (!t0) t0 = ts;
-        var p = Math.min(1, (ts - t0) / 4200);
-        set(100 * p);
-        raf = p < 1 ? requestAnimationFrame(step) : 0;
-      });
+      if (!touched) play(0);
     }, { threshold: 0.5 });
     io.observe(sky);
   })();
@@ -409,10 +446,17 @@
   (function () {
     var more = $("#firmMore"), full = $("#firmFull");
     if (!more || !full) return;
+    var hitT = 0;
+    /* the picked category glows, then lets go slowly once the visitor has had time to find it */
+    function hit(el) {
+      $$(".firm-fc.is-hit").forEach(function (x) { x.classList.remove("is-hit"); });
+      el.classList.add("is-hit"); clearTimeout(hitT);
+      hitT = setTimeout(function () { el.classList.remove("is-hit"); }, 5200);
+    }
     function open(on, to) {
       full.hidden = !on; more.setAttribute("aria-expanded", String(on));
       var el = on && to ? $("#fc-" + to) : null;
-      if (el) { el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" }); el.focus({ preventScroll: true }); }
+      if (el) { el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" }); el.focus({ preventScroll: true }); hit(el); }
     }
     more.addEventListener("click", function () { open(full.hidden); });
     $("#firmLess").addEventListener("click", function () { open(false); more.focus({ preventScroll: true }); more.scrollIntoView({ behavior: "auto", block: "center" }); });
