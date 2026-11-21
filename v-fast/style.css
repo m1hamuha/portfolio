@@ -882,8 +882,8 @@ h1, h2, h3, .svc__h, .l3__line, .cc h3, .card h3 { letter-spacing: -0.012em; wor
 /* computer: the first screen is exactly one screen and never scrolls. Everything on the page is
    sized in rem, so the root size follows both the width and the height of the window. The block
    (headline, question, carousel) is centred in the space under the menu with even gaps. */
-@media (min-width: 1100px) {
-  html.at-home { font-size: clamp(10px, min(1.25vw, 2vh), 21px); height: 100%; overflow: hidden; }
+@media (min-width: 1100px) and (min-height: 600px) {
+  html.at-home { font-size: clamp(12px, min(1.25vw, 2vh), 21px); height: 100%; overflow: hidden; }
   .at-home body { height: 100%; overflow: hidden; }
   .at-home .hero { height: 100svh; display: flex; flex-direction: column; justify-content: center; gap: 1.3rem; padding: 7.1rem 0 1.4rem; }
   .at-home .hero h1 { font-size: 3.6rem; line-height: 1.1; max-width: 26em; margin: 0 auto; }
@@ -894,6 +894,179 @@ h1, h2, h3, .svc__h, .l3__line, .cc h3, .card h3 { letter-spacing: -0.012em; wor
   .at-home .car__btn { bottom: 1.3rem; }
   .at-home .car__dots { margin-top: -0.4rem; }
   .at-home .hero__cta { display: none; } /* the menu already has "Write to me" */
+}
+
+/* computer: a business page is one screen too. Only the carousel moves, left and right. */
+@media (min-width: 1100px) and (min-height: 600px) {
+  html.at-niche { font-size: clamp(12px, min(1.25vw, 2vh), 21px); height: 100%; overflow: hidden; }
+  .at-niche body { height: 100%; overflow: hidden; }
+  .at-niche .svc.nv:not([hidden]) { height: 100svh; display: flex; flex-direction: column; justify-content: center; gap: 1.3rem; padding: 6.3rem 0 1.8rem; }
+  .at-niche .nv .back { margin: 0 0 1rem; font-size: 1.1rem; }
+  .at-niche .nv .svc__head { margin: 0; flex-wrap: nowrap; gap: 1.2rem; }
+  .at-niche .nv .svc__h { font-size: 3.6rem; line-height: 1.1; margin: 0; }
+  .at-niche .nv .card__ico--big { width: 4.4rem; height: 4.4rem; flex: none; }
+  .at-niche .nv .car { --cw: 18.5rem; }
+  .at-niche .nv .car__track { padding-top: 1.4rem; padding-bottom: 5rem; }
+  .at-niche .nv .cc--s { min-height: 0; height: 23.5rem; justify-content: center; }
+  .at-niche .nv .car__btn { bottom: 1.3rem; }
+  .at-niche .nv .car__dots { margin-top: -0.4rem; }
+}
+
+/* phone: everything is sized in rem, so the whole page grows with the screen width.
+   320px keeps the base size; a usual 390px phone gets about 12% larger text, icons and buttons. */
+@media (max-width: 760px) {
+  html { font-size: clamp(16px, 4.6vw, 19.5px); }
+  .nv .cc__what { font-size: 1rem; line-height: 1.4; }
+  .cc__top { font-size: 0.82rem; }
+  .scene__hint { font-size: 0.95rem; }
+  .ph__lbl { font-size: 0.85rem; }
+  .lang button { font-size: 0.78rem; }
+}
+
+/* fixes after the visitors' walk-through */
+.car__btn:disabled { opacity: 0.3; cursor: default; pointer-events: none; }
+.ph__knob { left: clamp(1.75rem, var(--pos), calc(100% - 1.75rem)); }
+.scene__hint { text-align: center; }
+.hand.is-sent ~ .scene__hint { visibility: hidden; }
+.order { display: flex; text-align: left; border-radius: 1.2rem; }
+.order b { flex: 1; min-width: 0; }
+.order button { flex: none; width: 2.75rem; height: 2.75rem; background: #3a3a3a; color: #fff; font-size: 1.5rem; }
+.back { min-height: 2.75rem; }
+.scr__head b, .mk-from { font-size: 0.8rem; color: #c4c4c4; }
+.at-home .nav a[href="#services"] { display: none; }
+@media (min-width: 761px) { .foot { padding-right: 5rem; } }
+@media (max-width: 760px) {
+  /* the page of one task: nothing lies on top of the mock-up or the Order button */
+  .lvl3 .dock { display: none !important; }
+  .lvl3 .bot-fab { display: grid; bottom: 1rem; }
+  .foot { margin-bottom: 0; padding-right: 4.5rem; }
+  /* first screen: the next business peeks in from the side, the dots are easy to see */
+  .at-home .hero__cta { display: none; }
+  .at-home .car { --cw: min(60vw, 16rem); }
+  .at-home .cc--n { min-height: 0; height: min(20.5rem, 50svh); justify-content: center; }
+  .at-home .car__dots { margin-top: -0.6rem; gap: 0.55rem; }
+  .at-home .car__dots i { width: 0.65rem; height: 0.65rem; }
+  .at-home .car__dots i.on { width: 1.9rem; }
+  #botIn::placeholder { font-size: 0.9rem; }
+}
+/* short phones: the whole first step (headline, question, card with its arrow, dots) stays on one screen */
+@media (max-width: 760px) and (max-height: 760px) {
+  .at-home .hero { padding-block: 5rem 1rem; }
+  .at-home .hero h1 { font-size: 1.6rem; }
+  .at-home .hero__ask { margin-top: 0.6rem; }
+  .at-home .car__track { padding-top: 0.9rem; padding-bottom: 2rem; }
+  .at-home .cc--n { height: auto; padding: 1rem; gap: 0.55rem; }
+  .at-home .cc__art { width: 5.2rem; height: 5.2rem; margin: 0 auto; }
+  .at-home .cc__art .ico { width: 2.3rem; height: 2.3rem; }
+}
+.order { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 0.8rem; row-gap: 0.15rem; padding: 0.7rem 0.7rem 0.7rem 1rem; }
+.order > span { grid-column: 1; font-size: 0.85rem; color: var(--muted); }
+.order b { grid-column: 1; line-height: 1.3; }
+.order button { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+/* the row of small task icons never leaves its card: it wraps onto a second row */
+.cc__mini { flex-wrap: wrap; max-width: 100%; row-gap: 0.45rem; }
+
+/* ---------- every screen in every state: nothing spills, is cut, overlaps or jumps ---------- */
+/* home cards: round stays round, title / icons / arrow sit at the same height on every card */
+.at-home .cc--n .cc__art { flex: 0 1 auto; width: auto; height: 5.4rem; max-height: 5.4rem; min-height: 3.6rem; aspect-ratio: 1; align-self: center; }
+.at-home .cc--n .cc__art .ico { width: 44%; height: 44%; }
+.at-home .cc--n h3 { min-height: 2.2em; display: grid; align-content: center; flex: none; }
+.at-home .cc--n .cc__mini { min-height: calc(2 * 1.35rem + 0.45rem); align-content: center; flex: none; }
+.cc__go { flex: none; }
+.cc__mini { margin-inline: auto; }
+.cc__mini:has(> :nth-child(9):last-child) { max-width: 9.7rem; }
+@media (max-width: 760px) {
+  .cc__mini:has(> :nth-child(6):last-child) { max-width: 5.6rem; }
+  .cc__mini:has(> :nth-child(7):last-child), .cc__mini:has(> :nth-child(8):last-child) { max-width: 7.6rem; }
+  /* side cards are plain silhouettes, not sliced letters */
+  #work .cc:not(.mid) > * { opacity: 0; transition: opacity 0.25s; }
+  #work .cc.mid > * { opacity: 1; transition: opacity 0.25s; }
+  .nv .svc__head, .l3 .svc__head { flex-direction: column; flex-wrap: nowrap; align-items: center; gap: 0.9rem; }
+  .nv .cc--top { padding-top: 1.6rem; }
+  .bot:not([hidden]) { box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.62), 0 24px 60px rgba(0, 0, 0, 0.7); }
+}
+@media (max-width: 760px) and (max-height: 760px) { .at-home .cc--n .cc__art { height: 5.2rem; max-height: 5.2rem; } }
+@media (max-width: 340px) { .nv .cc--s { column-gap: 0.75rem; } }
+@media (min-width: 1100px) {
+  .cc__art { flex: none; }
+  .at-home .cc--n .cc__art { width: 7.6rem; height: 7.6rem; max-height: none; margin: 0 auto; }
+  .at-home .cc--n .cc__mini { flex-wrap: nowrap; gap: 0.4rem; max-width: none; min-height: 0; }
+  .at-niche .nv .cc--s { gap: 0.7rem; }
+}
+/* phone with the address bar showing: the first screen still ends with the dots */
+@media (max-width: 760px) and (min-height: 761px) and (max-height: 880px) {
+  .at-home .hero { padding-block: 5rem 1rem; }
+  .at-home .hero h1 { font-size: 1.6rem; }
+  .at-home .hero__ask { margin-top: 0.6rem; }
+  .at-home .car__track { padding-top: 0.9rem; padding-bottom: 2rem; }
+  .at-home .cc--n { height: min(20.5rem, calc(100svh - 19.8rem)); }
+}
+@media (max-width: 380px) and (max-height: 600px) {
+  .at-home .hero { padding-block: 4.6rem 0.6rem; }
+  .at-home .hero h1 { font-size: 1.45rem; }
+  .at-home .cc--n .cc__art { height: 4.4rem; max-height: 4.4rem; }
+  .at-home .car__track { padding-top: 0.6rem; padding-bottom: 1.6rem; }
+}
+/* demo phone: the knob never lies on the text; the hidden screen shows no scraps; nothing grows on press */
+.ph__knob { transition: width 0.25s var(--ease), border-radius 0.25s; }
+.hand.smooth .ph__knob { transition: left 0.5s var(--ease), width 0.25s var(--ease), border-radius 0.25s; }
+.hand.is-after .ph__knob { width: 1.1rem; border-radius: 0.55rem; left: clamp(calc(6px + 0.55rem), var(--pos), calc(100% - 1.75rem)); }
+.hand.is-after .ph__knob .ico { width: 0.8rem; height: 0.8rem; }
+.scr--a > * { transition: opacity 0.2s; }
+.hand:not(.is-after):not(.drag):not(:focus-within) .scr--a > * { opacity: 0; }
+.scr--a .scr__note[hidden]:not(:empty) { display: block; visibility: hidden; }
+.scr__send { border: 1.5px solid transparent; }
+.scr--a .sbub--after::after, .hand .mk-reply small::after, .hand .mk-when::after { content: "  ✓✓"; font-weight: 700; visibility: hidden; }
+.hand.is-sent .scr--a .sbub--after::after, .hand.is-sent .mk-reply small::after, .hand.is-sent .mk-when::after { visibility: visible; }
+.scene__cap { min-height: 3.9em; display: grid; align-content: center; }
+.scene__cap[hidden] { display: none; }
+.mk-tr { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) minmax(0, 1.1fr); }
+.mk-table, .mk-sheet { font-size: 0.8rem; }
+.mk-tr span, .mk-line span:last-child { overflow-wrap: break-word; -webkit-hyphens: auto; hyphens: auto; hyphenate-limit-chars: 10 4 4; }
+.mk-line span:first-child { flex: none; max-width: 50%; }
+.mk-line span:last-child { flex: 0 1 auto; }
+.mk-rhead { flex-wrap: wrap; row-gap: 0.15rem; } .mk-rhead b { min-width: 0; }
+.mk-stars { letter-spacing: 0; font-size: 0.85rem; white-space: nowrap; }
+.l3__price b { text-align: center; }
+.l3__buy[hidden] { display: none; }
+.plan .plan__go { margin-top: auto; padding-top: 0.4rem; }
+/* no word left alone on the last line */
+.l3__line, #l3sub, .scene__cap, .scene__hint, .scr__note, .mk-title, .order b, #orderLabel, .contact__sub, .cc__what, .cc h3, .svc__h, .form__msg { text-wrap: balance; }
+.l3steps p, .plan li { text-wrap: pretty; }
+/* assistant: long words wrap, chips stay in the box, the round button steps aside */
+.bub { overflow-wrap: anywhere; min-width: 0; }
+.bot__ch { min-width: 0; }
+@media (max-width: 380px) { .bot__send3 { gap: 0.3rem; } .bot__ch { font-size: 0.85rem; padding-inline: 0.3rem; } }
+.bot-fab { transition: transform 0.25s var(--spring), opacity 0.2s; }
+.bot-fab.off { opacity: 0; transform: scale(0.4); pointer-events: none; }
+.form textarea { field-sizing: content; max-height: 14rem; }
+/* tablet and phone on its side */
+@media (min-width: 761px) and (max-width: 1099px) {
+  .car__btn { bottom: 1.6rem; }
+  .l3steps { grid-template-columns: 1fr; gap: 0.6rem; max-width: 40rem; }
+}
+@media (min-width: 761px) and (max-width: 1023px) {
+  .msgs { flex-direction: column; align-items: stretch; width: max-content; max-width: 100%; }
+  .msgs .btn { justify-content: center; }
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  .nav { position: absolute; }
+  .at-home .hero { padding-top: 5rem; } .at-home .hero h1 { font-size: 1.6rem; }
+  .cc { min-height: 0; } .cc--n, .cc--s { height: auto; padding: 1rem; }
+  .cc__art, .at-home .cc--n .cc__art { width: 4.5rem; height: 4.5rem; margin: 0 auto; } .cc__art .ico { width: 2rem; height: 2rem; }
+  .car__track { padding-top: 0.6rem; }
+}
+/* contact: the heading is sized from its own column, the form fits the screen after Order */
+@media (min-width: 761px) {
+  .contact > :first-child { container-type: inline-size; }
+  .contact h2 { font-size: clamp(2.4rem, 6vw, 6.5rem); font-size: clamp(2.4rem, 14.8cqi, 6.5rem); text-wrap: balance; }
+}
+@media (min-width: 1100px) { .lvl3 #contact, .ctpage #contact { padding-top: 3.5rem; } }
+@media (min-width: 1100px) and (max-height: 700px) {
+  .lvl3 #contact, .ctpage #contact { padding-top: 1.5rem; }
+  #contact .form { padding: 1.25rem 1.5rem; gap: 0.6rem; }
+  #contact .form input { padding-block: 0.6rem; }
+  #contact .form textarea { min-height: 4rem; }
 }
 
 /* ---------- "For your company": a separate page (#/firm) for teams of 5+ ----------
@@ -915,7 +1088,6 @@ h1, h2, h3, .svc__h, .l3__line, .cc h3, .card h3 { letter-spacing: -0.012em; wor
 .firm .back { min-height: 2.75rem; }
 .nav__links a { white-space: nowrap; }
 .nav__links a.nav__firm { color: var(--accent); box-shadow: inset 0 0 0 1px rgba(216, 255, 0, 0.55); }
-.hero__short { display: none; }
 
 .firm-log { margin: 0; padding: clamp(1.1rem, 2.4vw, 1.75rem); border-radius: var(--r-lg); background: var(--card); border: 1px solid var(--line); font-family: var(--f-mono); }
 .firm-log__head { display: flex; align-items: center; gap: 0.6rem; padding-bottom: 0.9rem; margin-bottom: 0.4rem; border-bottom: 1px solid var(--line); font-size: 0.85rem; }
@@ -979,16 +1151,9 @@ h1, h2, h3, .svc__h, .l3__line, .cc h3, .card h3 { letter-spacing: -0.012em; wor
   .firm__price { flex-direction: column; align-items: flex-start; }
   .firm__plus { display: none; }
   .firm__mo::before { content: "+ "; color: var(--muted); font-weight: 700; }
-  .own-cta.lvl3 .dock { transform: translateY(110%); }
   .firm__buy .btn { width: 100%; }
   .firm-safe__head { align-items: flex-start; }
   .firm-safe__ico { width: 3rem; height: 3rem; }
   .firm-safe__ico .ico { width: 1.5rem; height: 1.5rem; }
-}
-@media (max-width: 760px) {
-  .at-home .hero__cta { padding-right: 3.9rem; gap: 0.5rem; }
-  .hero__cta .btn { flex: 1 1 auto; min-width: 0; min-height: 3.2rem; padding-inline: 0.8rem; font-size: 0.88rem; gap: 0.45rem; white-space: nowrap; }
-  .hero__long, .firm-door .ico { display: none; }
-  .hero__short { display: inline; }
 }
 @media (prefers-reduced-motion: reduce) { .firm-log__dot { animation: none; } .firm-log__list li { transition-delay: 0s; } }

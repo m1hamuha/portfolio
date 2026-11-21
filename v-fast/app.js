@@ -273,6 +273,7 @@
     function say(kind, key, withMail) {
       last = [kind, key, withMail];
       msg.hidden = false;
+      if (kind !== "ok" && msg.scrollIntoView) setTimeout(function () { msg.scrollIntoView({ block: "nearest", behavior: "smooth" }); }, 50);
       msg.className = "form__msg " + kind;
       msg.textContent = t(key);
       if (withMail) {
@@ -318,7 +319,7 @@
      next to the messenger buttons and prefills the WhatsApp text and the form. */
   var WA = "https://wa.me/491709094298";
   var ctxNiche = null;
-  var order = null, typed = false;
+  var order = null, lastAuto = "", TG = "https://t.me/onomamichail";
   /* id -> [name key, "from" prefix?, amount] ; plans are named under social media */
   var ORD = {
     social: ["sv.social.h", 1, "€10"], bot: ["sv.bot.h", 1, "€79"], content: ["sv.content.h", 1, "€1"],
@@ -331,22 +332,28 @@
   function labelFor(id) {
     var o = ORD[id], name = t(o[0]);
     var pre = ctxNiche && id !== "firm" ? t("n." + ctxNiche) + ": " : "";
-    if (id === "firm") return name + ": " + t("firm.setup").toLowerCase() + " " + t("pr.from") + " €300 + " + t("pr.from") + " €99 " + t("pr.mo");
-    if (id.indexOf("plan") === 0) return pre + t("sv.social.h") + ", " + name + ": " + o[2] + t("pr.mo");
-    return pre + (o[2] ? name + ": " + (o[1] ? t("pr.from") + " " : "") + o[2] : name);
+    var nb = function (x) { return x.replace(/ /g, " "); };
+    if (id === "firm") return name + ": " + t("firm.setup").toLowerCase() + " " + nb(t("pr.from") + " €300") + " + " + nb(t("pr.from") + " €99 " + t("pr.mo"));
+    if (id.indexOf("plan") === 0) return pre + t("sv.social.h") + ", " + name + ": " + nb(o[2] + t("pr.mo"));
+    return pre + (o[2] ? name + ": " + nb((o[1] ? t("pr.from") + " " : "") + o[2]) : name);
   }
+  function fitTa(ta) { if (!ta || !ta.offsetParent) return; ta.style.height = "auto"; ta.style.height = Math.min(ta.scrollHeight + 4, 260) + "px"; }
   function paintOrder() {
     var box = $("#order"), lab = $("#orderLabel"), ta = $('#form [name="message"]');
     lab.textContent = order ? labelFor(order) : "";
     box.hidden = !order;
-    var lead = order === "firm" ? t("firm.talk") : t("wa.order");
-    if (!typed) ta.value = order ? lead + lab.textContent : "";
-    var text = order ? lead + lab.textContent : t("wa.hero");
+    var auto = order ? (order === "firm" ? t("firm.talk") : t("wa.order")) + lab.textContent : "";
+    if (ta.value.indexOf(lastAuto) === 0) ta.value = auto + ta.value.slice(lastAuto.length);
+    lastAuto = auto;
+    var text = order ? auto : t("wa.hero");
     $$("[data-wa]").forEach(function (a) { a.href = WA + "?text=" + encodeURIComponent(text); });
+    $$('a[href^="' + TG + '"]').forEach(function (a) { a.href = TG + (order ? "?text=" + encodeURIComponent(auto) : ""); });
+    fitTa(ta);
   }
-  $$("[data-order]").forEach(function (el) { el.addEventListener("click", function () { order = el.dataset.order; paintOrder(); }); });
+  $('#form [name="message"]').addEventListener("input", function () { fitTa(this); });
+  var orderAt = null; /* the page the order was made on: coming back to it keeps the choice */
+  $$("[data-order]").forEach(function (el) { el.addEventListener("click", function () { order = el.dataset.order; orderAt = location.hash; paintOrder(); }); });
   $("#orderClear").addEventListener("click", function () { order = null; paintOrder(); });
-  $('#form [name="message"]').addEventListener("input", function () { typed = true; });
 
   /* phone only: a bar with both messengers appears once the first button has scrolled away */
   (function () {
@@ -355,9 +362,6 @@
     function sync() { dock.classList.toggle("on", away && !inContact); }
     new IntersectionObserver(function (es) { away = !es[0].isIntersecting; sync(); }).observe(first);
     new IntersectionObserver(function (es) { inContact = es[0].isIntersecting; sync(); }, { threshold: 0.1 }).observe(contact);
-    /* the company page has its own main button: keep the bar away while that button is on screen */
-    var own = $("#v-firm .firm__buy .btn");
-    if (own) new IntersectionObserver(function (es) { document.documentElement.classList.toggle("own-cta", es[0].isIntersecting); }).observe(own);
   })();
 
   /* ---------- 3D carousels ----------
@@ -400,14 +404,19 @@
       raf = requestAnimationFrame(tick);
     }
     function run() { if (!raf) { lastT = 0; raf = requestAnimationFrame(tick); } }
-    function go(k) { idx = Math.max(0, Math.min(cs.length - 1, k)); run(); }
+    function ends() { if (prev) prev.disabled = idx <= 0; if (next) next.disabled = idx >= cs.length - 1; }
+    function go(k) { idx = Math.max(0, Math.min(cs.length - 1, k)); ends(); run(); }
+    if (car.id === "work") window.addEventListener("car:show", function (e) {
+      var k = cs.findIndex(function (c) { return (c.getAttribute("href") || "").split("/").pop() === e.detail; });
+      if (k > -1 && ready) { idx = k; ends(); x = target(idx); paint(); }
+    });
     function init() {
       if (ready || !car.clientWidth || listMode()) { paint(); return; }
       ready = true;
       /* in a business, the card that costs the owner most is the one in the centre when the page opens */
       var top = cs.findIndex(function (c) { return c.classList.contains("cc--top"); });
       if (top === 0 && cs.length > 2 && window.innerWidth >= 760) { track.insertBefore(cs[1], cs[0]); cs = $$(".cc", track); top = 1; if (dots) dots.innerHTML = cs.map(function () { return "<i></i>"; }).join(""); }
-      idx = top > -1 ? top : (window.innerWidth < 760 ? 0 : Math.min(car.id === "work" ? 2 : 1, cs.length - 1)); /* home: two cards on each side */ x = target(idx); paint();
+      idx = top > -1 ? top : (window.innerWidth < 760 ? 0 : Math.min(car.id === "work" ? 2 : 1, cs.length - 1)); /* home: two cards on each side */ x = target(idx); ends(); paint();
     }
     if (prev) prev.addEventListener("click", function () { go(idx - 1); });
     if (next) next.addEventListener("click", function () { go(idx + 1); });
@@ -506,7 +515,7 @@
   repaintCards = paintCards;
   var lent = null, lentFrom = null;
   function giveBack() { if (lent && lentFrom) lentFrom.appendChild(lent); lent = lentFrom = null; }
-  function fillL3() {
+  function fillL3(keep) {
     if (!l3ctx) return;
     var n = l3ctx[0], sid = l3ctx[1], row = (F.niches[n] || []).filter(function (x) { return x[0] === sid; })[0], sv = F.sv[sid];
     if (!row || !sv) return;
@@ -524,7 +533,7 @@
         after: { label: c.afterLabel || c.exOutLabel, text: c.after || c.exOut, note: c.gain || "" },
         v: c.v || null
       };
-      playScene();
+      playScene(keep);
     }
     $("#l3price").innerHTML = sid === "social" ? "" : '<span>' + t("pr.from") + '</span> <b>' + sv.amt + '</b> <span>' + (sv.per ? t("pr.mo") : t("pr.once")) + "</span>";
     $("#l3order").dataset.order = sid;
@@ -535,13 +544,14 @@
     }
     $(".l3__buy").hidden = sid === "social"; /* social media has its own three plans, each with Order */
   }
-  refillL3 = fillL3;
+  refillL3 = function () { fillL3(true); };
 
   /* ---------- "without me / with me": a phone the visitor handles ----------
      Two screens of the same moment sit on top of each other. Dragging the handle (mouse, finger
      or arrow keys) uncovers the "with me" screen; on it a Send button really sends: the message
      gets a tick and the gain appears. Nothing plays by itself except one small nudge of the handle. */
-  var scene = null, pos = 86, sent = false;
+  var scene = null, pos = 86, sent = false, nudge = [];
+  function stopNudge() { nudge.forEach(clearTimeout); nudge = []; }
   var ph = $("#ph"), knob = $("#phKnob");
   function setPos(v, smooth) {
     pos = Math.max(0, Math.min(100, v));
@@ -605,16 +615,18 @@
     }
   };
   function capNow() { var v = scene && scene.v, cap = $("#scCap"); if (!cap) return; cap.textContent = v ? (pos < 45 ? v.capA : v.capB) : ""; cap.hidden = !v; }
-  function playScene() {
+  function playScene(keep) {
     if (!scene) return;
+    var kp = keep === true ? { pos: pos, sent: sent } : null;
     sent = false;
     var v = scene.v, B = $("#scBodyB"), A = $("#scBodyA"), type = v && DRAW[v.type] ? v.type : null;
     B.innerHTML = ""; A.innerHTML = "";
     if (type) {
-      $("#scLabelB").textContent = t("sc.t." + type); $("#scLabelA").textContent = t("sc.t." + type);
+      var sid = l3ctx ? l3ctx[1] : "", hd = t("sc.t.s." + sid) || t("sc.t." + type);
+      $("#scLabelB").textContent = hd; $("#scLabelA").textContent = hd;
       B.appendChild(DRAW[type](v, false)); A.appendChild(DRAW[type](v, true));
       $("#scLoss").textContent = v.loss || scene.before.note; $("#scGain").textContent = v.gain || scene.after.note;
-      $("#scSend span").textContent = t("sc.b." + type);
+      $("#scSend span").textContent = t("sc.b.s." + sid) || t("sc.b." + type);
     } else {
       $("#scLabelB").textContent = scene.before.label || ""; $("#scLabelA").textContent = scene.after.label || "";
       B.appendChild(el("div", "sbub sbub--before", scene.before.text || "")); A.appendChild(el("div", "sbub sbub--after", scene.after.text || ""));
@@ -622,38 +634,48 @@
       $("#scSend span").textContent = t("sc.send");
     }
     $("#scLoss").hidden = !$("#scLoss").textContent; $("#scGain").hidden = true;
-    $("#ph").classList.remove("is-sent"); $("#scSend").classList.remove("done"); $("#scSend").disabled = false;
+    $("#ph").classList.remove("is-sent"); $("#scSend").classList.remove("done"); $("#scSend").disabled = false; $("#scSend").style.minHeight = "";
+    stopNudge();
+    if (kp) { setPos(kp.pos, false); if (kp.sent) $("#scSend").click(); return; }
     setPos(86, false);
-    if (!reduce) setTimeout(function () { setPos(70, true); setTimeout(function () { setPos(86, true); }, 450); }, 900); /* "this moves" */
+    if (!reduce) nudge.push(setTimeout(function () { setPos(70, true); nudge.push(setTimeout(function () { setPos(86, true); }, 450)); }, 900)); /* "this moves" */
   }
+  /* after a tap the whole phone is on screen: between the menu and the round assistant button */
+  function showDemo() { requestAnimationFrame(function () { var nav = $("#nav"), fab = $("#botFab"), top = (nav && getComputedStyle(nav).position === "fixed" ? nav.getBoundingClientRect().bottom : 0) + 8; var r = ph.getBoundingClientRect(), lim = (fab && fab.offsetWidth ? fab.offsetTop : innerHeight) - 12; var d = Math.min(r.bottom - lim, r.top - top); if (d > 4) scrollBy({ top: d, behavior: reduce ? "auto" : "smooth" }); }); }
   function fromX(x) { var r = ph.getBoundingClientRect(); return ((x - r.left) / r.width) * 100; }
   var dragging = false;
   ph.addEventListener("pointerdown", function (e) {
     if (e.target.closest("#scSend, .ph__lbl")) return;
+    stopNudge(); ph.classList.add("drag");
     dragging = true; ph.setPointerCapture(e.pointerId); setPos(fromX(e.clientX), false);
   });
   ph.addEventListener("pointermove", function (e) { if (dragging) setPos(fromX(e.clientX), false); });
-  function end() { if (!dragging) return; dragging = false; setPos(pos < 50 ? 0 : 100, true); }
+  function end() { ph.classList.remove("drag"); if (!dragging) return; dragging = false; setPos(pos < 50 ? 0 : 100, true); document.documentElement.classList.add("sc-used"); if (pos < 50) showDemo(); }
   ph.addEventListener("pointerup", end); ph.addEventListener("pointercancel", end);
   knob.addEventListener("keydown", function (e) {
+    stopNudge();
     if (e.key === "ArrowLeft") { setPos(pos - 10, true); e.preventDefault(); }
     if (e.key === "ArrowRight") { setPos(pos + 10, true); e.preventDefault(); }
     if (e.key === "Home") { setPos(0, true); e.preventDefault(); }
     if (e.key === "End") { setPos(100, true); e.preventDefault(); }
   });
-  $$(".ph__lbl").forEach(function (l) { l.addEventListener("click", function (e) { e.stopPropagation(); setPos(l.classList.contains("ph__lbl--a") ? 0 : 100, true); }); });
+  $$(".ph__lbl").forEach(function (l) { l.addEventListener("click", function (e) { e.stopPropagation(); stopNudge(); var a = l.classList.contains("ph__lbl--a"); setPos(a ? 0 : 100, true); if (a) showDemo(); }); });
   $("#scSend").addEventListener("click", function () {
     if (sent) return; sent = true;
-    var b = $("#scSend"); b.classList.add("done"); b.disabled = true; $("span", b).textContent = t("sc.done");
+    var b = $("#scSend"); b.style.minHeight = b.offsetHeight + "px"; b.classList.add("done"); b.disabled = true; $("span", b).textContent = t("sc.done");
     ph.classList.add("is-sent");
     var g = $("#scGain"); g.hidden = !g.textContent; g.classList.remove("in"); void g.offsetWidth; g.classList.add("in");
+    showDemo();
   });
+  var ys = {}, lastHash = location.hash;
+  function depth(h) { return h === "#contact" ? 3 : /^#\/for\/[a-z]+\/[a-z]+$/.test(h) || /^#\/[a-z]+$/.test(h) ? 2 : /^#\/for\//.test(h) ? 1 : 0; }
   function show(sec, key) {
     if (current === null) homeY = window.pageYOffset;
     $$(".svc").forEach(function (v) { v.hidden = v !== sec; });
     home.hidden = true; views.hidden = false;
     current = key;
-    window.scrollTo({ top: 0, behavior: "instant" });
+    var back = depth(key) < depth(lastHash) && ys[key];
+    window.scrollTo({ top: back || 0, behavior: "instant" });
     $$(".rv", sec).forEach(function (el) { el.classList.add("in"); });
     var hd = $(".svc__h", sec); if (hd) hd.focus({ preventScroll: true });
   }
@@ -663,6 +685,8 @@
     var root = document.documentElement;
     var m3 = h.match(/^#\/for\/([a-z]+)\/([a-z]+)$/), m2 = h.match(/^#\/for\/([a-z]+)$/), m1 = h.match(/^#\/([a-z]+)$/);
     root.classList.remove("lvl3", "ctpage");
+    if (h !== "#contact" && order && h !== orderAt) { order = null; paintOrder(); }
+    if (h !== "#contact") orderAt = null;
     if (m3 && F.niches[m3[1]]) {
       giveBack();
       ctxNiche = m3[1]; l3ctx = [m3[1], m3[2]]; fillL3();
@@ -687,11 +711,26 @@
     if (target) target.scrollIntoView();
     else if (wasView) window.scrollTo({ top: homeY, behavior: "instant" });
   }
+  window.addEventListener("scroll", function () { if (location.hash === lastHash) ys[lastHash] = window.pageYOffset; }, { passive: true });
   function routeAll() {
+    var from = lastHash.match(/^#\/for\/([a-z]+)$/);
     route();
+    lastHash = location.hash;
+    /* back to the list of businesses: the one the visitor came from is in the centre */
+    if (from && !home.hidden) window.dispatchEvent(new CustomEvent("car:show", { detail: from[1] }));
     var r = document.documentElement, was = r.classList.contains("at-home"), now = !home.hidden;
+    var nv = document.querySelector(".svc.nv:not([hidden])"), wasN = r.classList.contains("at-niche"), nowN = !now && !!nv && location.hash !== "#contact";
     r.classList.toggle("at-home", now);
-    if (was !== now) window.dispatchEvent(new Event("resize")); /* sizes changed: carousels re-centre */
+    r.classList.toggle("at-niche", nowN);
+    if (nowN) window.scrollTo(0, 0);
+    if (was !== now || wasN !== nowN) window.dispatchEvent(new Event("resize"));
+    if (wasN && !nowN && location.hash === "#contact") {
+      var ct = $("#contact"), ST = window.ScrollTrigger;
+      var again = function () { if (ST) ST.removeEventListener("refresh", again); if (location.hash === "#contact") ct.scrollIntoView(); };
+      ct.scrollIntoView();
+      if (ST) ST.addEventListener("refresh", again);
+    }
+    if (location.hash === "#contact") requestAnimationFrame(function () { fitTa($('#form [name="message"]')); }); /* sizes changed: carousels re-centre */
   }
   window.addEventListener("hashchange", routeAll);
   if ("scrollRestoration" in history) history.scrollRestoration = "manual";
@@ -702,10 +741,14 @@
   (function () {
     var fab = $("#botFab"), box = $("#bot"), log = $("#botLog"), form = $("#botForm"), inp = $("#botIn"), mic = $("#botMic");
     if (!fab) return;
+    var DODGE = '#scSend, #phKnob, #l3order, #orderClear, .plan__go, .nv .cc__go, #contact .msgs .btn, #form input, #form textarea, #form button[type="submit"]', tick = 0;
+    function dodge() { tick = 0; var l = fab.offsetLeft, tp = fab.offsetTop, r = l + fab.offsetWidth, b = tp + fab.offsetHeight; var hit = box.hidden && [].some.call(document.querySelectorAll(DODGE), function (el) { if (!el.offsetWidth) return false; var q = el.getBoundingClientRect(); return q.right > l + 4 && q.left < r - 4 && q.bottom > tp + 4 && q.top < b - 4; }); fab.classList.toggle("off", hit); }
+    function later() { if (!tick) tick = requestAnimationFrame(dodge); }
+    addEventListener("scroll", later, { passive: true }); addEventListener("resize", later); addEventListener("hashchange", function () { setTimeout(dodge, 400); }); $("#ph").addEventListener("transitionend", later); setTimeout(dodge, 300);
     var NK = {
       salon: "салон красот парикмахер стрижк барбер маникюр ногт педикюр бров ресниц косметолог массаж спа beauty hair barber nail brow lash massage spa friseur kosmetik nagel перукар манікюр нігт масаж краса",
       cafe: "кафе ресторан кофейн бар пекарн пицц суши еда столик меню cafe restaurant coffee bakery pizza food menu table café speisekarte bäckerei кав'ярн піц їжа",
-      shop: "магазин товар маркетплейс одежд обув склад shop store ecommerce marketplace clothes products laden onlineshop kleidung ware одяг",
+      shop: "магазин цвет ларёк ларек киоск flower stall kiosk blumen квіт товар маркетплейс одежд обув склад shop store ecommerce marketplace clothes products laden onlineshop kleidung ware одяг",
       trades: "ремонт мастер сантехник электрик строител отделк мебел автосервис шиномонтаж repair handyman plumber electrician builder trades carpenter handwerk reparatur klempner elektriker майстер сантехнік електрик будівель",
       fitness: "фитнес спорт тренер тренировк зал йог бассейн танц fitness gym trainer yoga studio pool dance fitnessstudio training фітнес зал йога",
       clinic: "клиник врач стоматолог зубн медицин пациент доктор психолог clinic doctor dentist medical patient practice therapist praxis arzt zahnarzt клінік лікар пацієнт",
@@ -722,7 +765,7 @@
       data: "парсинг парсер мониторинг цен конкурент данные собрать скрап scrape monitoring price competitor data crawl preis konkurrent daten моніторинг ціни дані",
       site: "сайт лендинг визитк seo веб страниц website landing homepage webseite лендінг сторінк",
       leads: "лид crm клиенты контакт обращени lead leads inquiry anfrage kontakte заявк клієнт",
-      mail: "напомин рассылк уведомлен вернуть reminder newsletter mailing notification remind erinnerung benachrichtigung нагад розсилк сповіщ",
+      mail: "напомин неявк забыва приходят пропуска no-show forget vergess забува пропуска рассылк уведомлен вернуть reminder newsletter mailing notification remind erinnerung benachrichtigung нагад розсилк сповіщ",
       translate: "перевод перевест язык немецк английск translate translation language übersetz sprache переклад мов",
       hiring: "сотрудник персонал ваканси найм нанять работник кандидат уборщиц официант staff hiring hire vacancy job candidate employee personal mitarbeiter stelle stellenanzeige bewerber працівник вакансі найняти кандидат",
       assistant: "помощник ассистент ии нейросет команд assistant helper gpt assistent ki mitarbeiter помічник асистент штучн"
@@ -764,7 +807,7 @@
         wa.href = "https://wa.me/491709094298?text=" + encodeURIComponent(v);
         ml.href = "mailto:kostinmihail40@gmail.com?subject=" + encodeURIComponent(t("bot.subject")) + "&body=" + encodeURIComponent(v);
       }
-      ta.addEventListener("input", sync); sync();
+      ta.addEventListener("input", function () { sync(); fitTa(ta); }); sync(); setTimeout(function () { fitTa(ta); log.scrollTop = log.scrollHeight; }, 0);
       tg.addEventListener("click", function () {
         /* a Telegram link cannot carry text, so the text goes to the clipboard first */
         function go() { say("b", t("bot.copied")); window.open("https://t.me/onomamichail", "_blank", "noopener"); }
