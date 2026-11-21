@@ -47,6 +47,7 @@
     if (canon) canon.href = "https://m1hamuha.github.io/portfolio/v-fast/" + (lang === "en" ? "" : "?lang=" + lang);
     $$("[data-i18n]").forEach(function (el) { el.textContent = t(el.dataset.i18n); });
     if (window.firmLadRepaint) window.firmLadRepaint();
+    if (window.firmExRepaint) window.firmExRepaint();
     $$("[data-i18n-html]").forEach(function (el) { el.innerHTML = t(el.dataset.i18nHtml); });
     $$("[data-i18n-aria]").forEach(function (el) { el.setAttribute("aria-label", t(el.dataset.i18nAria)); });
     $$("[data-i18n-ph]").forEach(function (el) { el.setAttribute("placeholder", t(el.dataset.i18nPh)); });
@@ -386,6 +387,49 @@
     window.firmLadRepaint = function () { pick(cur); };
   })();
 
+  /* company page: several examples in one window. The bar under the card names the next one and flips to it. */
+  (function () {
+    var ex = $("#firmEx");
+    if (!ex) return;
+    var panels = $$(".firm-ex__view > .firm-log", ex), cur = 0, timers = [], seen = {};
+    var nName = $("#firmExNextName");
+    function light(p) {
+      timers.forEach(clearTimeout); timers = [];
+      if (!p.classList.contains("firm-log--ex")) return;
+      var rows = $$(".firm-log__list li", p);
+      if (seen[p.id] || reduce) { rows.forEach(function (r) { r.classList.add("is-on"); }); return; }
+      seen[p.id] = 1;
+      rows.forEach(function (r, i) { timers.push(setTimeout(function () { r.classList.add("is-on"); }, 250 + i * 160)); });
+    }
+    function bar() {
+      var nx = (cur + 1) % panels.length, p = panels[nx];
+      nName.textContent = $(".firm-log__head b", p).textContent;
+    }
+    function go(n) {
+      n = (n + panels.length) % panels.length;
+      ex.classList.add("is-used");
+      if (n === cur) return;
+      var down = n === (cur + 1) % panels.length;
+      panels.forEach(function (p, i) {
+        p.classList.toggle("is-cur", i === n); p.inert = i !== n;
+        /* the card that leaves goes the way the visitor pushed it; the others wait on the side they will come from */
+        p.dataset.pos = i === n ? "" : i === cur ? (down ? "above" : "below") : (down ? "below" : "above");
+      });
+      cur = n; light(panels[n]); bar();
+    }
+    panels.forEach(function (p, i) { if (p.classList.contains("firm-log--ex")) p.classList.add("is-live"); p.inert = i !== 0; });
+    $("#firmExNext").addEventListener("click", function () { go(cur + 1); });
+    $("#firmExPrev").addEventListener("click", function () { go(cur - 1); });
+    $$(".firm-log__n", ex).forEach(function (b) { b.addEventListener("click", function () {
+        go(cur + 1);
+        /* keep the keyboard on the same control of the new card; if it cannot take focus yet, use the bar */
+        var nb = $(".firm-log__n", panels[cur]);
+        requestAnimationFrame(function () { nb.focus({ preventScroll: true }); if (document.activeElement !== nb) $("#firmExNext").focus({ preventScroll: true }); });
+      }); });
+    bar();
+    window.firmExRepaint = bar;
+  })();
+
   /* company page: the night is a slider. Drag the sun and the morning numbers grow. */
   (function () {
     var sky = $(".firm-log__sky"), inp = $("#firmNight");
@@ -429,9 +473,9 @@
     sky.addEventListener("pointerdown", function (e) { stop(); sky.classList.add("is-drag"); try { sky.setPointerCapture(e.pointerId); } catch (x) {} set(at(e)); });
     sky.addEventListener("pointermove", function (e) { if (sky.classList.contains("is-drag")) set(at(e)); });
     ["pointerup", "pointercancel"].forEach(function (k) { sky.addEventListener(k, function () { if (sky.classList.contains("is-drag")) { sky.classList.remove("is-drag"); resume(); } }); });
-    inp.addEventListener("input", function () { stop(); val = +inp.value; paint(val); resume(); });
+    inp.addEventListener("input", function () { stop(); val = +inp.value; paint(val); });
     inp.addEventListener("focus", function () { if (inp.matches(":focus-visible")) sky.classList.add("is-focus"); });
-    inp.addEventListener("blur", function () { sky.classList.remove("is-focus"); });
+    inp.addEventListener("blur", function () { sky.classList.remove("is-focus"); if (touched) resume(); });
     fig.classList.add("is-live");
     if (reduce || !("IntersectionObserver" in window)) { paint(100); return; }
     set(0);
