@@ -270,12 +270,31 @@
     var ENDPOINT = "https://formsubmit.co/ajax/kostinmihail40@gmail.com";
     var last = null;
     resay = function () { if (last) say(last[0], last[1], last[2]); };
+    var sentLabel = "", sentText = "";
+    function clearBad() { $$(".form__bad", form).forEach(function (x) { x.remove(); }); $$("[aria-invalid]", form).forEach(function (x) { x.removeAttribute("aria-invalid"); }); }
+    function markBad(name) {
+      clearBad();
+      var f = $('[name="' + name + '"]', form), b = document.createElement("small");
+      b.className = "form__bad"; b.dataset.bad = name; b.textContent = t("fm.bad." + name);
+      f.setAttribute("aria-invalid", "true"); f.parentNode.appendChild(b); f.focus();
+    }
+    form.addEventListener("input", function (e) { if (e.target.hasAttribute && e.target.hasAttribute("aria-invalid")) clearBad(); });
     function say(kind, key, withMail) {
       last = [kind, key, withMail];
+      $$(".form__bad", form).forEach(function (x) { x.textContent = t("fm.bad." + x.dataset.bad); });
+      if (!key) return;
       msg.hidden = false;
-      if (kind !== "ok" && msg.scrollIntoView) setTimeout(function () { msg.scrollIntoView({ block: "nearest", behavior: "smooth" }); }, 50);
+      if (msg.scrollIntoView) setTimeout(function () { msg.scrollIntoView({ block: key === "fm.ok" ? "center" : "nearest", behavior: "smooth" }); }, 50);
       msg.className = "form__msg " + kind;
-      msg.textContent = t(key);
+      msg.textContent = "";
+      if (key === "fm.ok" && form.classList.contains("sent")) {
+        if (sentLabel) { var bl = document.createElement("b"); bl.textContent = sentLabel; msg.appendChild(bl); }
+        var sp = document.createElement("span"); sp.textContent = t(key); msg.appendChild(sp);
+        var w = document.createElement("a"); w.className = "btn btn--wa"; w.target = "_blank"; w.rel = "noopener";
+        w.href = WA + "?text=" + encodeURIComponent(sentText || t("wa.hero")); w.textContent = t("fm.wa"); msg.appendChild(w);
+        return;
+      }
+      msg.appendChild(document.createTextNode(t(key)));
       if (withMail) {
         var a = document.createElement("a");
         a.href = "mailto:kostinmihail40@gmail.com";
@@ -291,7 +310,9 @@
       var name = String(f.get("name") || "").trim(), email = String(f.get("email") || "").trim(), message = String(f.get("message") || "").trim();
       if (String(f.get("_honey") || "").trim()) { say("ok", "fm.ok"); form.reset(); return; }
       var bad = !name ? "name" : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? "email" : !message ? "message" : "";
-      if (bad) { say("err", "fm.invalid"); $('[name="' + bad + '"]', form).focus(); return; }
+      if (bad) { msg.hidden = true; markBad(bad); last = ["err", "", false]; return; }
+      clearBad();
+      sentLabel = order ? labelFor(order) : ""; sentText = message;
       busy = true; btn.disabled = true; say("ok", "fm.sending");
       var ctl = new AbortController(), to = setTimeout(function () { ctl.abort(); }, 15000);
       fetch(ENDPOINT, {
@@ -307,7 +328,7 @@
         .then(function (r) { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
         .then(function (j) {
           if (j && String(j.success) === "false") throw new Error("rejected");
-          say("ok", "fm.ok"); form.reset();
+          form.classList.add("sent"); say("ok", "fm.ok"); form.reset();
         })
         .catch(function () { say("err", "fm.err", true); })
         .then(function () { clearTimeout(to); busy = false; btn.disabled = false; });
@@ -334,7 +355,9 @@
     var pre = ctxNiche ? t("n." + ctxNiche) + ": " : "";
     var nb = function (x) { return x.replace(/ /g, "\u00a0"); };
     if (id.indexOf("plan") === 0) return pre + t("sv.social.h") + ", " + name + ": " + nb(o[2] + t("pr.mo"));
-    return pre + (o[2] ? name + ": " + nb((o[1] ? t("pr.from") + " " : "") + o[2]) : name);
+    if (id === "content") return pre + name + ": " + nb("€1 " + t("pr.photo"));
+    if (id === "social") return pre + name + ": " + nb(t("pr.from") + " " + o[2] + " " + t("pr.mo"));
+    return pre + (o[2] ? name + ": " + nb((o[1] ? t("pr.from") + " " : "") + o[2] + " " + t("pr.once")) : name);
   }
   function fitTa(ta) { if (!ta || !ta.offsetParent) return; ta.style.height = "auto"; ta.style.height = Math.min(ta.scrollHeight + 4, 260) + "px"; }
   function paintOrder() {
@@ -346,12 +369,13 @@
     lastAuto = auto;
     var text = order ? auto : t("wa.hero");
     $$("[data-wa]").forEach(function (a) { a.href = WA + "?text=" + encodeURIComponent(text); });
-    $$('a[href^="' + TG + '"]').forEach(function (a) { a.href = TG + (order ? "?text=" + encodeURIComponent(auto) : ""); });
+    $$('a[href^="' + TG + '"]').forEach(function (a) { a.href = TG + "?text=" + encodeURIComponent(text); });
+    $("#ctH").textContent = t(order ? "ct.h2o" : "ct.h2");
     fitTa(ta);
   }
   $('#form [name="message"]').addEventListener("input", function () { fitTa(this); });
   var orderAt = null; /* the page the order was made on: coming back to it keeps the choice */
-  $$("[data-order]").forEach(function (el) { el.addEventListener("click", function () { order = el.dataset.order; orderAt = location.hash; paintOrder(); }); });
+  $$("[data-order]").forEach(function (el) { el.addEventListener("click", function () { if (!el.dataset.order) return; order = el.dataset.order; orderAt = location.hash; paintOrder(); }); });
   $("#orderClear").addEventListener("click", function () { order = null; paintOrder(); });
 
   /* phone only: a bar with both messengers appears once the first button has scrolled away */
@@ -473,7 +497,7 @@
       cs.forEach(function (c, n) { if (Math.abs(centre(n) + x - lx) <= w / 2) k = n; });
       if (k < 0) return;
       e.preventDefault(); e.stopPropagation();
-      if (k !== nearest()) { go(k); return; }
+      if (k !== nearest() && car.id !== "work") { go(k); return; }
       /* centre card: an inner control (Order, Details) keeps its own action, otherwise open the card */
       var inner = e.target.closest && e.target.closest("a, button"), card = cs[k];
       var el = inner && card.contains(inner) ? inner : (card.matches("a") ? card : $("a", card));
@@ -508,9 +532,20 @@
     var C = window.CONTENT || {};
     return (C[lang] && C[lang][n] && C[lang][n][sid]) || (C.en && C.en[n] && C.en[n][sid]) || (C[lang] && C[lang].other && C[lang].other[sid]) || null;
   }
-  function paintCards() {
-    $$("[data-c]").forEach(function (el) { var p = el.dataset.c.split("."), c = content(p[0], p[1]); el.textContent = c ? c.promise : ""; el.hidden = !c; });
+  function priceHtml(sid) {
+    var sv = F.sv[sid]; if (!sv) return "";
+    if (sid === "content") return "<b>€1</b> <span>" + t("pr.photo") + "</span>";
+    return "<span>" + t("pr.from") + "</span> <b>" + sv.amt + "</b> <span>" + (sv.per ? t("pr.mo") : t("pr.once")) + "</span>";
   }
+  function paintCards() {
+    $$("[data-c]").forEach(function (el) {
+      var p = el.dataset.c.split("."), c = content(p[0], p[1]); el.textContent = c ? c.promise : ""; el.hidden = !c;
+      var card = el.parentNode, pr = $(".cc__price", card);
+      if (!pr) { pr = document.createElement("span"); pr.className = "cc__price"; card.insertBefore(pr, el); }
+      pr.innerHTML = priceHtml(p[1]);
+    });
+  }
+  window.addEventListener("content", function () { paintCards(); if (l3ctx) fillL3(); });
   repaintCards = paintCards;
   var lent = null, lentFrom = null;
   function giveBack() { if (lent && lentFrom) lentFrom.appendChild(lent); lent = lentFrom = null; }
@@ -534,15 +569,21 @@
       };
       playScene(keep);
     }
-    $("#l3price").innerHTML = sid === "social" ? "" : '<span>' + t("pr.from") + '</span> <b>' + sv.amt + '</b> <span>' + (sv.per ? t("pr.mo") : t("pr.once")) + "</span>";
+    $("#l3price").innerHTML = sid === "social" ? "" : priceHtml(sid);
+    var fee = $("#l3fee"); fee.hidden = !(c && c.fee); fee.textContent = t("pr.fee." + sid) || t("pr.fee");
+    document.documentElement.classList.toggle("has-buy", sid !== "social");
+    barH();
     $("#l3order").dataset.order = sid;
     var pb = $("#l3price b");
     if (pb && !reduce) {
       var num = parseInt(sv.amt.replace(/\D/g, ""), 10) || 0, t0 = performance.now();
-      (function up(now) { var p = Math.min((now - t0) / 700, 1), e = 1 - Math.pow(1 - p, 3); pb.textContent = "€" + Math.round(num * e); if (p < 1 && l3ctx && l3ctx[1] === sid) requestAnimationFrame(up); else pb.textContent = sv.amt; })(t0);
+      (function up(now) { var p = Math.min((now - t0) / 700, 1), e = 1 - Math.pow(1 - p, 3); pb.textContent = "€" + Math.round(num * e); if (p < 1 && l3ctx && l3ctx[1] === sid && pb.isConnected) requestAnimationFrame(up); else pb.textContent = sv.amt; })(t0);
     }
     $(".l3__buy").hidden = sid === "social"; /* social media has its own three plans, each with Order */
   }
+  /* the round assistant button sits just above the pinned price row */
+  function barH() { requestAnimationFrame(function () { var b = $(".l3__buy"); if (b && b.offsetHeight) document.documentElement.style.setProperty("--bar", b.offsetHeight + "px"); }); }
+  window.addEventListener("resize", barH);
   refillL3 = function () { fillL3(true); };
 
   /* ---------- "without me / with me": a phone the visitor handles ----------
@@ -635,9 +676,22 @@
     $("#scLoss").hidden = !$("#scLoss").textContent; $("#scGain").hidden = true;
     $("#ph").classList.remove("is-sent"); $("#scSend").classList.remove("done"); $("#scSend").disabled = false; $("#scSend").style.minHeight = "";
     stopNudge();
-    if (kp) { setPos(kp.pos, false); if (kp.sent) $("#scSend").click(); return; }
+    if (kp) { setPos(kp.pos, false); if (kp.sent) $("#scSend").click(); else if (kp.pos > 50) autoOpen(); return; }
+    if (reduce) { setPos(0, false); return; }
     setPos(86, false);
-    if (!reduce) nudge.push(setTimeout(function () { setPos(70, true); nudge.push(setTimeout(function () { setPos(86, true); }, 450)); }, 900)); /* "this moves" */
+    autoOpen();
+  }
+  /* whoever only reads still sees the result: after 2.5 s in view the "with me" screen opens once; any touch cancels it */
+  function autoOpen() {
+    stopNudge();
+    if (document.documentElement.classList.contains("sc-used")) return;
+    var shown = 0, iv = setInterval(function () {
+      if (pos <= 50 || l3.hidden) { clearInterval(iv); return; }
+      var r = ph.getBoundingClientRect(), vis = Math.min(innerHeight, r.bottom) - Math.max(0, r.top);
+      shown = !document.hidden && r.height && vis / r.height >= 0.35 ? shown + 250 : 0;
+      if (shown >= 2500) { clearInterval(iv); setPos(0, true); }
+    }, 250);
+    nudge.push(iv);
   }
   /* after a tap the whole phone is on screen: between the menu and the round assistant button */
   function showDemo() { requestAnimationFrame(function () { var nav = $("#nav"), fab = $("#botFab"), top = (nav && getComputedStyle(nav).position === "fixed" ? nav.getBoundingClientRect().bottom : 0) + 8; var r = ph.getBoundingClientRect(), lim = (fab && fab.offsetWidth ? fab.offsetTop : innerHeight) - 12; var d = Math.min(r.bottom - lim, r.top - top); if (d > 4) scrollBy({ top: d, behavior: reduce ? "auto" : "smooth" }); }); }
@@ -645,7 +699,7 @@
   var dragging = false;
   ph.addEventListener("pointerdown", function (e) {
     if (e.target.closest("#scSend, .ph__lbl")) return;
-    stopNudge(); ph.classList.add("drag");
+    stopNudge(); document.documentElement.classList.add("sc-used"); ph.classList.add("drag");
     dragging = true; ph.setPointerCapture(e.pointerId); setPos(fromX(e.clientX), false);
   });
   ph.addEventListener("pointermove", function (e) { if (dragging) setPos(fromX(e.clientX), false); });
@@ -658,7 +712,7 @@
     if (e.key === "Home") { setPos(0, true); e.preventDefault(); }
     if (e.key === "End") { setPos(100, true); e.preventDefault(); }
   });
-  $$(".ph__lbl").forEach(function (l) { l.addEventListener("click", function (e) { e.stopPropagation(); stopNudge(); var a = l.classList.contains("ph__lbl--a"); setPos(a ? 0 : 100, true); if (a) showDemo(); }); });
+  $$(".ph__lbl").forEach(function (l) { l.addEventListener("click", function (e) { e.stopPropagation(); stopNudge(); document.documentElement.classList.add("sc-used"); var a = l.classList.contains("ph__lbl--a"); setPos(a ? 0 : 100, true); if (a) showDemo(); }); });
   $("#scSend").addEventListener("click", function () {
     if (sent) return; sent = true;
     var b = $("#scSend"); b.style.minHeight = b.offsetHeight + "px"; b.classList.add("done"); b.disabled = true; $("span", b).textContent = t("sc.done");
@@ -683,9 +737,15 @@
     if (h !== location.hash) { history.replaceState(null, "", h); }
     var root = document.documentElement;
     var m3 = h.match(/^#\/for\/([a-z]+)\/([a-z]+)$/), m2 = h.match(/^#\/for\/([a-z]+)$/), m1 = h.match(/^#\/([a-z]+)$/);
-    root.classList.remove("lvl3", "ctpage");
+    root.classList.remove("lvl3", "ctpage"); if (!/^#\/for\/[a-z]+\/[a-z]+$/.test(h)) root.classList.remove("has-buy");
     if (h !== "#contact" && order && h !== orderAt) { order = null; paintOrder(); }
     if (h !== "#contact") orderAt = null;
+    function lists(n, sid) { return (F.niches[n] || []).some(function (r) { return r[0] === sid; }); }
+    function swap(to) { history.replaceState(null, "", to); h = to; m3 = h.match(/^#\/for\/([a-z]+)\/([a-z]+)$/); m2 = h.match(/^#\/for\/([a-z]+)$/); m1 = null; }
+    if (m3 && F.niches[m3[1]] && !lists(m3[1], m3[2])) swap(lists("other", m3[2]) ? "#/for/other/" + m3[2] : "#/for/" + m3[1]);
+    if (m1 && m1[1] === "assistant") swap("#/for/office/assistant");
+    else if (m1 && lists(ctxNiche, m1[1])) swap("#/for/" + ctxNiche + "/" + m1[1]);
+    else if (m1 && lists("other", m1[1])) swap("#/for/other/" + m1[1]);
     if (m3 && F.niches[m3[1]]) {
       giveBack();
       ctxNiche = m3[1]; l3ctx = [m3[1], m3[2]]; fillL3();
@@ -740,12 +800,12 @@
   (function () {
     var fab = $("#botFab"), box = $("#bot"), log = $("#botLog"), form = $("#botForm"), inp = $("#botIn"), mic = $("#botMic");
     if (!fab) return;
-    var DODGE = '#scSend, #phKnob, #l3order, #orderClear, .plan__go, .nv .cc__go, #contact .msgs .btn, #form input, #form textarea, #form button[type="submit"]', tick = 0;
-    function dodge() { tick = 0; var l = fab.offsetLeft, tp = fab.offsetTop, r = l + fab.offsetWidth, b = tp + fab.offsetHeight; var hit = box.hidden && [].some.call(document.querySelectorAll(DODGE), function (el) { if (!el.offsetWidth) return false; var q = el.getBoundingClientRect(); return q.right > l + 4 && q.left < r - 4 && q.bottom > tp + 4 && q.top < b - 4; }); fab.classList.toggle("off", hit); }
+    var DODGE = '#scSend, #phKnob, #l3order, #orderClear, .plan__go, .plan, .nv .cc__go, #contact .msgs .btn, #form input, #form textarea, #form button[type="submit"]', tick = 0;
+    function dodge() { tick = 0; var l = fab.offsetLeft, tp = fab.offsetTop, r = l + fab.offsetWidth, b = tp + fab.offsetHeight; var hit = box.hidden && [].some.call(document.querySelectorAll(DODGE), function (el) { if (!el.offsetWidth) return false; var q = el.getBoundingClientRect(); return q.right > l - 12 && q.left < r + 12 && q.bottom > tp - 12 && q.top < b + 12; }); fab.classList.toggle("off", hit); }
     function later() { if (!tick) tick = requestAnimationFrame(dodge); }
-    addEventListener("scroll", later, { passive: true }); addEventListener("resize", later); addEventListener("hashchange", function () { setTimeout(dodge, 400); }); $("#ph").addEventListener("transitionend", later); setTimeout(dodge, 300);
+    addEventListener("scroll", later, { passive: true }); addEventListener("resize", later); addEventListener("hashchange", function () { setTimeout(dodge, 400); }); $("#ph").addEventListener("transitionend", later); $("#ph").addEventListener("pointermove", later); $("#ph").addEventListener("pointerup", later); setTimeout(dodge, 300);
     var NK = {
-      salon: "салон красот парикмахер стрижк барбер маникюр ногт педикюр бров ресниц косметолог массаж спа beauty hair barber nail brow lash massage spa friseur kosmetik nagel перукар манікюр нігт масаж краса",
+      salon: "салон красот парикмахер стрижк барбер маникюр ногт педикюр бров ресниц косметолог массаж спа beauty hair barber nail brow lash massage spa salon kosmetikstudio nagelstudio friseur kosmetik nagel перукар манікюр нігт масаж краса",
       cafe: "кафе ресторан кофейн бар пекарн пицц суши еда столик меню cafe restaurant coffee bakery pizza food menu table café speisekarte bäckerei кав'ярн піц їжа",
       shop: "магазин цвет ларёк ларек киоск flower stall kiosk blumen квіт товар маркетплейс одежд обув склад shop store ecommerce marketplace clothes products laden onlineshop kleidung ware одяг",
       trades: "ремонт мастер сантехник электрик строител отделк мебел автосервис шиномонтаж repair handyman plumber electrician builder trades carpenter handwerk reparatur klempner elektriker майстер сантехнік електрик будівель",
@@ -756,15 +816,15 @@
     };
     var SK = {
       social: "соцсет инстаграм instagram пост рилс reels контент тикток tiktok подписчик публикац social followers posts facebook соцмереж інстаграм публікац підписник",
-      bot: "бот чатбот запис записыва бронь брониров whatsapp telegram мессенджер booking appointment chatbot reservation termin buchung бронюв",
+      bot: "бот чатбот записаться бронь брониров whatsapp telegram мессенджер пишут отвечать ответ ночью сообщен пишуть відповід вночі schreiben antworten nachts nachricht reply answer message night booking chatbot reservation buchung бронюв",
       content: "фото видео картинк реклам баннер описани карточк photo video image banner copy description foto bild werbung beschreibung відео опис",
       reports: "отчёт отчет таблиц excel эксель учёт учет касс продаж аналитик report spreadsheet sheet accounting sales analytics bericht tabelle buchhaltung umsatz звіт облік",
       docs: "письм почт документ договор счёт счет накладн предложени email mail letter contract invoice offer brief dokument vertrag rechnung angebot лист договір рахунок",
       reviews: "отзыв рейтинг репутац google review rating reputation stars bewertung rezension відгук",
       data: "парсинг парсер мониторинг цен конкурент данные собрать скрап scrape monitoring price competitor data crawl preis konkurrent daten моніторинг ціни дані",
       site: "сайт лендинг визитк seo веб страниц website landing homepage webseite лендінг сторінк",
-      leads: "лид crm клиенты контакт обращени lead leads inquiry anfrage kontakte заявк клієнт",
-      mail: "напомин неявк забыва приходят пропуска no-show forget vergess забува пропуска рассылк уведомлен вернуть reminder newsletter mailing notification remind erinnerung benachrichtigung нагад розсилк сповіщ",
+      leads: "лид crm контакт обращени lead leads inquiry anfrage kontakte заявк",
+      mail: "напомин неявк забыва забывают приходят пришла пропуска no-show forget appointments vergess vergessen gekommen забува забувають приходять пропуска рассылк уведомлен вернуть reminder newsletter mailing notification remind erinnerung benachrichtigung нагад розсилк сповіщ",
       translate: "перевод перевест язык немецк английск translate translation language übersetz sprache переклад мов",
       hiring: "сотрудник персонал ваканси найм нанять работник кандидат уборщиц официант staff hiring hire vacancy job candidate employee personal mitarbeiter stelle stellenanzeige bewerber працівник вакансі найняти кандидат",
       assistant: "помощник ассистент ии нейросет команд assistant helper gpt assistent ki mitarbeiter помічник асистент штучн"
@@ -779,7 +839,8 @@
     }
     function best(ts, table) {
       var id = null, top = 0;
-      Object.keys(table).forEach(function (k) { var s = score(ts, table[k]); if (s > top) { top = s; id = k; } });
+      function cost(k) { var v = F.sv && F.sv[k]; return v ? parseInt(String(v.amt).replace(/\D/g, ""), 10) || 0 : 0; }
+      Object.keys(table).forEach(function (k) { var s = score(ts, table[k]); if (s > top || (s && s === top && table === SKT && cost(k) < cost(id))) { top = s; id = k; } }); /* a tie goes to the cheaper task */
       return id;
     }
     function say(kind, text) { var b = document.createElement("div"); b.className = "bub bub--" + kind; b.textContent = text; log.appendChild(b); log.scrollTop = log.scrollHeight; return b; }
@@ -788,43 +849,55 @@
       a.innerHTML = "<span></span>" + '<svg class="ico"><use href="#i-arrow" /></svg>';
       a.firstChild.textContent = label;
       if (order) a.dataset.order = order;
-      a.addEventListener("click", function () { if (order) { /* contact order chip is set by the shared handler */ } close(); });
+      a.addEventListener("click", function () { close(); });
       log.appendChild(a); log.scrollTop = log.scrollHeight;
     }
+    /* a task link goes to the page of the visitor's own business, with the same price line as on that page */
+    function taskHref(n, sid) {
+      function lists(x) { return x && (F.niches[x] || []).some(function (r) { return r[0] === sid; }); }
+      var b = lists(n) ? n : lists(ctxNiche) ? ctxNiche : sid === "assistant" ? "office" : lists("other") ? "other" : null;
+      return b ? "#/for/" + b + "/" + sid : "#/" + sid;
+    }
+    function priceLine(sid) { var d = document.createElement("div"); d.className = "bot__price"; d.innerHTML = priceHtml(sid); if (d.innerHTML) { log.appendChild(d); log.scrollTop = log.scrollHeight; } }
+    function chips() {
+      $$(".bot__chips", log).forEach(function (x) { x.remove(); });
+      var n = ctxNiche && F.niches[ctxNiche] ? ctxNiche : "other", ids = ctxNiche && F.niches[ctxNiche] ? F.niches[n].slice(0, 4).map(function (r) { return r[0]; }) : ["bot", "mail", "reviews", "social"];
+      var w = document.createElement("div"); w.className = "bot__chips";
+      ids.forEach(function (sid) { var a = document.createElement("a"); a.className = "bot__go"; a.href = taskHref(n, sid); a.innerHTML = "<span></span>" + '<svg class="ico"><use href="#i-arrow" /></svg>'; a.firstChild.textContent = t("sv." + sid + ".h"); a.addEventListener("click", function () { close(); }); w.appendChild(a); });
+      var hi = $(".bub", log); if (hi && hi.nextSibling) log.insertBefore(w, hi.nextSibling); else log.appendChild(w);
+    }
+    var PAY = toks("сколько стоит стоимость цена цены платить оплата оплатить скільки коштує ціна платити оплата kostet kosten preis zahlen bezahlen bezahlung price cost costs pay payment much");
     /* what the visitor said, in the visitor's words, wrapped as a ready message to the owner */
     function draftFor(q) { return t("bot.tpl").replace("{q}", q); }
     function showDraft(text) {
       var wrap = document.createElement("div"); wrap.className = "bot__draft";
       var ta = document.createElement("textarea"); ta.value = text; ta.rows = 4; ta.maxLength = 800; ta.setAttribute("aria-label", t("bot.draft"));
       var row = document.createElement("div"); row.className = "bot__send3";
-      var tg = document.createElement("button"); tg.type = "button"; tg.className = "bot__ch"; tg.textContent = "Telegram";
+      var tg = document.createElement("a"); tg.className = "bot__ch"; tg.target = "_blank"; tg.rel = "noopener"; tg.textContent = "Telegram";
       var wa = document.createElement("a"); wa.className = "bot__ch"; wa.target = "_blank"; wa.rel = "noopener"; wa.textContent = "WhatsApp";
       var ml = document.createElement("a"); ml.className = "bot__ch"; ml.textContent = "Email";
       function sync() {
         var v = ta.value.trim();
         wa.href = "https://wa.me/491709094298?text=" + encodeURIComponent(v);
+        tg.href = "https://t.me/onomamichail?text=" + encodeURIComponent(v);
         ml.href = "mailto:kostinmihail40@gmail.com?subject=" + encodeURIComponent(t("bot.subject")) + "&body=" + encodeURIComponent(v);
       }
       ta.addEventListener("input", function () { sync(); fitTa(ta); }); sync(); setTimeout(function () { fitTa(ta); log.scrollTop = log.scrollHeight; }, 0);
-      tg.addEventListener("click", function () {
-        /* a Telegram link cannot carry text, so the text goes to the clipboard first */
-        function go() { say("b", t("bot.copied")); window.open("https://t.me/onomamichail", "_blank", "noopener"); }
-        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value.trim()).then(go, go); else { ta.select(); try { document.execCommand("copy"); } catch (e) {} go(); }
-      });
       row.appendChild(tg); row.appendChild(wa); row.appendChild(ml);
       wrap.appendChild(ta); wrap.appendChild(row);
       log.appendChild(wrap); log.scrollTop = log.scrollHeight;
     }
     function local(text) {
-      var ts = toks(text), n = best(ts, NKT), sid = best(ts, SKT), F = window.FUNNEL || { niches: {} };
-      if (n && sid) {
-        var has = (F.niches[n] || []).some(function (r) { return r[0] === sid; });
+      var ts = toks(text), n = best(ts, NKT), sid = best(ts, SKT), pay = score(ts, PAY) > 0;
+      if (sid) {
         say("b", t("bot.found"));
-        link(has ? "#/for/" + n + "/" + sid : "#/for/" + n, t("sv." + sid + ".h") + ", " + t("n." + n));
+        link(taskHref(n, sid), t("sv." + sid + ".h") + (n ? ", " + t("n." + n) : ""));
+        if (pay) priceLine(sid);
       } else if (n) {
-        say("b", t("bot.niche")); link("#/for/" + n, t("n." + n));
-      } else if (sid) {
-        say("b", t("bot.found")); link("#/" + sid, t("sv." + sid + ".h"));
+        say("b", t("bot.niche"));
+        (F.niches[n] || []).slice(0, 3).forEach(function (r) { link("#/for/" + n + "/" + r[0], t("sv." + r[0] + ".h")); });
+      } else if (pay && /сколько|стоит|цен|скільки|кошту|ціна|kostet|preis|price|cost|much/i.test(text) && !/плат|оплат|zahl|pay/i.test(text)) {
+        say("b", t("bot.price")); chips(); var cw = $(".bot__chips", log); if (cw) { log.appendChild(cw); log.scrollTop = log.scrollHeight; }
       } else {
         say("b", t("bot.draft")); showDraft(draftFor(text));
       }
@@ -841,10 +914,9 @@
           clearTimeout(to); wait.remove();
           if (!j || typeof j.reply !== "string") throw new Error("bad");
           say("b", j.reply); hist.push({ role: "assistant", content: j.reply });
-          var F = window.FUNNEL || { niches: {} };
           if (j.service && (j.niche || F.sv && F.sv[j.service])) {
-            var has = j.niche && (F.niches[j.niche] || []).some(function (r) { return r[0] === j.service; });
-            link(has ? "#/for/" + j.niche + "/" + j.service : "#/" + j.service, t("sv." + j.service + ".h") + (j.niche ? ", " + t("n." + j.niche) : ""));
+            link(taskHref(j.niche, j.service), t("sv." + j.service + ".h") + (j.niche ? ", " + t("n." + j.niche) : ""));
+            priceLine(j.service);
           } else if (j.niche) {
             link("#/for/" + j.niche, t("n." + j.niche));
           } else if (j.draft) {
@@ -854,7 +926,9 @@
         .catch(function () { clearTimeout(to); wait.remove(); local(text); });
     }
     function answer(text) { if (API) ask(text); else local(text); }
-    function open() { box.hidden = false; fab.setAttribute("aria-expanded", "true"); fab.classList.add("on"); setTimeout(function () { inp.focus(); }, 50); }
+    function open() { box.hidden = false; fab.setAttribute("aria-expanded", "true"); fab.classList.add("on"); if (log.children.length < 3) chips(); if (innerWidth > 760) setTimeout(function () { inp.focus(); }, 50); }
+    relocWall = (function (old) { return function () { old(); if (!box.hidden && $(".bot__chips", log)) chips(); }; })(relocWall);
+    $("#botHuman").addEventListener("click", function () { close(); });
     function close() { box.hidden = true; fab.setAttribute("aria-expanded", "false"); fab.classList.remove("on"); stopMic(); }
     fab.addEventListener("click", function () { box.hidden ? open() : close(); });
     $("#botClose").addEventListener("click", close);

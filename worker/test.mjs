@@ -21,6 +21,10 @@ ok(r.status === 400, "system role from the client is rejected");
 
 const sp = systemPrompt("de"); ok(sp.includes("German") && sp.includes("salon: Beauty and massage") && sp.includes("bot: Replies and bookings"), "prompt carries language and catalog");
 
+r = await call(fake('{"reply":"Это стоит 50 € и я гарантирую результат. Посмотри страницу задачи.","niche":"salon","service":"bot","draft":null}'), { lang: "ru", messages: [{ role: "user", content: "сколько стоит" }] });
+j = await r.json(); ok(!/€|гарант/.test(j.reply) && /страницу/.test(j.reply), "sums and guarantees are cut from the reply");
+ok(!/from €|Germany/.test(systemPrompt("en")), "prompt carries no prices and no country");
+
 let last = 200; for (let i = 0; i < 14; i++) last = (await call(fake('{"reply":"ok","niche":null,"service":null,"draft":null}'), { lang: "en", messages: [{ role: "user", content: "hi" }] })).status;
 ok(last === 429, "burst guard returns 429");
 process.exit(fail ? 1 : 0);
