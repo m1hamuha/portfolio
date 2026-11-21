@@ -1149,8 +1149,24 @@ h1, h2, h3, .svc__h, .l3__line, .cc h3, .card h3 { letter-spacing: -0.012em; wor
 /* night card: an arc from moon to sun, then four numbers and the morning line */
 .firm-log__sky { position: relative; margin: 0.2rem 0 0.4rem; }
 .firm-night { display: block; width: 100%; height: auto; }
-.firm-night__run { stroke-dasharray: 100; stroke-dashoffset: 100; animation: firmRun 2.4s 0.3s var(--ease) forwards; }
-@keyframes firmRun { to { stroke-dashoffset: 0; } }
+/* the night is a control: drag the sun from 22:00 to 08:00 and the numbers grow */
+.firm-log__sky { cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+.firm-log__sky.is-drag { cursor: grabbing; }
+.firm-night .firm-night__run { stroke-width: 5; }
+.firm-night__knob { filter: drop-shadow(0 0 7px rgba(216, 255, 0, 0.75)); }
+.firm-night .firm-night__halo { fill: rgba(216, 255, 0, 0.2); stroke: none; transform-box: fill-box; transform-origin: center; animation: firmHalo 1.6s ease-in-out infinite; }
+@keyframes firmHalo { 50% { transform: scale(1.35); opacity: 0.35; } }
+.firm-log.is-touched .firm-night__halo { animation: none; }
+.firm-log__sky.is-focus .firm-night .firm-night__halo { fill: none; stroke: var(--ink); stroke-width: 2; animation: none; }
+.firm-night__range { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; pointer-events: none; }
+.firm-log__clock { margin-left: auto; font-family: var(--f-display); font-weight: 800; font-size: clamp(1.5rem, 2.4vw, 2rem); line-height: 1; letter-spacing: -0.03em; color: var(--accent); font-variant-numeric: tabular-nums; }
+.firm-log__drag { position: absolute; left: 50%; bottom: 0.15rem; transform: translateX(-50%); padding: 0.3rem 0.8rem; border-radius: var(--r-full); background: rgba(216, 255, 0, 0.12); color: var(--accent); font-size: 0.8rem; font-weight: 700; white-space: nowrap; pointer-events: none; transition: opacity 0.4s; }
+.firm-log.is-touched .firm-log__drag { opacity: 0; }
+.firm-log.is-live .firm-log__list li > * { transition: opacity 0.3s; }
+.firm-log.is-live .firm-log__list li:not(.is-on) > * { opacity: 0.3; }
+.firm-log.is-live .firm-log__list li.firm-log__done { transition: background-color 0.3s, opacity 0.7s var(--ease), transform 0.7s var(--ease); }
+.firm-log.is-live .firm-log__list li.firm-log__done:not(.is-on) { background: transparent; box-shadow: inset 0 0 0 1px var(--line); }
+.firm-log.is-live .firm-log__list li.firm-log__done:not(.is-on) :is(time, span, .ico) { color: var(--muted); }
 .firm-log__t { position: absolute; bottom: -0.35rem; font-size: 0.78rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 .firm-log__t--a { left: 0; } .firm-log__t--b { right: 0; color: var(--accent); }
 .firm-log__list li { grid-template-columns: 1.3rem 2.4ch minmax(0, 1fr); align-items: center; gap: 0.7rem; }
@@ -1191,6 +1207,33 @@ h1, h2, h3, .svc__h, .l3__line, .cc h3, .card h3 { letter-spacing: -0.012em; wor
 .firm-less .ico { transform: rotate(180deg); }
 .firm-less:hover .ico { transform: rotate(180deg); }
 
+/* price ladder: three steps that rise, the last one lit */
+.firm-lad { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: end; gap: var(--gap); }
+.firm-lad__s { position: relative; transition: border-color 0.25s, opacity 0.7s var(--ease), transform 0.7s var(--ease); display: flex; flex-direction: column; align-items: flex-start; gap: 0.3rem; min-height: calc(11.5rem + var(--i, 0) * 3.25rem); padding: clamp(1rem, 1.8vw, 1.5rem); border-radius: var(--r-lg); background: rgba(14, 14, 14, 0.9); border: 1px solid var(--line); }
+.firm-lad__s .ico { width: 1.6rem; height: 1.6rem; margin-bottom: auto; color: var(--muted); }
+.firm-lad__n::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+.firm-lad__s:hover, .firm-lad__s:focus-within { border-color: var(--accent); }
+.firm-lad__n:focus-visible { outline: none; }
+.firm-lad__n:focus-visible::after { outline: 2px solid var(--ink); outline-offset: 3px; }
+.firm-lad__n { font-family: var(--f-mono); font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.firm-lad__p { font-family: var(--f-display); font-weight: 800; font-size: clamp(1.9rem, 3.6vw, 3rem); line-height: 1; letter-spacing: -0.035em; color: var(--accent); white-space: nowrap; }
+.firm-lad__p span { font-family: var(--f-body); font-weight: 500; font-size: 0.95rem; letter-spacing: 0; color: var(--muted); margin-right: 0.15rem; }
+.firm-lad__u { font-size: 0.9rem; color: var(--muted); }
+.firm-lad__d { margin-top: 0.45rem; font-size: 1rem; line-height: 1.25; text-wrap: balance; }
+.firm-lad__s:last-child { background: var(--accent); border-color: var(--accent); color: var(--on); }
+.firm-lad__s:last-child .ico, .firm-lad__s:last-child .firm-lad__n, .firm-lad__s:last-child .firm-lad__p, .firm-lad__s:last-child .firm-lad__p span, .firm-lad__s:last-child .firm-lad__u { color: var(--on); }
+.firm-lad__note { display: flex; align-items: center; gap: 0.7rem; margin-top: var(--gap); padding: 0.85rem 1.1rem; border-radius: var(--r-lg); border: 1px dashed var(--line); color: var(--muted); font-size: 0.98rem; line-height: 1.3; }
+.firm-lad__note .ico { flex: none; width: 1.3rem; height: 1.3rem; }
+@media (max-width: 760px) {
+  .firm-lad { grid-template-columns: minmax(0, 1fr); gap: 0.6rem; }
+  .firm-lad__s { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "n p" ". u" "d d"; align-items: baseline; gap: 0.2rem 0.8rem; min-height: 0; width: calc(76% + var(--i, 0) * 12%); padding: 0.85rem 1rem; border-radius: var(--r-md); }
+  .firm-lad__s .ico { display: none; }
+  .firm-lad__n { grid-area: n; }
+  .firm-lad__p { grid-area: p; font-size: 1.7rem; text-align: right; }
+  .firm-lad__u { grid-area: u; text-align: right; font-size: 0.82rem; }
+  .firm-lad__d { grid-area: d; margin-top: 0.25rem; font-size: 0.9rem; }
+}
+
 /* how we start: three stops joined by a line */
 .firm-steps { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gap); position: relative; }
 .firm-steps::before { content: ""; position: absolute; left: 8%; right: 8%; top: 1.75rem; border-top: 2px dashed var(--line); }
@@ -1214,4 +1257,4 @@ h1, h2, h3, .svc__h, .l3__line, .cc h3, .card h3 { letter-spacing: -0.012em; wor
   .firm-steps__ico { width: 3rem; height: 3rem; }
   .firm-steps::before { top: 1.5rem; }
 }
-@media (prefers-reduced-motion: reduce) { .firm-night__run { animation: none; stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) { .firm-night .firm-night__halo { animation: none; } }
