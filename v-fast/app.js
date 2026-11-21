@@ -387,7 +387,7 @@
     var sky = $(".firm-log__sky"), inp = $("#firmNight");
     if (!sky || !inp) return;
     var fig = sky.closest(".firm-log"), knob = $(".firm-night__knob", sky), clip = $("#firmNightClip rect"), clock = $("#firmClock");
-    var rows = $$(".firm-log__list li[data-n]", fig), done = $(".firm-log__done", fig), raf = 0, touched = false;
+    var rows = $$(".firm-log__list li[data-n]", fig), done = $(".firm-log__done", fig), raf = 0, touched = false, wait = 0, val = 100;
     function bx(u) { var m = 1 - u; return 24 * m * m * m + 300 * u * m * m + 900 * u * u * m + 376 * u * u * u; }
     function by(u) { var m = 1 - u; return 78 * m * m * m - 18 * u * m * m - 18 * u * u * m + 78 * u * u * u; }
     function paint(v) {
@@ -406,13 +406,26 @@
       });
       done.classList.toggle("is-on", v >= 99);
     }
-    function set(v) { inp.value = v; paint(v); }
-    function stop() { cancelAnimationFrame(raf); raf = 0; if (!touched) { touched = true; fig.classList.add("is-touched"); } }
+    function set(v) { val = Math.max(0, Math.min(100, v)); inp.value = val; paint(val); }
+    function stop() { cancelAnimationFrame(raf); raf = 0; clearTimeout(wait); if (!touched) { touched = true; fig.classList.add("is-touched"); } }
+    /* the night keeps going: from wherever the sun is, on to the morning */
+    function play(from) {
+      var t0 = 0, span = (100 - from) * 42;
+      cancelAnimationFrame(raf);
+      if (reduce || span <= 0) return;
+      raf = requestAnimationFrame(function step(ts) {
+        if (!t0) t0 = ts;
+        var p = Math.min(1, (ts - t0) / span);
+        set(from + (100 - from) * p);
+        raf = p < 1 ? requestAnimationFrame(step) : 0;
+      });
+    }
+    function resume() { clearTimeout(wait); wait = setTimeout(function () { play(val); }, 900); }
     function at(e) { var r = sky.getBoundingClientRect(); return ((e.clientX - r.left) / r.width * 400 - 24) / 3.52; }
     sky.addEventListener("pointerdown", function (e) { stop(); sky.classList.add("is-drag"); try { sky.setPointerCapture(e.pointerId); } catch (x) {} set(at(e)); });
     sky.addEventListener("pointermove", function (e) { if (sky.classList.contains("is-drag")) set(at(e)); });
-    ["pointerup", "pointercancel"].forEach(function (k) { sky.addEventListener(k, function () { sky.classList.remove("is-drag"); }); });
-    inp.addEventListener("input", function () { stop(); paint(+inp.value); });
+    ["pointerup", "pointercancel"].forEach(function (k) { sky.addEventListener(k, function () { if (sky.classList.contains("is-drag")) { sky.classList.remove("is-drag"); resume(); } }); });
+    inp.addEventListener("input", function () { stop(); val = +inp.value; paint(val); resume(); });
     inp.addEventListener("focus", function () { if (inp.matches(":focus-visible")) sky.classList.add("is-focus"); });
     inp.addEventListener("blur", function () { sky.classList.remove("is-focus"); });
     fig.classList.add("is-live");
@@ -421,13 +434,7 @@
     var io = new IntersectionObserver(function (en) {
       if (!en[0].isIntersecting) return;
       io.disconnect();
-      var t0 = 0;
-      raf = requestAnimationFrame(function step(ts) {
-        if (!t0) t0 = ts;
-        var p = Math.min(1, (ts - t0) / 4200);
-        set(100 * p);
-        raf = p < 1 ? requestAnimationFrame(step) : 0;
-      });
+      if (!touched) play(0);
     }, { threshold: 0.5 });
     io.observe(sky);
   })();
