@@ -392,7 +392,7 @@
     var ex = $("#firmEx");
     if (!ex) return;
     var panels = $$(".firm-ex__view > .firm-log", ex), cur = 0, timers = [], seen = {};
-    var nName = $("#firmExNextName"), nCount = $("#firmExNextCount"), nIco = $(".firm-ex__nico use", ex);
+    var nName = $("#firmExNextName");
     function light(p) {
       timers.forEach(clearTimeout); timers = [];
       if (!p.classList.contains("firm-log--ex")) return;
@@ -404,8 +404,6 @@
     function bar() {
       var nx = (cur + 1) % panels.length, p = panels[nx];
       nName.textContent = $(".firm-log__head b", p).textContent;
-      nCount.textContent = (nx + 1) + "/" + panels.length;
-      nIco.setAttribute("href", "#" + p.dataset.ico);
     }
     function go(n) {
       n = (n + panels.length) % panels.length;
@@ -422,7 +420,12 @@
     panels.forEach(function (p, i) { if (p.classList.contains("firm-log--ex")) p.classList.add("is-live"); p.inert = i !== 0; });
     $("#firmExNext").addEventListener("click", function () { go(cur + 1); });
     $("#firmExPrev").addEventListener("click", function () { go(cur - 1); });
-    $$(".firm-log__n", ex).forEach(function (b) { b.addEventListener("click", function () { go(cur + 1); var nb = $(".firm-log__n", panels[cur]); if (nb) nb.focus({ preventScroll: true }); }); });
+    $$(".firm-log__n", ex).forEach(function (b) { b.addEventListener("click", function () {
+        go(cur + 1);
+        /* keep the keyboard on the same control of the new card; if it cannot take focus yet, use the bar */
+        var nb = $(".firm-log__n", panels[cur]);
+        requestAnimationFrame(function () { nb.focus({ preventScroll: true }); if (document.activeElement !== nb) $("#firmExNext").focus({ preventScroll: true }); });
+      }); });
     bar();
     window.firmExRepaint = bar;
   })();
@@ -470,9 +473,9 @@
     sky.addEventListener("pointerdown", function (e) { stop(); sky.classList.add("is-drag"); try { sky.setPointerCapture(e.pointerId); } catch (x) {} set(at(e)); });
     sky.addEventListener("pointermove", function (e) { if (sky.classList.contains("is-drag")) set(at(e)); });
     ["pointerup", "pointercancel"].forEach(function (k) { sky.addEventListener(k, function () { if (sky.classList.contains("is-drag")) { sky.classList.remove("is-drag"); resume(); } }); });
-    inp.addEventListener("input", function () { stop(); val = +inp.value; paint(val); resume(); });
+    inp.addEventListener("input", function () { stop(); val = +inp.value; paint(val); });
     inp.addEventListener("focus", function () { if (inp.matches(":focus-visible")) sky.classList.add("is-focus"); });
-    inp.addEventListener("blur", function () { sky.classList.remove("is-focus"); });
+    inp.addEventListener("blur", function () { sky.classList.remove("is-focus"); if (touched) resume(); });
     fig.classList.add("is-live");
     if (reduce || !("IntersectionObserver" in window)) { paint(100); return; }
     set(0);
