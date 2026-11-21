@@ -326,15 +326,16 @@
     social: ["sv.social.h", 1, "€10"], bot: ["sv.bot.h", 1, "€79"], content: ["sv.content.h", 1, "€1"],
     reports: ["sv.reports.h", 1, "€19"], docs: ["sv.docs.h", 1, "€19"], reviews: ["sv.reviews.h", 1, "€15"],
     data: ["sv.data.h", 1, "€29"], site: ["sv.site.h", 1, "€29"], leads: ["sv.leads.h", 1, "€29"], mail: ["sv.mail.h", 1, "€19"],
-    translate: ["sv.translate.h", 1, "€5"], assistant: ["sv.assistant.h", 1, "€49"], hiring: ["sv.hiring.h", 1, "€15"], custom: ["sv.custom.h", 0, ""], firm: ["firm.order", 1, "€300"],
+    translate: ["sv.translate.h", 1, "€5"], assistant: ["sv.assistant.h", 1, "€49"], hiring: ["sv.hiring.h", 1, "€15"], custom: ["sv.custom.h", 0, ""], firm: ["firm.order", 1, "€300"], firmtry: ["firm.lad.1", 1, "€49"], firmsetup: ["firm.setup", 1, "€300"], firmcare: ["firm.lad.3", 1, "€99"],
     photo: ["pm.photo", 0, "€1"], video: ["pm.video", 1, "€8"],
     plan1: ["pl.1", 0, "€10 " ], plan2: ["pl.2", 0, "€25 "], plan3: ["pl.3", 0, "€40 "]
   };
   function labelFor(id) {
     var o = ORD[id], name = t(o[0]);
-    var pre = ctxNiche && id !== "firm" ? t("n." + ctxNiche) + ": " : "";
+    var isFirm = id.indexOf("firm") === 0, pre = ctxNiche && !isFirm ? t("n." + ctxNiche) + ": " : "";
     var nb = function (x) { return x.replace(/ /g, " "); };
-    if (id === "firm") return name;
+    /* company offers never take a business prefix; a picked price step is named after the offer */
+    if (isFirm) return id === "firm" ? name : t("firm.order") + ": " + name;
     if (id.indexOf("plan") === 0) return pre + t("sv.social.h") + ", " + name + ": " + nb(o[2] + t("pr.mo"));
     return pre + (o[2] ? name + ": " + nb((o[1] ? t("pr.from") + " " : "") + o[2]) : name);
   }
@@ -343,7 +344,7 @@
     var box = $("#order"), lab = $("#orderLabel"), ta = $('#form [name="message"]');
     lab.textContent = order ? labelFor(order) : "";
     box.hidden = !order;
-    var auto = order ? (order === "firm" ? t("firm.talk") : t("wa.order")) + lab.textContent : "";
+    var auto = order ? (order.indexOf("firm") === 0 ? t("firm.talk") : t("wa.order")) + lab.textContent : "";
     if (ta.value.indexOf(lastAuto) === 0) ta.value = auto + ta.value.slice(lastAuto.length);
     lastAuto = auto;
     var text = order ? auto : t("wa.hero");
@@ -363,8 +364,9 @@
     if (!lad || !go) return;
     var steps = $$(".firm-lad__s", lad), ball = $(".firm-lad__ball", lad), name = $("#firmLadName"), cur = steps[0];
     function place() {
-      var phone = window.matchMedia("(max-width: 760px)").matches;
-      ball.style.left = (phone ? cur.offsetLeft + cur.offsetWidth - 22 : cur.offsetLeft + cur.offsetWidth / 2) + "px";
+      if (!lad.offsetParent) { ball.classList.remove("is-on"); return; }
+    var phone = window.matchMedia("(max-width: 760px)").matches;
+      ball.style.left = (phone ? cur.offsetLeft + cur.offsetWidth - 6 : cur.offsetLeft + cur.offsetWidth / 2) + "px";
       ball.style.top = cur.offsetTop + "px";
       ball.classList.add("is-on");
     }
@@ -372,12 +374,14 @@
       cur = b;
       steps.forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
       go.dataset.order = b.dataset.pick;
-      name.textContent = $(".firm-lad__n", b).textContent + ", " + $(".firm-lad__p", b).textContent.replace(/\s+/g, " ").trim();
+      name.textContent = $(".firm-lad__n", b).textContent + ", " + $(".firm-lad__p", b).textContent.replace(/\s+/g, "\u00a0").trim();
       place();
     }
     steps.forEach(function (b) { b.addEventListener("click", function () { pick(b); }); });
     window.addEventListener("resize", place);
     window.addEventListener("hashchange", function () { setTimeout(place, 60); });
+    /* the page can open on another route and show later: place the ball once it has a real size */
+    if ("ResizeObserver" in window) new ResizeObserver(place).observe(lad);
     pick(cur);
     window.firmLadRepaint = function () { pick(cur); };
   })();
