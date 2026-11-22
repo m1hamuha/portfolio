@@ -986,7 +986,7 @@
   window.__fxTaskDemo = true;
 
   var NS = "http://www.w3.org/2000/svg";
-  var REST = 50;   /* where the handle rests after the demo and under reduced motion (spec 3.4: 50%) */
+  var REST = 8;   /* after the demo the handle rests on "with me": a split at 50% cut both texts mid-word */
   var mq = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
   function reduced() { return !!(mq && mq.matches); }
   function G() { return window.gsap || null; }
@@ -1472,7 +1472,7 @@
     orderWatch();
     if (reduced() || !G()) {
       /* the final frame: handle at 50%, both halves still, loss and gain visible */
-      if (!seen()) { setPos(REST, false); lastPos = REST; markSeen(); }
+      if (!seen()) markSeen();   /* reduced motion: the page's own start ("without me" whole), the visitor drags */
       h.classList.add("td-split");
       finalWith();
       return;
