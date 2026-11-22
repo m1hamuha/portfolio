@@ -305,6 +305,10 @@
         msg.appendChild(a);
       }
     }
+    $("#formOpen").addEventListener("click", function () {
+      form.classList.remove("is-closed"); this.setAttribute("aria-expanded", "true");
+      var f = $('[name="name"]', form); if (f) setTimeout(function () { f.focus(); fitTa($('[name="message"]', form)); }, 30);
+    });
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       if (busy) return;
@@ -374,7 +378,9 @@
     var text = order ? auto : t("wa.hero");
     $$("[data-wa]").forEach(function (a) { a.href = WA + "?text=" + encodeURIComponent(text); });
     $$('a[href^="' + TG + '"]').forEach(function (a) { a.href = TG + "?text=" + encodeURIComponent(text); });
-    $("#ctH").textContent = t(order ? "ct.h2o" : "ct.h2");
+    $("#ctH").textContent = t("ct.h2");
+    var cv = order && ctxNiche ? content(ctxNiche, order) : null, waFirst = !!(cv && cv.v && /chat|reminder/.test(cv.v.type));
+    $$("#contact .msgs .btn").forEach(function (a) { var wa = a.hasAttribute("data-wa"); a.classList.toggle("btn--ink", wa === waFirst); a.classList.toggle("btn--wa", wa !== waFirst); });
     fitTa(ta);
   }
   $('#form [name="message"]').addEventListener("input", function () { fitTa(this); });
@@ -690,12 +696,18 @@
     if (sid === "content") return "<b>€1</b> <span>" + t("pr.photo") + "</span>";
     return "<span>" + t("pr.from") + "</span> <b>" + sv.amt + "</b> <span>" + (sv.per ? t("pr.mo") : t("pr.once")) + "</span>";
   }
+  function priceShort(sid) {
+    var sv = F.sv[sid]; if (!sv) return "";
+    if (sid === "content") return "<b>€1</b> <span>" + t("pr.photo") + "</span>";
+    return "<span>" + t("pr.from") + "</span> <b>" + sv.amt + "</b>" + (sv.per ? "<span>" + t("pr.mos") + "</span>" : "");
+  }
   function paintCards() {
     $$("[data-c]").forEach(function (el) {
       var p = el.dataset.c.split("."), c = content(p[0], p[1]); el.textContent = c ? c.promise : ""; el.hidden = !c;
       var card = el.parentNode, pr = $(".cc__price", card);
       if (!pr) { pr = document.createElement("span"); pr.className = "cc__price"; card.insertBefore(pr, el); }
-      pr.innerHTML = priceHtml(p[1]);
+      pr.innerHTML = priceShort(p[1]);
+      var h = $("h3", card); if (h && c) card.setAttribute("aria-label", h.textContent + ". " + c.promise);
     });
   }
   window.addEventListener("content", function () { paintCards(); if (l3ctx) fillL3(); });
@@ -723,7 +735,9 @@
       playScene(keep);
     }
     $("#l3price").innerHTML = sid === "social" ? "" : priceHtml(sid);
-    var fee = $("#l3fee"); fee.hidden = !(c && c.fee); fee.textContent = t("pr.fee." + sid) || t("pr.fee");
+    var fee = $("#l3fee"); fee.hidden = !(c && c.fee); fee.textContent = t("pr.fee");
+    $("#l3tag").innerHTML = sid === "social" ? "" : priceShort(sid);
+    $("#l3barP").innerHTML = priceShort(sid); $("#l3barGo").dataset.order = sid;
     document.documentElement.classList.toggle("has-buy", sid !== "social");
     barH();
     $("#l3order").dataset.order = sid;
@@ -734,9 +748,28 @@
     }
     $(".l3__buy").hidden = sid === "social"; /* social media has its own three plans, each with Order */
   }
+  /* the slim price row: after a touch on the phone, after "with me" was seen, or once the phone is scrolled past;
+     hidden while the big Order is on screen */
+  var bar = $("#l3bar"), seenScene = false, barT = 0;
+  function barSync() {
+    if (!bar) return;
+    var big = $("#l3buy").getBoundingClientRect(), bigOn = big.height > 0 && big.top < innerHeight - 8 && big.bottom > 0;
+    if (!seenScene && !l3.hidden && $("#ph").getBoundingClientRect().bottom < 80) seenScene = true;
+    var on = !!(document.documentElement.classList.contains("has-buy") && !l3.hidden && seenScene && !bigOn && innerWidth <= 760);
+    bar.classList.toggle("on", on); bar.setAttribute("aria-hidden", String(!on)); $("#l3barGo").tabIndex = on ? 0 : -1;
+    document.documentElement.style.setProperty("--bar", on ? bar.offsetHeight + "px" : "0px");
+  }
+  function barLater() { if (!barT) barT = requestAnimationFrame(function () { barT = 0; barSync(); }); }
+  $("#ph").addEventListener("pointerdown", function () { seenScene = true; barLater(); });
+  addEventListener("scroll", barLater, { passive: true });
+  window.addEventListener("hashchange", function () { seenScene = false; setTimeout(barSync, 0); });
   /* the round assistant button sits just above the pinned price row */
-  function barH() { requestAnimationFrame(function () { var b = $(".l3__buy"); if (b && b.offsetHeight) document.documentElement.style.setProperty("--bar", b.offsetHeight + "px"); }); }
+  function barH() { barLater(); }
   window.addEventListener("resize", barH);
+  $("#l3more").addEventListener("click", function () {
+    var on = $("#l3steps").classList.toggle("open"); this.setAttribute("aria-expanded", String(on));
+    $("span", this).textContent = t(on ? "l3.less" : "l3.more"); $("span", this).dataset.i18n = on ? "l3.less" : "l3.more";
+  });
   refillL3 = function () { fillL3(true); };
 
   /* ---------- "without me / with me": a phone the visitor handles ----------
@@ -752,6 +785,7 @@
     ph.style.setProperty("--pos", pos + "%");
     knob.setAttribute("aria-valuenow", String(Math.round(100 - pos)));
     ph.classList.toggle("is-after", pos < 45);
+    if (pos < 45 && !seenScene) { seenScene = true; barLater(); }
     capNow();
   }
   /* Each kind of service has its own mock-up inside the phone: a review card, a post, a map
@@ -807,7 +841,12 @@
       return w;
     }
   };
-  function capNow() { var v = scene && scene.v, cap = $("#scCap"); if (!cap) return; cap.textContent = v ? (pos < 45 ? v.capA : v.capB) : ""; cap.hidden = !v; }
+  function capNow() {
+    var cap = $("#scCap"); if (!cap || !scene) return;
+    var a = pos < 45, lb = a ? scene.after.label : scene.before.label, v = scene.v;
+    $("#scCapT").textContent = lb || (v ? (a ? v.capA : v.capB) : "");
+    cap.hidden = !$("#scCapT").textContent;
+  }
   function playScene(keep) {
     if (!scene) return;
     var kp = keep === true ? { pos: pos, sent: sent } : null;
@@ -1035,7 +1074,7 @@
       $$(".bot__chips", log).forEach(function (x) { x.remove(); });
       var n = ctxNiche && F.niches[ctxNiche] ? ctxNiche : "other", ids = ctxNiche && F.niches[ctxNiche] ? F.niches[n].slice(0, 4).map(function (r) { return r[0]; }) : ["bot", "mail", "reviews", "social"];
       var w = document.createElement("div"); w.className = "bot__chips";
-      ids.forEach(function (sid) { var a = document.createElement("a"); a.className = "bot__go"; a.href = taskHref(n, sid); a.innerHTML = "<span></span>" + '<svg class="ico"><use href="#i-arrow" /></svg>'; a.firstChild.textContent = t("sv." + sid + ".h"); a.addEventListener("click", function () { close(); }); w.appendChild(a); });
+      ids.forEach(function (sid) { var a = document.createElement("a"); a.className = "bot__go"; a.href = taskHref(n, sid); a.innerHTML = "<span></span>" + '<svg class="ico"><use href="#i-arrow" /></svg>'; a.firstChild.textContent = t("bot.c." + sid) || t("sv." + sid + ".h"); a.addEventListener("click", function () { close(); }); w.appendChild(a); });
       var hi = $(".bub", log); if (hi && hi.nextSibling) log.insertBefore(w, hi.nextSibling); else log.appendChild(w);
     }
     var PAY = toks("сколько стоит стоимость цена цены платить оплата оплатить скільки коштує ціна платити оплата kostet kosten preis zahlen bezahlen bezahlung price cost costs pay payment much");
