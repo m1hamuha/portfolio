@@ -1476,3 +1476,28 @@ h1, h2, h3, .svc__h, .l3__line, .cc h3, .card h3 { letter-spacing: -0.012em; wor
 .bot__price span { font-family: var(--f-body); font-weight: 500; font-size: 0.9rem; color: var(--muted); }
 @media (min-width: 761px) { .l3steps li { flex-direction: column; align-items: center; text-align: center; gap: 0.5rem; } .l3steps li > p { font-size: 0.95rem; color: #cfcfcf; } }
 .nv .cc--top .cc__go { background: var(--accent); color: var(--on); border-color: var(--accent); }
+
+/* ===== task page on a wide screen: the phone on the left, the purchase on the right, one screen ===== */
+@media (min-width: 1100px) and (min-height: 600px) {
+  .l3:has(#l3demo:empty) > .wrap { display: grid; grid-template-columns: minmax(0, 46fr) minmax(0, 54fr); column-gap: clamp(2rem, 4.5vw, 5.5rem); grid-template-rows: 1fr repeat(6, auto) 1fr; min-height: calc(100svh - 6.5rem); align-items: start; }
+  .l3:has(#l3demo:empty) > .wrap > * { grid-column: 2; min-width: 0; }
+  .l3:has(#l3demo:empty) .scene { grid-column: 1; grid-row: 1 / -1; align-self: center; margin: 0; }
+  .l3:has(#l3demo:empty) #l3back { grid-row: 2; justify-self: start; margin: 0 0 0.8rem; }
+  .l3:has(#l3demo:empty) .svc__head { grid-row: 3; justify-content: flex-start; text-align: left; margin: 0 0 0.6rem; flex-wrap: wrap; gap: 0.5rem 1rem; }
+  .l3:has(#l3demo:empty) #l3h { font-size: clamp(1.9rem, 2.6vw, 3rem); text-align: left; flex: 1 1 14rem; }
+  .l3:has(#l3demo:empty) #l3tag { display: none; }
+  .l3:has(#l3demo:empty) #l3line { grid-row: 4; text-align: left; margin: 0 0 1.1rem; font-size: clamp(1rem, 1.15vw, 1.2rem); max-width: 34rem; }
+  .l3:has(#l3demo:empty) #l3line::after { display: none; }
+  .l3:has(#l3demo:empty) #l3steps { grid-row: 5; margin: 0 0 0.4rem; }
+  .l3:has(#l3demo:empty) #l3more { grid-row: 6; justify-self: start; }
+  .l3:has(#l3demo:empty) #l3demo { display: none; }
+  .l3:has(#l3demo:empty) #l3buy { grid-row: 7; margin: 1rem 0 0; justify-items: start; text-align: left; width: 100%; max-width: 30rem; }
+  .l3:has(#l3demo:empty) .hand { width: min(100%, 26rem); }
+  .l3:has(#l3demo:empty) .l3steps:not(.open) li > p { display: none; }
+  .l3:has(#l3demo:empty) .l3steps:not(.open) li { padding: 0.75rem 0.4rem; }
+  .l3:has(#l3demo:empty) .l3more { display: flex; margin: 0.2rem 0 0; padding: 0; }
+  .l3:has(#l3demo:empty) #l3buy { justify-items: start; justify-content: start; gap: 0.7rem; }
+  .l3:has(#l3demo:empty) #l3buy small { text-align: left; }
+  .l3:has(#l3demo:empty) .l3__pay { justify-items: start; text-align: left; }
+  .l3:has(#l3demo:empty) #l3buy { padding-left: 0; padding-right: 0; }
+}
