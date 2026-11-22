@@ -971,7 +971,7 @@
   (function () {
     var fab = $("#botFab"), box = $("#bot"), log = $("#botLog"), form = $("#botForm"), inp = $("#botIn"), mic = $("#botMic");
     if (!fab) return;
-    var DODGE = '#scSend, #phKnob, #l3order, #orderClear, .plan__go, .plan, .nv .cc__go, #contact .msgs .btn, #form input, #form textarea, #form button[type="submit"]', tick = 0;
+    var DODGE = '#scSend, #phKnob, #l3order, #orderClear, .plan__go, .plan, .nv .cc__go, #contact .msgs .btn, #contact .msgs__note, #form input, #form textarea, #form button[type="submit"]', tick = 0;
     function dodge() { tick = 0; var l = fab.offsetLeft, tp = fab.offsetTop, r = l + fab.offsetWidth, b = tp + fab.offsetHeight; var hit = box.hidden && [].some.call(document.querySelectorAll(DODGE), function (el) { if (!el.offsetWidth) return false; var q = el.getBoundingClientRect(); return q.right > l - 12 && q.left < r + 12 && q.bottom > tp - 12 && q.top < b + 12; }); fab.classList.toggle("off", hit); }
     function later() { if (!tick) tick = requestAnimationFrame(dodge); }
     addEventListener("scroll", later, { passive: true }); addEventListener("resize", later); addEventListener("hashchange", function () { setTimeout(dodge, 400); }); $("#ph").addEventListener("transitionend", later); $("#ph").addEventListener("pointermove", later); $("#ph").addEventListener("pointerup", later); setTimeout(dodge, 300);
@@ -1067,11 +1067,14 @@
         say("b", t("bot.found"));
         link(taskHref(n, sid), t("sv." + sid + ".h") + (n ? ", " + t("n." + n) : ""));
         if (pay) priceLine(sid);
+        if (/плат|оплат|zahl|pay|paypal|крипт|krypto|crypto/i.test(text)) say("b", t("bot.pay.short"));
       } else if (n) {
         say("b", t("bot.niche"));
         (F.niches[n] || []).slice(0, 3).forEach(function (r) { link("#/for/" + n + "/" + r[0], t("sv." + r[0] + ".h")); });
       } else if (pay && /сколько|стоит|цен|скільки|кошту|ціна|kostet|preis|price|cost|much/i.test(text) && !/плат|оплат|zahl|pay/i.test(text)) {
         say("b", t("bot.price")); chips(); var cw = $(".bot__chips", log); if (cw) { log.appendChild(cw); log.scrollTop = log.scrollHeight; }
+      } else if (/плат|оплат|zahl|pay|paypal|крипт|krypto|crypto|наличн|готівк|\bbar\b|cash|überweis|перевод|переказ|transfer/i.test(text)) {
+        say("b", t("bot.pay")); showDraft(draftFor(text));
       } else {
         say("b", t("bot.draft")); showDraft(draftFor(text));
       }
