@@ -60,6 +60,7 @@
     }
     resay();
     refillL3();
+    window.dispatchEvent(new CustomEvent("vf:lang", { detail: { lang: lang } }));
     repaintCards();
     relocWall();
     paintOrder();
@@ -385,7 +386,11 @@
   }
   $('#form [name="message"]').addEventListener("input", function () { fitTa(this); });
   var orderAt = null; /* the page the order was made on: coming back to it keeps the choice */
-  $$("[data-order]").forEach(function (el) { el.addEventListener("click", function () { if (!el.dataset.order) return; order = el.dataset.order; orderAt = location.hash; paintOrder(); }); });
+  $$("[data-order]").forEach(function (el) { el.addEventListener("click", function () {
+    if (!el.dataset.order) return; order = el.dataset.order; orderAt = location.hash; paintOrder();
+    if (ctxNiche && order !== "custom" && order.indexOf("firm") !== 0 && order.indexOf("plan") !== 0) { var o = stored("ordered") || []; var k = ctxNiche + "/" + order; if (o.indexOf(k) < 0) o.push(k); store("ordered", o); }
+    window.dispatchEvent(new CustomEvent("vf:order", { detail: { niche: ctxNiche, order: order } }));
+  }); });
   $("#orderClear").addEventListener("click", function () { order = null; paintOrder(); });
 
   /* ---------- company page: six pictures, the whole list opens under "Full list" ---------- */
@@ -733,6 +738,7 @@
         v: c.v || null
       };
       playScene(keep);
+      window.dispatchEvent(new CustomEvent("vf:scene", { detail: { niche: n, task: sid, type: c.v ? c.v.type : null, keep: keep === true } }));
     }
     $("#l3price").innerHTML = sid === "social" ? "" : priceHtml(sid);
     var fee = $("#l3fee"); fee.hidden = !(c && c.fee); fee.textContent = t("pr.fee");
@@ -891,6 +897,8 @@
       }, delay));
     })(900, 72);
   }
+  /* the demo module drives the same handle the visitor drags */
+  window.PH = { set: function (v, smooth) { setPos(v, smooth); }, pos: function () { return pos; }, stop: function () { stopNudge(); }, kind: function () { return scene && scene.v ? scene.v.type : null; }, ctx: function () { return l3ctx; }, send: function () { $("#scSend").click(); } };
   /* after a tap the whole phone is on screen: between the menu and the round assistant button */
   function showDemo() { requestAnimationFrame(function () { var nav = $("#nav"), fab = $("#botFab"), top = (nav && getComputedStyle(nav).position === "fixed" ? nav.getBoundingClientRect().bottom : 0) + 8; var r = ph.getBoundingClientRect(), lim = (fab && fab.offsetWidth ? fab.offsetTop : innerHeight) - 12; var d = Math.min(r.bottom - lim, r.top - top); if (d > 4) scrollBy({ top: d, behavior: reduce ? "auto" : "smooth" }); }); }
   function fromX(x) { var r = ph.getBoundingClientRect(); return ((x - r.left) / r.width) * 100; }
@@ -981,6 +989,9 @@
     else if (wasView) window.scrollTo({ top: homeY, behavior: "instant" });
   }
   window.addEventListener("scroll", function () { if (location.hash === lastHash) ys[lastHash] = window.pageYOffset; }, { passive: true });
+  function store(k, v) { try { localStorage.setItem("vf." + k, typeof v === "string" ? v : JSON.stringify(v)); } catch (e) {} }
+  function stored(k) { try { var v = localStorage.getItem("vf." + k); return v && v.charAt(0) === "[" ? JSON.parse(v) : v; } catch (e) { return null; } }
+  window.VF = { store: store, stored: stored, lang: function () { return lang; }, t: t, content: function (n, sid) { return content(n, sid); } };
   function routeAll() {
     var from = lastHash.match(/^#\/for\/([a-z]+)$/);
     route();
@@ -999,7 +1010,10 @@
       ct.scrollIntoView();
       if (ST) ST.addEventListener("refresh", again);
     }
-    if (location.hash === "#contact") requestAnimationFrame(function () { fitTa($('#form [name="message"]')); }); /* sizes changed: carousels re-centre */
+    if (location.hash === "#contact") requestAnimationFrame(function () { fitTa($('#form [name="message"]')); });
+    if (nowN && ctxNiche) store("lastNiche", ctxNiche);
+    if (l3ctx && !l3.hidden) { store("lastNiche", l3ctx[0]); store("lastTask", l3ctx[0] + "/" + l3ctx[1]); }
+    window.dispatchEvent(new CustomEvent("vf:route", { detail: { hash: location.hash, niche: ctxNiche, task: l3ctx && !l3.hidden ? l3ctx[1] : null, order: order } })); /* sizes changed: carousels re-centre */
   }
   window.addEventListener("hashchange", routeAll);
   if ("scrollRestoration" in history) history.scrollRestoration = "manual";
