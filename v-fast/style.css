@@ -623,9 +623,6 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
 .car__track a, .car__track img { -webkit-user-drag: none; }
 
 /* niche card: the services inside, as icons */
-.cc__mini { display: flex; justify-content: center; gap: 0.7rem; color: rgba(255, 255, 255, 0.45); }
-.cc__mini .ico { width: 1.35rem; height: 1.35rem; }
-.cc.mid .cc__mini { color: var(--accent); }
 .cc--n .cc__go { margin-top: 0; }
 .cc--n { gap: 0.8rem; }
 
@@ -688,10 +685,6 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
 .card__ico--big::before { content: ""; position: absolute; inset: -8px; border-radius: 50%; border: 1.5px dashed rgba(216, 255, 0, 0.5); animation: spin 14s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes pop { 0% { transform: scale(0.6) rotate(-12deg); } 100% { transform: none; } }
-.cc__mini .ico { transition: transform 0.4s var(--spring); }
-.cc.mid .cc__mini .ico { animation: hop 1.6s ease-in-out infinite; }
-.cc.mid .cc__mini .ico:nth-child(2) { animation-delay: 0.12s; } .cc.mid .cc__mini .ico:nth-child(3) { animation-delay: 0.24s; }
-.cc.mid .cc__mini .ico:nth-child(4) { animation-delay: 0.36s; } .cc.mid .cc__mini .ico:nth-child(5) { animation-delay: 0.48s; }
 @keyframes hop { 0%, 60%, 100% { transform: none; } 30% { transform: translateY(-5px); } }
 /* headline: a band of light crosses the lime word once */
 h1 mark { background: linear-gradient(100deg, transparent 40%, #fff 50%, transparent 60%) 120% 0 / 250% 100% no-repeat, var(--accent); -webkit-background-clip: text; background-clip: text; color: transparent; animation: sweep 2.2s var(--ease) 0.6s both; }
@@ -963,21 +956,14 @@ h1, h2, h3, .svc__h, .l3__line, .cc h3, .card h3 { letter-spacing: -0.012em; wor
 .order > span { grid-column: 1; font-size: 0.85rem; color: var(--muted); }
 .order b { grid-column: 1; line-height: 1.3; }
 .order button { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
-/* the row of small task icons never leaves its card: it wraps onto a second row */
-.cc__mini { flex-wrap: wrap; max-width: 100%; row-gap: 0.45rem; }
 
 /* ---------- every screen in every state: nothing spills, is cut, overlaps or jumps ---------- */
 /* home cards: round stays round, title / icons / arrow sit at the same height on every card */
 .at-home .cc--n .cc__art { flex: 0 1 auto; width: auto; height: 5.4rem; max-height: 5.4rem; min-height: 3.6rem; aspect-ratio: 1; align-self: center; }
 .at-home .cc--n .cc__art .ico { width: 44%; height: 44%; }
 .at-home .cc--n h3 { min-height: 2.2em; display: grid; align-content: center; flex: none; }
-.at-home .cc--n .cc__mini { min-height: calc(2 * 1.35rem + 0.45rem); align-content: center; flex: none; }
 .cc__go { flex: none; }
-.cc__mini { margin-inline: auto; }
-.cc__mini:has(> :nth-child(9):last-child) { max-width: 9.7rem; }
 @media (max-width: 760px) {
-  .cc__mini:has(> :nth-child(6):last-child) { max-width: 5.6rem; }
-  .cc__mini:has(> :nth-child(7):last-child), .cc__mini:has(> :nth-child(8):last-child) { max-width: 7.6rem; }
   /* side cards are plain silhouettes, not sliced letters */
   #work .cc:not(.mid) > * { opacity: 0; transition: opacity 0.25s; }
   #work .cc.mid > * { opacity: 1; transition: opacity 0.25s; }
@@ -990,7 +976,6 @@ h1, h2, h3, .svc__h, .l3__line, .cc h3, .card h3 { letter-spacing: -0.012em; wor
 @media (min-width: 1100px) {
   .cc__art { flex: none; }
   .at-home .cc--n .cc__art { width: 7.6rem; height: 7.6rem; max-height: none; margin: 0 auto; }
-  .at-home .cc--n .cc__mini { flex-wrap: nowrap; gap: 0.4rem; max-width: none; min-height: 0; }
   .at-niche .nv .cc--s { gap: 0.7rem; }
 }
 /* phone with the address bar showing: the first screen still ends with the dots */
@@ -1500,4 +1485,96 @@ h1, h2, h3, .svc__h, .l3__line, .cc h3, .card h3 { letter-spacing: -0.012em; wor
   .l3:has(#l3demo:empty) #l3buy small { text-align: left; }
   .l3:has(#l3demo:empty) .l3__pay { justify-items: start; text-align: left; }
   .l3:has(#l3demo:empty) #l3buy { padding-left: 0; padding-right: 0; }
+}
+
+/* ===== slice 1: home headline, pain-then-result picture, static business cards ===== */
+/* the hero never scrolls sideways (focus on a card could scroll an overflow:hidden box) */
+.hero { overflow: clip; }
+#work { overflow: clip; overflow-clip-margin: 0; }
+/* headline + picture */
+.fxh { display: flex; align-items: center; justify-content: center; gap: clamp(1rem, 2vw, 2rem); margin: 0 auto; max-width: 100%; }
+.fxh__t { min-width: 0; flex: 0 1 auto; text-align: left; }
+.hero .fxh__t h1 { margin: 0; max-width: none; }
+.fxh__t .hero__ask { margin-bottom: 0; }
+.fxh__t .hero__chip { margin-left: 0.5rem; font-size: max(13px, 0.72em); }
+.hchat { flex: none; width: 17rem; display: flex; flex-direction: column; gap: 0.45rem; font-family: var(--f-body); font-size: max(15px, 0.95rem); line-height: 1.3; text-align: left; text-shadow: none; }
+.hchat p { margin: 0; }
+.hchat time { font-size: max(13px, 0.8rem); font-variant-numeric: tabular-nums; }
+.hchat__in { align-self: flex-start; max-width: 92%; display: flex; flex-direction: column; gap: 0.2rem; }
+.hchat__who { display: flex; gap: 0.5rem; align-items: baseline; font-size: max(13px, 0.8rem); color: #a8a8a8; }
+.hchat__who b { font-weight: 600; color: #a8a8a8; }
+.hchat__b { padding: 0.5rem 0.8rem; border-radius: 1rem; }
+.hchat__in .hchat__b { background: #262626; color: #f2f2f2; border-bottom-left-radius: 0.3rem; }
+.hchat__slot { position: relative; display: grid; }
+.hchat__slot > * { grid-area: 1 / 1; }
+.hchat__wait { align-self: start; justify-self: start; padding-left: 0.8rem; color: var(--loss); font-weight: 600; visibility: hidden; }
+.hchat__out { justify-self: end; max-width: 92%; display: flex; flex-direction: column; align-items: flex-end; gap: 0.2rem; }
+.hchat__out .hchat__b { border: 1.5px solid var(--accent); color: var(--accent); background: #15170c; border-bottom-right-radius: 0.3rem; }
+.hchat__out time { color: var(--accent); }
+.hchat__sweep { position: absolute; top: -0.3rem; bottom: -0.3rem; left: 0; width: 3px; margin-left: -1.5px; border-radius: 3px; background: var(--accent); box-shadow: 0 0 14px 2px rgba(216, 255, 0, 0.55); opacity: 0; pointer-events: none; }
+.hchat.is-start .hchat__wait { visibility: visible; opacity: 0; }
+.hchat.is-start .hchat__out { clip-path: inset(0 100% 0 0); }
+@media (min-width: 761px) { .fxh { align-items: center; } }
+@media (min-width: 1100px) and (min-height: 600px) {
+  .at-home .hero .fxh__t h1 { font-size: min(3.2rem, 3vw); line-height: 1.08; max-width: 19em; }
+  .at-home .fxh__t .hero__ask { margin-top: 0.9rem; }
+}
+@media (max-width: 760px) {
+  .fxh { flex-direction: column; align-items: stretch; gap: 0.7rem; margin-top: 0.4rem; }
+  .fxh__t { display: contents; }
+  .fxh__t h1 { order: 1; }
+  .hchat { order: 2; width: auto; max-width: 22rem; font-size: 15px; gap: 0.35rem; }
+  .fxh__t .hero__ask { order: 3; margin-top: 0; }
+  .hero .fxh__t h1 { font-size: clamp(1.2rem, 5.4vw, 1.45rem); line-height: 1.12; }
+  .fxh__t .hero__ask { font-size: 1.02rem; }
+  .fxh__t .hero__chip { display: inline-flex; margin: 0 0 0 0.5rem; }
+  .hchat__b { padding: 0.4rem 0.7rem; }
+  .hchat__in { flex-direction: row; align-items: flex-end; gap: 0.5rem; max-width: 100%; }
+  .hchat__who b { display: none; }
+  .hchat__in .hchat__who { order: 2; }
+  .hchat__out { flex-direction: row-reverse; align-items: flex-end; gap: 0.5rem; max-width: 100%; }
+  .hchat__out .hchat__b { max-width: 15rem; }
+}
+/* home business cards: no icon row, no rings, no orbit dot, no pop. One static loss line. */
+#work .cc__art::before, #work .cc__art::after { content: none; animation: none; }
+#work .cc.mid .cc__art .ico { animation: none; }
+.cc__loss { display: block; margin: 0 auto; max-width: 15rem; min-height: 2.6em; color: var(--loss); font-family: var(--f-body); font-size: max(14px, 0.9rem); font-weight: 600; line-height: 1.3; text-align: center; text-wrap: balance; }
+.cc--firm .cc__go { margin-top: 0; }
+
+/* ===== slice 1 review: the home headline does not sweep (the hero picture is the one story on this screen) ===== */
+.hero h1 mark { animation: none; background: none; -webkit-background-clip: border-box; background-clip: border-box; color: var(--accent); }
+/* the hero picture sits above the fixed 3D background, so no particle drifts over its text */
+.hchat { position: relative; z-index: 1; }
+
+/* ===== slice 2: business page. No pictogram strips, no rings, no pulses. One short still loss line per
+   task card; only the advised card changes once, loss to gain (fx/glyphs.js). ===== */
+.cc__art::before, .cc__art::after, .card__ico--big::before { content: none; animation: none; }
+.nv .cc.mid .cc__art .ico { animation: none; }
+/* the business icon in the page head is an outline, not a lime fill (lime fill = the one action) */
+.nv .svc__head .card__ico--big { background: #0b0b0b; box-shadow: inset 0 0 0 1.5px var(--accent); }
+.nv .svc__head .card__ico--big .ico { color: var(--accent); }
+/* the promise sentence is not on the card (it is the first line of the task page); the own-task card keeps its line */
+.nv .cc--s .cc__what[data-c] { display: none; }
+.cc__ll { display: grid; font-family: var(--f-body); font-weight: 600; line-height: 1.3; text-wrap: balance; overflow-wrap: normal; hyphens: manual; }
+.cc__ll[hidden] { display: none; }
+.cc__ll > span { grid-area: 1 / 1; align-self: start; transition: opacity 0.3s ease; }
+.cc__ll-l { color: var(--loss); }
+.cc__ll-g { color: var(--accent); opacity: 0; visibility: hidden; display: none; }
+.nv .cc--top .cc__ll-g { display: block; }
+.nv .cc--top.is-gain .cc__ll-l { opacity: 0; }
+.nv .cc--top.is-gain .cc__ll-g { opacity: 1; visibility: visible; }
+@media (prefers-reduced-motion: reduce) { .cc__ll > span { transition: none; } .nv .cc--top.is-gain .cc__ll-l { opacity: 1; } .nv .cc--top.is-gain .cc__ll-g { opacity: 0; visibility: hidden; } }
+/* computer: centred under the price */
+@media (min-width: 761px) {
+  .nv .cc--s .cc__ll { width: calc(100% + 1rem); margin: 0 -0.5rem; text-align: center; font-size: max(13px, 0.9rem); }
+}
+/* phone: icon | title over price | arrow, the loss line is the third row, as wide as the card allows */
+@media (max-width: 760px) {
+  .nv .cc--s .cc__ll { grid-column: 1 / -1; grid-row: 3; margin-top: 0.35rem; text-align: left; font-size: max(14px, 0.86rem); }
+}
+/* until its story starts (fx/glyphs.js) the label of the advised card waits, so it does not flash before
+   it slides in; if the script never runs it shows after 3s anyway */
+@keyframes ccTopLate { to { opacity: 1; } }
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.no-js) .nv .cc--top:not(.fxg-top-in):not(.is-gain):not(.fxg-still) .cc__top { opacity: 0; animation: ccTopLate 0s 3s forwards; }
 }

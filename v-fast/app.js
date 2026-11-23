@@ -597,33 +597,64 @@
       var k = cs.findIndex(function (c) { return (c.getAttribute("href") || "").split("/").pop() === e.detail; });
       if (k > -1 && ready) { idx = k; ends(); x = target(idx); paint(); }
     });
-    function init() {
-      if (ready || !car.clientWidth || listMode()) { paint(); return; }
-      ready = true;
-      /* in a business, the card that costs the owner most is the one in the centre when the page opens */
+    /* In a business the card that costs the owner most opens in the centre. When it is the first card,
+       the second one goes to its left (a card on each side), but only while this is a carousel: the
+       phone list (and a window made narrow later) always shows the cards in their own order. */
+    var own = cs.slice(), swapped = false;
+    function arrange() {
+      var want = !listMode() && own.length > 2 && own[0].classList.contains("cc--top") && window.innerWidth >= 760;
+      if (want === swapped) return false;
+      var at = cs[idx];
+      if (want) track.insertBefore(own[1], own[0]); else track.insertBefore(own[0], own[1]);
+      swapped = want; cs = $$(".cc", track);
+      /* the advised card (it may have moved: fx/retention) is the centre, else the centre card stays */
       var top = cs.findIndex(function (c) { return c.classList.contains("cc--top"); });
-      if (top === 0 && cs.length > 2 && window.innerWidth >= 760) { track.insertBefore(cs[1], cs[0]); cs = $$(".cc", track); top = 1; if (dots) dots.innerHTML = cs.map(function () { return "<i></i>"; }).join(""); }
+      idx = top > -1 ? top : at ? Math.max(0, cs.indexOf(at)) : idx;
+      return true;
+    }
+    /* fx/retention may move the advised label after init (or back and forth on a route): arrange at once,
+       so the advised card always has a card on its left and the order never flips later on a resize */
+    if (own.some(function (c) { return c.classList.contains("cc--top"); }) && "MutationObserver" in window)
+      new MutationObserver(function () { if (arrange() && ready && !listMode()) { x = target(idx); ends(); paint(); } })
+        .observe(track, { attributes: true, attributeFilter: ["class"], subtree: true });
+    function init() {
+      if (ready || !car.clientWidth || listMode()) { arrange(); paint(); return; }
+      ready = true; arrange();
+      var top = cs.findIndex(function (c) { return c.classList.contains("cc--top"); });
       idx = top > -1 ? top : (window.innerWidth < 760 ? 0 : Math.min(car.id === "work" ? 2 : 1, cs.length - 1)); /* home: two cards on each side */ x = target(idx); ends(); paint();
     }
     if (prev) prev.addEventListener("click", function () { go(idx - 1); });
     if (next) next.addEventListener("click", function () { go(idx + 1); });
     if (dots) dots.addEventListener("click", function (e) { var k = Array.prototype.indexOf.call(dots.children, e.target); if (k > -1) go(k); });
-    track.addEventListener("keydown", function (e) { if (e.key === "ArrowRight") { go(idx + 1); e.preventDefault(); } if (e.key === "ArrowLeft") { go(idx - 1); e.preventDefault(); } });
-    /* wheel: a sideways gesture (trackpad, shift+wheel) moves one card at a time; vertical wheel scrolls the page */
-    var acc = 0, cool = 0;
+    /* keyboard: the arrows move the carousel and focus follows the new centre card */
+    function focusMid() { var a = cs[idx]; if (a && a.focus && !listMode()) a.focus({ preventScroll: true }); }
+    track.addEventListener("keydown", function (e) { if (e.key === "ArrowRight") { go(idx + 1); focusMid(); e.preventDefault(); } if (e.key === "ArrowLeft") { go(idx - 1); focusMid(); e.preventDefault(); } });
+    /* Tab onto a card: that card comes to the centre (nothing scrolls sideways) */
+    track.addEventListener("focusin", function (e) {
+      if (listMode()) return;
+      var c = e.target.closest && e.target.closest(".cc"), k = c ? cs.indexOf(c) : -1;
+      if (k > -1 && k !== idx && !down) go(k); /* not when a press or drag focused it: the drag decides */
+      if (track.scrollLeft) track.scrollLeft = 0;
+    });
+    track.addEventListener("scroll", function () { if (track.scrollLeft && !listMode()) track.scrollLeft = 0; });
+    /* wheel: one sideways gesture (trackpad swipe with its momentum, shift+wheel) moves one card;
+       the gesture ends after 150ms without wheel events. A vertical wheel scrolls the page. */
+    var acc = 0, lock = false, quiet = 0;
     car.addEventListener("wheel", function (e) {
       if (listMode()) return;
       var dx = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : (e.shiftKey ? e.deltaY : 0);
       if (!dx) return;
       e.preventDefault();
-      var now = Date.now(); if (now < cool) return;
+      clearTimeout(quiet);
+      quiet = setTimeout(function () { lock = false; acc = 0; }, 150);
+      if (lock) return;
       acc += dx;
-      if (Math.abs(acc) > 40) { go(idx + (acc > 0 ? 1 : -1)); acc = 0; cool = now + 320; }
+      if (Math.abs(acc) > 40) { go(idx + (acc > 0 ? 1 : -1)); acc = 0; lock = true; }
     }, { passive: false });
     /* drag with mouse, swipe with a finger: same code, pointer events */
     var down = false, sx = 0, sy = 0, x0 = 0, moved = false, pid = null;
     track.addEventListener("dragstart", function (e) { e.preventDefault(); });
-    track.addEventListener("pointerdown", function (e) {
+    car.addEventListener("pointerdown", function (e) { /* the whole carousel, so a swipe may start in the margin next to the first or last card */
       if (listMode() || (e.pointerType === "mouse" && e.button !== 0)) return;
       down = true; moved = false; sx = e.clientX; sy = e.clientY; x0 = x; pid = e.pointerId;
     });
@@ -654,16 +685,22 @@
     var passing = false;
     car.addEventListener("click", function (e) {
       if (passing || listMode()) return;
+      if (e.detail === 0) return; /* Enter or Space on a focused card: the browser opens that card */
       if (e.target.closest && e.target.closest(".car__btn, .car__dots, .car__nav")) return;
       var hit = [prev, next, dots].some(function (b) { if (!b || !b.offsetWidth) return false; var q = b.getBoundingClientRect(); return e.clientX >= q.left - 8 && e.clientX <= q.right + 8 && e.clientY >= q.top - 8 && e.clientY <= q.bottom + 8; });
       if (hit) return;
       if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; return; }
-      var r = car.getBoundingClientRect(), tr = track.getBoundingClientRect(), lx = e.clientX - r.left, w = cs[0].offsetWidth, k = -1;
-      if (e.clientY < tr.top || e.clientY > tr.bottom) return;
-      cs.forEach(function (c, n) { if (Math.abs(centre(n) + x - lx) <= w / 2) k = n; });
-      if (k < 0) return;
+      /* a card opens only from inside its drawn rectangle (after the 3D transforms), never from the
+         empty space around it or from the row of controls under it */
+      var px = e.clientX, py = e.clientY, k = -1, m = nearest(), band = null;
+      [prev, next, dots].forEach(function (b) { if (!b || !b.offsetWidth) return; var q = b.getBoundingClientRect(); band = band ? { t: Math.min(band.t, q.top), b: Math.max(band.b, q.bottom) } : { t: q.top, b: q.bottom }; });
+      var inBand = band && py >= band.t - 4 && py <= band.b + 4;
+      function inside(c) { var q = c.getBoundingClientRect(); return px >= q.left && px <= q.right && py >= q.top && py <= q.bottom; }
+      if (!inBand) { if (inside(cs[m])) k = m; else cs.forEach(function (c, n) { if (k < 0 && inside(c)) k = n; }); }
+      if (k < 0) { if (e.target.closest && e.target.closest(".cc")) { e.preventDefault(); e.stopPropagation(); } return; }
       e.preventDefault(); e.stopPropagation();
-      if (k !== nearest() && car.id !== "work") { go(k); return; }
+      /* a side card comes to the centre first; on a computer a home card opens at once (it is readable) */
+      if (k !== m && (car.id !== "work" || window.innerWidth < 761)) { go(k); return; }
       /* centre card: an inner control (Order, Details) keeps its own action, otherwise open the card */
       var inner = e.target.closest && e.target.closest("a, button"), card = cs[k];
       var el = inner && card.contains(inner) ? inner : (card.matches("a") ? card : $("a", card));
@@ -678,7 +715,15 @@
       if (!raf && !dragging) paint();
     });
     car.addEventListener("pointerleave", function () { tilt = null; if (!raf) paint(); });
-    window.addEventListener("resize", function () { if (ready && !listMode()) { x = target(idx); } paint(); });
+    var wasList = listMode();
+    window.addEventListener("resize", function () {
+      var lm = listMode(); arrange();
+      /* from the phone list back to a carousel (turned to landscape): the advised card in the centre again */
+      if (wasList && !lm && ready) { var top = cs.findIndex(function (c) { return c.classList.contains("cc--top"); }); if (top > -1) idx = top; }
+      wasList = lm;
+      if (!ready && !listMode() && car.clientWidth) { init(); return; }
+      if (ready && !listMode()) { x = target(idx); } paint();
+    });
     new IntersectionObserver(function () { init(); }, { threshold: 0.05 }).observe(car);
     init();
   });
@@ -714,8 +759,28 @@
       var card = el.parentNode, pr = $(".cc__price", card);
       if (!pr) { pr = document.createElement("span"); pr.className = "cc__price"; card.insertBefore(pr, el); }
       pr.innerHTML = priceShort(p[1]);
-      var h = $("h3", card); if (h && c) card.setAttribute("aria-label", h.textContent + ". " + c.promise);
+      /* one short, still loss line per task card (and the gain, shown only by the advised card: fx/glyphs) */
+      var ln = lines(c), ll = $(".cc__ll", card);
+      if (!ll) { ll = document.createElement("span"); ll.className = "cc__ll"; ll.innerHTML = '<span class="cc__ll-l"></span><span class="cc__ll-g" aria-hidden="true"></span>'; card.insertBefore(ll, el); }
+      ll.hidden = !ln.loss; ll.firstChild.textContent = ln.loss; ll.lastChild.textContent = ln.gain;
+      var h = $("h3", card); if (h && c) card.setAttribute("aria-label", h.textContent + ". " + (ln.loss || c.promise));
     });
+  }
+  /* the short loss and gain of a task: its scene's loss tag (a list scene's tag is a list item, so its
+     loss sentence instead), first sentence only; when that is long, the shortest of the scene's own lines */
+  function lines(c) {
+    if (!c) return { loss: "", gain: "" };
+    var v = c.v || {};
+    function sh(s) { return String(s || "").trim().split(/\.\s/)[0].replace(/[.\s]+$/, ""); }
+    function pick(list, max) {
+      list = list.map(sh).filter(Boolean);
+      for (var i = 0; i < list.length; i++) if (list[i].length <= max) return list[i];
+      return list.sort(function (a, b) { return a.length - b.length; })[0] || "";
+    }
+    return {
+      loss: pick([v.type !== "list" ? v.b2 : "", c.loss, v.loss], 48),
+      gain: pick([c.gain, v.gain], 50)
+    };
   }
   window.addEventListener("content", function () { paintCards(); if (l3ctx) fillL3(); });
   repaintCards = paintCards;
@@ -995,16 +1060,17 @@
   function stored(k) { try { var v = localStorage.getItem("vf." + k); return v && v.charAt(0) === "[" ? JSON.parse(v) : v; } catch (e) { return null; } }
   window.VF = { store: store, stored: stored, lang: function () { return lang; }, t: t, content: function (n, sid) { return content(n, sid); } };
   function routeAll() {
-    var from = lastHash.match(/^#\/for\/([a-z]+)$/);
+    var fm = lastHash.match(/^#\/for\/([a-z]+)/), from = fm ? fm[1] : (/^#\/firm/.test(lastHash) ? "firm" : null);
+    var backY = depth(location.hash) < depth(lastHash) && ys[location.hash] || 0; /* Back to a list: its place, not the top */
     route();
     lastHash = location.hash;
-    /* back to the list of businesses: the one the visitor came from is in the centre */
-    if (from && !home.hidden) window.dispatchEvent(new CustomEvent("car:show", { detail: from[1] }));
+    /* back to the list of businesses: the card of the page the visitor came from is in the centre */
+    if (from && !home.hidden) window.dispatchEvent(new CustomEvent("car:show", { detail: from }));
     var r = document.documentElement, was = r.classList.contains("at-home"), now = !home.hidden;
     var nv = document.querySelector(".svc.nv:not([hidden])"), wasN = r.classList.contains("at-niche"), nowN = !now && !!nv && location.hash !== "#contact";
     r.classList.toggle("at-home", now);
     r.classList.toggle("at-niche", nowN);
-    if (nowN) window.scrollTo(0, 0);
+    if (nowN) window.scrollTo({ top: backY, behavior: "instant" });
     if (was !== now || wasN !== nowN) window.dispatchEvent(new Event("resize"));
     if (wasN && !nowN && location.hash === "#contact") {
       var ct = $("#contact"), ST = window.ScrollTrigger;
@@ -1015,7 +1081,7 @@
     if (location.hash === "#contact") requestAnimationFrame(function () { fitTa($('#form [name="message"]')); });
     if (nowN && ctxNiche) store("lastNiche", ctxNiche);
     if (l3ctx && !l3.hidden) { store("lastNiche", l3ctx[0]); store("lastTask", l3ctx[0] + "/" + l3ctx[1]); }
-    window.dispatchEvent(new CustomEvent("vf:route", { detail: { hash: location.hash, niche: ctxNiche, task: l3ctx && !l3.hidden ? l3ctx[1] : null, order: order } })); /* sizes changed: carousels re-centre */
+    window.dispatchEvent(new CustomEvent("vf:route", { detail: { hash: location.hash, from: from && !home.hidden ? from : null, niche: ctxNiche, task: l3ctx && !l3.hidden ? l3ctx[1] : null, order: order } })); /* sizes changed: carousels re-centre */
   }
   window.addEventListener("hashchange", routeAll);
   if ("scrollRestoration" in history) history.scrollRestoration = "manual";

@@ -1,157 +1,59 @@
 /* v-fast motion modules, built from fx/*.js; edit those and rebuild */
 /* ---- fx/hero.js ---- */
-/* fx/hero.js: the "night phone" next to the home headline (spec 3.1 A, 3.2).
-   Messages pile up at night (grey bubbles, unread badge, the clock runs), then one lime
-   wave answers them (ticks, lime replies, the badge becomes a booked calendar).
-   Plays twice, then keeps the final frame. Decorative: aria-hidden, no words.
-   It draws no glyphs at all (the unread badge bumps once per message instead of showing a
-   digit that would be under 13px on a phone), so it needs no dictionary and survives
-   "vf:lang" untouched. */
+/* fx/hero.js: the pain-then-result picture next to the home headline.
+   One customer message with its time (salon reply bot, from content.js through i18n), under it a
+   short loss tag in the loss colour ("No reply until midnight"). Then one lime sweep turns the loss
+   tag into the reply, and the picture holds there. Plays once, after the fonts, only while visible.
+   Reduced motion: the final frame (message and reply), still.
+   The markup (.hchat) is in index.html with data-i18n, so a language switch needs nothing here.
+   This file only places it ([picture] [headline + question]) and runs the one story. */
 (function () {
   "use strict";
   if (window.__fxHero) return;
   window.__fxHero = true;
 
-  var NS = "http://www.w3.org/2000/svg";
-  var LIME = "#D8FF00", GREY = "#5a5a5a", DARK = "#2a2a2a";
-  var PLAYS = 2;
   var mq = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
   function reduced() { return !!(mq && mq.matches); }
 
   var h1 = document.querySelector(".hero h1");
-  var hero = document.querySelector(".hero");
-  if (!h1 || !hero || !h1.parentNode) return;
+  var pic = document.querySelector(".hero .hchat");
+  if (!h1 || !pic || !h1.parentNode) return;
 
-  /* ---------- CSS (once) ---------- */
-  if (!document.getElementById("fx-hero")) {
-    var st = document.createElement("style");
-    st.id = "fx-hero";
-    st.textContent = [
-      ".fxh{display:flex;align-items:center;justify-content:center;gap:14px;margin:0 auto;max-width:100%}",
-      ".fxh__ph{flex:none;width:84px;height:132px;display:block;overflow:visible}",
-      ".fxh__t{min-width:0;flex:0 1 auto;text-align:left}",
-      ".hero .fxh__t h1{margin:0;max-width:none}",
-      ".fxh__t .hero__chip{margin-left:0.5rem;font-size:max(13px,0.72em)}",
-      "@media (max-width:760px){",
-      ".fxh{justify-content:flex-start;align-items:center;margin-top:0.6rem}",
-      ".hero .fxh__t h1{font-size:clamp(1.2rem,5.4vw,1.45rem);line-height:1.12}",
-      ".fxh__t .hero__ask{font-size:1.02rem;margin-top:0.55rem;margin-bottom:0}",
-      ".fxh__t .hero__chip{display:table;margin:0.4rem 0 0}",
-      "}",
-      "@media (max-width:760px) and (max-height:760px){.fxh__ph{width:68px;height:106px}.fxh{gap:12px}}",
-      "@media (max-width:340px){.fxh__ph{width:60px;height:94px}.fxh{gap:10px}.hero .fxh__t h1{font-size:1.12rem}.fxh__t .hero__ask{font-size:0.95rem}}",
-      "@media (min-width:761px){.fxh{gap:clamp(14px,1.4rem,28px)}.fxh__ph{width:7.2rem;height:11.25rem}.fxh__t .hero__ask{margin-bottom:0}}",
-      "@media (min-width:1100px) and (min-height:600px){.at-home .hero .fxh__t h1{font-size:min(3.4rem,3.2vw,calc((min(100vw - 5rem,1280px) - 9rem) / 21.5));line-height:1.08}.at-home .fxh__t .hero__ask{margin-top:0.9rem}}"
-    ].join("");
-    document.head.appendChild(st);
-  }
-
-  /* ---------- layout: [phone] [headline + question] ---------- */
+  /* ---------- layout: [picture] [headline + question]; on a phone: headline, picture, question ---------- */
   var ask = document.querySelector(".hero__ask");
   var row = document.createElement("div");
   row.className = "fxh";
   var txt = document.createElement("div");
   txt.className = "fxh__t";
   h1.parentNode.insertBefore(row, h1);
+  row.appendChild(pic);
   row.appendChild(txt);
   txt.appendChild(h1);
   if (ask && ask.parentNode === row.parentNode) txt.appendChild(ask);
 
-  /* ---------- SVG ---------- */
-  function el(tag, at, parent) {
-    var e = document.createElementNS(NS, tag);
-    for (var k in at) if (at.hasOwnProperty(k)) e.setAttribute(k, at[k]);
-    if (parent) parent.appendChild(e);
-    return e;
-  }
-  var svg = el("svg", { "class": "fxh__ph", viewBox: "0 0 96 150", "aria-hidden": "true", focusable: "false" });
-  row.insertBefore(svg, txt);
-  var uid = "fxh" + Math.floor(Math.random() * 1e6);
-  var defs = el("defs", {}, svg);
-  var cp = el("clipPath", { id: uid }, defs);
-  el("rect", { x: 2, y: 2, width: 92, height: 146, rx: 14 }, cp);
-  el("rect", { x: 2, y: 2, width: 92, height: 146, rx: 14, fill: "#0b0b0b", stroke: GREY, "stroke-width": 1.5 }, svg);
-  el("line", { x1: 40, y1: 8, x2: 56, y2: 8, stroke: DARK, "stroke-width": 2, "stroke-linecap": "round" }, svg);
-  var clock = el("circle", { cx: 16, cy: 20, r: 7, fill: "none", stroke: GREY, "stroke-width": 1.5 }, svg);
-  var hand = el("line", { x1: 16, y1: 20, x2: 16, y2: 15, stroke: GREY, "stroke-width": 1.5, "stroke-linecap": "round" }, svg);
-  var cal = el("g", {}, svg);
-  var calUse = el("use", { href: "#l-calendar-days", x: 71, y: 11, width: 17, height: 17, fill: LIME }, cal);
-  calUse.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", "#l-calendar-days");
-  var calDot = el("circle", { cx: 88, cy: 12, r: 2.6, fill: LIME, stroke: "#0b0b0b", "stroke-width": 1.2 }, cal);
-  var badge = el("g", {}, svg);
-  el("circle", { cx: 80, cy: 20, r: 8, fill: "var(--loss, #ff9b8a)" }, badge);
-  var bub = [], rep = [], tick = [];
-  var Y = [40, 76, 112];
-  for (var i = 0; i < 3; i++) {
-    bub.push(el("rect", { x: 9, y: Y[i], width: 46, height: 14, rx: 7, fill: DARK }, svg));
-    tick.push(el("path", { d: "M60 " + (Y[i] + 7) + "l2.6 2.6 5.2-5.4", fill: "none", stroke: LIME, "stroke-width": 1.6, "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-dasharray": 12, "stroke-dashoffset": 12 }, svg));
-    rep.push(el("rect", { x: 53, y: Y[i] + 18, width: 34, height: 12, rx: 6, fill: LIME }, svg));
-  }
-  var wg = el("g", { "clip-path": "url(#" + uid + ")" }, svg);
-  var wave = el("rect", { x: 0, y: 9, width: 3, height: 132, fill: LIME, opacity: 0.9 }, wg);
-
+  var wait = pic.querySelector(".hchat__wait"), out = pic.querySelector(".hchat__out"), sweep = pic.querySelector(".hchat__sweep");
   var gsap = window.gsap;
-  var tl = null, plays = 0, started = false, done = false, seen = false, io = null;
+  var tl = null, started = false, done = false, seen = false, io = null;
 
-  /* the frame that stays: answered, booked, clock moved by one minute */
   function finalFrame() {
     if (tl) { tl.kill(); tl = null; }
     done = true;
-    var all = [svg].concat(bub, rep, tick, [badge, cal, calDot, wave, hand]);
-    if (gsap) gsap.killTweensOf(all);
-    function clear(e) { e.style.transform = ""; e.style.opacity = ""; e.removeAttribute("transform"); }
-    all.forEach(clear);
-    bub.forEach(function (b) { b.style.opacity = "0.6"; });
-    rep.forEach(function (r) { r.style.opacity = "1"; });
-    tick.forEach(function (t) { t.setAttribute("stroke-dashoffset", 0); t.style.strokeDashoffset = "0"; });
-    badge.style.opacity = "0";
-    cal.style.opacity = "1";
-    wave.style.opacity = "0";
-    clock.setAttribute("stroke", LIME);
-    hand.setAttribute("stroke", LIME);
-    hand.setAttribute("transform", "rotate(6 16 20)");
+    if (gsap) gsap.killTweensOf([wait, out, sweep]);
+    [wait, out, sweep].forEach(function (e) { e.removeAttribute("style"); });
+    pic.classList.remove("is-start");
+    pic.classList.add("is-done");
     try { window.dispatchEvent(new CustomEvent("fx:hero", { detail: { done: true } })); } catch (e) {}
   }
 
   function build() {
-    var t = gsap.timeline({ paused: true, onComplete: function () {
-      plays++;
-      if (plays >= PLAYS) { finalFrame(); return; }
-      /* a soft clear between the two plays instead of a jump cut */
-      gsap.to(bub.concat(rep, tick, [cal]), { opacity: 0, duration: 0.3, ease: "power1.in", onComplete: function () { if (!done && tl === t) { t.restart(); sync(); } } });
-    } });
-    /* start of every play: an empty phone at night */
-    t.set(bub, { opacity: 0, y: -12 }, 0)
-      .set(rep, { scale: 0, opacity: 0, transformOrigin: "100% 50%" }, 0)
-      .set(tick, { strokeDashoffset: 12, opacity: 1 }, 0)
-      .set(badge, { scale: 0, opacity: 1, transformOrigin: "50% 50%" }, 0)
-      .set(cal, { scale: 0, opacity: 1, transformOrigin: "50% 50%" }, 0)
-      .set(calDot, { scale: 0, transformOrigin: "50% 50%" }, 0)
-      .set(wave, { x: -4, opacity: 0.9 }, 0)
-      .set([clock, hand], { attr: { stroke: GREY } }, 0)
-      .set(hand, { rotation: 0, svgOrigin: "16 20" }, 0);
-    /* messages arrive, nobody answers */
-    for (var i = 0; i < 3; i++) {
-      var at = i * 0.5;
-      t.to(bub[i], { y: 0, opacity: 1, duration: 0.35, ease: "power2.out" }, at);
-      if (i === 0) t.to(badge, { scale: 1, duration: 0.35, ease: "back.out(2)" }, at);
-      else {
-        t.fromTo(badge, { scale: 1.35 }, { scale: 1, duration: 0.3, ease: "power2.out", immediateRender: false }, at);
-      }
-    }
-    t.to(hand, { rotation: 300, svgOrigin: "16 20", duration: 1.6, ease: "none" }, 0);
-    t.to(bub, { opacity: 0.6, duration: 0.5, ease: "power1.in" }, 1.1);
-    /* 2.0s: one lime wave answers every message */
-    t.to(wave, { x: 96, duration: 0.45, ease: "power1.inOut" }, 2.0);
-    t.to(tick, { strokeDashoffset: 0, duration: 0.2, ease: "power1.out", stagger: 0.12 }, 2.08);
-    t.fromTo(rep, { scale: 0.8, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.22, ease: "back.out(1.6)", stagger: 0.12, immediateRender: false }, 2.12);
-    /* 2.5s: unread is gone, the slot is booked, the clock barely moved */
-    t.to(badge, { scale: 0, duration: 0.25, ease: "power2.in" }, 2.5);
-    t.to(cal, { scale: 1, duration: 0.4, ease: "back.out(1.8)" }, 2.6);
-    t.to(calDot, { scale: 1, duration: 0.25, ease: "back.out(2)" }, 2.9);
-    t.set([clock, hand], { attr: { stroke: LIME } }, 2.5);
-    t.to(hand, { rotation: 6, svgOrigin: "16 20", duration: 0.5, ease: "power2.out" }, 2.5);
-    t.set({}, {}, 3.1 + 1.6); /* hold 1.6s */
+    /* after the page has faded in (0.8s): 0.3s the tag appears, 1.3s it waits, 0.6s one sweep, then it holds */
+    var t = gsap.timeline({ paused: true, onComplete: finalFrame });
+    t.fromTo(wait, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out" }, 0.8);
+    t.set(sweep, { opacity: 1, left: "0%" }, 2.4);
+    t.to(sweep, { left: "100%", duration: 0.6, ease: "power1.inOut" }, 2.4);
+    t.fromTo(wait, { clipPath: "inset(0 0 0 0%)" }, { clipPath: "inset(0 0 0 100%)", duration: 0.6, ease: "power1.inOut" }, 2.4);
+    t.fromTo(out, { opacity: 1, clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.6, ease: "power1.inOut" }, 2.4);
+    t.set(sweep, { opacity: 0 }, 3.0);
     return t;
   }
 
@@ -170,21 +72,20 @@
 
   if (reduced() || !gsap) { finalFrame(); return; }
 
-  /* initial (empty) frame so nothing flashes before the first play */
-  gsap.set(bub.concat(rep, [badge, cal, calDot]), { opacity: 0 });
-  gsap.set(wave, { x: -4, opacity: 0 });
+  /* first frame: the message alone, nothing below it yet */
+  pic.classList.add("is-start");
 
   function arm() {
     if (done) return;
     if ("IntersectionObserver" in window) {
       io = new IntersectionObserver(function (es) {
         es.forEach(function (e) {
-          seen = e.isIntersecting && e.intersectionRatio >= 0.5;
+          seen = e.isIntersecting && e.intersectionRatio >= 0.6;
           if (seen) start();
           sync();
         });
-      }, { threshold: [0, 0.5, 1] });
-      io.observe(svg);
+      }, { threshold: [0, 0.6, 1] });
+      io.observe(pic);
     } else { seen = true; start(); }
   }
   var fr = document.fonts && document.fonts.ready;
@@ -195,774 +96,122 @@
     var onMq = function () { if (reduced()) finalFrame(); };
     if (mq.addEventListener) mq.addEventListener("change", onMq); else if (mq.addListener) mq.addListener(onMq);
   }
-  /* leaving home ends the show: back home, the final frame waits */
+  /* leaving home ends the story: back home, the final frame waits */
   window.addEventListener("vf:route", function () {
     var home = document.getElementById("home");
     if (home && home.hidden && started && !done) finalFrame();
   });
-  /* a language switch only rewrites the headline text inside .fxh__t; the phone has no words */
-  window.addEventListener("vf:lang", sync);
-})();
-;
-/* ---- fx/cardsnap.js ---- */
-/* fx/cardsnap: the centre card on the home carousel (spec 3.1 B and C).
-   B) When the carousel settles on a card, its task icons light up one by one (grey to lime, one hop
-      each) and the business icon makes its own small gesture. At most 2 times per card per visit.
-      Side cards stay still.
-   C) If nobody touches or scrolls for 5s after load, the lime arrow of the centre card "breathes"
-      once (scale plus a fading ring). At most 2 times; any pointerdown, wheel, key or scroll cancels.
-   Adds no text. Motion uses transform and opacity only (the icon colour is a short CSS transition).
-   Reduced motion: nothing moves, the centre card shows its final frame (lime icons). */
-(function () {
-  "use strict";
-  var D = document, W = window, root = D.documentElement;
-  if (!D.getElementById("work") || W.__fxCardsnap) return;
-  W.__fxCardsnap = true;
-
-  var mq = W.matchMedia ? W.matchMedia("(prefers-reduced-motion: reduce)") : null;
-  function reduced() { return !!(mq && mq.matches); }
-  function gs() { return W.gsap || null; }
-
-  var MAX_SNAP = 2, MAX_BREATH = 2, IDLE_MS = 5000, SETTLE_MS = 90, STAGGER = 0.08, KEY = "fx.cardsnap";
-  var GREY = "#5a5a5a";
-
-  /* ---------- CSS (once) ---------- */
-  if (!D.getElementById("fx-cardsnap")) {
-    var st = D.createElement("style");
-    st.id = "fx-cardsnap";
-    st.textContent = [
-      /* the old endless hop is replaced by one hop per snap */
-      ".fxcs #work .cc__mini .ico { animation: none !important; transition: color 0.25s ease; }",
-      ".fxcs #work .cc.mid:not(.fxcs-lit) .cc__mini .ico:not(.fxcs-on) { color: " + GREY + "; }",
-      ".fxcs #work .cc.mid .cc__mini .ico.fxcs-on { color: var(--accent, #d8ff00); }",
-      /* side cards stay still: their rings do not turn */
-      ".fxcs #work .cc:not(.mid) .cc__art::before, .fxcs #work .cc:not(.mid) .cc__art::after { animation-play-state: paused; }",
-      ".fxcs #work .cc:not(.mid) .cc__art::before { opacity: 0.5; }",
-      ".fxcs-g { transform-box: fill-box; transform-origin: 50% 50%; }",
-      ".fxcs #work .cc__go { position: relative; }",
-      ".fxcs-ring { position: absolute; inset: -1.5px; border-radius: 50%; border: 2px solid var(--accent, #d8ff00); opacity: 0; pointer-events: none; transform: scale(1); }",
-      /* CSS fallback when GSAP is missing */
-      "@keyframes fxcsHop { 0%, 100% { transform: none; } 50% { transform: translateY(-5px); } }",
-      "@keyframes fxcsTilt { 0%, 100% { transform: none; } 50% { transform: rotate(var(--fxcs-r, 0deg)) translateY(var(--fxcs-y, 0px)) scale(var(--fxcs-s, 1)); } }",
-      "@keyframes fxcsBreath { 0%, 100% { transform: none; } 45% { transform: scale(1.06); } }",
-      "@keyframes fxcsRing { 0% { opacity: 0.5; transform: scale(1); } 100% { opacity: 0; transform: scale(var(--fxcs-k, 1.5)); } }",
-      ".fxcs-css .fxcs-hop { animation: fxcsHop 0.9s ease-in-out 1 both; animation-delay: var(--fxcs-d, 0s); }",
-      ".fxcs-css .fxcs-tilt { animation: fxcsTilt 0.6s ease-in-out 1 both; animation-delay: 0.15s; }",
-      ".fxcs-css .fxcs-br { animation: fxcsBreath 0.9s ease-in-out 1 both; }",
-      ".fxcs-css .fxcs-br .fxcs-ring { animation: fxcsRing 0.9s ease-out 1 both; }",
-      ".fxcs-pause .fxcs-hop, .fxcs-pause .fxcs-tilt, .fxcs-pause .fxcs-br, .fxcs-pause .fxcs-br .fxcs-ring { animation-play-state: paused; }",
-      "@media (prefers-reduced-motion: reduce) {",
-      "  .fxcs #work .cc.mid .cc__mini .ico { color: var(--accent, #d8ff00) !important; }",
-      "  .fxcs-ring { display: none; }",
-      "}"
-    ].join("\n");
-    D.head.appendChild(st);
-  }
-  root.classList.add("fxcs");
-
-  /* ---------- state ---------- */
-  var work = D.getElementById("work"), track = work.querySelector(".car__track"), home = D.getElementById("home");
-  var counts = {};
-  try { counts = JSON.parse(sessionStorage.getItem(KEY) || "{}") || {}; } catch (e) { counts = {}; }
-  function save() { try { sessionStorage.setItem(KEY, JSON.stringify(counts)); } catch (e) {} }
-  function keyOf(card) { return "c:" + ((card.getAttribute("href") || "").split("/").pop() || "x"); }
-
-  var active = false, inView = true, mo = null, settleT = 0, lastX = 0, lastCard = null, pending = null;
-  var snapTl = null, snapCard = null, snapCssT = 0;
-  var breathN = 0, breathOff = false, idleT = 0, breathTl = null, breathEl = null, breathCssT = 0, y0 = 0;
-
-  function cards() { return Array.prototype.slice.call(track ? track.querySelectorAll(".cc") : []); }
-  function midCard() { return track ? track.querySelector(".cc.mid") : null; }
-  function homeShown() { return !!home && !home.hidden && work.offsetParent !== null; }
-  function canPlay() { return active && inView && !D.hidden && !reduced(); }
-  function listMode() { return track && getComputedStyle(track).flexDirection === "column"; }
-
-  /* ---------- B: snap of the centre card ---------- */
-  function minis(card) { return Array.prototype.slice.call(card.querySelectorAll(".cc__mini .ico")); }
-  function artG(card) {
-    var svg = card.querySelector(".cc__art svg"); if (!svg) return null;
-    var g = svg.querySelector("g.fxcs-g"); if (g) return g;
-    var use = svg.querySelector("use"); if (!use) return null;
-    g = D.createElementNS("http://www.w3.org/2000/svg", "g");
-    g.setAttribute("class", "fxcs-g");
-    svg.insertBefore(g, use); g.appendChild(use);
-    return g;
-  }
-  function gesture(card) {
-    var g = artG(card); if (!g) return null;
-    var u = g.querySelector("use"), id = u ? (u.getAttribute("href") || u.getAttribute("xlink:href") || "") : "";
-    if (/scissors/.test(id)) return { g: g, rotation: -14 };
-    if (/coffee|cup/.test(id)) return { g: g, y: -3 };
-    if (/wrench|hammer/.test(id)) return { g: g, rotation: 20 };
-    if (/dumbbell/.test(id)) return { g: g, y: -4 };
-    return { g: g, scale: 1.08 };
-  }
-  function finalFrame(card) {
-    if (!card) return;
-    card.classList.add("fxcs-lit");
-    minis(card).forEach(function (m) { m.classList.add("fxcs-on"); m.classList.remove("fxcs-hop"); m.style.removeProperty("--fxcs-d"); m.style.transitionDelay = ""; });
-    var g = card.querySelector("g.fxcs-g");
-    if (g) { g.classList.remove("fxcs-tilt"); if (gs()) gs().set(g, { clearProps: "transform" }); }
-    if (gs()) gs().set(minis(card), { clearProps: "transform" });
-  }
-  function killSnap() {
-    if (snapTl) { snapTl.kill(); snapTl = null; }
-    clearTimeout(snapCssT);
-    if (snapCard) { finalFrame(snapCard); snapCard = null; }
-  }
-  function snap(card) {
-    killSnap();
-    var k = keyOf(card);
-    if (reduced() || (counts[k] || 0) >= MAX_SNAP) { finalFrame(card); return; }
-    if (!canPlay()) { pending = card; return; }
-    pending = null;
-    counts[k] = (counts[k] || 0) + 1; save();
-    var ms = minis(card), gx = gesture(card), G = gs();
-    card.classList.remove("fxcs-lit");
-    /* start from grey at once: no lime to grey fade before the first icon lights (that read as a flicker) */
-    ms.forEach(function (m) { m.style.transition = "none"; m.style.transitionDelay = ""; m.classList.remove("fxcs-on", "fxcs-hop"); });
-    if (ms.length) void ms[0].getBoundingClientRect();
-    ms.forEach(function (m) { m.style.transition = ""; });
-    snapCard = card;
-    if (G) {
-      var tl = G.timeline({ onComplete: function () { if (snapTl === tl) { snapTl = null; finalFrame(card); snapCard = null; } } });
-      ms.forEach(function (m, i) {
-        var t = i * STAGGER;
-        tl.call(function () { m.classList.add("fxcs-on"); }, null, t);
-        tl.to(m, { y: -5, duration: 0.24, ease: "power2.out" }, t);
-        tl.to(m, { y: 0, duration: 0.36, ease: "power2.in" }, t + 0.24);
-      });
-      if (gx) {
-        var to = { duration: 0.3, ease: "sine.inOut", yoyo: true, repeat: 1, transformOrigin: "50% 50%" };
-        if (gx.rotation) to.rotation = gx.rotation;
-        if (gx.y) to.y = gx.y;
-        if (gx.scale) to.scale = gx.scale;
-        tl.to(gx.g, to, 0.15);
-      }
-      snapTl = tl;
-      if (!canPlay()) tl.pause();
-    } else {
-      root.classList.add("fxcs-css");
-      ms.forEach(function (m, i) {
-        m.style.setProperty("--fxcs-d", (i * STAGGER).toFixed(2) + "s");
-        m.style.transitionDelay = (i * STAGGER).toFixed(2) + "s";
-        m.classList.add("fxcs-hop", "fxcs-on");
-      });
-      if (gx) {
-        gx.g.style.setProperty("--fxcs-r", (gx.rotation || 0) + "deg");
-        gx.g.style.setProperty("--fxcs-y", (gx.y || 0) + "px");
-        gx.g.style.setProperty("--fxcs-s", String(gx.scale || 1));
-        gx.g.classList.remove("fxcs-tilt"); void gx.g.getBoundingClientRect(); gx.g.classList.add("fxcs-tilt");
-      }
-      snapCssT = setTimeout(function () { ms.forEach(function (m) { m.style.transitionDelay = ""; }); finalFrame(card); snapCard = null; }, (ms.length * STAGGER + 1) * 1000);
-    }
-  }
-
-  /* settle: the track stopped moving and nobody is dragging */
-  function onMutate() {
-    if (!active) return;
-    /* a card past its limit shows its final frame the moment it reaches the centre (no grey flash) */
-    var m = midCard();
-    if (m && (reduced() || (counts[keyOf(m)] || 0) >= MAX_SNAP) && !m.classList.contains("fxcs-lit")) finalFrame(m);
-    if (!settleT) { lastX = tx(); settleT = setTimeout(settled, SETTLE_MS); }
-  }
-  /* the glide eases out slowly; "settled" means it moves less than 6px in one check */
-  function tx() { var m = /translate3d\(\s*(-?[\d.]+)px/.exec(track ? track.style.transform : ""); return m ? parseFloat(m[1]) : 0; }
-  function settled() {
-    settleT = 0;
-    if (!active || !track || listMode()) return;
-    var x = tx(), moving = Math.abs(x - lastX) >= 6;
-    lastX = x;
-    if (moving || track.classList.contains("drag")) { settleT = setTimeout(settled, SETTLE_MS); return; }
-    var m = midCard();
-    if (!m || m === lastCard) return;
-    if (snapCard && snapCard !== m) killSnap();
-    lastCard = m;
-    snap(m);
-  }
-
-  /* ---------- C: the arrow breathes ---------- */
-  function goOf() { var m = midCard(); return m ? m.querySelector(".cc__go") : null; }
-  function ringOf(go) {
-    var r = go.querySelector(".fxcs-ring");
-    if (!r) { r = D.createElement("span"); r.className = "fxcs-ring"; r.setAttribute("aria-hidden", "true"); go.appendChild(r); }
-    return r;
-  }
-  function killBreath() {
-    if (breathTl) { breathTl.kill(); breathTl = null; }
-    clearTimeout(breathCssT);
-    if (breathEl) {
-      breathEl.classList.remove("fxcs-br");
-      var r = breathEl.querySelector(".fxcs-ring");
-      if (gs()) { gs().set(breathEl, { clearProps: "transform" }); if (r) gs().set(r, { clearProps: "transform,opacity" }); }
-      breathEl = null;
-    }
-  }
-  function armIdle() {
-    clearTimeout(idleT);
-    if (breathOff || breathN >= MAX_BREATH || reduced() || !active) return;
-    idleT = setTimeout(breathe, IDLE_MS);
-  }
-  function breathe() {
-    if (breathOff || breathN >= MAX_BREATH || reduced() || !active) return;
-    if (!canPlay() || (track && track.classList.contains("drag"))) { idleT = 0; return; } /* re-armed when visible again */
-    var go = goOf(); if (!go) return;
-    breathN++;
-    killBreath();
-    breathEl = go;
-    var ring = ringOf(go), w = go.offsetWidth || 54, k = (w + 28) / w, G = gs(), done = function () { killBreath(); armIdle(); };
-    if (G) {
-      var tl = G.timeline({ onComplete: function () { if (breathTl === tl) { breathTl = null; done(); } } });
-      tl.to(go, { scale: 1.06, duration: 0.4, ease: "sine.out" }, 0)
-        .to(go, { scale: 1, duration: 0.5, ease: "sine.inOut" }, 0.4)
-        .fromTo(ring, { opacity: 0.5, scale: 1 }, { opacity: 0, scale: k, duration: 0.9, ease: "power2.out" }, 0);
-      breathTl = tl;
-    } else {
-      root.classList.add("fxcs-css");
-      go.style.setProperty("--fxcs-k", k.toFixed(3));
-      go.classList.add("fxcs-br");
-      breathCssT = setTimeout(done, 950);
-    }
-  }
-  function cancelBreath() {
-    if (breathOff) return;
-    breathOff = true; clearTimeout(idleT); killBreath();
-  }
-  function onUser() { cancelBreath(); }
-  function onScroll() { if (Math.abs((W.pageYOffset || 0) - y0) > 4) cancelBreath(); }
-
-  /* ---------- pause and resume ---------- */
-  function syncPlay() {
-    var ok = canPlay();
-    root.classList.toggle("fxcs-pause", !ok);
-    if (snapTl) { if (ok) snapTl.resume(); else snapTl.pause(); }
-    if (breathTl) { if (ok) breathTl.resume(); else breathTl.pause(); }
-    if (ok && pending && pending === midCard()) snap(pending);
-    if (ok && !idleT && !breathTl && !breathEl) armIdle();
-  }
-  D.addEventListener("visibilitychange", syncPlay);
-  if ("IntersectionObserver" in W) {
-    new IntersectionObserver(function (es) { inView = es[es.length - 1].intersectionRatio > 0.25; syncPlay(); }, { threshold: [0, 0.25, 0.5] }).observe(work);
-  }
-  if (mq) {
-    var onMq = function () { if (reduced()) { killSnap(); cancelBreath(); cards().forEach(function (c) { if (c.classList.contains("mid")) finalFrame(c); }); } };
-    if (mq.addEventListener) mq.addEventListener("change", onMq); else if (mq.addListener) mq.addListener(onMq);
-  }
-
-  /* ---------- lifecycle ---------- */
-  function start() {
-    if (active || !homeShown()) return;
-    active = true;
-    lastCard = null;
-    if (!mo && "MutationObserver" in W && track) {
-      mo = new MutationObserver(onMutate);
-      mo.observe(track, { attributes: true, attributeFilter: ["style", "class"] });
-      cards().forEach(function (c) { mo.observe(c, { attributes: true, attributeFilter: ["class"] }); });
-    }
-    onMutate();
-    syncPlay();
-  }
-  function stop() {
-    active = false; pending = null; lastCard = null;
-    clearTimeout(settleT); settleT = 0; clearTimeout(idleT); idleT = 0;
-    if (mo) { mo.disconnect(); mo = null; }
-    killSnap(); killBreath();
-    root.classList.remove("fxcs-pause");
-  }
-
-  /* the visitor's first touch, key, wheel or scroll ends the breathing cue for this visit */
-  W.addEventListener("pointerdown", onUser, { capture: true, passive: true });
-  W.addEventListener("touchstart", onUser, { capture: true, passive: true });
-  W.addEventListener("wheel", onUser, { capture: true, passive: true });
-  W.addEventListener("keydown", onUser, true);
-  W.addEventListener("scroll", onScroll, { passive: true });
-
-  W.addEventListener("vf:route", function () {
-    stop();
-    /* leaving home also ends the "after load" breathing window */
-    if (!homeShown()) { cancelBreath(); return; }
-    start();
-  });
-  W.addEventListener("vf:lang", function () {
-    /* only names change; keep the current frame and let the carousel re-centre */
-    if (!active) return;
-    var m = midCard(); if (m && m !== snapCard && m.classList.contains("fxcs-lit")) finalFrame(m);
-    onMutate();
-  });
-
-  function boot() {
-    y0 = W.pageYOffset || 0;
-    if (!homeShown()) { breathOff = true; return; }
-    start();
-  }
-  if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", boot); else boot();
-
-  W.fxCardsnap = { stop: stop, start: start };
 })();
 ;
 /* ---- fx/glyphs.js ---- */
-/* fx/glyphs.js: the "loss strip" on the task cards of a business page (spec 3.3).
-   Each task card gets a small picture under its title row: first the owner's loss in grey
-   ("before"), then one lime move fixes it ("after"). The pair is chosen by the mock-up type
-   (VF.content(niche, task).v.type): chat, reminder, review, post, listing, list, doc.
-   Cycle: before 1.2s, change 0.5s (power2.inOut), after 1.6s. At most 3 cycles, then the
-   after frame stays. Only cards at least 60% on screen play, at most 2 at the same time.
-   The advised card (.cc--top): its label slides in, its icon ring sends a lime pulse every 4s
-   (at most 3), its filled arrow "breathes" once after 5s without any touch, scroll or key.
-   Reduced motion: only the after frames, no pulse, no breath, no slide.
-   Decorative only: aria-hidden, no words and no numbers, so the module needs no dictionary
-   and survives "vf:lang" untouched (it only re-seats the strips if the card was repainted).
-   Only strokes, outlines and motion: it adds no filled lime button. */
+/* fx/glyphs.js: the advised card of a business page (#/for/<business>), the page's only motion.
+   Every task card shows one short, still loss line (app.js paints it: .cc__ll with a loss span and
+   a gain span). On the advised card (.cc--top) one story plays once:
+     1. its label ("you lose most here") slides in (0.2s), alone;
+     2. the loss line stays 1.5s;
+     3. it crossfades (0.3s) into that task's gain line in lime, which stays.
+   It plays when the card is at least 60% on screen. Seen once in this visit: the gain shows at once.
+   Reduced motion: no slide, no crossfade, the loss line only (it is the reason to tap).
+   The name stays "glyphs" (build order, window.FXGlyphs used by fx/retention). */
 (function () {
   "use strict";
   var D = document, W = window;
   if (W.__fxGlyphs) return;
   W.__fxGlyphs = true;
 
-  var NS = "http://www.w3.org/2000/svg";
-  var LIME = "#D8FF00", GREY = "#5a5a5a", DARK = "#2a2a2a", SURF = "#1d1d1d", MID = "#3a3a3a";
-  var LOSS = "var(--loss, #ff9b8a)";
-  var T_BEFORE = 1.2, T_CHANGE = 0.5, T_AFTER = 1.6, CYCLES = 3, MAX_PHONE = 2, MAX_DESK = 2;
-  var PULSE_EVERY = 4, PULSES = 3, IDLE_MS = 5000;
-  /* if content.js is not there yet, the task id still tells the type */
-  var BY_TASK = { bot: "chat", assistant: "chat", mail: "reminder", reviews: "review", social: "post", content: "post", site: "listing", reports: "list", leads: "list", docs: "doc", hiring: "doc" };
-
+  var LABEL_MS = 250, HOLD_MS = 1500;
   var mq = W.matchMedia ? W.matchMedia("(prefers-reduced-motion: reduce)") : null;
   function reduced() { return !!(mq && mq.matches); }
-  function gs() { return W.gsap || null; }
-  function phone() { return W.innerWidth <= 760; }
 
-  /* ---------- CSS (once) ---------- */
   if (!D.getElementById("fx-glyphs")) {
     var st = D.createElement("style");
     st.id = "fx-glyphs";
     st.textContent = [
-      ".fxg{display:block;width:148px;height:36px;flex:none;overflow:visible;pointer-events:none;margin:0.35rem auto 0}",
-      /* phone: icon | title over price | arrow, the strip is the third row under the title */
-      "@media (max-width:760px){.nv .cc--s .fxg{grid-column:2/-1;grid-row:3;margin:0.3rem 0 0;justify-self:start}}",
-      /* computer: centre card larger, side cards keep the strip instead of the grey text */
-      "@media (min-width:1100px) and (min-height:600px){",
-      ".at-niche .nv .cc--s .fxg{width:13rem;height:3.15rem;margin:-0.3rem auto;transition:transform .35s ease,opacity .35s ease;transform-origin:50% 50%}",
-      ".at-niche .nv .cc--s.fxg-on:not(.mid) .fxg{transform:scale(.72);opacity:.8}",
-      ".at-niche .nv .cc--s.fxg-on:not(.mid) .cc__what{display:none}",
-      ".at-niche .nv .cc--s.fxg-on.mid .cc__what{display:block;flex:none;line-height:1.3;-webkit-line-clamp:unset;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}",
-      "}",
-      /* the advised card: label slides in, ring pulse, arrow breath (transform and opacity only) */
       "@keyframes fxgTop{from{translate:0 -6px;opacity:0}to{translate:0 0;opacity:1}}",
       ".fxg-top-in .cc__top{animation:fxgTop .2s ease-out both}",
-      ".fxg-pulse{position:absolute;inset:0;border-radius:50%;border:2px solid " + LIME + ";opacity:0;pointer-events:none;transform:scale(1)}",
-      ".nv .cc--top .cc__go{position:relative}",
-      ".fxg-br{position:absolute;inset:-1.5px;border-radius:50%;border:2px solid " + LIME + ";opacity:0;pointer-events:none}",
-      "@media (prefers-reduced-motion:reduce){.fxg-top-in .cc__top{animation:none}.fxg-pulse,.fxg-br{display:none}.at-niche .nv .cc--s .fxg{transition:none}}"
+      /* until its story starts, the label of the advised card waits (no flash before the slide) */
+
+      "@media (prefers-reduced-motion:reduce){.fxg-top-in .cc__top{animation:none}}"
     ].join("");
     D.head.appendChild(st);
   }
 
-  /* ---------- SVG helpers ---------- */
-  var uid = 0;
-  function el(tag, at, parent) {
-    var e = D.createElementNS(NS, tag);
-    for (var k in at) if (Object.prototype.hasOwnProperty.call(at, k)) {
-      if (k === "style") e.style.cssText = at[k]; else e.setAttribute(k, at[k]);
-    }
-    if (parent) parent.appendChild(e);
-    return e;
-  }
-  function use(id, x, y, s, color, parent) {
-    var u = el("use", { href: "#" + id, x: x, y: y, width: s, height: s }, parent);
-    u.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", "#" + id);
-    u.style.color = color; u.style.fill = color;
-    return u;
-  }
-  function star(cx, cy, r) {
-    var p = [], i, a, rr;
-    for (i = 0; i < 10; i++) { a = -Math.PI / 2 + i * Math.PI / 5; rr = i % 2 ? r * 0.45 : r; p.push((cx + Math.cos(a) * rr).toFixed(2) + " " + (cy + Math.sin(a) * rr).toFixed(2)); }
-    return "M" + p.join("L") + "Z";
-  }
-  function pin(x, y, s) { /* tip at (x, y), height about 1.4 s */
-    return "M" + x + " " + y + "C" + (x - s * 0.15) + " " + (y - s * 0.45) + " " + (x - s * 0.6) + " " + (y - s * 0.7) + " " + (x - s * 0.6) + " " + (y - s * 1.05) +
-      "A" + (s * 0.6) + " " + (s * 0.6) + " 0 1 1 " + (x + s * 0.6) + " " + (y - s * 1.05) +
-      "C" + (x + s * 0.6) + " " + (y - s * 0.7) + " " + (x + s * 0.15) + " " + (y - s * 0.45) + " " + x + " " + y + "Z";
-  }
+  var seen = {};  /* "niche/task" -> the story played in this visit */
+  var cur = null; /* { card, key, io, t1, t2 } */
 
-  /* A part: { el, b: before props, a: after props, og: [x, y] origin, d, e, at }.
-     Props: o (opacity), x, y, s (scale), r (rotate deg), dash (stroke-dashoffset). */
-  var BUILD = {
-    chat: function (g, P) {
-      el("rect", { x: 6, y: 7, width: 66, height: 22, rx: 11, fill: DARK }, g);
-      el("rect", { x: 15, y: 13.5, width: 34, height: 3, rx: 1.5, fill: GREY }, g);
-      el("rect", { x: 15, y: 19.5, width: 22, height: 3, rx: 1.5, fill: GREY }, g);
-      var ring = el("rect", { x: 6, y: 7, width: 66, height: 22, rx: 11, fill: "none", stroke: LIME, "stroke-width": 1.5 }, g);
-      var tick = el("path", { d: "M54 18.5l3.6 3.6 7.4-7.6", fill: "none", stroke: LIME, "stroke-width": 2, "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-dasharray": 16 }, g);
-      var clock = el("g", {}, g);
-      el("circle", { cx: 104, cy: 18, r: 10, fill: "none", stroke: GREY, "stroke-width": 1.5 }, clock);
-      el("line", { x1: 104, y1: 18, x2: 108.5, y2: 18, stroke: GREY, "stroke-width": 1.5, "stroke-linecap": "round" }, clock);
-      var hand = el("line", { x1: 104, y1: 18, x2: 104, y2: 11, stroke: GREY, "stroke-width": 1.5, "stroke-linecap": "round" }, clock);
-      var dot = el("circle", { cx: 112, cy: 9.5, r: 2.8 }, clock); dot.style.fill = LOSS;
-      var cal = use("l-calendar-days", 94, 8, 20, LIME, g);
-      var cdot = el("circle", { cx: 116, cy: 9, r: 2.8, fill: LIME }, g);
-      P.push({ el: ring, b: { o: 0 }, a: { o: 1 } });
-      P.push({ el: tick, b: { dash: 16 }, a: { dash: 0 }, d: 0.3, at: 0.15, e: "power1.out" });
-      P.push({ el: clock, b: { o: 1, s: 1 }, a: { o: 0, s: 0.7 }, og: [104, 18], d: 0.3 });
-      P.push({ el: cal, b: { o: 0, s: 0 }, a: { o: 1, s: 1 }, og: [104, 18], d: 0.35, at: 0.15, e: "back.out(1.8)" });
-      P.push({ el: cdot, b: { o: 0, s: 0 }, a: { o: 1, s: 1 }, og: [116, 9], d: 0.2, at: 0.3 });
-      return { idle: function (tl, t) { tl.fromTo(hand, { rotation: 0, svgOrigin: "104 18" }, { rotation: 300, duration: T_BEFORE, ease: "power1.in" }, t); },
-        reset: function (tl, t) { tl.set(hand, { rotation: 0, svgOrigin: "104 18" }, t); } };
-    },
-    reminder: function (g, P) {
-      /* an empty time slot and an empty chair (dashed), then the bell rings and the chair is taken */
-      el("rect", { x: 6, y: 8, width: 42, height: 20, rx: 4, fill: "none", stroke: GREY, "stroke-width": 1.5, "stroke-dasharray": "3 3" }, g);
-      el("rect", { x: 13, y: 16.5, width: 20, height: 3, rx: 1.5, fill: DARK }, g);
-      var slotOk = el("rect", { x: 6, y: 8, width: 42, height: 20, rx: 4, fill: "none", stroke: LIME, "stroke-width": 1.5 }, g);
-      var bell = use("l-bell-ring", 58, 8, 20, LIME, g);
-      var chairE = el("g", { fill: "none", stroke: GREY, "stroke-width": 1.5, "stroke-dasharray": "2.5 2.5" }, g);
-      el("rect", { x: 112, y: 4, width: 7, height: 20, rx: 2 }, chairE);
-      el("rect", { x: 96, y: 20, width: 26, height: 7, rx: 2 }, chairE);
-      el("path", { d: "M99 27v5M119 27v5" }, chairE);
-      /* taken: a solid lime outline with a faint lime tint, so it never reads as a second filled button */
-      var chairF = el("g", { fill: "rgba(216,255,0,.22)", stroke: LIME, "stroke-width": 1.5, "stroke-linejoin": "round" }, g);
-      el("rect", { x: 112, y: 4, width: 7, height: 20, rx: 2 }, chairF);
-      el("rect", { x: 96, y: 20, width: 26, height: 7, rx: 2 }, chairF);
-      el("path", { d: "M99 27v5M119 27v5", fill: "none", "stroke-linecap": "round" }, chairF);
-      P.push({ el: slotOk, b: { o: 0 }, a: { o: 1 } });
-      P.push({ el: bell, b: { o: 0.35, r: 0 }, a: { o: 1, r: 0 }, og: [68, 9], d: 0.15 });
-      P.push({ el: chairE, b: { o: 1 }, a: { o: 0 }, d: 0.3, at: 0.2 });
-      P.push({ el: chairF, b: { o: 0, s: 0.8 }, a: { o: 1, s: 1 }, og: [109, 32], d: 0.3, at: 0.2, e: "back.out(1.6)" });
-      return { change: function (tl, t) {
-        /* the bell swings -12 / 12 twice in 0.5s */
-        tl.to(bell, { keyframes: [{ rotation: -12, duration: 0.0625 }, { rotation: 12, duration: 0.125 }, { rotation: -12, duration: 0.125 }, { rotation: 12, duration: 0.125 }, { rotation: 0, duration: 0.0625 }], ease: "sine.inOut" }, t);
-      } };
-    },
-    review: function (g, P) {
-      /* a review card with one grey star of five; a reply rises and docks to it, a lime line links them.
-         The stars never change. */
-      el("rect", { x: 4, y: 4, width: 70, height: 28, rx: 6, fill: SURF, stroke: MID, "stroke-width": 1 }, g);
-      for (var i = 0; i < 5; i++) {
-        var s = el("path", { d: star(14 + i * 11, 13, 4.4), "stroke-linejoin": "round", "stroke-width": 1.2, stroke: GREY }, g);
-        s.setAttribute("fill", i === 0 ? GREY : "none");
-      }
-      el("rect", { x: 10, y: 22, width: 44, height: 3, rx: 1.5, fill: DARK }, g);
-      var link = el("path", { d: "M74 18C82 18 82 22 90 22", fill: "none", stroke: LIME, "stroke-width": 1.5, "stroke-linecap": "round", "stroke-dasharray": 20 }, g);
-      var rep = el("g", {}, g);
-      el("rect", { x: 90, y: 12, width: 52, height: 20, rx: 10, fill: SURF, stroke: LIME, "stroke-width": 1.5 }, rep);
-      el("rect", { x: 99, y: 17.5, width: 30, height: 3, rx: 1.5, fill: "#8a8a8a" }, rep);
-      el("rect", { x: 99, y: 23.5, width: 20, height: 3, rx: 1.5, fill: GREY }, rep);
-      P.push({ el: rep, b: { o: 0, y: 8 }, a: { o: 1, y: 0 }, d: 0.4 });
-      P.push({ el: link, b: { dash: 20 }, a: { dash: 0 }, d: 0.25, at: 0.25, e: "power1.out" });
-      return {};
-    },
-    post: function (g, P, id) {
-      /* a dark, hazy photo becomes a bright one in a lime frame with an outlined heart. No like counter. */
-      var cp = el("clipPath", { id: id + "c" }, el("defs", {}, g));
-      el("rect", { x: 20, y: 3, width: 30, height: 30, rx: 4 }, cp);
-      var dark = el("g", {}, g);
-      el("rect", { x: 20, y: 3, width: 30, height: 30, rx: 4, fill: SURF, stroke: MID, "stroke-width": 1 }, dark);
-      var haze = el("g", { "clip-path": "url(#" + id + "c)", fill: DARK }, dark);
-      el("ellipse", { cx: 30, cy: 24, rx: 16, ry: 8 }, haze);
-      el("ellipse", { cx: 44, cy: 12, rx: 9, ry: 5, opacity: 0.7 }, haze);
-      var lite = el("g", {}, g);
-      el("rect", { x: 20, y: 3, width: 30, height: 30, rx: 4, fill: "#d9d9d9" }, lite);
-      var hill = el("g", { "clip-path": "url(#" + id + "c)" }, lite);
-      el("path", { d: "M18 33L29 20l7 8 5-5 11 10z", fill: "#9a9a9a" }, hill);
-      el("circle", { cx: 42, cy: 11, r: 3.2, fill: "#f4f4f4" }, hill);
-      el("rect", { x: 20, y: 3, width: 30, height: 30, rx: 4, fill: "none", stroke: LIME, "stroke-width": 1.5 }, lite);
-      el("rect", { x: 58, y: 10, width: 36, height: 3, rx: 1.5, fill: DARK }, g);
-      el("rect", { x: 58, y: 17, width: 24, height: 3, rx: 1.5, fill: DARK }, g);
-      var heart = el("path", { d: "M106 27.5C98 22 96 18.5 96 15.2 96 12.3 98.2 10 101 10c2.1 0 3.8 1.2 5 3 1.2-1.8 2.9-3 5-3 2.8 0 5 2.3 5 5.2 0 3.3-2 6.8-10 12.3z", fill: "none", stroke: LIME, "stroke-width": 1.5, "stroke-linejoin": "round" }, g);
-      P.push({ el: lite, b: { o: 0, s: 0.6 }, a: { o: 1, s: 1 }, og: [35, 18], e: "back.out(1.4)" });
-      P.push({ el: dark, b: { o: 1 }, a: { o: 0 }, d: 0.3 });
-      P.push({ el: heart, b: { o: 0, s: 0.6 }, a: { o: 1, s: 1 }, og: [106, 18], d: 0.3, at: 0.2, e: "back.out(2)" });
-      return {};
-    },
-    listing: function (g, P, id) {
-      /* three grey pins and an empty dashed spot; a lime pin drops in and a dotted route is drawn */
-      var cp = el("clipPath", { id: id + "r" }, el("defs", {}, g));
-      var wipe = el("rect", { x: 0, y: 0, width: 148, height: 36 }, cp);
-      el("path", { d: pin(16, 22, 8), fill: GREY }, g);
-      el("path", { d: pin(38, 30, 8), fill: GREY }, g);
-      el("path", { d: pin(60, 20, 8), fill: GREY }, g);
-      el("circle", { cx: 112, cy: 26, r: 7, fill: "none", stroke: GREY, "stroke-width": 1.5, "stroke-dasharray": "2.5 2.5" }, g);
-      var route = el("path", { d: "M70 31C84 33 92 31 104 28", fill: "none", stroke: LIME, "stroke-width": 1.5, "stroke-linecap": "round", "stroke-dasharray": "1 4", "clip-path": "url(#" + id + "r)" }, g);
-      var lp = el("path", { d: pin(112, 26, 9), fill: "none", stroke: LIME, "stroke-width": 1.8, "stroke-linejoin": "round" }, g);
-      var ld = el("circle", { cx: 112, cy: 16.5, r: 2.4, fill: LIME }, g);
-      var pinG = el("g", {}, g); pinG.appendChild(lp); pinG.appendChild(ld);
-      P.push({ el: pinG, b: { o: 0, y: -18 }, a: { o: 1, y: 0 }, d: 0.5, e: "bounce.out" });
-      P.push({ el: wipe, b: { sx: 0 }, a: { sx: 1 }, og: [70, 0], d: 0.45, at: 0.05, e: "power1.inOut" });
-      return {};
-    },
-    list: function (g, P) {
-      /* four tilted grey sheets fall into four even rows with a lime left edge */
-      var rots = [-12, 7, -5, 13], i;
-      for (i = 0; i < 4; i++) {
-        var sh = el("g", {}, g), x = 8 + i * 30;
-        el("rect", { x: x, y: 6, width: 22, height: 26, rx: 3, fill: SURF, stroke: GREY, "stroke-width": 1.2 }, sh);
-        el("rect", { x: x + 5, y: 13, width: 12, height: 2.5, rx: 1.25, fill: GREY }, sh);
-        el("rect", { x: x + 5, y: 19, width: 9, height: 2.5, rx: 1.25, fill: GREY }, sh);
-        P.push({ el: sh, b: { o: 1, r: rots[i], s: 1 }, a: { o: 0, r: 0, s: 0.7 }, og: [x + 11, 19], d: 0.3, at: i * 0.05 });
-      }
-      for (i = 0; i < 4; i++) {
-        var row = el("g", {}, g), y = 3 + i * 8;
-        el("rect", { x: 8, y: y, width: 118, height: 6, rx: 2, fill: SURF }, row);
-        el("rect", { x: 8, y: y, width: 3, height: 6, rx: 1, fill: LIME }, row);
-        el("rect", { x: 16, y: y + 2, width: 40 + (i % 2) * 18, height: 2, rx: 1, fill: GREY }, row);
-        P.push({ el: row, b: { o: 0, x: -8 }, a: { o: 1, x: 0 }, d: 0.45, at: 0.05 + i * 0.05, e: "power2.out" });
-      }
-      return {};
-    },
-    doc: function (g, P) {
-      /* three sheets in a fan become one straight sheet with a lime tick */
-      var rs = [-16, 0, 16], i, top = null;
-      for (i = 0; i < 3; i++) {
-        var sh = el("g", {}, g);
-        el("rect", { x: 30, y: 4, width: 22, height: 28, rx: 3, fill: SURF, stroke: i === 1 ? "#8a8a8a" : GREY, "stroke-width": 1.2 }, sh);
-        el("rect", { x: 35, y: 11, width: 12, height: 2.5, rx: 1.25, fill: GREY }, sh);
-        el("rect", { x: 35, y: 17, width: 12, height: 2.5, rx: 1.25, fill: GREY }, sh);
-        el("rect", { x: 35, y: 23, width: 8, height: 2.5, rx: 1.25, fill: GREY }, sh);
-        if (i === 1) top = sh;
-        else P.push({ el: sh, b: { o: 1, r: rs[i] }, a: { o: 0, r: 0 }, og: [41, 34], d: 0.4 });
-      }
-      g.appendChild(top);
-      var edge = el("rect", { x: 30, y: 4, width: 22, height: 28, rx: 3, fill: "none", stroke: LIME, "stroke-width": 1.5 }, g);
-      var tick = el("path", { d: "M62 18.5l4.4 4.4 9.6-10", fill: "none", stroke: LIME, "stroke-width": 2.2, "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-dasharray": 22 }, g);
-      P.push({ el: edge, b: { o: 0 }, a: { o: 1 }, d: 0.3, at: 0.2 });
-      P.push({ el: tick, b: { dash: 22 }, a: { dash: 0 }, d: 0.3, at: 0.25, e: "power1.out" });
-      return {};
-    }
-  };
+  function niche() { var m = location.hash.match(/^#\/for\/([a-z]+)$/); return m ? m[1] : null; }
+  function keyOf(card) { var m = (card.getAttribute("href") || "").match(/^#\/for\/([a-z]+\/[a-z]+)$/); return m ? m[1] : null; }
 
-  /* ---------- props to GSAP / to plain CSS ---------- */
-  function gProps(p, og) {
-    var o = {};
-    if ("o" in p) o.opacity = p.o;
-    if ("x" in p) o.x = p.x;
-    if ("y" in p) o.y = p.y;
-    if ("s" in p) o.scale = p.s;
-    if ("sx" in p) o.scaleX = p.sx;
-    if ("r" in p) o.rotation = p.r;
-    if ("dash" in p) o.strokeDashoffset = p.dash;
-    if (og && ("s" in p || "sx" in p || "r" in p)) o.svgOrigin = og[0] + " " + og[1];
-    return o;
-  }
-  function put(part, p) {
-    var G = gs();
-    if (G) { G.set(part.el, gProps(p, part.og)); return; }
-    var s = part.el.style, tr = "";
-    if ("o" in p) s.opacity = p.o;
-    if ("dash" in p) s.strokeDashoffset = p.dash;
-    if (part.og) { s.transformBox = "view-box"; s.transformOrigin = part.og[0] + "px " + part.og[1] + "px"; }
-    if ("x" in p || "y" in p) tr += "translate(" + (p.x || 0) + "px," + (p.y || 0) + "px) ";
-    if ("r" in p) tr += "rotate(" + p.r + "deg) ";
-    if ("s" in p) tr += "scale(" + p.s + ") ";
-    if ("sx" in p) tr += "scaleX(" + p.sx + ") ";
-    s.transform = tr;
-  }
-
-  /* ---------- one strip per card ---------- */
-  function taskOf(card) { var m = (card.getAttribute("href") || "").match(/^#\/for\/([a-z]+)\/([a-z]+)$/); return m ? [m[1], m[2]] : null; }
-  function typeOf(n, sid) {
-    var c = null;
-    try { c = W.VF && W.VF.content ? W.VF.content(n, sid) : null; } catch (e) { c = null; }
-    var t = c && c.v && c.v.type;
-    return BUILD[t] ? t : (BUILD[BY_TASK[sid]] ? BY_TASK[sid] : null);
-  }
-  function anchor(card) { /* the title row: the head wrapper if there is one, else the price, else the title */
-    return card.querySelector(".cc__head") || card.querySelector(".cc__price") || card.querySelector("h3");
-  }
-  function seat(card, svg) {
-    var a = anchor(card);
-    if (!a || a.parentNode !== card) { if (svg.parentNode !== card) card.appendChild(svg); return; }
-    if (a.nextSibling !== svg) card.insertBefore(svg, a.nextSibling);
-  }
-  function strip(card) {
-    if (card.__fxg) { seat(card, card.__fxg.svg); return card.__fxg; }
-    var tk = taskOf(card); if (!tk) return null;
-    var type = typeOf(tk[0], tk[1]); if (!type) return null;
-    var id = "fxg" + (++uid);
-    var svg = el("svg", { "class": "fxg fxg--" + type, viewBox: "0 0 148 36", "aria-hidden": "true", focusable: "false", preserveAspectRatio: "xMidYMid meet" });
-    var g = el("g", {}, svg), P = [];
-    var hooks = BUILD[type](g, P, id) || {};
-    var S = { card: card, svg: svg, parts: P, hooks: hooks, type: type, key: tk.join("/"), tl: null, playing: false, done: false, vis: false };
-    card.__fxg = S;
-    card.classList.add("fxg-on");
-    seat(card, svg);
-    return S;
-  }
-  function before(S) { S.parts.forEach(function (p) { put(p, p.b); }); }
-  function after(S) { S.parts.forEach(function (p) { put(p, p.a); }); }
-
-  function timeline(S) {
-    var G = gs(), tl = G.timeline({ paused: true, onComplete: function () { finish(S); } });
-    var L = T_BEFORE + T_CHANGE + T_AFTER;
-    for (var c = 0; c < CYCLES; c++) {
-      var t = c * L;
-      if (c > 0) { /* quietly back to the loss, inside the "before" time */
-        S.parts.forEach(function (p) { var v = gProps(p.b, p.og); v.duration = 0.3; v.ease = "power1.out"; tl.to(p.el, v, t); });
-        if (S.hooks.reset) S.hooks.reset(tl, t);
-      }
-      if (S.hooks.idle) S.hooks.idle(tl, t + (c > 0 ? 0.3 : 0));
-      var tc = t + T_BEFORE;
-      S.parts.forEach(function (p) {
-        var v = gProps(p.a, p.og); v.duration = p.d || T_CHANGE; v.ease = p.e || "power2.inOut";
-        tl.to(p.el, v, tc + (p.at || 0));
-      });
-      if (S.hooks.change) S.hooks.change(tl, tc);
-      tl.to({}, { duration: 0.001 }, t + L - 0.001); /* hold the after frame for T_AFTER */
-    }
-    return tl;
-  }
-
-  /* ---------- the business page that is open ---------- */
-  var mem = {};      /* "niche/task" -> finished, for this page load: after 3 cycles the after frame stays */
-  var cur = null;    /* { sec, strips, io, top, timers, pulse, breath } */
-
-  function slots() { return phone() ? MAX_PHONE : MAX_DESK; }
-  function playingCount() { return cur ? cur.strips.filter(function (S) { return S.playing; }).length : 0; }
-  function finish(S) { S.playing = false; S.done = true; mem[S.key] = 1; S.tl = null; schedule(); }
-  function pauseS(S) { if (S.tl && S.playing) S.tl.pause(); S.playing = false; }
-  function canRun() { return cur && !D.hidden && !reduced() && !!gs(); }
-
-  function schedule() {
+  function stop() {
     if (!cur) return;
-    cur.strips.forEach(function (S) { if (S.playing && (!S.vis || !canRun())) pauseS(S); });
-    if (!canRun()) return;
-    /* the advised card first, then the order of the page (ranked by pain) */
-    var wait = cur.strips.filter(function (S) { return S.vis && !S.done && !S.playing; });
-    wait.sort(function (a, b) { return (b.card.classList.contains("cc--top") ? 1 : 0) - (a.card.classList.contains("cc--top") ? 1 : 0); });
-    var free = slots() - playingCount();
-    wait.slice(0, Math.max(0, free)).forEach(function (S) {
-      if (!S.tl) S.tl = timeline(S);
-      S.playing = true; S.tl.play();
-    });
-  }
-
-  function topCard(sec) { return sec.querySelector(".cc--top"); }
-
-  /* the advised card: ring pulse every 4s, at most 3 times, only while it is on screen */
-  function startPulse(card) {
-    var G = gs(), art = card.querySelector(".cc__art");
-    if (!G || !art || reduced()) return null;
-    var ring = art.querySelector(".fxg-pulse");
-    if (!ring) { ring = D.createElement("span"); ring.className = "fxg-pulse"; ring.setAttribute("aria-hidden", "true"); art.appendChild(ring); }
-    var key = "p:" + (card.getAttribute("href") || "");
-    if (mem[key]) return null;
-    var tl = G.timeline({ paused: true, repeat: PULSES - 1, repeatDelay: PULSE_EVERY - 1, delay: 0.6, onComplete: function () { mem[key] = 1; } });
-    tl.fromTo(ring, { scale: 1, opacity: 0.8 }, { scale: 1.35, opacity: 0, duration: 1, ease: "power1.out" });
-    return { tl: tl, ring: ring };
-  }
-  /* the filled arrow of the advised card breathes once after 5s without any touch, scroll or key */
-  function armBreath() {
-    if (!cur || reduced() || cur.breathed) return;
-    clearTimeout(cur.idle);
-    cur.idle = setTimeout(breathe, IDLE_MS);
-  }
-  function breathe() {
-    if (!cur || cur.breathed || D.hidden) return;
-    var card = topCard(cur.sec), go = card && card.querySelector(".cc__go"), G = gs();
-    if (!go || !G || !go.offsetWidth) return;
-    var r = go.getBoundingClientRect();
-    if (r.bottom < 0 || r.top > W.innerHeight) return; /* off screen: the next scroll or touch re-arms it */
-    cur.breathed = true;
-    var ring = go.querySelector(".fxg-br");
-    if (!ring) { ring = D.createElement("span"); ring.className = "fxg-br"; ring.setAttribute("aria-hidden", "true"); go.appendChild(ring); }
-    cur.breathTl = G.timeline({ onComplete: function () { G.set(go, { clearProps: "transform" }); } })
-      .to(go, { scale: 1.06, duration: 0.4, ease: "sine.out" }, 0)
-      .to(go, { scale: 1, duration: 0.5, ease: "sine.inOut" }, 0.4)
-      .fromTo(ring, { scale: 1, opacity: 0.5 }, { scale: 1.5, opacity: 0, duration: 0.9, ease: "power1.out" }, 0);
-  }
-  function onActivity() { if (cur && !cur.breathed) armBreath(); }
-
-  function stopAll() {
-    if (!cur) return;
-    var G = gs();
     if (cur.io) cur.io.disconnect();
-    clearTimeout(cur.idle);
-    cur.strips.forEach(function (S) {
-      if (S.tl) { S.tl.kill(); S.tl = null; }
-      S.playing = false;
-      after(S); /* leave a clean frame: the after frame */
-    });
-    if (cur.pulse) { cur.pulse.tl.kill(); if (G) G.set(cur.pulse.ring, { opacity: 0 }); }
-    if (cur.breathTl) { cur.breathTl.kill(); var go = cur.top && cur.top.querySelector(".cc__go"); if (go && G) G.set(go, { clearProps: "transform" }); var br = go && go.querySelector(".fxg-br"); if (br) br.style.opacity = 0; }
-    if (cur.top) cur.top.classList.remove("fxg-top-in");
+    clearTimeout(cur.t1); clearTimeout(cur.t2);
+    cur.card.classList.remove("fxg-top-in", "fxg-still");
+    if (!seen[cur.key]) cur.card.classList.remove("is-gain");
     cur = null;
   }
 
-  function ordered() {
-    var v = null;
-    try { v = JSON.parse((W.localStorage && W.localStorage.getItem("vf.ordered")) || "[]"); } catch (e) { v = null; }
-    return Object.prototype.toString.call(v) === "[object Array]" ? v : [];
+  function play() {
+    if (!cur || cur.started) return;
+    cur.started = true;
+    if (cur.io) cur.io.disconnect();
+    var c = cur, card = c.card;
+    var lab = card.querySelector(".cc__top");
+    if (lab && lab.hasAttribute("data-fxrt-i18n")) card.classList.add("fxg-still"); /* fx/retention slides its own label */
+    else { card.classList.remove("fxg-top-in"); void card.offsetWidth; card.classList.add("fxg-top-in"); }
+    /* the label first, then the loss holds, then the change */
+    c.t1 = setTimeout(function () {
+      c.t2 = setTimeout(function () {
+        if (cur !== c) return;
+        card.classList.add("is-gain");
+        seen[c.key] = 1;
+        /* the story is over: the next motion (the assistant's arc, fx/fab.js) may start after the crossfade */
+        setTimeout(function () { W.dispatchEvent(new Event("fx:biz")); }, 350);
+      }, HOLD_MS);
+    }, LABEL_MS);
   }
-  function niche() { var m = location.hash.match(/^#\/for\/([a-z]+)$/); return m ? m[1] : null; }
 
   function setup() {
-    stopAll();
+    stop();
     var n = niche(); if (!n) return;
     var sec = D.getElementById("n-" + n);
     if (!sec || sec.hidden) return;
-    var cards = [].slice.call(sec.querySelectorAll(".cc[href]"));
-    var strips = [];
-    cards.forEach(function (card) { var S = strip(card); if (S) strips.push(S); });
-    var top = topCard(sec);
-    cur = { sec: sec, strips: strips, io: null, top: top, idle: 0, breathed: false, pulse: null, breathTl: null };
-    var still = reduced() || !gs(), bought = ordered();
-    strips.forEach(function (S) {
-      /* a task the owner already ordered is fixed: it shows the after frame and does not replay the loss */
-      S.done = still || !!mem[S.key] || bought.indexOf(S.key) > -1;
-      if (S.done) after(S); else before(S);
-      if (S.hooks.reset && !S.done && gs()) { var tl0 = gs().timeline(); S.hooks.reset(tl0, 0); }
-    });
-    if (still) return;
-    /* the label slides in once per visit of the page */
-    var lab = top && top.querySelector(".cc__top");
-    if (top && lab && !lab.hasAttribute("data-fxrt-i18n")) { top.classList.remove("fxg-top-in"); void top.offsetWidth; top.classList.add("fxg-top-in"); }
-    if (top) cur.pulse = startPulse(top);
+    /* a card that lost the label (fx/retention moved it) shows its loss again */
+    [].forEach.call(sec.querySelectorAll(".cc.is-gain:not(.cc--top)"), function (c) { c.classList.remove("is-gain"); });
+    var card = sec.querySelector(".cc--top"), key = card && keyOf(card);
+    if (!card) return;
+    var g = card.querySelector(".cc__ll-g");
+    if (!key || !g || !g.textContent) { card.classList.add("fxg-still"); return; } /* nothing to change: the label just stays */
+    if (reduced()) { card.classList.remove("is-gain"); return; }
+    if (seen[key]) { card.classList.add("is-gain"); return; }
+    card.classList.remove("is-gain");
+    cur = { card: card, key: key, io: null, t1: 0, t2: 0, started: false };
     if ("IntersectionObserver" in W) {
       cur.io = new IntersectionObserver(function (es) {
-        if (!cur) return;
-        es.forEach(function (e) {
-          var S = e.target.__fxg;
-          if (S) S.vis = e.isIntersecting && e.intersectionRatio >= 0.6;
-          if (cur.pulse && e.target === cur.top) {
-            if (e.isIntersecting && e.intersectionRatio >= 0.6 && !D.hidden) cur.pulse.tl.resume(); else cur.pulse.tl.pause();
-          }
-        });
-        schedule();
+        es.forEach(function (e) { if (e.isIntersecting && e.intersectionRatio >= 0.6 && !D.hidden) play(); });
       }, { threshold: [0, 0.6, 1] });
-      strips.forEach(function (S) { cur.io.observe(S.card); });
-      if (top && !top.__fxg) cur.io.observe(top);
-    } else {
-      strips.forEach(function (S) { S.vis = true; });
-      if (cur.pulse) cur.pulse.tl.resume();
-      schedule();
-    }
-    armBreath();
+      cur.io.observe(card);
+    } else play();
   }
 
   var tm = 0;
   function later() { clearTimeout(tm); tm = setTimeout(setup, 60); } /* after the page has painted its cards */
 
-  W.addEventListener("vf:route", function () { stopAll(); later(); });
-  W.addEventListener("hashchange", function () { if (!niche()) stopAll(); });
-  W.addEventListener("vf:lang", function () {
-    /* the cards may have been repainted: put each strip back under its title row */
-    if (cur) cur.strips.forEach(function (S) { seat(S.card, S.svg); });
-  });
-  W.addEventListener("content", function () { if (cur) cur.strips.forEach(function (S) { seat(S.card, S.svg); }); });
+  W.addEventListener("vf:route", function () { stop(); later(); });
+  W.addEventListener("hashchange", function () { if (!niche()) stop(); });
+  /* a hidden tab: start again when it is visible, so nobody misses the change */
   D.addEventListener("visibilitychange", function () {
-    if (!cur) return;
-    if (D.hidden) { if (cur.pulse) cur.pulse.tl.pause(); clearTimeout(cur.idle); }
-    else { if (cur.pulse && cur.top) { var r = cur.top.getBoundingClientRect(); if (r.top < W.innerHeight && r.bottom > 0) cur.pulse.tl.resume(); } if (!cur.breathed) armBreath(); }
-    schedule();
+    if (D.hidden && cur && cur.started && !seen[cur.key]) { setup(); return; }
+    if (!D.hidden && cur && !cur.started) {
+      var r = cur.card.getBoundingClientRect();
+      if (r.height && r.top >= -r.height * 0.4 && r.bottom <= W.innerHeight + r.height * 0.4) play();
+    }
   });
-  ["pointerdown", "keydown", "wheel", "touchstart"].forEach(function (ev) { W.addEventListener(ev, onActivity, { passive: true }); });
-  W.addEventListener("scroll", onActivity, { passive: true });
-  W.addEventListener("resize", function () { schedule(); });
   if (mq) {
-    var onRm = function () { if (cur) setup(); };
+    var onRm = function () { if (niche()) setup(); };
     if (mq.addEventListener) mq.addEventListener("change", onRm); else if (mq.addListener) mq.addListener(onRm);
   }
-  /* exposed for motion.js (window.FX.glyphs) and for tests: play the strip of one card */
-  W.FXGlyphs = { setup: setup, kill: stopAll, card: function (card) { return strip(card); } };
+  W.FXGlyphs = { setup: setup, kill: stop };
   if (niche()) later();
 })();
 ;
@@ -1780,13 +1029,14 @@
     home.timers.push(setTimeout(reveal, ms));
   }
 
-  function setupHome() {
+  /* came back from a page (detail.from): app.js has already centred the card of that page, leave it there */
+  function setupHome(from) {
     killHome();
     if (!onHome()) return;
     var n = lastNiche();
     if (!n || !work()) return;
     home = { n: n, p: null, row: null, chip: null, timers: [], shown: false, waiting: false };
-    centre(n, 30);
+    if (!from) centre(n, 30);
     var p = pick(n);
     if (!p) return;
     home.p = p;
@@ -1909,8 +1159,8 @@
   /* =====================================================================
      wiring
      ===================================================================== */
-  function all() { setupHome(); setupBiz(); }
-  W.addEventListener("vf:route", function () { killHome(); killBiz(); all(); });
+  function all(from) { setupHome(from); setupBiz(); }
+  W.addEventListener("vf:route", function (e) { killHome(); killBiz(); all(e && e.detail ? e.detail.from : null); });
   W.addEventListener("vf:lang", function () {
     if (home && home.chip && home.p) { fillChip(home.chip, home.n, home.p); requestAnimationFrame(place); }
     if (biz && biz.label && biz.top1 !== biz.top0) biz.label.textContent = W8().label;
@@ -2700,7 +1950,20 @@
   if (mq && mq.addEventListener) mq.addEventListener("change", function () { if (reduced()) { endSpin(); endCue(); clearTimeout(idleT); } });
 
   /* start: the arc turns once the page is up, the idle clock starts now */
-  function go() { startSpin(); arm(); }
+  function go() {
+    arm();
+    /* on home the hero picture tells its story first; the arc turns after it (one thing moves at a time) */
+    var home = D.getElementById("home"), pic = D.querySelector(".hero .hchat");
+    var ev = home && !home.hidden && pic && !pic.classList.contains("is-done") ? "fx:hero" : null;
+    /* on a business page the advised card tells its story first (fx/glyphs.js), the arc turns after it */
+    var top = /^#\/for\/[a-z]+$/.test(location.hash) && D.querySelector(".svc.nv:not([hidden]) .cc--top");
+    if (!ev && top && !top.classList.contains("is-gain")) ev = "fx:biz";
+    if (ev && !reduced()) {
+      var t = 0, once = function () { if (t < 0) return; clearTimeout(t); t = -1; startSpin(); };
+      W.addEventListener(ev, once);
+      t = setTimeout(once, 9000);
+    } else startSpin();
+  }
   if (D.readyState === "complete") go(); else W.addEventListener("load", go);
 })();
 ;

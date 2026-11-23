@@ -92,7 +92,7 @@
     </script>
     <link rel="preload" href="./fonts/piazzolla-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="./fonts/golos-text-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="./style.css?v=72c166fe" />
+    <link rel="stylesheet" href="./style.css?v=abdbf1b6" />
   </head>
   <body>
     <a class="skip" href="#main" data-i18n="skip">Skip to content</a>
@@ -509,7 +509,11 @@
       <section class="hero" id="top">
         <div class="hero__bg" aria-hidden="true"></div>
         <div class="wrap">
-          <h1 class="rv" data-i18n-html="hero.h1"><span class="h1__pain">While you work, customers slip away.</span> <mark>That can be fixed.</mark></h1>
+          <h1 class="rv" data-i18n-html="hero.h1"><span class="h1__pain">You're with a customer, new ones wait for a reply.</span> <mark>I'll sort that out.</mark></h1>
+          <div class="hchat" aria-hidden="true">
+            <div class="hchat__in"><span class="hchat__who"><b data-i18n="hero.who">Client</b> <time data-i18n="hero.t1">9:40 pm</time></span><p class="hchat__b" data-i18n="hero.msg">Can I come on Saturday at 11?</p></div>
+            <div class="hchat__slot"><p class="hchat__wait" data-i18n="hero.wait">No reply until midnight</p><div class="hchat__out"><p class="hchat__b" data-i18n="hero.reply">Yes, Saturday at 11 is free. Shall I book you?</p><time data-i18n="hero.t2">9:41 pm</time></div><i class="hchat__sweep"></i></div>
+          </div>
           <p class="hero__ask rv" style="--i: 1"><b data-i18n="hero.ask">What is your business?</b><span class="hero__chip" data-i18n="hero.chip">Prices from €1</span></p>
         </div>
         <div id="services" class="rv" style="--i: 2">
@@ -519,61 +523,60 @@
               <a class="cc cc--n" href="#/for/salon">
                 <span class="cc__art"><svg class="ico ph"><use href="#l-scissors" /></svg></span>
                 <h3 data-i18n="n.salon">Beauty and massage</h3>
-                <span class="cc__mini" aria-hidden="true"><svg class="ico ph"><use href="#l-bot" /></svg><svg class="ico ph"><use href="#l-bell-ring" /></svg><svg class="ico ph"><use href="#l-star" /></svg><svg class="ico ph"><use href="#l-calendar-days" /></svg><svg class="ico ph"><use href="#l-globe" /></svg><svg class="ico ph"><use href="#l-image" /></svg></span>
+                <span class="cc__loss" data-i18n="cc.loss.salon">No reply until midnight</span>
                 <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
               </a>
               <a class="cc cc--n" href="#/for/cafe">
                 <span class="cc__art"><svg class="ico ph"><use href="#l-coffee" /></svg></span>
                 <h3 data-i18n="n.cafe">Cafes and restaurants</h3>
-                <span class="cc__mini" aria-hidden="true"><svg class="ico ph"><use href="#l-bot" /></svg><svg class="ico ph"><use href="#l-bell-ring" /></svg><svg class="ico ph"><use href="#l-star" /></svg><svg class="ico ph"><use href="#l-chart-column" /></svg><svg class="ico ph"><use href="#l-calendar-days" /></svg><svg class="ico ph"><use href="#l-hiring" /></svg><svg class="ico ph"><use href="#l-globe" /></svg><svg class="ico ph"><use href="#l-image" /></svg></span>
+                <span class="cc__loss" data-i18n="cc.loss.cafe">No answer until morning</span>
                 <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
               </a>
               <a class="cc cc--n" href="#/for/shop">
                 <span class="cc__art"><svg class="ico ph"><use href="#l-shopping-bag" /></svg></span>
                 <h3 data-i18n="n.shop">Shops</h3>
-                <span class="cc__mini" aria-hidden="true"><svg class="ico ph"><use href="#l-star" /></svg><svg class="ico ph"><use href="#l-globe" /></svg><svg class="ico ph"><use href="#l-chart-column" /></svg><svg class="ico ph"><use href="#l-calendar-days" /></svg><svg class="ico ph"><use href="#l-hiring" /></svg><svg class="ico ph"><use href="#l-image" /></svg><svg class="ico ph"><use href="#l-bot" /></svg></span>
+                <span class="cc__loss" data-i18n="cc.loss.shop">No reply for 8 months</span>
                 <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
               </a>
               <a class="cc cc--n" href="#/for/trades">
                 <span class="cc__art"><svg class="ico ph"><use href="#l-wrench" /></svg></span>
                 <h3 data-i18n="n.trades">Repair and trades</h3>
-                <span class="cc__mini" aria-hidden="true"><svg class="ico ph"><use href="#l-bot" /></svg><svg class="ico ph"><use href="#l-file-text" /></svg><svg class="ico ph"><use href="#l-contact" /></svg><svg class="ico ph"><use href="#l-star" /></svg><svg class="ico ph"><use href="#l-globe" /></svg><svg class="ico ph"><use href="#l-bell-ring" /></svg><svg class="ico ph"><use href="#l-hiring" /></svg><svg class="ico ph"><use href="#l-chart-column" /></svg></span>
+                <span class="cc__loss" data-i18n="cc.loss.trades">40 minutes with no reply</span>
                 <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
               </a>
               <a class="cc cc--n" href="#/for/fitness">
                 <span class="cc__art"><svg class="ico ph"><use href="#l-dumbbell" /></svg></span>
                 <h3 data-i18n="n.fitness">Sport and fitness</h3>
-                <span class="cc__mini" aria-hidden="true"><svg class="ico ph"><use href="#l-bot" /></svg><svg class="ico ph"><use href="#l-bell-ring" /></svg><svg class="ico ph"><use href="#l-contact" /></svg><svg class="ico ph"><use href="#l-calendar-days" /></svg><svg class="ico ph"><use href="#l-star" /></svg><svg class="ico ph"><use href="#l-image" /></svg><svg class="ico ph"><use href="#l-globe" /></svg><svg class="ico ph"><use href="#l-hiring" /></svg></span>
+                <span class="cc__loss" data-i18n="cc.loss.fitness">No reply until 8 am</span>
                 <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
               </a>
               <a class="cc cc--n" href="#/for/clinic">
                 <span class="cc__art"><svg class="ico ph"><use href="#l-stethoscope" /></svg></span>
                 <h3 data-i18n="n.clinic">Clinics and doctors</h3>
-                <span class="cc__mini" aria-hidden="true"><svg class="ico ph"><use href="#l-bell-ring" /></svg><svg class="ico ph"><use href="#l-bot" /></svg><svg class="ico ph"><use href="#l-star" /></svg><svg class="ico ph"><use href="#l-hiring" /></svg><svg class="ico ph"><use href="#l-contact" /></svg><svg class="ico ph"><use href="#l-globe" /></svg></span>
+                <span class="cc__loss" data-i18n="cc.loss.clinic">Forgot, no reminder was sent</span>
                 <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
               </a>
               <a class="cc cc--n" href="#/for/cleaning">
                 <span class="cc__art"><svg class="ico ph"><use href="#l-spray-can" /></svg></span>
                 <h3 data-i18n="n.cleaning">Cleaning</h3>
-                <span class="cc__mini" aria-hidden="true"><svg class="ico ph"><use href="#l-hiring" /></svg><svg class="ico ph"><use href="#l-bot" /></svg><svg class="ico ph"><use href="#l-contact" /></svg><svg class="ico ph"><use href="#l-bell-ring" /></svg><svg class="ico ph"><use href="#l-star" /></svg><svg class="ico ph"><use href="#l-file-text" /></svg><svg class="ico ph"><use href="#l-chart-column" /></svg><svg class="ico ph"><use href="#l-globe" /></svg><svg class="ico ph"><use href="#l-message-square-more" /></svg></span>
+                <span class="cc__loss" data-i18n="cc.loss.cleaning">Two flats at 9:00, nobody to send</span>
                 <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
               </a>
               <a class="cc cc--n" href="#/for/office">
                 <span class="cc__art"><svg class="ico ph"><use href="#l-building-2" /></svg></span>
                 <h3 data-i18n="n.office">Offices and business services</h3>
-                <span class="cc__mini" aria-hidden="true"><svg class="ico ph"><use href="#l-contact" /></svg><svg class="ico ph"><use href="#l-file-text" /></svg><svg class="ico ph"><use href="#l-bot" /></svg><svg class="ico ph"><use href="#l-bell-ring" /></svg><svg class="ico ph"><use href="#l-chart-column" /></svg><svg class="ico ph"><use href="#l-hiring" /></svg><svg class="ico ph"><use href="#l-message-square-more" /></svg></span>
+                <span class="cc__loss" data-i18n="cc.loss.office">Website: request with no reply for two days</span>
                 <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
               </a>
               <a class="cc cc--n" href="#/for/other">
                 <span class="cc__art"><svg class="ico ph"><use href="#l-sparkles" /></svg></span>
                 <h3 data-i18n="n.other">Something else</h3>
-                <span class="cc__mini" aria-hidden="true"><svg class="ico ph"><use href="#l-bot" /></svg><svg class="ico ph"><use href="#l-star" /></svg><svg class="ico ph"><use href="#l-contact" /></svg><svg class="ico ph"><use href="#l-bell-ring" /></svg><svg class="ico ph"><use href="#l-calendar-days" /></svg></span>
+                <span class="cc__loss" data-i18n="cc.loss.other">No reply until 8 am</span>
                 <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
               </a>
               <a class="cc cc--n cc--firm" href="#/firm">
                 <span class="cc__art"><svg class="ico ph" aria-hidden="true"><use href="#l-shield-check" /></svg></span>
                 <h3 data-i18n="firm.nav">For your company</h3>
-                <span class="cc__mini" aria-hidden="true"><svg class="ico ph"><use href="#l-message-square-more" /></svg><svg class="ico ph"><use href="#l-contact" /></svg><svg class="ico ph"><use href="#l-chart-column" /></svg><svg class="ico ph"><use href="#l-file-text" /></svg><svg class="ico ph"><use href="#l-search" /></svg></span>
                 <span class="cc__go" aria-hidden="true"><svg class="ico"><use href="#i-arrow" /></svg></span>
               </a>
             </div>
@@ -1958,13 +1961,13 @@
         <button type="submit" class="bot__send" aria-label="Send" data-i18n-aria="bot.send"><svg class="ico ph"><use href="#l-send-plane" /></svg></button>
       </form>
     </div>
-    <script src="./i18n.js?v=42898661"></script>
+    <script src="./i18n.js?v=fac2dd04"></script>
     <script>window.FUNNEL = {"niches": {"salon": [["bot", "nl.salon.bot"], ["mail", "nl.salon.mail"], ["reviews", "nl.salon.reviews"], ["social", "nl.salon.social"], ["site", "nl.salon.site"], ["content", "nl.salon.content"]], "cafe": [["bot", "nl.cafe.bot"], ["mail", "nl.cafe.mail"], ["reviews", "nl.cafe.reviews"], ["reports", "nl.cafe.reports"], ["social", "nl.cafe.social"], ["hiring", "nl.cafe.hiring"], ["site", "nl.cafe.site"], ["content", "nl.cafe.content"]], "shop": [["reviews", "nl.shop.reviews"], ["site", "nl.shop.site"], ["reports", "nl.shop.reports"], ["social", "nl.shop.social"], ["hiring", "nl.shop.hiring"], ["content", "nl.shop.content"], ["bot", "nl.shop.bot"]], "trades": [["bot", "nl.trades.bot"], ["docs", "nl.trades.docs"], ["leads", "nl.trades.leads"], ["reviews", "nl.trades.reviews"], ["site", "nl.trades.site"], ["mail", "nl.trades.mail"], ["hiring", "nl.trades.hiring"], ["reports", "nl.trades.reports"]], "fitness": [["bot", "nl.fitness.bot"], ["mail", "nl.fitness.mail"], ["leads", "nl.fitness.leads"], ["social", "nl.fitness.social"], ["reviews", "nl.fitness.reviews"], ["content", "nl.fitness.content"], ["site", "nl.fitness.site"], ["hiring", "nl.fitness.hiring"]], "clinic": [["mail", "nl.clinic.mail"], ["bot", "nl.clinic.bot"], ["reviews", "nl.clinic.reviews"], ["hiring", "nl.clinic.hiring"], ["leads", "nl.clinic.leads"], ["site", "nl.clinic.site"]], "cleaning": [["hiring", "nl.cleaning.hiring"], ["bot", "nl.cleaning.bot"], ["leads", "nl.cleaning.leads"], ["mail", "nl.cleaning.mail"], ["reviews", "nl.cleaning.reviews"], ["docs", "nl.cleaning.docs"], ["reports", "nl.cleaning.reports"], ["site", "nl.cleaning.site"], ["assistant", "nl.cleaning.assistant"]], "office": [["leads", "nl.office.leads"], ["docs", "nl.office.docs"], ["bot", "nl.office.bot"], ["mail", "nl.office.mail"], ["reports", "nl.office.reports"], ["hiring", "nl.office.hiring"], ["assistant", "nl.office.assistant"]], "other": [["bot", "d.bot"], ["reviews", "d.reviews"], ["leads", "d.leads"], ["mail", "d.mail"], ["social", "d.social"], ["reports", "d.reports"], ["site", "d.site"], ["hiring", "d.hiring"], ["docs", "d.docs"], ["content", "d.content"]]}, "icons": {"salon": "scissors", "cafe": "coffee", "shop": "shopping-bag", "trades": "wrench", "fitness": "dumbbell", "clinic": "stethoscope", "cleaning": "spray-can", "office": "building-2", "other": "sparkles"}, "sv": {"social": {"icon": "calendar-days", "amt": "€10", "per": true}, "bot": {"icon": "bot", "amt": "€79", "per": false}, "content": {"icon": "image", "amt": "€1", "per": false}, "reports": {"icon": "chart-column", "amt": "€19", "per": false}, "docs": {"icon": "file-text", "amt": "€19", "per": false}, "reviews": {"icon": "star", "amt": "€15", "per": false}, "data": {"icon": "search", "amt": "€29", "per": false}, "site": {"icon": "globe", "amt": "€29", "per": false}, "leads": {"icon": "contact", "amt": "€29", "per": false}, "mail": {"icon": "bell-ring", "amt": "€19", "per": false}, "translate": {"icon": "languages", "amt": "€5", "per": false}, "assistant": {"icon": "message-square-more", "amt": "€49", "per": false}, "hiring": {"icon": "hiring", "amt": "€15", "per": false}}};</script>
     <script src="./content.js?v=640a8a3b" async onload="window.dispatchEvent(new Event('content'))"></script>
-    <script src="./app.js?v=cdbbb224"></script>
+    <script src="./app.js?v=f6e39299"></script>
     <script src="./vendor/gsap.min.js" defer></script>
     <script src="./vendor/ScrollTrigger.min.js" defer></script>
     <script src="./motion.js?v=5b0e621f" defer></script>
-    <script src="./fx.js?v=5689717c" defer></script>
+    <script src="./fx.js?v=b44f8cdf" defer></script>
   </body>
 </html>

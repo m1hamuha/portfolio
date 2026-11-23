@@ -283,6 +283,19 @@
   if (mq && mq.addEventListener) mq.addEventListener("change", function () { if (reduced()) { endSpin(); endCue(); clearTimeout(idleT); } });
 
   /* start: the arc turns once the page is up, the idle clock starts now */
-  function go() { startSpin(); arm(); }
+  function go() {
+    arm();
+    /* on home the hero picture tells its story first; the arc turns after it (one thing moves at a time) */
+    var home = D.getElementById("home"), pic = D.querySelector(".hero .hchat");
+    var ev = home && !home.hidden && pic && !pic.classList.contains("is-done") ? "fx:hero" : null;
+    /* on a business page the advised card tells its story first (fx/glyphs.js), the arc turns after it */
+    var top = /^#\/for\/[a-z]+$/.test(location.hash) && D.querySelector(".svc.nv:not([hidden]) .cc--top");
+    if (!ev && top && !top.classList.contains("is-gain")) ev = "fx:biz";
+    if (ev && !reduced()) {
+      var t = 0, once = function () { if (t < 0) return; clearTimeout(t); t = -1; startSpin(); };
+      W.addEventListener(ev, once);
+      t = setTimeout(once, 9000);
+    } else startSpin();
+  }
   if (D.readyState === "complete") go(); else W.addEventListener("load", go);
 })();
