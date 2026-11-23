@@ -235,13 +235,14 @@
     home.timers.push(setTimeout(reveal, ms));
   }
 
-  function setupHome() {
+  /* came back from a page (detail.from): app.js has already centred the card of that page, leave it there */
+  function setupHome(from) {
     killHome();
     if (!onHome()) return;
     var n = lastNiche();
     if (!n || !work()) return;
     home = { n: n, p: null, row: null, chip: null, timers: [], shown: false, waiting: false };
-    centre(n, 30);
+    if (!from) centre(n, 30);
     var p = pick(n);
     if (!p) return;
     home.p = p;
@@ -364,8 +365,8 @@
   /* =====================================================================
      wiring
      ===================================================================== */
-  function all() { setupHome(); setupBiz(); }
-  W.addEventListener("vf:route", function () { killHome(); killBiz(); all(); });
+  function all(from) { setupHome(from); setupBiz(); }
+  W.addEventListener("vf:route", function (e) { killHome(); killBiz(); all(e && e.detail ? e.detail.from : null); });
   W.addEventListener("vf:lang", function () {
     if (home && home.chip && home.p) { fillChip(home.chip, home.n, home.p); requestAnimationFrame(place); }
     if (biz && biz.label && biz.top1 !== biz.top0) biz.label.textContent = W8().label;

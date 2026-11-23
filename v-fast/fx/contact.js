@@ -1,4 +1,9 @@
-/* fx/contact: the contact step (spec 3.5).
+/* fx/contact: the contact step.
+   NOW: everything is shown at once. The bubble with the ready message and its check, the chips, no
+   word-by-word fade, no check drawing, no stagger, no nudge. The "Next for your business" orbit is
+   off (it showed a check on a task that was only chosen, not sent, and its ring turned for 40s).
+   The "While you wait" chip appears at once after a tap on a messenger button.
+   (Older notes below describe the parts that were cut.)
    1) The ready message as a preview bubble (#1d1d1d, radii 18 18 4 18): niche icon and task icon on the
       left, the exact text the messenger link will carry. Words fade in one by one (40ms stagger, about
       0.5s), a lime check draws in the corner, the icon on the filled messenger button nudges 4px right
@@ -177,43 +182,7 @@
   }
 
   /* ---------- 2) orbit ---------- */
-  function buildOrbit() {
-    var n = cur.niche, o = cur.order;
-    if (!hasOrder() || !n || !o) return null;
-    var center = /^plan/.test(o) ? "social" : o;
-    if (!niched(n, center)) return null;
-    var nx = nextTask(n, center); if (!nx) return null;
-    var list = ((F().niches || {})[n] || []).map(function (r) { return r[0]; }).filter(function (s) { return s !== center; });
-    var x = w(), lbl = x.next.replace("{n}", x.n[n] || x.any), pr = price(nx), nm = taskName(nx);
-    var a = el("a", "fxct-orb"); a.href = "#/for/" + n + "/" + nx;
-    a.setAttribute("aria-label", lbl + ": " + nm + ", " + pr);
-    var s = sv("svg", { viewBox: "0 0 120 120", "aria-hidden": "true", focusable: "false" });
-    s.appendChild(sv("circle", { cx: 60, cy: 60, r: 44, fill: "none", stroke: "#2a2a2a", "stroke-width": "1" }));
-    var g = sv("g", { "class": "fxct-ring" }), spins = [], k = list.indexOf(nx), N = list.length;
-    list.forEach(function (sid, i) {
-      var ang = ((i - k) / N) * Math.PI * 2, px = 60 + 44 * Math.cos(ang), py = 60 + 44 * Math.sin(ang);
-      var slot = sv("g", { transform: "translate(" + px.toFixed(2) + " " + py.toFixed(2) + ")" }), sp = sv("g", {});
-      var isN = sid === nx, id = symId(taskIcon(sid)) || symId("sparkles");
-      sp.appendChild(sv("circle", { r: isN ? 14 : 12, fill: "#141414", stroke: isN ? "#d8ff00" : "none", "stroke-width": "1.5" }));
-      var u = sv("use", { href: "#" + id, x: -10, y: -10, width: 20, height: 20, "class": isN ? "fxct-gn" : "fxct-g", fill: "currentColor" });
-      sp.appendChild(u); slot.appendChild(sp); g.appendChild(slot); spins.push(sp);
-    });
-    s.appendChild(g);
-    var c = sv("g", { "class": "fxct-c" });
-    c.appendChild(sv("circle", { cx: 60, cy: 60, r: 21, fill: "#141414", stroke: "#d8ff00", "stroke-width": "1.5" }));
-    c.appendChild(sv("use", { href: "#" + (symId(taskIcon(center)) || symId("sparkles")), x: 49, y: 49, width: 22, height: 22, fill: "#d8ff00" }));
-    c.appendChild(sv("circle", { cx: 75, cy: 45, r: 7.5, fill: "#141414", stroke: "#d8ff00", "stroke-width": "1.5" }));
-    c.appendChild(sv("path", { d: "M71.8 45.2l2.2 2.2 4.2-4.6", fill: "none", stroke: "#d8ff00", "stroke-width": "1.8", "stroke-linecap": "round", "stroke-linejoin": "round", pathLength: "10", "class": "fxct-cok" }));
-    s.appendChild(c);
-    a.appendChild(s);
-    var tx = el("span", "fxct-orb__x");
-    tx.appendChild(el("span", "fxct-orb__l", lbl));
-    tx.appendChild(el("span", "fxct-orb__t", nm));
-    tx.appendChild(el("span", "fxct-orb__p", pr));
-    a.appendChild(tx);
-    a._ring = g; a._spins = spins;
-    return a;
-  }
+  function buildOrbit() { return null; } /* cut: see the header */
   function setRing(a) {
     ringA = a;
     if (!orb || !orb._ring) return;
@@ -274,9 +243,7 @@
     msgs.parentNode.insertBefore(wait, msgs.nextSibling);
     dodgeSoon();
     var g = gs();
-    if (!animate || reduced()) return;
-    if (g) g.fromTo(wait, { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: "power2.out", clearProps: "transform,opacity" });
-    else { wait.classList.add("fxct-cssfade"); void wait.offsetWidth; wait.classList.add("fxct-in"); }
+    /* shown at once, no slide */
   }
   /* passive: never prevents or delays the link */
   ct.addEventListener("click", function (e) {
@@ -298,54 +265,11 @@
     var ico = mainLink() && mainLink().querySelector(".ico"); if (ico) ico.style.transform = "";
     if (orb) { orb.style.opacity = ""; orb.style.transform = ""; orb.classList.remove("fxct-cssfade", "fxct-in"); var ck = orb.querySelector(".fxct-cok"); if (ck) { ck.style.strokeDasharray = ""; ck.style.strokeDashoffset = ""; } }
   }
-  function prime() {
-    /* hidden starting state, set only when an animation will follow */
-    if (reduced()) return;
-    if (bub) Array.prototype.forEach.call(bub.querySelectorAll(".fxct-w"), function (x) { x.style.opacity = "0"; });
-    var p = bub && bub.querySelector(".fxct-ok path"); if (p) { p.style.strokeDasharray = "18"; p.style.strokeDashoffset = "18"; }
-    chips().forEach(function (c) { c.style.opacity = "0"; c.style.transform = "translateY(6px)"; });
-    if (orb) { orb.style.opacity = "0"; orb.style.transform = "translateY(8px)"; var ck = orb.querySelector(".fxct-cok"); if (ck) { ck.style.strokeDasharray = "10"; ck.style.strokeDashoffset = "10"; } }
-  }
+  function prime() {} /* nothing starts hidden any more */
   function play() {
     if (played || !active) return;
     played = true; clearTimeout(safeT);
-    if (reduced()) { finalFrame(); return; }
-    var g = gs(), ws = bub ? Array.prototype.slice.call(bub.querySelectorAll(".fxct-w")) : [];
-    var stg = ws.length > 1 ? Math.min(0.04, 0.4 / (ws.length - 1)) : 0, tW = ws.length ? stg * (ws.length - 1) + 0.12 : 0;
-    var p = bub && bub.querySelector(".fxct-ok path"), ico = mainLink() && mainLink().querySelector(".ico"), cs = chips();
-    var ck = orb && orb.querySelector(".fxct-cok");
-    if (g) {
-      tl = g.timeline({ onComplete: function () { tl = null; finalFrame(); } });
-      if (ws.length) tl.fromTo(ws, { opacity: 0, y: 3 }, { opacity: 1, y: 0, duration: 0.12, stagger: stg, ease: "power1.out" }, 0);
-      if (p) tl.fromTo(p, { strokeDashoffset: 18 }, { strokeDashoffset: 0, duration: 0.2, ease: "power1.out" }, tW);
-      var t1 = tW + 0.2;
-      if (ico) tl.to(ico, { x: 4, duration: 0.2, ease: "power1.out", yoyo: true, repeat: 1 }, t1);
-      if (cs.length) tl.fromTo(cs, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.3, stagger: 0.08, ease: "power2.out" }, t1);
-      var t2 = t1 + 0.3 + 0.08 * Math.max(0, cs.length - 1);
-      if (orb) {
-        tl.fromTo(orb, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, t2);
-        if (ck) tl.fromTo(ck, { strokeDashoffset: 10 }, { strokeDashoffset: 0, duration: 0.25, ease: "power1.out" }, t2 + 0.25);
-        tl.call(function () { ringRun = true; ringSync(); }, null, t2 + 0.35);
-      }
-      if (!inView || D.hidden) tl.pause();
-      return;
-    }
-    /* CSS fallback */
-    if (bub) {
-      bub.classList.add("fxct-css");
-      ws.forEach(function (x, i) { x.style.opacity = ""; x.style.setProperty("--d", (i * stg).toFixed(3) + "s"); });
-      if (p) { p.style.setProperty("--d", tW.toFixed(3) + "s"); }
-      void bub.offsetWidth; bub.classList.add("fxct-go");
-      if (p) p.style.strokeDashoffset = "0";
-    }
-    var t1c = tW + 0.2;
-    cs.forEach(function (c, i) { c.style.opacity = ""; c.style.transform = ""; c.classList.add("fxct-cssfade"); c.style.setProperty("--d", (t1c + i * 0.08).toFixed(3) + "s"); });
-    if (orb) { orb.style.opacity = ""; orb.style.transform = ""; orb.classList.add("fxct-cssfade"); orb.style.setProperty("--d", (t1c + 0.3 + 0.08 * cs.length).toFixed(3) + "s"); }
-    void ct.offsetWidth;
-    cs.forEach(function (c) { c.classList.add("fxct-in"); });
-    if (orb) orb.classList.add("fxct-in");
-    if (ck) { ck.style.transition = "stroke-dashoffset 0.25s ease " + (t1c + 0.6 + 0.08 * cs.length).toFixed(2) + "s"; ck.style.strokeDashoffset = "0"; }
-    startT = setTimeout(function () { if (!active) return; if (ck) ck.style.transition = ""; finalFrame(); if (orb) { ringRun = true; ringSync(); } }, (t1c + 1.2 + 0.08 * cs.length) * 1000);
+    finalFrame(); /* the final frame at once */
   }
 
   /* ---------- build and tear down ---------- */
@@ -434,7 +358,7 @@
   W.addEventListener("vf:route", function (e) {
     var d = e.detail || {};
     if (d.hash === "#contact") {
-      if (d.order) { cur.order = d.order; cur.niche = d.niche || null; } else if (!hasOrder()) cur.order = null;
+      if (d.order) { cur.order = d.order; cur.niche = d.orderNiche || null; } else if (!hasOrder()) cur.order = null;
       enter(null);
     } else leave();
   });

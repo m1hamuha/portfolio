@@ -623,9 +623,6 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
 .car__track a, .car__track img { -webkit-user-drag: none; }
 
 /* niche card: the services inside, as icons */
-.cc__mini { display: flex; justify-content: center; gap: 0.7rem; color: rgba(255, 255, 255, 0.45); }
-.cc__mini .ico { width: 1.35rem; height: 1.35rem; }
-.cc.mid .cc__mini { color: var(--accent); }
 .cc--n .cc__go { margin-top: 0; }
 .cc--n { gap: 0.8rem; }
 
@@ -688,10 +685,6 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
 .card__ico--big::before { content: ""; position: absolute; inset: -8px; border-radius: 50%; border: 1.5px dashed rgba(216, 255, 0, 0.5); animation: spin 14s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes pop { 0% { transform: scale(0.6) rotate(-12deg); } 100% { transform: none; } }
-.cc__mini .ico { transition: transform 0.4s var(--spring); }
-.cc.mid .cc__mini .ico { animation: hop 1.6s ease-in-out infinite; }
-.cc.mid .cc__mini .ico:nth-child(2) { animation-delay: 0.12s; } .cc.mid .cc__mini .ico:nth-child(3) { animation-delay: 0.24s; }
-.cc.mid .cc__mini .ico:nth-child(4) { animation-delay: 0.36s; } .cc.mid .cc__mini .ico:nth-child(5) { animation-delay: 0.48s; }
 @keyframes hop { 0%, 60%, 100% { transform: none; } 30% { transform: translateY(-5px); } }
 /* headline: a band of light crosses the lime word once */
 h1 mark { background: linear-gradient(100deg, transparent 40%, #fff 50%, transparent 60%) 120% 0 / 250% 100% no-repeat, var(--accent); -webkit-background-clip: text; background-clip: text; color: transparent; animation: sweep 2.2s var(--ease) 0.6s both; }
@@ -963,21 +956,14 @@ h1, h2, h3, .svc__h, .l3__line, .cc h3, .card h3 { letter-spacing: -0.012em; wor
 .order > span { grid-column: 1; font-size: 0.85rem; color: var(--muted); }
 .order b { grid-column: 1; line-height: 1.3; }
 .order button { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
-/* the row of small task icons never leaves its card: it wraps onto a second row */
-.cc__mini { flex-wrap: wrap; max-width: 100%; row-gap: 0.45rem; }
 
 /* ---------- every screen in every state: nothing spills, is cut, overlaps or jumps ---------- */
 /* home cards: round stays round, title / icons / arrow sit at the same height on every card */
 .at-home .cc--n .cc__art { flex: 0 1 auto; width: auto; height: 5.4rem; max-height: 5.4rem; min-height: 3.6rem; aspect-ratio: 1; align-self: center; }
 .at-home .cc--n .cc__art .ico { width: 44%; height: 44%; }
 .at-home .cc--n h3 { min-height: 2.2em; display: grid; align-content: center; flex: none; }
-.at-home .cc--n .cc__mini { min-height: calc(2 * 1.35rem + 0.45rem); align-content: center; flex: none; }
 .cc__go { flex: none; }
-.cc__mini { margin-inline: auto; }
-.cc__mini:has(> :nth-child(9):last-child) { max-width: 9.7rem; }
 @media (max-width: 760px) {
-  .cc__mini:has(> :nth-child(6):last-child) { max-width: 5.6rem; }
-  .cc__mini:has(> :nth-child(7):last-child), .cc__mini:has(> :nth-child(8):last-child) { max-width: 7.6rem; }
   /* side cards are plain silhouettes, not sliced letters */
   #work .cc:not(.mid) > * { opacity: 0; transition: opacity 0.25s; }
   #work .cc.mid > * { opacity: 1; transition: opacity 0.25s; }
@@ -990,7 +976,6 @@ h1, h2, h3, .svc__h, .l3__line, .cc h3, .card h3 { letter-spacing: -0.012em; wor
 @media (min-width: 1100px) {
   .cc__art { flex: none; }
   .at-home .cc--n .cc__art { width: 7.6rem; height: 7.6rem; max-height: none; margin: 0 auto; }
-  .at-home .cc--n .cc__mini { flex-wrap: nowrap; gap: 0.4rem; max-width: none; min-height: 0; }
   .at-niche .nv .cc--s { gap: 0.7rem; }
 }
 /* phone with the address bar showing: the first screen still ends with the dots */
@@ -1349,10 +1334,6 @@ h1, h2, h3, .svc__h, .l3__line, .cc h3, .card h3 { letter-spacing: -0.012em; wor
 }
 @media (prefers-reduced-motion: reduce) { .firm-ex__view > .firm-log { transition: none; transform: none !important; } .firm-ex:not(.is-used) .firm-ex__chev, .firm-ex:not(.is-used) .firm-log__n .ico { animation: none; } }
 
-/* before/after phone: a ring keeps pulsing around the handle until the visitor moves it */
-.hand.is-idle .ph__knob::after { content: ""; position: absolute; inset: -0.35rem; border-radius: inherit; border: 2px solid var(--accent); opacity: 0; pointer-events: none; animation: phRing 1.8s ease-out infinite; }
-@keyframes phRing { 0% { transform: scale(0.85); opacity: 0.9; } 100% { transform: scale(1.7); opacity: 0; } }
-@media (prefers-reduced-motion: reduce) { .hand.is-idle .ph__knob::after { animation: none; opacity: 0.7; transform: none; } }
 
 /* ===== the sale, step by step: pain in frame =====
    One filled lime thing per screen, and it is the next step. The menu button and the assistant are
@@ -1501,3 +1482,241 @@ h1, h2, h3, .svc__h, .l3__line, .cc h3, .card h3 { letter-spacing: -0.012em; wor
   .l3:has(#l3demo:empty) .l3__pay { justify-items: start; text-align: left; }
   .l3:has(#l3demo:empty) #l3buy { padding-left: 0; padding-right: 0; }
 }
+
+/* ===== slice 1: home headline, pain-then-result picture, static business cards ===== */
+/* the hero never scrolls sideways (focus on a card could scroll an overflow:hidden box) */
+.hero { overflow: clip; }
+#work { overflow: clip; overflow-clip-margin: 0; }
+/* headline + picture */
+.fxh { display: flex; align-items: center; justify-content: center; gap: clamp(1rem, 2vw, 2rem); margin: 0 auto; max-width: 100%; }
+.fxh__t { min-width: 0; flex: 0 1 auto; text-align: left; }
+.hero .fxh__t h1 { margin: 0; max-width: none; }
+.fxh__t .hero__ask { margin-bottom: 0; }
+.fxh__t .hero__chip { margin-left: 0.5rem; font-size: max(13px, 0.72em); }
+.hchat { flex: none; width: 17rem; display: flex; flex-direction: column; gap: 0.45rem; font-family: var(--f-body); font-size: max(15px, 0.95rem); line-height: 1.3; text-align: left; text-shadow: none; }
+.hchat p { margin: 0; }
+.hchat time { font-size: max(13px, 0.8rem); font-variant-numeric: tabular-nums; }
+.hchat__in { align-self: flex-start; max-width: 92%; display: flex; flex-direction: column; gap: 0.2rem; }
+.hchat__who { display: flex; gap: 0.5rem; align-items: baseline; font-size: max(13px, 0.8rem); color: #a8a8a8; }
+.hchat__who b { font-weight: 600; color: #a8a8a8; }
+.hchat__b { padding: 0.5rem 0.8rem; border-radius: 1rem; }
+.hchat__in .hchat__b { background: #262626; color: #f2f2f2; border-bottom-left-radius: 0.3rem; }
+.hchat__slot { position: relative; display: grid; }
+.hchat__slot > * { grid-area: 1 / 1; }
+.hchat__wait { align-self: start; justify-self: start; padding-left: 0.8rem; color: var(--loss); font-weight: 600; visibility: hidden; }
+.hchat__out { justify-self: end; max-width: 92%; display: flex; flex-direction: column; align-items: flex-end; gap: 0.2rem; }
+.hchat__out .hchat__b { border: 1.5px solid var(--accent); color: var(--accent); background: #15170c; border-bottom-right-radius: 0.3rem; }
+.hchat__out time { color: var(--accent); }
+.hchat__sweep { position: absolute; top: -0.3rem; bottom: -0.3rem; left: 0; width: 3px; margin-left: -1.5px; border-radius: 3px; background: var(--accent); box-shadow: 0 0 14px 2px rgba(216, 255, 0, 0.55); opacity: 0; pointer-events: none; }
+.hchat.is-start .hchat__wait { visibility: visible; opacity: 0; }
+.hchat.is-start .hchat__out { clip-path: inset(0 100% 0 0); }
+@media (min-width: 761px) { .fxh { align-items: center; } }
+@media (min-width: 1100px) and (min-height: 600px) {
+  .at-home .hero .fxh__t h1 { font-size: min(3.2rem, 3vw); line-height: 1.08; max-width: 19em; }
+  .at-home .fxh__t .hero__ask { margin-top: 0.9rem; }
+}
+@media (max-width: 760px) {
+  .fxh { flex-direction: column; align-items: stretch; gap: 0.7rem; margin-top: 0.4rem; }
+  .fxh__t { display: contents; }
+  .fxh__t h1 { order: 1; }
+  .hchat { order: 2; width: auto; max-width: 22rem; font-size: 15px; gap: 0.35rem; }
+  .fxh__t .hero__ask { order: 3; margin-top: 0; }
+  .hero .fxh__t h1 { font-size: clamp(1.2rem, 5.4vw, 1.45rem); line-height: 1.12; }
+  .fxh__t .hero__ask { font-size: 1.02rem; }
+  .fxh__t .hero__chip { display: inline-flex; margin: 0 0 0 0.5rem; }
+  .hchat__b { padding: 0.4rem 0.7rem; }
+  .hchat__in { flex-direction: row; align-items: flex-end; gap: 0.5rem; max-width: 100%; }
+  .hchat__who b { display: none; }
+  .hchat__in .hchat__who { order: 2; }
+  .hchat__out { flex-direction: row-reverse; align-items: flex-end; gap: 0.5rem; max-width: 100%; }
+  .hchat__out .hchat__b { max-width: 15rem; }
+}
+/* home business cards: no icon row, no rings, no orbit dot, no pop. One static loss line. */
+#work .cc__art::before, #work .cc__art::after { content: none; animation: none; }
+#work .cc.mid .cc__art .ico { animation: none; }
+.cc__loss { display: block; margin: 0 auto; max-width: 15rem; min-height: 2.6em; color: var(--loss); font-family: var(--f-body); font-size: max(14px, 0.9rem); font-weight: 600; line-height: 1.3; text-align: center; text-wrap: balance; }
+.cc--firm .cc__go { margin-top: 0; }
+
+/* ===== slice 1 review: the home headline does not sweep (the hero picture is the one story on this screen) ===== */
+.hero h1 mark { animation: none; background: none; -webkit-background-clip: border-box; background-clip: border-box; color: var(--accent); }
+/* the hero picture sits above the fixed 3D background, so no particle drifts over its text */
+.hchat { position: relative; z-index: 1; }
+
+/* ===== slice 2: business page. No pictogram strips, no rings, no pulses. One short still loss line per
+   task card; only the advised card changes once, loss to gain (fx/glyphs.js). ===== */
+.cc__art::before, .cc__art::after, .card__ico--big::before { content: none; animation: none; }
+.nv .cc.mid .cc__art .ico { animation: none; }
+/* the business icon in the page head is an outline, not a lime fill (lime fill = the one action) */
+.nv .svc__head .card__ico--big { background: #0b0b0b; box-shadow: inset 0 0 0 1.5px var(--accent); }
+.nv .svc__head .card__ico--big .ico { color: var(--accent); }
+/* the promise sentence is not on the card (it is the first line of the task page); the own-task card keeps its line */
+.nv .cc--s .cc__what[data-c] { display: none; }
+.cc__ll { display: grid; font-family: var(--f-body); font-weight: 600; line-height: 1.3; text-wrap: balance; overflow-wrap: normal; hyphens: manual; }
+.cc__ll[hidden] { display: none; }
+.cc__ll > span { grid-area: 1 / 1; align-self: start; transition: opacity 0.3s ease; }
+.cc__ll-l { color: var(--loss); }
+.cc__ll-g { color: var(--accent); opacity: 0; visibility: hidden; display: none; }
+.nv .cc--top .cc__ll-g { display: block; }
+.nv .cc--top.is-gain .cc__ll-l { opacity: 0; }
+.nv .cc--top.is-gain .cc__ll-g { opacity: 1; visibility: visible; }
+@media (prefers-reduced-motion: reduce) { .cc__ll > span { transition: none; } .nv .cc--top.is-gain .cc__ll-l { opacity: 1; } .nv .cc--top.is-gain .cc__ll-g { opacity: 0; visibility: hidden; } }
+/* computer: centred under the price */
+@media (min-width: 761px) {
+  .nv .cc--s .cc__ll { width: calc(100% + 1rem); margin: 0 -0.5rem; text-align: center; font-size: max(13px, 0.9rem); }
+}
+/* phone: icon | title over price | arrow, the loss line is the third row, as wide as the card allows */
+@media (max-width: 760px) {
+  .nv .cc--s .cc__ll { grid-column: 1 / -1; grid-row: 3; margin-top: 0.35rem; text-align: left; font-size: max(14px, 0.86rem); }
+}
+/* until its story starts (fx/glyphs.js) the label of the advised card waits, so it does not flash before
+   it slides in; if the script never runs it shows after 3s anyway */
+@keyframes ccTopLate { to { opacity: 1; } }
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.no-js) .nv .cc--top:not(.fxg-top-in):not(.is-gain):not(.fxg-still) .cc__top { opacity: 0; animation: ccTopLate 0s 3s forwards; }
+}
+
+/* ===== slice 3: task page, one still-then-sweep story ===== */
+/* the time of each half sits inside it, under the message: small, grey, still */
+.scr__time { display: flex; align-items: center; gap: 0.35rem; margin: 0; font-family: var(--f-mono, var(--f-body)); font-size: max(13px, 0.8rem); font-weight: 500; line-height: 1.3; color: #a6a6a6; text-align: left; }
+.scr__time .ico { width: 0.95em; height: 0.95em; flex: none; color: #8a8a85; }
+.scr__time span { min-width: 0; }
+/* a label the divider crosses is hidden whole, never a stub */
+.hand .lbl-cut { visibility: hidden !important; }
+/* the "with me" half keeps its words clear of the handle when it rests near the left edge */
+.scr--a { padding-left: 2.4rem; }
+/* the gain line follows the reply inside the phone (no Send button any more) */
+.scr--a .scr__note.gain { margin-top: 0.2rem; }
+.scr--a .scr__note[hidden]:not(:empty) { visibility: visible; }
+/* the "with me" table: a name and its next step on one line, the detail under them; words never broken */
+.mk-tr { grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "a b" "c c"; column-gap: 0.6rem; row-gap: 0.15rem; align-items: baseline; }
+.mk-tr span { -webkit-hyphens: manual; hyphens: manual; overflow-wrap: normal; word-break: normal; }
+.mk-tr span:nth-child(1) { grid-area: a; font-weight: 700; max-width: 9.5rem; }
+.mk-tr span:nth-child(2) { grid-area: b; color: #bdbdbd; }
+.mk-tr span:nth-child(3) { grid-area: c; }
+.scr__body > .scr__time, .scr__time { flex-direction: row; gap: 0.35rem; align-self: flex-start; width: fit-content; max-width: 100%; }
+.mk-line span, .mk-line span:last-child { -webkit-hyphens: manual; hyphens: manual; overflow-wrap: normal; }
+/* the three steps: still, joined by a thin grey line across the gap between their boxes */
+.l3steps li { position: relative; }
+.l3steps:not(.open) li:not(:last-child)::after { content: ""; position: absolute; top: 50%; left: calc(100% + 1px); width: calc(var(--st-gap, 0.5rem) - 2px); height: 1px; background: #4a4a4a; pointer-events: none; }
+.l3steps.open li:not(:last-child)::after { content: ""; position: absolute; left: calc(1rem + 1.2rem); top: calc(100% + 1px); height: calc(0.6rem - 2px); width: 1px; background: #4a4a4a; pointer-events: none; }
+@media (min-width: 761px) { .l3steps:not(.open) { --st-gap: var(--gap); } }
+@media (max-width: 760px) { .l3steps:not(.open) { --st-gap: 0.5rem; } }
+@media (max-width: 360px) { .l3steps:not(.open) { --st-gap: 0.35rem; } }
+/* wide two-column task page: each step is one low row (circle, name), so price, Order and payment stay on the first screen */
+@media (min-width: 1100px) and (min-height: 600px) {
+  .l3:has(#l3demo:empty) .l3steps:not(.open) li { flex-direction: row; justify-content: center; gap: 0.6rem; padding: 0.55rem 0.7rem; text-align: left; }
+  .l3:has(#l3demo:empty) .l3steps:not(.open) li > span { width: 2.2rem; height: 2.2rem; }
+  .l3:has(#l3demo:empty) .l3steps:not(.open) li > b { line-height: 1.2; }
+}
+/* phones: the step names keep clear of their box edges (>= 13px, whole words) */
+@media (max-width: 760px) {
+  .l3steps:not(.open) li { padding-inline: 0.5rem; }
+  .l3steps:not(.open) li > b { font-size: clamp(13px, 3.75vw, 16px); line-height: 1.2; overflow-wrap: normal; hyphens: manual; }
+}
+@media (max-width: 360px) {
+  .l3steps:not(.open) { gap: 0.35rem; }
+  .l3steps:not(.open) li { padding: 0.7rem 0.4rem; }
+}
+.hand.edge-a .scr--b > * { visibility: hidden; }
+/* sceptic pass, slice 3: wide screens grow the step font (22px at 1920) but not the boxes; a fixed size keeps the names clear of the edges */
+@media (min-width: 1100px) and (min-height: 600px) {
+  .l3:has(#l3demo:empty) .l3steps:not(.open) li > b { font-size: 17px; white-space: nowrap; }
+}
+@media (min-width: 1100px) and (max-width: 1299px) and (min-height: 600px) {
+  .l3:has(#l3demo:empty) .l3steps:not(.open) li { padding-inline: 0.5rem; gap: 0.5rem; }
+}
+/* narrow phones: the "without me" side keeps its content clear of the round handle while it waits at 86% */
+@media (max-width: 380px) { .scr--b { padding-right: calc(14% + 1.9rem); } }
+.mk-img { color: #fff; background: linear-gradient(135deg, #3a3a36, #23231f); border: 1px solid rgba(216, 255, 0, 0.45); }
+/* the "Example" tag in the phone's status bar: never under 13px on phones */
+.scr__ex { font-size: max(13px, 0.7rem); letter-spacing: 0.02em; }
+/* phones: every word inside the phone mock-up is at least 13px */
+#ph .scr__head b, #ph .mk-from, #ph .mk-status, #ph .mk-when, #ph .mk-total, #ph .mk-reply small, #ph .mk-tr, #ph .mk-line { font-size: max(13px, 0.8rem); }
+/* two-column task page on short desktops: the big price keeps its size but loses its tall line box, so the payment note and the fee line end above 740px at 1366x768 */
+@media (min-width: 1100px) and (max-height: 900px) {
+  .l3:has(#l3demo:empty) .l3__price, .l3:has(#l3demo:empty) .l3__price b { line-height: 1.08; }
+  .l3:has(#l3demo:empty) #l3buy { margin-top: 0.7rem; }
+}
+@media (min-width: 1100px) and (max-height: 800px) {
+  .l3:has(#l3demo:empty) > .wrap { grid-template-rows: minmax(0, 0.25fr) repeat(6, auto) 1fr; }
+}
+/* the "without me" half: its message, time, tag and loss line sit together from the top (the spare height of the
+   taller "with me" half goes below), so the loss line is on the first screen of a phone and the story can start */
+.scr--b .scr__body { flex: 0 0 auto; }
+
+/* ---------- slice 4: contact, order path, assistant ---------- */
+/* email: the short placeholder in the field, the note as a small line under it */
+.form label small.form__note { display: block; font-weight: 400; font-size: 0.85rem; line-height: 1.35; color: #a6a6a6; }
+@media (max-width: 760px) { .form label small.form__note { font-size: 13px; } }
+/* "Or by email" is just the link until it is opened: no big empty card */
+.form.is-closed { background: transparent; border: 0; box-shadow: none; padding: 0; align-self: start; justify-self: start; }
+.form.is-closed .form__or { min-height: 2.75rem; padding: 0.2rem 0.2rem; }
+@media (min-width: 761px) { .contact .form.is-closed { align-self: end; } }
+/* assistant: a still button with a solid outline */
+.bot-fab.fxfab, .bot-fab { border: 1.5px solid var(--accent); }
+/* the close button: 44px, visible */
+#botClose, .bot__head button#botClose { width: 44px; height: 44px; min-width: 44px; flex: none; border-radius: 50%; border: 1.5px solid #3a3a3a; color: #f6f6f1; }
+#botClose .ico { width: 1.25rem; height: 1.25rem; }
+#botClose:hover, #botClose:focus-visible { border-color: var(--accent); color: var(--accent); }
+/* phones: a real backdrop under the open panel; a tap on it closes the panel */
+.bot-back { position: fixed; inset: 0; z-index: 54; background: rgba(0, 0, 0, 0.62); -webkit-tap-highlight-color: transparent; }
+.bot-back[hidden] { display: none; }
+@media (min-width: 761px) { .bot-back { display: none; } }
+@media (max-width: 760px) { .bot:not([hidden]) { box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7); } }
+/* the 44px close button needs room in the panel head */
+.bot__head { padding: 0.55rem 0.55rem 0.55rem 1rem; gap: 0.4rem; }
+#botHuman { margin-right: 0; }
+@media (max-width: 400px) { .bot__head b { white-space: normal; line-height: 1.15; min-width: 0; } #botHuman { font-size: 0.88rem; } }
+/* opening chips: two columns only when both fit; never cut a word */
+.bot__chips { grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr)); }
+.bot__chips .bot__go { min-width: 0; justify-content: space-between; }
+.bot__chips .bot__go { padding: 0.65rem 0.7rem 0.65rem 0.85rem; gap: 0.35rem; font-size: 0.9rem; }
+.bot__chips .bot__go .ico { flex: none; }
+
+/* ---------- slice 5: global ----------
+   Text floor: no label, language switch, hint or price unit under 13px, on any screen. */
+.nav__links a { font-size: max(13px, 0.92rem); }
+.lang button { font-size: max(13px, 0.72rem); }
+@media (max-width: 760px) { .lang button { font-size: max(13px, 0.78rem); } .nav .btn { font-size: max(13px, 0.85rem); } }
+@media (max-width: 380px) { .lang button { min-width: 1.8rem; font-size: 13px; } .nav .btn { font-size: 13px; } }
+.btn--sm { font-size: max(13px, 0.9rem); }
+.cc__top { font-size: max(13px, 0.75rem); }
+@media (max-width: 760px) { .cc__top { font-size: max(13px, 0.82rem); } .ph__lbl { font-size: max(13px, 0.85rem); } }
+.ph__lbl { font-size: max(13px, 0.78rem); }
+.firm-log__t, .firm-ex__then { font-size: max(13px, 0.78rem); }
+.firm-log__drag, .firm-log__sky .firm-log__drag { font-size: max(13px, 0.8rem); }
+/* short laptop window (under 700px high): one screen would shrink text to 9 to 11px, so the text keeps its
+   size and the page scrolls instead. One screen stays at 700px and taller (1366x768, 1920x1080). */
+@media (min-width: 1100px) and (min-height: 600px) and (max-height: 699px) {
+  html.at-home, html.at-niche { font-size: clamp(15.4px, 1.25vw, 21px); height: auto; overflow: visible; }
+  .at-home body, .at-niche body { height: auto; overflow: visible; }
+  .at-home .hero { height: auto; min-height: 100svh; }
+  .at-niche .svc.nv:not([hidden]) { height: auto; min-height: 100svh; }
+}
+/* "For your company" page: no idle loops. The night dot and sun halo are still; the drag hint nudges once. */
+.firm-log__dot { animation: none; }
+.firm-night .firm-night__halo { animation: none; }
+.firm-ex:not(.is-used) .firm-log__n .ico, .firm-ex:not(.is-used) .firm-ex__chev { animation-iteration-count: 1; }
+@media (prefers-reduced-motion: reduce) { .firm-ex:not(.is-used) .firm-log__n .ico, .firm-ex:not(.is-used) .firm-ex__chev { animation: none; } }
+.firm__who { font-size: max(13px, 0.8rem); }
+.l3__tag span { font-size: max(13px, 0.8rem); }
+.cc__price span { font-size: max(13px, 0.9rem); } .nv .cc__price span { font-size: max(13px, 0.82rem); }
+/* contact as its own page: the browser's jump to #contact must not cut the menu (the page starts at the top) */
+.ctpage #contact { scroll-margin-top: 100vh; }
+/* slice 5 review: firm page labels under 13px on phones and tablet (12.8px) */
+.firm-cat__n, .firm-lad__n, .firm-steps li small { font-size: max(13px, 0.8rem); }
+
+/* ---- walk-through fix: on touch screens a tap leaves :hover on whatever card lands under the finger
+   after the page changes (a random lime border). Hover looks only where a real pointer can hover. ---- */
+@media (hover: none) {
+  .cc:not(.mid):not(.cc--top):hover { border-color: var(--line); }
+  .cc:hover::before { opacity: 0; }
+  .cc:hover .cc__go .ico { transform: none; }
+}
+/* the task icon in the page head: an outline like the business page head (lime fill = the one action, Order) */
+.l3 .svc__head .card__ico--big, #l3ico { background: #0b0b0b; box-shadow: inset 0 0 0 1.5px var(--accent); color: var(--accent); }
+#l3ico .ico { color: var(--accent); }
+/* the "you lose most here" badge: an outline like the price chip, so the card's arrow stays the one lime fill */
+.cc__top { background: #0b0b0b; color: var(--accent); box-shadow: inset 0 0 0 1.5px var(--accent), 0 6px 18px rgba(0, 0, 0, 0.5); }
+/* assistant head on wider phones (412px, uk/ru): the title may wrap instead of pushing the close button out */
+@media (max-width: 480px) { .bot__head b { white-space: normal; line-height: 1.15; min-width: 0; } }
