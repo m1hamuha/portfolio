@@ -591,8 +591,8 @@
       raf = requestAnimationFrame(tick);
     }
     function run() { if (!raf) { lastT = 0; raf = requestAnimationFrame(tick); } }
-    function ends() { if (prev) prev.disabled = idx <= 0; if (next) next.disabled = idx >= cs.length - 1; }
-    function go(k) { idx = Math.max(0, Math.min(cs.length - 1, k)); ends(); run(); }
+    function ends() { if (prev) prev.disabled = false; if (next) next.disabled = false; }
+    function go(k) { var n = cs.length; idx = ((k % n) + n) % n; ends(); run(); }
     if (car.id === "work") window.addEventListener("car:show", function (e) {
       var k = cs.findIndex(function (c) { return (c.getAttribute("href") || "").split("/").pop() === e.detail; });
       if (k > -1 && ready) { idx = k; ends(); x = target(idx); paint(); }
@@ -654,7 +654,9 @@
     var passing = false;
     car.addEventListener("click", function (e) {
       if (passing || listMode()) return;
-      if (e.target.closest && e.target.closest(".car__btn, .car__dots")) return;
+      if (e.target.closest && e.target.closest(".car__btn, .car__dots, .car__nav")) return;
+      var hit = [prev, next, dots].some(function (b) { if (!b || !b.offsetWidth) return false; var q = b.getBoundingClientRect(); return e.clientX >= q.left - 8 && e.clientX <= q.right + 8 && e.clientY >= q.top - 8 && e.clientY <= q.bottom + 8; });
+      if (hit) return;
       if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; return; }
       var r = car.getBoundingClientRect(), tr = track.getBoundingClientRect(), lx = e.clientX - r.left, w = cs[0].offsetWidth, k = -1;
       if (e.clientY < tr.top || e.clientY > tr.bottom) return;
