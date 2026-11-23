@@ -272,8 +272,8 @@
     var form = $("#form"), msg = $("#formMsg"), btn = $("button[type=submit]", form), busy = false;
     var ENDPOINT = "https://formsubmit.co/ajax/kostinmihail40@gmail.com";
     var last = null;
-    resay = function () { if (last) say(last[0], last[1], last[2]); };
-    var sentLabel = "", sentText = "";
+    resay = function () { if (last) say(last[0], last[1], last[2], true); }; /* language switch: repaint in place, never scroll */
+    var sentLabel = "", sentText = "", sentOrd = null; /* sentOrd: [id, niche] so the "sent" card follows a language switch */
     function clearBad() { $$(".form__bad", form).forEach(function (x) { x.remove(); }); $$("[aria-invalid]", form).forEach(function (x) { x.removeAttribute("aria-invalid"); }); }
     function markBad(name) {
       clearBad();
@@ -282,15 +282,16 @@
       f.setAttribute("aria-invalid", "true"); f.parentNode.appendChild(b); f.focus();
     }
     form.addEventListener("input", function (e) { if (e.target.hasAttribute && e.target.hasAttribute("aria-invalid")) clearBad(); });
-    function say(kind, key, withMail) {
+    function say(kind, key, withMail, quiet) {
       last = [kind, key, withMail];
       $$(".form__bad", form).forEach(function (x) { x.textContent = t("fm.bad." + x.dataset.bad); });
       if (!key) return;
       msg.hidden = false;
-      if (msg.scrollIntoView) setTimeout(function () { msg.scrollIntoView({ block: key === "fm.ok" ? "center" : "nearest", behavior: "smooth" }); }, 50);
+      if (msg.scrollIntoView && !quiet) setTimeout(function () { msg.scrollIntoView({ block: key === "fm.ok" ? "center" : "nearest", behavior: "smooth" }); }, 50);
       msg.className = "form__msg " + kind;
       msg.textContent = "";
       if (key === "fm.ok" && form.classList.contains("sent")) {
+        if (sentOrd) sentLabel = labelFor(sentOrd[0], sentOrd[1]);
         if (sentLabel) { var bl = document.createElement("b"); bl.textContent = sentLabel; msg.appendChild(bl); }
         var sp = document.createElement("span"); sp.textContent = t(key); msg.appendChild(sp);
         var w = document.createElement("a"); w.className = "btn btn--wa"; w.target = "_blank"; w.rel = "noopener";
@@ -319,7 +320,9 @@
       var bad = !name ? "name" : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? "email" : !message ? "message" : "";
       if (bad) { msg.hidden = true; markBad(bad); last = ["err", "", false]; return; }
       clearBad();
-      sentLabel = order ? labelFor(order) : ""; sentText = message;
+      sentLabel = order ? labelFor(order) : ""; sentOrd = order ? [order, order.indexOf("firm") === 0 ? null : orderNiche] : null;
+      if (sentLabel && message.indexOf(sentLabel) < 0) message = sentLabel + "\n\n" + message;
+      sentText = message;
       busy = true; btn.disabled = true; say("ok", "fm.sending");
       var ctl = new AbortController(), to = setTimeout(function () { ctl.abort(); }, 15000);
       fetch(ENDPOINT, {
@@ -328,14 +331,14 @@
         signal: ctl.signal,
         body: JSON.stringify({
           name: name, email: email, message: message, _replyto: email,
-          _subject: "New portfolio request: Kostin Automation", _template: "table",
+          _subject: "New portfolio request" + (sentLabel ? ": " + sentLabel : ": Kostin Automation"), _template: "table", order: sentLabel || "-",
           source: "portfolio-contact", language: lang, page: location.origin + location.pathname,
         }),
       })
         .then(function (r) { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
         .then(function (j) {
           if (j && String(j.success) === "false") throw new Error("rejected");
-          form.classList.add("sent"); say("ok", "fm.ok"); form.reset();
+          markSent(); form.classList.add("sent"); say("ok", "fm.ok"); form.reset();
         })
         .catch(function () { say("err", "fm.err", true); })
         .then(function () { clearTimeout(to); busy = false; btn.disabled = false; });
@@ -347,7 +350,7 @@
      next to the messenger buttons and prefills the WhatsApp text and the form. */
   var WA = "https://wa.me/491709094298";
   var ctxNiche = null;
-  var order = null, lastAuto = "", TG = "https://t.me/onomamichail";
+  var order = null, orderNiche = null, lastAuto = "", TG = "https://t.me/onomamichail";
   /* id -> [name key, "from" prefix?, amount] ; plans are named under social media */
   var ORD = {
     social: ["sv.social.h", 1, "€10"], bot: ["sv.bot.h", 1, "€79"], content: ["sv.content.h", 1, "€1"],
@@ -359,10 +362,11 @@
   };
   function labelFor(id) {
     var o = ORD[id], name = t(o[0]);
-    var isFirm = id.indexOf("firm") === 0, pre = ctxNiche && !isFirm ? t("n." + ctxNiche) + ": " : "";
+    var nn = arguments.length > 1 ? arguments[1] : (order ? orderNiche : ctxNiche);
+    var isFirm = id.indexOf("firm") === 0, pre = nn && !isFirm ? t("n." + nn) + ": " : "";
     var nb = function (x) { return x.replace(/ /g, " "); };
     /* company offers never take a business prefix; a picked price step is named after the offer */
-    if (isFirm) return id === "firm" ? name : t("firm.order") + ": " + name;
+    if (isFirm) return id === "firm" ? name : t("firm.order") + ": " + name + ", " + nb(t("pr.from") + " " + o[2] + " " + (id === "firmcare" ? t("pr.mo") : t("pr.once")));
     if (id.indexOf("plan") === 0) return pre + t("sv.social.h") + ", " + name + ": " + nb(o[2] + t("pr.mo"));
     if (id === "content") return pre + name + ": " + nb("€1 " + t("pr.photo"));
     if (id === "social") return pre + name + ": " + nb(t("pr.from") + " " + o[2] + " " + t("pr.mo"));
@@ -376,22 +380,41 @@
     var auto = order ? (order.indexOf("firm") === 0 ? t("firm.talk") : t("wa.order")) + lab.textContent : "";
     if (ta.value.indexOf(lastAuto) === 0) ta.value = auto + ta.value.slice(lastAuto.length);
     lastAuto = auto;
-    var text = order ? auto : t("wa.hero");
+    var seen = !order && l3ctx && l3 && !l3.hidden && ORD[l3ctx[1]] ? t("wa.order") + labelFor(l3ctx[1], l3ctx[0]) : "";
+    var text = order ? auto : seen || t("wa.hero");
     $$("[data-wa]").forEach(function (a) { a.href = WA + "?text=" + encodeURIComponent(text); });
     $$('a[href^="' + TG + '"]').forEach(function (a) { a.href = TG + "?text=" + encodeURIComponent(text); });
     $("#ctH").textContent = t("ct.h2");
-    var cv = order && ctxNiche ? content(ctxNiche, order) : null, waFirst = !!(cv && cv.v && /chat|reminder/.test(cv.v.type));
+    var cv = order && orderNiche ? content(orderNiche, order) : null, waFirst = !!(cv && cv.v && /chat|reminder/.test(cv.v.type));
     $$("#contact .msgs .btn").forEach(function (a) { var wa = a.hasAttribute("data-wa"); a.classList.toggle("btn--ink", wa === waFirst); a.classList.toggle("btn--wa", wa !== waFirst); });
     fitTa(ta);
   }
   $('#form [name="message"]').addEventListener("input", function () { fitTa(this); });
   var orderAt = null; /* the page the order was made on: coming back to it keeps the choice */
+  function keepOrder() { try { if (order) sessionStorage.setItem("vf.order", JSON.stringify({ id: order, niche: orderNiche, at: orderAt })); else sessionStorage.removeItem("vf.order"); } catch (e) {} }
+  function setOrder(id, niche, at) { order = id || null; orderNiche = order ? niche || null : null; orderAt = order ? at || null : null; keepOrder(); paintOrder(); }
+  /* Back + Forward or a reload on #contact: the choice comes back (same tab only) */
+  function restoreOrder(prev) {
+    if (order) return;
+    var s = null; try { s = JSON.parse(sessionStorage.getItem("vf.order") || "null"); } catch (e) {}
+    if (!s || !s.id || !ORD[s.id]) return;
+    if (prev && prev !== "#contact" && prev !== s.at) return; /* came from another page: a fresh start */
+    if (s.off && !prev) return; /* the choice was already let go (visitor moved on): a reload does not bring it back */
+    order = s.id; orderNiche = s.niche || null; orderAt = s.at || null; paintOrder();
+  }
+  /* the order was really sent (form or messenger): only now it counts as ordered */
+  function markSent() {
+    if (!order || !orderNiche || order === "custom" || order.indexOf("firm") === 0) return;
+    var id = order.indexOf("plan") === 0 ? "social" : order;
+    var o = stored("ordered"); if (!Array.isArray(o)) o = [];
+    var k = orderNiche + "/" + id; if (o.indexOf(k) < 0) o.push(k); store("ordered", o);
+  }
   $$("[data-order]").forEach(function (el) { el.addEventListener("click", function () {
-    if (!el.dataset.order) return; order = el.dataset.order; orderAt = location.hash; paintOrder();
-    if (ctxNiche && order !== "custom" && order.indexOf("firm") !== 0 && order.indexOf("plan") !== 0) { var o = stored("ordered") || []; var k = ctxNiche + "/" + order; if (o.indexOf(k) < 0) o.push(k); store("ordered", o); }
-    window.dispatchEvent(new CustomEvent("vf:order", { detail: { niche: ctxNiche, order: order } }));
+    if (!el.dataset.order) return; setOrder(el.dataset.order, el.dataset.order.indexOf("firm") === 0 ? null : ctxNiche, location.hash);
+    window.dispatchEvent(new CustomEvent("vf:order", { detail: { niche: orderNiche, order: order } }));
   }); });
-  $("#orderClear").addEventListener("click", function () { order = null; paintOrder(); });
+  $$("#contact .msgs a").forEach(function (a) { a.addEventListener("click", markSent); });
+  $("#orderClear").addEventListener("click", function () { setOrder(null); });
 
   /* ---------- company page: six pictures, the whole list opens under "Full list" ---------- */
   /* company page: price steps. Pick one, the ball hops onto it and the button below names it. */
@@ -814,11 +837,7 @@
     document.documentElement.classList.toggle("has-buy", sid !== "social");
     barH();
     $("#l3order").dataset.order = sid;
-    var pb = $("#l3price b");
-    if (pb && !reduce) {
-      var num = parseInt(sv.amt.replace(/\D/g, ""), 10) || 0, t0 = performance.now();
-      (function up(now) { var p = Math.min((now - t0) / 700, 1), e = 1 - Math.pow(1 - p, 3); pb.textContent = "€" + Math.round(num * e); if (p < 1 && l3ctx && l3ctx[1] === sid && pb.isConnected) requestAnimationFrame(up); else pb.textContent = sv.amt; })(t0);
-    }
+    /* the price stands still: no count-up (it ran beside the phone story and on every Back or language switch) */
     $(".l3__buy").hidden = sid === "social"; /* social media has its own three plans, each with Order */
   }
   /* the slim price row: after a touch on the phone, after "with me" was seen, or once the phone is scrolled past;
@@ -829,11 +848,15 @@
     var big = $("#l3buy").getBoundingClientRect(), bigOn = big.height > 0 && big.top < innerHeight - 8 && big.bottom > 0;
     if (!seenScene && !l3.hidden && $("#ph").getBoundingClientRect().bottom < 80) seenScene = true;
     var on = !!(document.documentElement.classList.contains("has-buy") && !l3.hidden && seenScene && !bigOn && innerWidth <= 760);
+    /* nor over the phone's gain line while that line sits where the row would be */
+    var gn = $("#scGain"), gr = gn && !gn.hidden && $("#ph").classList.contains("is-after") ? gn.getBoundingClientRect() : null;
+    if (on && gr && gr.height && gr.top < innerHeight && gr.bottom > innerHeight - (bar.offsetHeight || 64) - 6) on = false;
     bar.classList.toggle("on", on); bar.setAttribute("aria-hidden", String(!on)); $("#l3barGo").tabIndex = on ? 0 : -1;
     document.documentElement.style.setProperty("--bar", on ? bar.offsetHeight + "px" : "0px");
   }
   function barLater() { if (!barT) barT = requestAnimationFrame(function () { barT = 0; barSync(); }); }
   $("#ph").addEventListener("pointerdown", function () { seenScene = true; barLater(); });
+  $("#ph").addEventListener("transitionend", barLater);   /* also sent by fx/taskdemo when its story comes to rest */
   addEventListener("scroll", barLater, { passive: true });
   window.addEventListener("hashchange", function () { seenScene = false; setTimeout(barSync, 0); });
   /* the round assistant button sits just above the pinned price row */
@@ -847,10 +870,10 @@
 
   /* ---------- "without me / with me": a phone the visitor handles ----------
      Two screens of the same moment sit on top of each other. Dragging the handle (mouse, finger
-     or arrow keys) uncovers the "with me" screen; on it a Send button really sends: the message
-     gets a tick and the gain appears. Nothing plays by itself except a small nudge of the handle, repeated until it is moved. */
-  var scene = null, pos = 86, sent = false, nudge = [];
-  function stopNudge() { nudge.forEach(clearTimeout); nudge = []; if (ph) ph.classList.remove("is-idle"); }
+     or arrow keys) uncovers the "with me" screen, its gain line included. The page itself moves nothing:
+     the one story (fx/taskdemo.js) plays once and holds on "with me". */
+  var scene = null, pos = 86;
+  function stopNudge() { if (ph) ph.classList.remove("is-idle"); }
   var ph = $("#ph"), knob = $("#phKnob");
   function setPos(v, smooth) {
     pos = Math.max(0, Math.min(100, v));
@@ -859,8 +882,23 @@
     knob.setAttribute("aria-valuenow", String(Math.round(100 - pos)));
     ph.classList.toggle("is-after", pos < 45);
     if (pos < 45 && !seenScene) { seenScene = true; barLater(); }
-    capNow();
+    cutLabels();
   }
+  /* a short label (status-bar title, Example, the time, a tag) is shown whole or not at all: never a stub
+     like "LIENT" where the divider crosses it */
+  var LBL = ".scr__head b, .scr__ex, .scr__time, .mk-from, .mk-status, .mk-title, .mk-when, .mk-btn";
+  var BLK = ".sbub, .scr__note, .mk-note, .mk-muted, .mk-reply, .mk-row, .mk-line, .mk-total, .mk-tr, .mk-rhead, .mk-card > p, .mk-slot > b";
+  function cutLabels() {
+    var r = ph.getBoundingClientRect(); if (!r.width) return;
+    var x = r.left + r.width * pos / 100;
+    ph.classList.toggle("edge-a", pos <= 12);   /* resting on "with me": the thin "without me" strip shows no slivers */
+    /* during the story's own sweep the text blocks (bubbles, loss and gain lines, rows) go whole too: no letter stubs */
+    var sel = ph.classList.contains("td-sweep") ? LBL + ", " + BLK : LBL;
+    $$(".scr--b .lbl-cut, .scr--a .lbl-cut").forEach(function (e) { e.classList.remove("lbl-cut"); });
+    $$(".scr--b " + sel.split(", ").join(", .scr--b ")).forEach(function (e) { var q = e.getBoundingClientRect(); e.classList.toggle("lbl-cut", q.width > 0 && q.right > x - 3); });
+    $$(".scr--a " + sel.split(", ").join(", .scr--a ")).forEach(function (e) { var q = e.getBoundingClientRect(); e.classList.toggle("lbl-cut", q.width > 0 && q.left < x + 3); });
+  }
+  window.addEventListener("resize", function () { if (l3ctx) cutLabels(); });
   /* Each kind of service has its own mock-up inside the phone: a review card, a post, a map
      listing, a booking slot, a table, a document, a chat. Text is always set with textContent. */
   function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
@@ -914,16 +952,26 @@
       return w;
     }
   };
-  function capNow() {
-    var cap = $("#scCap"); if (!cap || !scene) return;
-    var a = pos < 45, lb = a ? scene.after.label : scene.before.label, v = scene.v;
-    $("#scCapT").textContent = lb || (v ? (a ? v.capA : v.capB) : "");
-    cap.hidden = !$("#scCapT").textContent;
+  /* the moment of each half ("Tuesday, 9:40 pm") as a small still line inside it, next to the message;
+     a leading "Without me:" / "With me:" is dropped, the handle's own labels say that */
+  function stamp(lb, side) {
+    lb = String(lb || "").trim();
+    var pre = t(side === "a" ? "sc.after" : "sc.before");
+    if (pre && lb.toLowerCase().indexOf(pre.toLowerCase() + ":") === 0) lb = lb.slice(pre.length + 1).trim();
+    if (!lb) return null;
+    lb = lb.charAt(0).toUpperCase() + lb.slice(1);
+    /* the clock only beside a time or a span of days (a digit); a plain phrase stands without it */
+    var e = el("p", "scr__time"); if (/\d/.test(lb)) e.innerHTML = '<svg class="ico" aria-hidden="true"><use href="#i-clock" /></svg>';
+    add(e, el("span", "", lb)); return e;
+  }
+  function putStamp(body, lb, side) {
+    var s = stamp(lb, side), w = body.firstElementChild; if (!s) return;
+    var bub = w && w.classList.contains("mk-chat") ? $(".sbub", w) : null;
+    if (bub) bub.parentNode.insertBefore(s, bub.nextSibling); else body.insertBefore(s, body.firstChild);
   }
   function playScene(keep) {
     if (!scene) return;
-    var kp = keep === true ? { pos: pos, sent: sent } : null;
-    sent = false;
+    var kp = keep === true ? { pos: pos } : null;
     var v = scene.v, B = $("#scBodyB"), A = $("#scBodyA"), type = v && DRAW[v.type] ? v.type : null;
     B.innerHTML = ""; A.innerHTML = "";
     if (type) {
@@ -931,51 +979,29 @@
       $("#scLabelB").textContent = hd; $("#scLabelA").textContent = hd;
       B.appendChild(DRAW[type](v, false)); A.appendChild(DRAW[type](v, true));
       $("#scLoss").textContent = v.loss || scene.before.note; $("#scGain").textContent = v.gain || scene.after.note;
-      $("#scSend span").textContent = t("sc.b.s." + sid) || t("sc.b." + type);
     } else {
       $("#scLabelB").textContent = scene.before.label || ""; $("#scLabelA").textContent = scene.after.label || "";
       B.appendChild(el("div", "sbub sbub--before", scene.before.text || "")); A.appendChild(el("div", "sbub sbub--after", scene.after.text || ""));
       $("#scLoss").textContent = scene.before.note; $("#scGain").textContent = scene.after.note;
-      $("#scSend span").textContent = t("sc.send");
     }
-    $("#scLoss").hidden = !$("#scLoss").textContent; $("#scGain").hidden = true;
-    $("#ph").classList.remove("is-sent"); $("#scSend").classList.remove("done"); $("#scSend").disabled = false; $("#scSend").style.minHeight = "";
-    var wasIdle = ph.classList.contains("is-idle");
+    putStamp(B, scene.before.label || (v && v.capB), "b"); putStamp(A, scene.after.label || (v && v.capA), "a");
+    $("#scLoss").hidden = !$("#scLoss").textContent; $("#scGain").hidden = !$("#scGain").textContent;
     stopNudge();
-    /* a repaint (language switch) must not switch the hint off for someone who has not moved the handle yet */
-    if (kp) { setPos(kp.pos, false); if (kp.sent) $("#scSend").click(); else if (wasIdle) { setPos(86, false); startNudge(); } return; }
-    setPos(86, false);
-    startNudge();
-  }
-  /* "this moves": the handle nudges, with a ring around it, until the visitor moves it themself.
-     The first nudge is the big one; repeats stay in the empty margin so they do not cover the text. */
-  var handled = false;
-  function startNudge() {
-    if (reduce) { if (!handled) ph.classList.add("is-idle"); return; }
-    if (handled) { nudge.push(setTimeout(function () { setPos(80, true); nudge.push(setTimeout(function () { setPos(86, true); }, 450)); }, 900)); return; }
-    ph.classList.add("is-idle");
-    (function again(delay, to) {
-      nudge.push(setTimeout(function () {
-        if (!ph.offsetParent) return;                         /* the page with the phone was left: stop */
-        var r = ph.getBoundingClientRect();
-        if (document.hidden || r.bottom < 0 || r.top > window.innerHeight) { again(1500, to); return; }   /* out of sight: wait */
-        setPos(to, true);
-        nudge.push(setTimeout(function () { setPos(86, true); again(4500, 80); }, 500));
-      }, delay));
-    })(900, 72);
+    /* a repaint (language switch) keeps the handle where it was */
+    setPos(kp ? kp.pos : 86, false);
   }
   /* the demo module drives the same handle the visitor drags */
-  window.PH = { set: function (v, smooth) { setPos(v, smooth); }, pos: function () { return pos; }, stop: function () { stopNudge(); }, kind: function () { return scene && scene.v ? scene.v.type : null; }, ctx: function () { return l3ctx; }, send: function () { $("#scSend").click(); } };
+  window.PH = { set: function (v, smooth) { setPos(v, smooth); }, pos: function () { return pos; }, stop: function () { stopNudge(); }, kind: function () { return scene && scene.v ? scene.v.type : null; }, ctx: function () { return l3ctx; } };
   /* after a tap the whole phone is on screen: between the menu and the round assistant button */
   function showDemo() { requestAnimationFrame(function () { var nav = $("#nav"), fab = $("#botFab"), top = (nav && getComputedStyle(nav).position === "fixed" ? nav.getBoundingClientRect().bottom : 0) + 8; var r = ph.getBoundingClientRect(), lim = (fab && fab.offsetWidth ? fab.offsetTop : innerHeight) - 12; var d = Math.min(r.bottom - lim, r.top - top); if (d > 4) scrollBy({ top: d, behavior: reduce ? "auto" : "smooth" }); }); }
   function fromX(x) { var r = ph.getBoundingClientRect(); return ((x - r.left) / r.width) * 100; }
   var dragging = false, pend = null;
   function grab(e) {
-    pend = null; handled = true; stopNudge(); ph.classList.add("drag");
+    pend = null; stopNudge(); ph.classList.add("drag");
     dragging = true; try { ph.setPointerCapture(e.pointerId); } catch (x) {} setPos(fromX(e.clientX), false);
   }
   ph.addEventListener("pointerdown", function (e) {
-    if (e.target.closest("#scSend, .ph__lbl")) return;
+    if (e.target.closest(".ph__lbl")) return;
     /* a finger anywhere but on the handle may be the start of a page scroll: wait and see which way it goes */
     if (e.pointerType === "touch" && !e.target.closest("#phKnob")) { pend = { x: e.clientX, y: e.clientY }; return; }
     grab(e);
@@ -991,20 +1017,13 @@
   ph.addEventListener("pointerup", function (e) { if (pend) grab(e); end(); });   /* a plain tap still jumps the divider */
   ph.addEventListener("pointercancel", function () { pend = null; end(); });       /* the browser took the finger to scroll */
   knob.addEventListener("keydown", function (e) {
-    if (/^(Arrow|Home|End)/.test(e.key)) { handled = true; stopNudge(); }
+    if (/^(Arrow|Home|End)/.test(e.key)) stopNudge();
     if (e.key === "ArrowLeft") { setPos(pos - 10, true); e.preventDefault(); }
     if (e.key === "ArrowRight") { setPos(pos + 10, true); e.preventDefault(); }
     if (e.key === "Home") { setPos(0, true); e.preventDefault(); }
     if (e.key === "End") { setPos(100, true); e.preventDefault(); }
   });
-  $$(".ph__lbl").forEach(function (l) { l.addEventListener("click", function (e) { e.stopPropagation(); handled = true; stopNudge(); var a = l.classList.contains("ph__lbl--a"); setPos(a ? 0 : 100, true); if (a) showDemo(); }); });
-  $("#scSend").addEventListener("click", function () {
-    if (sent) return; sent = true;
-    var b = $("#scSend"); b.style.minHeight = b.offsetHeight + "px"; b.classList.add("done"); b.disabled = true; $("span", b).textContent = t("sc.done");
-    ph.classList.add("is-sent");
-    var g = $("#scGain"); g.hidden = !g.textContent; g.classList.remove("in"); void g.offsetWidth; g.classList.add("in");
-    showDemo();
-  });
+  $$(".ph__lbl").forEach(function (l) { l.addEventListener("click", function (e) { e.stopPropagation(); stopNudge(); var a = l.classList.contains("ph__lbl--a"); setPos(a ? 0 : 100, true); if (a) showDemo(); }); });
   var ys = {}, lastHash = location.hash;
   function depth(h) { return h === "#contact" ? 3 : /^#\/for\/[a-z]+\/[a-z]+$/.test(h) || /^#\/[a-z]+$/.test(h) ? 2 : /^#\/for\//.test(h) ? 1 : 0; }
   function show(sec, key) {
@@ -1023,8 +1042,9 @@
     var root = document.documentElement;
     var m3 = h.match(/^#\/for\/([a-z]+)\/([a-z]+)$/), m2 = h.match(/^#\/for\/([a-z]+)$/), m1 = h.match(/^#\/([a-z]+)$/);
     root.classList.remove("lvl3", "ctpage"); if (!/^#\/for\/[a-z]+\/[a-z]+$/.test(h)) root.classList.remove("has-buy");
-    if (h !== "#contact" && order && h !== orderAt) { order = null; paintOrder(); }
-    if (h !== "#contact") orderAt = null;
+    if (h !== "#contact" && order && h !== orderAt) { order = null; orderNiche = null; orderAt = null; paintOrder(); try { var so = JSON.parse(sessionStorage.getItem("vf.order") || "null"); if (so) { so.off = 1; sessionStorage.setItem("vf.order", JSON.stringify(so)); } } catch (e) {} }
+    if (h === "#contact") restoreOrder(lastHash === h ? "" : lastHash);
+    if (m1 && m1[1] === "firm") ctxNiche = null; /* the company page has no small-business context */
     function lists(n, sid) { return (F.niches[n] || []).some(function (r) { return r[0] === sid; }); }
     function swap(to) { history.replaceState(null, "", to); h = to; m3 = h.match(/^#\/for\/([a-z]+)\/([a-z]+)$/); m2 = h.match(/^#\/for\/([a-z]+)$/); m1 = null; }
     if (m3 && F.niches[m3[1]] && !lists(m3[1], m3[2])) swap(lists("other", m3[2]) ? "#/for/other/" + m3[2] : "#/for/" + m3[1]);
@@ -1043,7 +1063,8 @@
     if (h === "#contact") {
       root.classList.add(current !== null ? "lvl3" : "ctpage");
       if (current === null) { home.hidden = true; views.hidden = true; }
-      var ct = $("#contact"); requestAnimationFrame(function () { ct.scrollIntoView({ behavior: reduce ? "auto" : "smooth" }); });
+      var ct = $("#contact"), alone = current === null; /* contact as its own page: from the top, so the menu is not cut */
+      requestAnimationFrame(function () { if (alone) window.scrollTo({ top: 0, behavior: "instant" }); else ct.scrollIntoView({ behavior: reduce ? "auto" : "smooth" }); });
       return;
     }
     giveBack();
@@ -1064,6 +1085,7 @@
     var backY = depth(location.hash) < depth(lastHash) && ys[location.hash] || 0; /* Back to a list: its place, not the top */
     route();
     lastHash = location.hash;
+    paintOrder();
     /* back to the list of businesses: the card of the page the visitor came from is in the centre */
     if (from && !home.hidden) window.dispatchEvent(new CustomEvent("car:show", { detail: from }));
     var r = document.documentElement, was = r.classList.contains("at-home"), now = !home.hidden;
@@ -1081,7 +1103,7 @@
     if (location.hash === "#contact") requestAnimationFrame(function () { fitTa($('#form [name="message"]')); });
     if (nowN && ctxNiche) store("lastNiche", ctxNiche);
     if (l3ctx && !l3.hidden) { store("lastNiche", l3ctx[0]); store("lastTask", l3ctx[0] + "/" + l3ctx[1]); }
-    window.dispatchEvent(new CustomEvent("vf:route", { detail: { hash: location.hash, from: from && !home.hidden ? from : null, niche: ctxNiche, task: l3ctx && !l3.hidden ? l3ctx[1] : null, order: order } })); /* sizes changed: carousels re-centre */
+    window.dispatchEvent(new CustomEvent("vf:route", { detail: { hash: location.hash, from: from && !home.hidden ? from : null, niche: ctxNiche, task: l3ctx && !l3.hidden ? l3ctx[1] : null, order: order, orderNiche: orderNiche } })); /* sizes changed: carousels re-centre */
   }
   window.addEventListener("hashchange", routeAll);
   if ("scrollRestoration" in history) history.scrollRestoration = "manual";
@@ -1092,10 +1114,13 @@
   (function () {
     var fab = $("#botFab"), box = $("#bot"), log = $("#botLog"), form = $("#botForm"), inp = $("#botIn"), mic = $("#botMic");
     if (!fab) return;
-    var DODGE = '#scSend, #phKnob, #l3order, #orderClear, .plan__go, .plan, .nv .cc__go, #contact .msgs .btn, #contact .msgs__note, #form input, #form textarea, #form button[type="submit"]', tick = 0;
-    function dodge() { tick = 0; var l = fab.offsetLeft, tp = fab.offsetTop, r = l + fab.offsetWidth, b = tp + fab.offsetHeight; var hit = box.hidden && [].some.call(document.querySelectorAll(DODGE), function (el) { if (!el.offsetWidth) return false; var q = el.getBoundingClientRect(); return q.right > l - 12 && q.left < r + 12 && q.bottom > tp - 12 && q.top < b + 12; }); fab.classList.toggle("off", hit); }
+    var DODGE = '#phKnob, #scGain, #l3order, #orderClear, .plan__go, .plan, .nv .cc__go, #contact .msgs .btn, #contact .msgs__note, #contact .ct-chips li, #contact .order, #formOpen, #form input, #form textarea, #form button[type="submit"], #formMsg .btn, #l3note, #l3fee, .firm-lad__s, .firm-log__n, #firmExNext, .svc .btn, #firmMore', tick = 0;
+    /* cards and list rows: the button steps aside only when it really sits on them (not when it grazes an edge) */
+    var DODGE_BIG = '#work .cc.mid, .nv .cc, #l3steps li, .firm-cat, .custom, .firm-log__list li, .firm__facts li, .firm-safe__list li, .firm-steps li';
+    function dodge() { tick = 0; var l = fab.offsetLeft, tp = fab.offsetTop, r = l + fab.offsetWidth, b = tp + fab.offsetHeight; function near(m) { return function (el) { if (!el.offsetWidth) return false; var q = el.getBoundingClientRect(); return q.right > l - m && q.left < r + m && q.bottom > tp - m && q.top < b + m; }; }
+      var hit = box.hidden && ([].some.call(document.querySelectorAll(DODGE), near(12)) || [].some.call(document.querySelectorAll(DODGE_BIG), near(-10))); fab.classList.toggle("off", hit); }
     function later() { if (!tick) tick = requestAnimationFrame(dodge); }
-    addEventListener("scroll", later, { passive: true }); addEventListener("resize", later); addEventListener("hashchange", function () { setTimeout(dodge, 400); }); $("#ph").addEventListener("transitionend", later); $("#ph").addEventListener("pointermove", later); $("#ph").addEventListener("pointerup", later); setTimeout(dodge, 300);
+    addEventListener("scroll", later, { passive: true }); addEventListener("resize", later); addEventListener("pointerup", function () { setTimeout(later, 450); }, { passive: true }); addEventListener("keyup", later); addEventListener("hashchange", function () { setTimeout(dodge, 400); }); $("#ph").addEventListener("transitionend", later); $("#ph").addEventListener("pointermove", later); $("#ph").addEventListener("pointerup", later); setTimeout(dodge, 300);
     var NK = {
       salon: "салон красот парикмахер стрижк барбер маникюр ногт педикюр бров ресниц косметолог массаж спа beauty hair barber nail brow lash massage spa salon kosmetikstudio nagelstudio friseur kosmetik nagel перукар манікюр нігт масаж краса",
       cafe: "кафе ресторан кофейн бар пекарн пицц суши еда столик меню cafe restaurant coffee bakery pizza food menu table café speisekarte bäckerei кав'ярн піц їжа",
@@ -1137,10 +1162,11 @@
       return id;
     }
     function say(kind, text) { var b = document.createElement("div"); b.className = "bub bub--" + kind; b.textContent = text; log.appendChild(b); log.scrollTop = log.scrollHeight; return b; }
+    function sayK(k) { var b = say("b", t(k)); b._re = function () { b.textContent = t(k); }; return b; }
     function link(href, label, order) {
       var a = document.createElement("a"); a.className = "bot__go"; a.href = href;
       a.innerHTML = "<span></span>" + '<svg class="ico"><use href="#i-arrow" /></svg>';
-      a.firstChild.textContent = label;
+      if (typeof label === "function") { a._re = function () { a.firstChild.textContent = label(); }; a._re(); } else a.firstChild.textContent = label;
       if (order) a.dataset.order = order;
       a.addEventListener("click", function () { close(); });
       log.appendChild(a); log.scrollTop = log.scrollHeight;
@@ -1151,18 +1177,20 @@
       var b = lists(n) ? n : lists(ctxNiche) ? ctxNiche : sid === "assistant" ? "office" : lists("other") ? "other" : null;
       return b ? "#/for/" + b + "/" + sid : "#/" + sid;
     }
-    function priceLine(sid) { var d = document.createElement("div"); d.className = "bot__price"; d.innerHTML = priceHtml(sid); if (d.innerHTML) { log.appendChild(d); log.scrollTop = log.scrollHeight; } }
+    function priceLine(sid) { var d = document.createElement("div"); d.className = "bot__price"; d.innerHTML = priceHtml(sid); d._re = function () { d.innerHTML = priceHtml(sid); }; if (d.innerHTML) { log.appendChild(d); log.scrollTop = log.scrollHeight; } }
     function chips() {
       $$(".bot__chips", log).forEach(function (x) { x.remove(); });
-      var n = ctxNiche && F.niches[ctxNiche] ? ctxNiche : "other", ids = ctxNiche && F.niches[ctxNiche] ? F.niches[n].slice(0, 4).map(function (r) { return r[0]; }) : ["bot", "mail", "reviews", "social"];
+      if (/^#\/firm/.test(location.hash)) return;
+      var here = l3ctx && !l3.hidden ? l3ctx[1] : null;
+      var n = ctxNiche && F.niches[ctxNiche] ? ctxNiche : "other", ids = (ctxNiche && F.niches[ctxNiche] ? F.niches[n].map(function (r) { return r[0]; }) : ["bot", "mail", "reviews", "social", "site"]).filter(function (sid) { return sid !== here; }).slice(0, 4);
       var w = document.createElement("div"); w.className = "bot__chips";
       ids.forEach(function (sid) { var a = document.createElement("a"); a.className = "bot__go"; a.href = taskHref(n, sid); a.innerHTML = "<span></span>" + '<svg class="ico"><use href="#i-arrow" /></svg>'; a.firstChild.textContent = t("bot.c." + sid) || t("sv." + sid + ".h"); a.addEventListener("click", function () { close(); }); w.appendChild(a); });
-      var hi = $(".bub", log); if (hi && hi.nextSibling) log.insertBefore(w, hi.nextSibling); else log.appendChild(w);
+      var hi = !answered && $(".bub", log); if (hi && hi.nextSibling) log.insertBefore(w, hi.nextSibling); else log.appendChild(w);
     }
     var PAY = toks("сколько стоит стоимость цена цены платить оплата оплатить скільки коштує ціна платити оплата kostet kosten preis zahlen bezahlen bezahlung price cost costs pay payment much");
     /* what the visitor said, in the visitor's words, wrapped as a ready message to the owner */
     function draftFor(q) { return t("bot.tpl").replace("{q}", q); }
-    function showDraft(text) {
+    function showDraft(text, q) {
       var wrap = document.createElement("div"); wrap.className = "bot__draft";
       var ta = document.createElement("textarea"); ta.value = text; ta.rows = 4; ta.maxLength = 800; ta.setAttribute("aria-label", t("bot.draft"));
       var row = document.createElement("div"); row.className = "bot__send3";
@@ -1175,7 +1203,8 @@
         tg.href = "https://t.me/onomamichail?text=" + encodeURIComponent(v);
         ml.href = "mailto:kostinmihail40@gmail.com?subject=" + encodeURIComponent(t("bot.subject")) + "&body=" + encodeURIComponent(v);
       }
-      ta.addEventListener("input", function () { sync(); fitTa(ta); }); sync(); setTimeout(function () { fitTa(ta); log.scrollTop = log.scrollHeight; }, 0);
+      ta.addEventListener("input", function () { sync(); fitTa(ta); }); sync();
+      wrap._re = function () { ta.setAttribute("aria-label", t("bot.draft")); if (q != null && ta.value === text) { text = draftFor(q); ta.value = text; sync(); } }; setTimeout(function () { fitTa(ta); log.scrollTop = log.scrollHeight; }, 0);
       row.appendChild(tg); row.appendChild(wa); row.appendChild(ml);
       wrap.appendChild(ta); wrap.appendChild(row);
       log.appendChild(wrap); log.scrollTop = log.scrollHeight;
@@ -1183,21 +1212,21 @@
     function local(text) {
       var ts = toks(text), n = best(ts, NKT), sid = best(ts, SKT), pay = score(ts, PAY) > 0;
       /* a team or a company without a named task: the company page */
-      if (!sid && (!n || n === "office") && score(ts, FKT) > 0) { say("b", t("bot.found")); link("#/firm", t("firm.nav")); return; }
+      if (!sid && (!n || n === "office") && score(ts, FKT) > 0) { sayK("bot.found"); link("#/firm", function () { return t("firm.nav"); }); return; }
       if (sid) {
-        say("b", t("bot.found"));
-        link(taskHref(n, sid), t("sv." + sid + ".h") + (n ? ", " + t("n." + n) : ""));
+        sayK("bot.found");
+        link(taskHref(n, sid), function () { return t("sv." + sid + ".h") + (n ? ", " + t("n." + n) : ""); });
         if (pay) priceLine(sid);
-        if (/плат|оплат|zahl|pay|paypal|крипт|krypto|crypto/i.test(text)) say("b", t("bot.pay.short"));
+        if (/плат|оплат|zahl|pay|paypal|крипт|krypto|crypto/i.test(text)) sayK("bot.pay.short");
       } else if (n) {
-        say("b", t("bot.niche"));
-        (F.niches[n] || []).slice(0, 3).forEach(function (r) { link("#/for/" + n + "/" + r[0], t("sv." + r[0] + ".h")); });
+        sayK("bot.niche");
+        (F.niches[n] || []).slice(0, 3).forEach(function (r) { link("#/for/" + n + "/" + r[0], function () { return t("sv." + r[0] + ".h"); }); });
       } else if (pay && /сколько|стоит|цен|скільки|кошту|ціна|kostet|preis|price|cost|much/i.test(text) && !/плат|оплат|zahl|pay/i.test(text)) {
-        say("b", t("bot.price")); chips(); var cw = $(".bot__chips", log); if (cw) { log.appendChild(cw); log.scrollTop = log.scrollHeight; }
+        sayK("bot.price"); chips(); var cw = $(".bot__chips", log); if (cw) { log.appendChild(cw); log.scrollTop = log.scrollHeight; }
       } else if (/плат|оплат|zahl|pay|paypal|крипт|krypto|crypto|наличн|готівк|\bbar\b|cash|überweis|перевод|переказ|transfer/i.test(text)) {
-        say("b", t("bot.pay")); showDraft(draftFor(text));
+        sayK("bot.pay"); showDraft(draftFor(text), text);
       } else {
-        say("b", t("bot.draft")); showDraft(draftFor(text));
+        sayK("bot.draft"); showDraft(draftFor(text), text);
       }
     }
     /* with an AI address set, the model understands any wording; if it is down, the local matcher answers */
@@ -1213,21 +1242,31 @@
           if (!j || typeof j.reply !== "string") throw new Error("bad");
           say("b", j.reply); hist.push({ role: "assistant", content: j.reply });
           if (j.service && (j.niche || F.sv && F.sv[j.service])) {
-            link(taskHref(j.niche, j.service), t("sv." + j.service + ".h") + (j.niche ? ", " + t("n." + j.niche) : ""));
+            link(taskHref(j.niche, j.service), function () { return t("sv." + j.service + ".h") + (j.niche ? ", " + t("n." + j.niche) : ""); });
             priceLine(j.service);
           } else if (j.niche) {
-            link("#/for/" + j.niche, t("n." + j.niche));
+            link("#/for/" + j.niche, function () { return t("n." + j.niche); });
           } else if (j.draft) {
             showDraft(j.draft);
           }
         })
         .catch(function () { clearTimeout(to); wait.remove(); local(text); });
     }
-    function answer(text) { if (API) ask(text); else local(text); }
-    function open() { box.hidden = false; fab.setAttribute("aria-expanded", "true"); fab.classList.add("on"); if (log.children.length < 3) chips(); if (innerWidth > 760) setTimeout(function () { inp.focus(); }, 50); }
+    var answered = false;
+    function answer(text) { answered = true; $$(".bot__chips", log).forEach(function (x) { x.remove(); }); if (API) ask(text); else local(text); }
+    /* phones: a real backdrop; a tap on it closes the panel and never reaches the page below */
+    var back = document.createElement("div"); back.className = "bot-back"; back.hidden = true; back.setAttribute("aria-hidden", "true");
+    box.parentNode.insertBefore(back, box);
+    back.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); close(); });
+    function open() { box.hidden = false; back.hidden = false; fab.setAttribute("aria-expanded", "true"); fab.classList.add("on"); if (!answered) chips(); if (innerWidth > 760) setTimeout(function () { inp.focus(); }, 50); }
+    window.addEventListener("vf:lang", function () {
+      $$("*", log).forEach(function (el) { if (el._re) el._re(); });
+      if ($(".bot__chips", log)) chips();
+    });
+    window.addEventListener("vf:route", function () { if (!answered && !box.hidden) chips(); });
     relocWall = (function (old) { return function () { old(); if (!box.hidden && $(".bot__chips", log)) chips(); }; })(relocWall);
     $("#botHuman").addEventListener("click", function () { close(); });
-    function close() { box.hidden = true; fab.setAttribute("aria-expanded", "false"); fab.classList.remove("on"); stopMic(); }
+    function close() { box.hidden = true; back.hidden = true; fab.setAttribute("aria-expanded", "false"); fab.classList.remove("on"); stopMic(); }
     fab.addEventListener("click", function () { box.hidden ? open() : close(); });
     $("#botClose").addEventListener("click", close);
     document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !box.hidden) close(); });
@@ -1265,6 +1304,39 @@
     c.style.setProperty("--my", (e.clientY - r.top) + "px");
   }, { passive: true });
 
-  setLang(pickLang(), false);
+  /* language is a stored preference: a ?lang link wins on load (and becomes the preference), then the stored choice.
+     The address always carries it, so every history entry made from here on is in the chosen language. */
+  function urlLang() { var q = new URLSearchParams(location.search).get("lang"); return LANGS.indexOf(q) > -1 ? q : (location.search.indexOf("lang=") > -1 ? null : "en"); }
+  function syncUrlLang() {
+    var u = new URL(location.href), has = u.searchParams.get("lang");
+    if (lang === "en" ? has === null : has === lang) return;
+    if (lang === "en") u.searchParams.delete("lang"); else u.searchParams.set("lang", lang);
+    history.replaceState(history.state, "", u);
+  }
+  /* Back or Forward into this page from another document (an outside link, a reload of an older entry): the visitor's
+     stored choice wins over the old ?lang in that entry. A fresh ?lang link still wins and becomes the choice. */
+  var navType = ""; try { navType = (performance.getEntriesByType("navigation")[0] || {}).type || ""; } catch (e) {}
+  var stLang = null; try { stLang = localStorage.getItem("lang"); } catch (e) {}
+  var first = navType === "back_forward" && LANGS.indexOf(stLang) > -1 ? stLang : pickLang();
+  try { if (new URLSearchParams(location.search).get("lang") === first) localStorage.setItem("lang", first); } catch (e) {}
+  setLang(first, false);
+  syncUrlLang();
+  /* Back / Forward: an entry made before a language switch differs from the current one in ?lang, not only in the hash,
+     and then the browser fires popstate but no hashchange. So: re-apply the chosen language and route ourselves. */
+  window.addEventListener("popstate", function () {
+    var want = null;
+    try { want = localStorage.getItem("lang"); } catch (e) {}
+    if (LANGS.indexOf(want) < 0) want = urlLang() || lang;
+    if (want !== lang) setLang(want, false);
+    syncUrlLang();
+    setTimeout(function () { if (location.hash !== lastHash) window.dispatchEvent(new HashChangeEvent("hashchange")); }, 40);
+  });
+  /* page restored from the back/forward cache: the language may have been changed in another tab or entry since */
+  window.addEventListener("pageshow", function (e) {
+    if (!e.persisted) return;
+    var want = null; try { want = localStorage.getItem("lang"); } catch (er) {}
+    if (LANGS.indexOf(want) > -1 && want !== lang) setLang(want, false);
+    syncUrlLang();
+  });
   routeAll();
 })();

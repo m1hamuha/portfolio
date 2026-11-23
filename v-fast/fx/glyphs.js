@@ -51,7 +51,8 @@
     if (cur.io) cur.io.disconnect();
     var c = cur, card = c.card;
     var lab = card.querySelector(".cc__top");
-    if (lab && lab.hasAttribute("data-fxrt-i18n")) card.classList.add("fxg-still"); /* fx/retention slides its own label */
+    /* fx/retention slides its own label; a label already shown (the 3s fallback, e.g. the card was below the fold) stays */
+    if (lab && (lab.hasAttribute("data-fxrt-i18n") || getComputedStyle(lab).opacity === "1")) card.classList.add("fxg-still");
     else { card.classList.remove("fxg-top-in"); void card.offsetWidth; card.classList.add("fxg-top-in"); }
     /* the label first, then the loss holds, then the change */
     c.t1 = setTimeout(function () {
