@@ -782,29 +782,15 @@
       var card = el.parentNode, pr = $(".cc__price", card);
       if (!pr) { pr = document.createElement("span"); pr.className = "cc__price"; card.insertBefore(pr, el); }
       pr.innerHTML = priceShort(p[1]);
-      /* one short, still loss line per task card (and the gain, shown only by the advised card: fx/glyphs) */
+      /* one short, calm line per task card: what the owner gets (content.js "short") */
       var ln = lines(c), ll = $(".cc__ll", card);
       if (!ll) { ll = document.createElement("span"); ll.className = "cc__ll"; ll.innerHTML = '<span class="cc__ll-l"></span><span class="cc__ll-g" aria-hidden="true"></span>'; card.insertBefore(ll, el); }
-      ll.hidden = !ln.loss; ll.firstChild.textContent = ln.loss; ll.lastChild.textContent = ln.gain;
-      var h = $("h3", card); if (h && c) card.setAttribute("aria-label", h.textContent + ". " + (ln.loss || c.promise));
+      ll.hidden = !ln.loss; ll.firstChild.textContent = ln.loss; ll.lastChild.textContent = "";
+      var h = $("h3", card); if (h && c) card.setAttribute("aria-label", h.textContent + ". " + c.promise);
     });
   }
-  /* the short loss and gain of a task: its scene's loss tag (a list scene's tag is a list item, so its
-     loss sentence instead), first sentence only; when that is long, the shortest of the scene's own lines */
-  function lines(c) {
-    if (!c) return { loss: "", gain: "" };
-    var v = c.v || {};
-    function sh(s) { return String(s || "").trim().split(/\.\s/)[0].replace(/[.\s]+$/, ""); }
-    function pick(list, max) {
-      list = list.map(sh).filter(Boolean);
-      for (var i = 0; i < list.length; i++) if (list[i].length <= max) return list[i];
-      return list.sort(function (a, b) { return a.length - b.length; })[0] || "";
-    }
-    return {
-      loss: pick([v.type !== "list" ? v.b2 : "", c.loss, v.loss], 48),
-      gain: pick([c.gain, v.gain], 50)
-    };
-  }
+  /* the card line of a task: what the owner gets, said calmly (no loss fragments out of context) */
+  function lines(c) { return { loss: (c && c.short) || "", gain: "" }; }
   window.addEventListener("content", function () { paintCards(); if (l3ctx) fillL3(); });
   repaintCards = paintCards;
   var lent = null, lentFrom = null;
