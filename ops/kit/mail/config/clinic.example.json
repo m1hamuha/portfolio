@@ -1,0 +1,16 @@
+{
+  "niche": "clinic",
+  "health": true,
+  "business": { "name": "Praxis Beispiel", "ownerEmail": "praxis@example.com", "lang": "de" },
+  "timezone": "Europe/Berlin",
+  "defaultLang": "de",
+  "countryCode": "49",
+  "source": { "type": "calendar", "calendarId": "termine@example.com" },
+  "reminders": { "enabled": true, "when": "day_before", "kind": "reminder_day_before", "sendHour": 16, "channels": ["whatsapp"], "requireConsent": true },
+  "comeback": { "enabled": false },
+  "whatsapp": {
+    "mode": "api", "provider": "meta", "graphVersion": "v24.0", "phoneNumberId": "000000000000000",
+    "templates": { "reminder_day_before": { "name": "termin_erinnerung", "params": ["date", "time"] } }
+  },
+  "_note": "No names of treatments, doctors' specialities or diagnoses in calendar titles or messages. Only patients with written consent (Contacts sheet column 'WhatsApp OK')."
+}

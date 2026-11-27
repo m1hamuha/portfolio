@@ -1,0 +1,22 @@
+{
+  "id": "office-steuer",
+  "niche": "office",
+  "niche_label": "small tax and bookkeeping office",
+  "name": "Kanzlei Beispiel (example)",
+  "timezone": "Europe/Berlin",
+  "languages": ["de", "en", "ru", "uk"],
+  "default_lang": "de",
+  "currency": "EUR",
+  "site_origins": ["https://example.com", "http://localhost:8080"],
+  "hours": { "mon": ["09:00-12:00"], "tue": ["09:00-12:00", "14:00-16:00"], "wed": [], "thu": ["09:00-12:00"], "fri": [], "sat": [], "sun": [] },
+  "services": [
+    { "id": "call15", "name": { "de": "Kostenloses Erstgespräch 15 Min (Telefon)", "en": "Free 15 minute call", "ru": "Бесплатный звонок 15 минут", "uk": "Безкоштовний дзвінок 15 хвилин" }, "price": 0, "duration_min": 15 },
+    { "id": "tax-return", "name": { "de": "Einkommensteuererklärung", "en": "Income tax return", "ru": "Налоговая декларация", "uk": "Податкова декларація" }, "price": 150, "price_from": true, "bookable": false },
+    { "id": "payroll5", "name": { "de": "Lohnabrechnung bis 5 Mitarbeiter, pro Monat", "en": "Payroll up to 5 staff, per month", "ru": "Расчёт зарплаты до 5 сотрудников, в месяц", "uk": "Розрахунок зарплати до 5 працівників, на місяць" }, "price": 90, "bookable": false }
+  ],
+  "facts": ["Final prices depend on the documents; the call is free and without obligation", "We do not give tax advice in the chat"],
+  "booking": { "mode": "calendar", "calendar": "apps_script", "kind": "call", "slot_step_min": 15, "buffer_min": 5, "min_notice_min": 720, "days_ahead": 10, "offer_count": 3, "owner_reminder_min": 15 },
+  "notify": "none",
+  "human_pause_hours": 0,
+  "ai_disclosure": true
+}

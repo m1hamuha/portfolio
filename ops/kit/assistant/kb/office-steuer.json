@@ -1,0 +1,18 @@
+{
+  "id": "office-steuer",
+  "niche": "office",
+  "name": "Kanzlei Beispiel (example)",
+  "owner_label": { "de": "die Chefin", "en": "the boss", "ru": "руководителя", "uk": "керівника" },
+  "languages": ["de", "en", "ru", "uk"],
+  "default_lang": "de",
+  "sections": [
+    { "id": "p1", "source": "Preisliste 2026", "page": 1, "title": "Private clients", "text": "Einkommensteuererklärung Arbeitnehmer: ab 150 EUR. Mit Vermietung (eine Wohnung): ab 260 EUR. Rentner ohne weitere Einkünfte: ab 120 EUR. Belege bis 31. Mai einreichen, danach Aufschlag 30 EUR." },
+    { "id": "p2", "source": "Preisliste 2026", "page": 2, "title": "Payroll and bookkeeping", "text": "Lohnabrechnung bis 5 Mitarbeiter: 90 EUR pro Monat. 6 bis 15 Mitarbeiter: 160 EUR pro Monat. Minijobber zählen als Mitarbeiter. Finanzbuchhaltung Kleinunternehmer: ab 120 EUR pro Monat, bis 50 Belege. Jeder weitere Beleg 1,50 EUR." },
+    { "id": "p3", "source": "Preisliste 2026", "page": 3, "title": "Extras", "text": "Erstgespräch 15 Minuten: kostenlos. Beratungsstunde: 95 EUR. Fristverlängerung beim Finanzamt beantragen: im Paket enthalten. Eilauftrag unter 5 Arbeitstagen: Aufschlag 50 EUR." },
+    { "id": "r1", "source": "Office rules", "page": 1, "title": "Documents and data", "text": "Mandantenunterlagen nur über das Upload-Portal annehmen, nie per WhatsApp oder privater E-Mail. Papierbelege werden am selben Tag gescannt und im Ordner des Mandanten abgelegt. Originale gehen nach 2 Wochen per Post zurück." },
+    { "id": "r2", "source": "Office rules", "page": 1, "title": "Phone and appointments", "text": "Telefonzeiten: Montag, Dienstag, Donnerstag 9 bis 12 Uhr, Dienstag auch 14 bis 16 Uhr. Rückrufe innerhalb von 24 Stunden. Termine nur über den Kalender der Kanzlei vergeben. Keine Steuerberatung am Telefon ohne Mandatsvertrag." },
+    { "id": "r3", "source": "Office rules", "page": 2, "title": "New client", "text": "Neuer Mandant: Mandatsvertrag und Vollmacht unterschreiben lassen, Ausweis prüfen (Geldwäschegesetz), Steuer-ID und Zugang zu ELSTER erfragen. Erst danach Unterlagen anfordern." },
+    { "id": "r4", "source": "Office rules", "page": 2, "title": "Holidays and sick days", "text": "Urlaub bis 15. Januar für das ganze Jahr eintragen. Zwischen 1. März und 31. Mai kein Urlaub länger als eine Woche. Krankmeldung bis 8:30 Uhr per Anruf an die Chefin, ab dem 3. Tag Attest." },
+    { "id": "r5", "source": "Office rules", "page": 3, "title": "Discounts", "text": "Rabatte gibt nur die Chefin. Mitarbeiter dürfen keine Preise unter der Preisliste zusagen. Bei Fragen zu Rabatten: Rückruf der Chefin anbieten." }
+  ]
+}

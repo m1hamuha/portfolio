@@ -1,0 +1,20 @@
+{
+  "id": "praxis-zahn",
+  "name": "Zahnarztpraxis Dr. Beispiel",
+  "niche": "clinic",
+  "lang": "de",
+  "langs": ["de", "en"],
+  "color": "#1d5f8a",
+  "tagline": { "de": "Zahnarztpraxis in Musterstadt, neue Patienten willkommen", "en": "Dental practice in Musterstadt, new patients welcome" },
+  "phone": "0000 111111",
+  "email": "praxis@example.com",
+  "address": { "street": "Gesundweg 3", "zip": "12345", "city": "Musterstadt" },
+  "hours": { "mo": ["08:00-18:00"], "tu": ["08:00-18:00"], "we": ["08:00-13:00"], "th": ["08:00-18:00"], "fr": ["08:00-13:00"], "sa": [], "su": [] },
+  "prices": [ { "group": { "de": "Privatleistungen", "en": "Private services" }, "items": [
+    { "name": { "de": "Professionelle Zahnreinigung", "en": "Professional teeth cleaning" }, "price": 90, "from": true, "note": { "de": "je nach Aufwand, Abrechnung nach GOZ", "en": "depends on the work, billed under GOZ" } }
+  ] } ],
+  "prices_vat_note": false,
+  "photos": [ { "file": "photos/praxis-1.svg", "alt": { "de": "Heller Behandlungsraum", "en": "Bright treatment room" } } ],
+  "legal": { "owner_name": "Dr. med. dent. Anna Beispiel", "email": "praxis@example.com", "chamber": "Zahnärztekammer Beispielland", "profession": "Zahnärztin", "profession_country": "Deutschland", "rules": "Zahnheilkundegesetz, Berufsordnung der Zahnärztekammer Beispielland, GOZ", "supervisory": "Kassenzahnärztliche Vereinigung Beispielland" },
+  "gbp": { "category": "Zahnarzt" }
+}

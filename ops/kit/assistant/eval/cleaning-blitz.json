@@ -1,0 +1,17 @@
+{
+  "kb": "cleaning-blitz",
+  "questions": [
+    { "q": "Духовку внутри мыть?", "expect": ["c1"] },
+    { "q": "Чем мыть стекло?", "expect": ["c1"] },
+    { "q": "Backofen innen putzen?", "expect": ["c1"] },
+    { "q": "Яким ганчірком мити ванну?", "expect": ["c2"] },
+    { "q": "Никто не открывает дверь, что делать?", "expect": ["c3"] },
+    { "q": "Can I send the key box code by SMS?", "expect": ["c3"] },
+    { "q": "Я разбила вазу у клиента", "expect": ["c4"] },
+    { "q": "Wann mache ich Pause?", "expect": ["c5"] },
+    { "q": "Можно брать средства из шкафа клиента?", "expect": ["c6"] },
+    { "q": "Можно ли духи?", "expect": ["c7"] },
+    { "q": "Сколько мне платят за час?", "expect": [] },
+    { "q": "Wie putze ich ein Aquarium?", "expect": [] }
+  ]
+}

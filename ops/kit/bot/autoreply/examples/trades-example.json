@@ -1,0 +1,10 @@
+{
+  "id": "trades-meyer",
+  "niche": "trades",
+  "name": "Sanitär Beispiel (example)",
+  "languages": ["de", "ru"],
+  "default_lang": "de",
+  "hours": { "mon": ["07:00-17:00"], "tue": ["07:00-17:00"], "wed": ["07:00-17:00"], "thu": ["07:00-17:00"], "fri": ["07:00-14:00"], "sat": [], "sun": [] },
+  "services": [],
+  "autoreply": { "callback": { "de": "2 Stunden", "en": "2 hours", "ru": "2 часов", "uk": "2 годин" } }
+}

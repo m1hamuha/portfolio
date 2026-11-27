@@ -1,0 +1,25 @@
+{
+  "_note": "Fake example. Monthly batch, scheduled in Business Suite after the owner's yes.",
+  "id": "fitness-kraft",
+  "name": "Kraftraum Dmitri",
+  "niche": "fitness",
+  "city": "Dortmund",
+  "plan": "plan2",
+  "channels": ["instagram"],
+  "publish": "business_suite",
+  "owner_language": "ru",
+  "post_language": "de",
+  "voice": "short, motivating, never pushy, no body shaming",
+  "emoji": "at most one",
+  "hashtags": ["#dortmund", "#personaltraining", "#krafttraining"],
+  "max_hashtags": 5,
+  "schedule": { "weekdays": ["mon", "wed", "fri"], "posts_per_month": 12, "time": "07:30" },
+  "facts": {
+    "hours": "Mo-Fr 6-21 Uhr, Sa 9-14 Uhr",
+    "address_hint": "Dortmund Kreuzviertel",
+    "prices": { "Probetraining": "0 €" },
+    "other": ["Probetraining nach Absprache über WhatsApp"]
+  },
+  "contact": { "cta": "whatsapp", "whatsapp_link": "https://wa.me/490000000004" },
+  "special_dates": []
+}

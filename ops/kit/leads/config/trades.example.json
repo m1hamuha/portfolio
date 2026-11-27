@@ -1,0 +1,16 @@
+{
+  "niche": "trades",
+  "business": { "name": "Tom Sanitär (example)", "lang": "ru" },
+  "timezone": "Europe/Berlin",
+  "countryCode": "49",
+  "sheet": "Leads",
+  "email": {
+    "enabled": true,
+    "query": "in:inbox newer_than:3d (from:(wordpress@tom-sanitaer.example) OR subject:(Anfrage OR Angebot OR Termin OR Heizung OR Kessel OR Rohr))",
+    "label": "Leads",
+    "formSenders": ["wordpress@tom-sanitaer.example"]
+  },
+  "notify": { "telegramChatIds": [], "email": "", "detail": "full" },
+  "followUpDays": 5,
+  "retentionDays": 365
+}

@@ -1,0 +1,8 @@
+{
+  "niche": "fitness",
+  "business": { "name": "Studio Puls (example)", "lang": "ru" },
+  "email": { "enabled": true, "query": "in:inbox newer_than:3d -category:promotions -category:social subject:(Probetraining OR trial OR пробное OR Anfrage)", "formSenders": [] },
+  "notify": { "telegramChatIds": [], "detail": "full" },
+  "llm": { "enabled": false, "provider": "anthropic", "model": "claude-haiku-5-5" },
+  "_worker": "Instagram DMs (and WhatsApp if the number is on the Cloud API) come through ../worker /meta"
+}

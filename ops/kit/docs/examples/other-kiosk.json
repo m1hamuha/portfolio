@@ -1,0 +1,15 @@
+{
+  "mode": "manual",
+  "ui_lang": "ru",
+  "doc_lang": "de",
+  "business": {
+    "name": "Näherei Beispiel (example)",
+    "address": "Nadelgasse 4, 12345 Musterstadt",
+    "contact": "Tel. 0000 000000",
+    "tax_no": "00/000/00000",
+    "iban": "DE00 0000 0000 0000 0000 00"
+  },
+  "vat": { "mode": "small" },
+  "sample_client": "Anna Beispiel",
+  "sample_lines": [ { "text": "Hose kürzen", "qty": 2, "price": 15 }, { "text": "Reißverschluss tauschen", "qty": 1, "price": 210 } ]
+}

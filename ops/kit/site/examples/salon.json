@@ -1,0 +1,35 @@
+{
+  "id": "studio-lila",
+  "name": "Studio Lila Beispiel",
+  "niche": "salon",
+  "lang": "de",
+  "langs": ["de", "ru", "uk"],
+  "base_url": "https://studio-lila.example",
+  "color": "#7a3e9d",
+  "tagline": { "de": "Maniküre und Pediküre in Musterstadt", "ru": "Маникюр и педикюр в Musterstadt", "uk": "Манікюр і педикюр у Musterstadt" },
+  "about": { "de": "Termine am selben Tag oft möglich. Schreib uns einfach auf WhatsApp.", "ru": "Часто можно записаться в тот же день. Просто напишите в WhatsApp.", "uk": "Часто можна записатися того ж дня. Просто напишіть у WhatsApp." },
+  "phone": "0151 0000000",
+  "whatsapp": "0151 0000000",
+  "whatsapp_text": { "de": "Hallo! Ich möchte einen Termin.", "ru": "Здравствуйте! Хочу записаться.", "uk": "Добрий день! Хочу записатися." },
+  "country_code": "49",
+  "email": "hallo@studio-lila.example",
+  "address": { "street": "Beispielstraße 1", "zip": "12345", "city": "Musterstadt", "country": "DE" },
+  "timezone": "Europe/Berlin",
+  "hours": { "mo": [], "tu": ["09:00-19:00"], "we": ["09:00-19:00"], "th": ["09:00-19:00"], "fr": ["09:00-19:00"], "sa": ["10:00-15:00"], "su": [] },
+  "closed_note": { "de": "Urlaub vom 23.12. bis 2.1.", "ru": "Отпуск с 23.12 по 2.01", "uk": "Відпустка з 23.12 по 2.01" },
+  "prices": [
+    { "group": { "de": "Hände", "ru": "Руки", "uk": "Руки" }, "items": [
+      { "name": { "de": "Maniküre mit Gel", "ru": "Маникюр с гелем", "uk": "Манікюр з гелем" }, "price": 25 },
+      { "name": { "de": "Auffüllen", "ru": "Коррекция", "uk": "Корекція" }, "price": 30, "from": true }
+    ] },
+    { "group": { "de": "Füße", "ru": "Ноги", "uk": "Ноги" }, "items": [
+      { "name": { "de": "Pediküre", "ru": "Педикюр", "uk": "Педикюр" }, "price": 35 }
+    ] }
+  ],
+  "photos": [
+    { "file": "photos/salon-1.svg", "alt": { "de": "Nägel in Lila", "ru": "Ногти, сиреневый", "uk": "Нігті, бузковий" } },
+    { "file": "photos/salon-2.svg", "alt": { "de": "French Maniküre", "ru": "Френч", "uk": "Френч" } }
+  ],
+  "legal": { "owner_name": "Erika Beispiel", "email": "hallo@studio-lila.example" },
+  "gbp": { "category": "Nagelstudio", "extra_categories": ["Kosmetikstudio"], "description": { "de": "Nagelstudio in Musterstadt für Maniküre, Gelnägel und Pediküre. Termine oft am selben Tag, Buchung per WhatsApp. Wir sprechen Deutsch, Russisch und Ukrainisch." } }
+}

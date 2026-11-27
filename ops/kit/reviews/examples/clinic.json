@@ -1,0 +1,22 @@
+{
+  "id": "praxis-zahn",
+  "name": "Zahnarztpraxis Beispiel",
+  "niche": "clinic",
+  "city": "Musterstadt",
+  "lang": "de",
+  "langs": ["de", "en"],
+  "tone": { "de": "formal", "en": "formal" },
+  "place_id": "ChIJ_FAKE_clinic_00000000",
+  "source": "places",
+  "owner_email": "praxis@example.com",
+  "owner_whatsapp": "0170 0000000",
+  "country_code": "49",
+  "signature": "Ihr Praxisteam",
+  "contact_for_complaints": "0000 111111",
+  "health_guard": true,
+  "facts": [],
+  "allowed_offers": [],
+  "alert_max_stars": 3,
+  "notify_owner": true,
+  "color": "#1d5f8a"
+}

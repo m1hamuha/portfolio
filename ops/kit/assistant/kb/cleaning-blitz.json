@@ -1,0 +1,17 @@
+{
+  "id": "cleaning-blitz",
+  "niche": "cleaning",
+  "name": "Blitzblank Reinigung (example)",
+  "owner_label": { "de": "den Chef", "en": "the boss", "ru": "начальника", "uk": "начальника" },
+  "languages": ["de", "ru", "uk", "en"],
+  "default_lang": "de",
+  "sections": [
+    { "id": "c1", "source": "Regeln", "title": "Küche", "text": "Backofen innen nur, wenn im Auftrag Grundreinigung steht. Kühlschrank innen nur auf Wunsch im Auftrag. Herd und Spüle immer. Für Glas und Ceranfeld das blaue Tuch, für Fett das gelbe Tuch." },
+    { "id": "c2", "source": "Regeln", "title": "Bad", "text": "Bad immer mit dem roten Tuch und dem Badreiniger aus der roten Flasche. Toilette zuletzt, eigener Lappen. Fugen nur bei Grundreinigung." },
+    { "id": "c3", "source": "Regeln", "title": "Schlüssel und Zugang", "text": "Schlüssel nie mit Adresse beschriften. Schlüsselbox-Code nur aus der App, nie per SMS weitergeben. Wenn niemand öffnet: 10 Minuten warten, dann den Chef anrufen, nicht den Kunden mehrfach." },
+    { "id": "c4", "source": "Regeln", "title": "Schäden", "text": "Wenn etwas kaputt geht: sofort Foto machen, nichts reparieren, dem Chef in WhatsApp schreiben. Dem Kunden nichts zusagen, die Versicherung klärt das." },
+    { "id": "c5", "source": "Regeln", "title": "Zeit und Pausen", "text": "Ankunft 5 Minuten vor Termin. Zeiten in der App starten und stoppen. Nach 6 Stunden 30 Minuten Pause. Fahrzeit zwischen Kunden zählt als Arbeitszeit." },
+    { "id": "c6", "source": "Regeln", "title": "Material", "text": "Material immer aus dem eigenen Koffer, nicht aus dem Schrank des Kunden, außer der Kunde wünscht es im Auftrag. Leere Flaschen am Freitag im Lager auffüllen." },
+    { "id": "c7", "source": "Regeln", "title": "Kleidung", "text": "Firmen-T-Shirt tragen, Hausschuhe oder Überzieher in der Wohnung. Kein Parfum." }
+  ]
+}

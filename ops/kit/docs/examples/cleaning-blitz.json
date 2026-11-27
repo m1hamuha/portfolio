@@ -1,0 +1,31 @@
+{
+  "mode": "area",
+  "ui_lang": "ru",
+  "doc_lang": "de",
+  "customer_lang": "de",
+  "country_code": "49",
+  "business": {
+    "name": "Blitz Reinigung (example)",
+    "address": "Beispielweg 2, 12345 Musterstadt",
+    "contact": "Tel. 0000 000000",
+    "tax_no": "00/000/00000",
+    "iban": "DE00 0000 0000 0000 0000 00",
+    "sign": "Blitz Reinigung"
+  },
+  "vat": { "mode": "small" },
+  "pay_days": 14,
+  "area": {
+    "rate_m2": 0.45,
+    "min_visit": 45,
+    "weeks_month": 4.33,
+    "unit_visit": "Einsätze",
+    "text_regular": "Unterhaltsreinigung {m2} m², {n} x pro Woche",
+    "text_once": "Einmalige Reinigung {m2} m²",
+    "discounts": [ { "from_visits_week": 2, "pct": 5 }, { "from_visits_week": 3, "pct": 10 } ],
+    "extras": [
+      { "id": "windows", "name": "Fensterreinigung (pauschal)", "price": 60 },
+      { "id": "kitchen", "name": "Teeküche Grundreinigung", "price": 35 }
+    ]
+  },
+  "footer": "Preise pro Monat, monatlich kündbar."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "clinic-zahn",
+  "niche": "clinic",
+  "niche_label": "dental practice",
+  "name": "Zahnpraxis Beispiel (example)",
+  "timezone": "Europe/Berlin",
+  "languages": ["de", "en", "ru", "uk"],
+  "default_lang": "de",
+  "currency": "EUR",
+  "whatsapp_phone_number_id": "000000000000006",
+  "hours": { "mon": ["08:00-18:00"], "tue": ["08:00-18:00"], "wed": ["08:00-13:00"], "thu": ["08:00-18:00"], "fri": ["08:00-13:00"], "sat": [], "sun": [] },
+  "services": [
+    { "id": "cleaning", "name": { "de": "Professionelle Zahnreinigung", "en": "Professional cleaning", "ru": "Профессиональная чистка", "uk": "Професійна чистка" }, "price": 90, "bookable": false }
+  ],
+  "facts": ["Private price list; statutory insurance covers some services, the practice explains this personally"],
+  "booking": { "mode": "request" },
+  "health_guard": true,
+  "notify": "none",
+  "human_pause_hours": 24,
+  "ai_disclosure": true
+}

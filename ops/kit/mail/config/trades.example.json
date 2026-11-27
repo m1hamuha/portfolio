@@ -1,0 +1,12 @@
+{
+  "niche": "trades",
+  "business": { "name": "Tom Klempner (example)", "ownerEmail": "owner@example.com", "phone": "+49 171 0000000", "lang": "de" },
+  "timezone": "Europe/Berlin",
+  "defaultLang": "de",
+  "countryCode": "49",
+  "source": { "type": "calendar", "calendarId": "primary" },
+  "reminders": { "enabled": true, "when": "day_before", "kind": "visit_day_before", "sendHour": 16, "channels": ["email", "sms"], "requireConsent": false },
+  "comeback": { "enabled": true, "kind": "checkup", "afterDays": 335, "maxDays": 400, "sendHour": 10, "channels": ["email"], "requireMarketingConsent": false, "perRun": 20 },
+  "sms": { "provider": "seven", "from": "TomKlempnr" },
+  "move": { "days": 6, "starts": ["08:00", "10:30", "13:30", "15:30"], "durationMin": 120, "workdays": [1, 2, 3, 4, 5] }
+}

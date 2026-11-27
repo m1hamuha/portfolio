@@ -1,0 +1,23 @@
+{
+  "_note": "Fake example. Product photos on a clean background (needs a background provider), link delivery.",
+  "id": "shop-wollhaus",
+  "name": "Wollhaus Petrova",
+  "niche": "shop",
+  "city": "Hannover",
+  "owner_language": "ru",
+  "post_language": "de",
+  "second_language": "ru",
+  "voice": "plain and friendly",
+  "emoji": "none",
+  "hashtags": ["#hannover", "#wolle"],
+  "max_hashtags": 3,
+  "facts": { "hours": "Mo-Fr 10-18, Sa 10-14", "prices": { "Schal Merino": "19 €" }, "other": [] },
+  "delivery": "link",
+  "content": {
+    "sizes": ["feed", "square", "story"],
+    "crop": "contain",
+    "background": { "provider": "none", "color": "#f4f2ef", "_providers": "none | photoroom (env PHOTOROOM_API_KEY) | command (rembg)" },
+    "clip": { "max_seconds": 10, "mode": "blur", "audio": "mute" },
+    "slideshow": { "enabled": true, "min": 3, "max": 5, "each": 2 }
+  }
+}

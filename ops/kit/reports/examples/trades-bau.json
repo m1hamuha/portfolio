@@ -1,0 +1,8 @@
+{
+  "kind": "hours",
+  "lang": "de",
+  "business": { "name": "Fliesen Kaya (example)" },
+  "owner_email": "owner@example.com",
+  "workers": ["Worker A", "Worker B", "Worker C"],
+  "jobs": ["Miller, Bad", "Schulz, Küche", "Werkstatt"]
+}

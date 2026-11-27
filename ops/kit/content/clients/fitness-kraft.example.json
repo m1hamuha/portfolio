@@ -1,0 +1,22 @@
+{
+  "_note": "Fake example. Drive in and out, clips with subtitles from a .srt next to the video (whisper.cpp).",
+  "id": "fitness-kraft",
+  "name": "Kraftraum Dmitri",
+  "niche": "fitness",
+  "city": "Dortmund",
+  "owner_language": "ru",
+  "post_language": "de",
+  "voice": "short, motivating, never pushy",
+  "emoji": "at most one",
+  "hashtags": ["#dortmund", "#krafttraining"],
+  "max_hashtags": 4,
+  "facts": { "hours": "Mo-Fr 6-21 Uhr", "prices": {}, "other": [] },
+  "delivery": "drive",
+  "content": {
+    "sizes": ["feed", "story"],
+    "crop": "cover",
+    "clip": { "max_seconds": 20, "mode": "blur", "audio": "keep" },
+    "whisper": { "cmd": "whisper-cli", "model": "~/models/ggml-small.bin", "_note": "optional, offline speech to text for subtitles" },
+    "slideshow": { "enabled": false }
+  }
+}

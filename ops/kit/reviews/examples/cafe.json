@@ -1,0 +1,34 @@
+{
+  "id": "cafe-olive",
+  "name": "Café Olive Beispiel",
+  "niche": "cafe",
+  "city": "Musterstadt",
+  "lang": "de",
+  "langs": [
+    "de",
+    "en"
+  ],
+  "tone": {
+    "de": "formal",
+    "en": "informal"
+  },
+  "review_url": "https://g.page/r/FAKE_cafe_review_link/review",
+  "place_id": "ChIJ_FAKE_cafe_0000000000",
+  "source": "places",
+  "owner_email": "cafe-owner@example.com",
+  "owner_whatsapp": "+49 160 0000000",
+  "country_code": "49",
+  "signature": "Ihr Team vom Café Olive",
+  "contact_for_complaints": "0000 000000",
+  "facts": [
+    "two cooks work every evening since October"
+  ],
+  "allowed_offers": [
+    "a dessert on the house at the next visit"
+  ],
+  "alert_max_stars": 3,
+  "notify_owner": false,
+  "color": "#3f6b2f",
+  "owner_drafts": true,
+  "owner_telegram_chat_id": "000000000"
+}

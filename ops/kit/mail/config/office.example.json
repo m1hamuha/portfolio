@@ -1,0 +1,10 @@
+{
+  "niche": "office",
+  "business": { "name": "Steuerbüro Muster (example)", "ownerEmail": "office@example.com", "lang": "de", "replyTo": "office@example.com" },
+  "timezone": "Europe/Berlin",
+  "defaultLang": "de",
+  "countryCode": "49",
+  "reminders": { "enabled": false },
+  "comeback": { "enabled": false },
+  "documents": { "enabled": true, "sheet": "Docs", "everyDays": 7, "maxCount": 3, "sendHour": 9 }
+}

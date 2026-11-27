@@ -1,0 +1,27 @@
+# One Worker per client: wrangler deploy --name leads-<client>
+name = "leads-example"
+main = "index.js"
+compatibility_date = "2026-11-01"
+
+[vars]
+APPS_SCRIPT_URL = "https://script.google.com/macros/s/REPLACE_WITH_DEPLOYMENT_ID/exec"
+ALLOWED_ORIGINS = "https://www.example-client.de,https://example-client.de"
+THANKS_URL = "https://www.example-client.de/danke"
+COUNTRY_CODE = "49"
+LANG = "de"
+SUMMARY = "off"            # "anthropic" to add a one-line summary of long messages; never for clinics
+SUMMARY_MODEL = "claude-haiku-5-5"
+HEALTH = "0"               # "1" for clinics: no LLM, nothing extra leaves Cloudflare/Google
+TG_OWNER_ID = ""           # numeric Telegram user id of the business owner (business chats only)
+IG_API_VERSION = "v24.0"
+ALERT_CHAT_ID = ""         # optional: Telegram chat id that gets "lead NOT saved" alerts (owner or Mikhail)
+
+# Secrets, never in this file:
+#   wrangler secret put LEADS_SECRET       same value as Script Property LEADS_SECRET
+#   wrangler secret put META_APP_SECRET    Meta app > Settings > Basic > App secret (Facebook, WhatsApp)
+#   wrangler secret put IG_APP_SECRET      optional, Instagram app secret (Instagram API with Instagram Login signs with it)
+#   wrangler secret put META_VERIFY_TOKEN  any random string, also typed into the Meta webhook form
+#   wrangler secret put TG_SECRET          any random string, passed as secret_token in setWebhook
+#   wrangler secret put IG_TOKEN           optional, Instagram user access token for usernames
+#   wrangler secret put LLM_API_KEY        optional, only with SUMMARY = "anthropic"
+#   wrangler secret put ALERT_BOT_TOKEN    optional, Telegram bot token for "lead NOT saved" alerts

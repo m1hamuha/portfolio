@@ -1,0 +1,26 @@
+{
+  "id": "salon-lila",
+  "niche": "salon",
+  "niche_label": "beauty salon: nails, hair, massage",
+  "name": "Studio Lila (example)",
+  "timezone": "Europe/Berlin",
+  "languages": ["de", "ru", "uk", "en"],
+  "default_lang": "de",
+  "currency": "EUR",
+  "whatsapp_phone_number_id": "000000000000001",
+  "hours": { "mon": [], "tue": ["10:00-19:00"], "wed": ["10:00-19:00"], "thu": ["10:00-20:00"], "fri": ["10:00-19:00"], "sat": ["10:00-15:00"], "sun": [] },
+  "exceptions": { "2026-12-24": [], "2026-12-25": [] },
+  "services": [
+    { "id": "manicure", "name": { "de": "Maniküre", "ru": "Маникюр", "uk": "Манікюр", "en": "Manicure" }, "price": 35, "duration_min": 60 },
+    { "id": "gel", "name": { "de": "Gel-Nägel", "ru": "Гель-лак", "uk": "Гель-лак", "en": "Gel nails" }, "price": 45, "duration_min": 90 },
+    { "id": "haircut", "name": { "de": "Haarschnitt Damen", "ru": "Женская стрижка", "uk": "Жіноча стрижка", "en": "Women's haircut" }, "price": 39, "price_from": true, "duration_min": 60 },
+    { "id": "massage60", "name": { "de": "Rückenmassage 60 Min", "ru": "Массаж спины 60 мин", "uk": "Масаж спини 60 хв", "en": "Back massage 60 min" }, "price": 55, "duration_min": 60 }
+  ],
+  "facts": ["Address: Musterstraße 1, 10115 Berlin (example)", "Payment: cash or card", "Cancel free of charge until 24 hours before the appointment"],
+  "faq": [{ "q": "Is there parking?", "a": "Street parking in front of the studio, free after 18:00." }],
+  "booking": { "mode": "calendar", "calendar": "apps_script", "calendar_id": null, "slot_step_min": 30, "buffer_min": 10, "min_notice_min": 120, "days_ahead": 10, "offer_count": 3, "need_name": false },
+  "notify": "none",
+  "owner_reply_hint": { "de": "Antwort meist innerhalb von 2 Stunden während der Öffnungszeiten.", "ru": "Обычно отвечаем в течение 2 часов в рабочее время.", "uk": "Зазвичай відповідаємо протягом 2 годин у робочий час.", "en": "We usually answer within 2 hours during opening hours." },
+  "human_pause_hours": 12,
+  "ai_disclosure": true
+}

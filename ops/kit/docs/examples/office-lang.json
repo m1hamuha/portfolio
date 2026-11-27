@@ -1,0 +1,17 @@
+{
+  "mode": "lines",
+  "ui_lang": "ru",
+  "doc_lang": "de",
+  "customer_lang": "de",
+  "country_code": "49",
+  "business": {
+    "name": "Buchhaltung Beispiel (example)",
+    "address": "Bürostraße 3, 12345 Musterstadt",
+    "contact": "info@example.com",
+    "vat_id": "DE000000000",
+    "iban": "DE00 0000 0000 0000 0000 00"
+  },
+  "vat": { "mode": "regular", "rate": 19 },
+  "pay_days": 14,
+  "free_rows": 6
+}

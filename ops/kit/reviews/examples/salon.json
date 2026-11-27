@@ -1,0 +1,22 @@
+{
+  "id": "salon-lila",
+  "name": "Studio Lila Beispiel",
+  "niche": "salon",
+  "city": "Musterstadt",
+  "lang": "de",
+  "langs": ["de", "ru", "uk"],
+  "tone": { "de": "informal", "ru": "formal", "uk": "formal" },
+  "place_id": "ChIJ_FAKE_salon_000000000",
+  "source": "gbp",
+  "gbp": { "account": "accounts/000000000000000000001", "location": "locations/0000000000000000001" },
+  "owner_email": "owner@example.com",
+  "owner_whatsapp": "0151 0000000",
+  "country_code": "49",
+  "signature": "Lila und Team",
+  "contact_for_complaints": "WhatsApp 0151 0000000",
+  "facts": ["open Tuesday to Saturday", "booking by WhatsApp"],
+  "allowed_offers": [],
+  "alert_max_stars": 3,
+  "notify_owner": true,
+  "color": "#7a3e9d"
+}

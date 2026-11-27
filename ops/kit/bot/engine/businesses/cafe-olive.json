@@ -1,0 +1,23 @@
+{
+  "id": "cafe-olive",
+  "niche": "cafe",
+  "niche_label": "cafe and small restaurant",
+  "name": "Café Olive (example)",
+  "timezone": "Europe/Berlin",
+  "languages": ["de", "en", "ru", "uk"],
+  "default_lang": "de",
+  "currency": "EUR",
+  "whatsapp_phone_number_id": "000000000000002",
+  "hours": { "mon": [], "tue": ["11:00-22:00"], "wed": ["11:00-22:00"], "thu": ["11:00-22:00"], "fri": ["11:00-23:00"], "sat": ["10:00-23:00"], "sun": ["10:00-18:00"] },
+  "services": [
+    { "id": "brunch", "name": { "de": "Brunch-Teller", "en": "Brunch plate", "ru": "Бранч", "uk": "Бранч" }, "price": 14.5, "bookable": false },
+    { "id": "lunch", "name": { "de": "Mittagsmenü", "en": "Lunch menu", "ru": "Обеденное меню", "uk": "Обіднє меню" }, "price": 12.9, "bookable": false, "note": "Tue to Fri 12:00 to 15:00" }
+  ],
+  "facts": ["Vegan options every day", "Dogs welcome on the terrace", "Groups over 8 people: the owner answers personally"],
+  "booking": { "mode": "tables", "calendar": "apps_script", "tables": 6, "table_minutes": 120, "max_party": 8, "min_notice_min": 60,
+               "table_hours": { "mon": [], "tue": ["12:00-21:00"], "wed": ["12:00-21:00"], "thu": ["12:00-21:00"], "fri": ["12:00-22:00"], "sat": ["10:00-22:00"], "sun": ["10:00-16:00"] } },
+  "notify": "whatsapp",
+  "owner_lang": "de",
+  "human_pause_hours": 12,
+  "ai_disclosure": true
+}

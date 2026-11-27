@@ -1,0 +1,16 @@
+{
+  "id": "cleaning-blitz",
+  "niche": "cleaning",
+  "name": "Blitzblank Reinigung (example)",
+  "languages": ["de", "ru", "uk", "en"],
+  "default_lang": "de",
+  "currency": "EUR",
+  "hours": { "mon": ["08:00-18:00"], "tue": ["08:00-18:00"], "wed": ["08:00-18:00"], "thu": ["08:00-18:00"], "fri": ["08:00-18:00"], "sat": ["09:00-13:00"], "sun": [] },
+  "services": [
+    { "id": "r1", "name": { "de": "1-Zimmer-Wohnung", "en": "1-room flat", "ru": "Однушка", "uk": "Однокімнатна" }, "price": 70, "price_from": true },
+    { "id": "r2", "name": { "de": "2-Zimmer-Wohnung", "en": "2-room flat", "ru": "Двушка", "uk": "Двокімнатна" }, "price": 90, "price_from": true },
+    { "id": "r3", "name": { "de": "3-Zimmer-Wohnung", "en": "3-room flat", "ru": "Трёшка", "uk": "Трикімнатна" }, "price": 120, "price_from": true },
+    { "id": "deep", "name": { "de": "Grundreinigung Zuschlag", "en": "Deep clean surcharge", "ru": "Генеральная уборка, доплата", "uk": "Генеральне прибирання, доплата" }, "price": 40 }
+  ],
+  "autoreply": { "areas": ["Mitte", "Prenzlauer Berg", "Friedrichshain"] }
+}

@@ -1,0 +1,17 @@
+{
+  "niche": "clinic",
+  "langs": ["de"],
+  "owner_lang": "de",
+  "business": { "name": "Zahnarztpraxis Beispiel (example)", "city": "Musterstadt", "address": "Praxisplatz 2, 12345 Musterstadt", "privacy_contact": "praxis@example.com", "privacy_url": "https://example.com/datenschutz" },
+  "job": {
+    "title": "Dental assistant", "title_de": "Zahnmedizinische Fachangestellte (m/w/d)",
+    "hours": "Mo bis Do vormittags, 20 Std./Woche", "pay": "nach Tarif, ab 2.300 € brutto bei Vollzeit, anteilig", "contract": "Teilzeit", "start": "zum 1. des Monats",
+    "tasks": ["Assistenz am Stuhl", "Hygiene und Aufbereitung", "Empfang und Termine"],
+    "must": ["abgeschlossene Ausbildung als ZFA", "Deutsch für Gespräche mit Patienten"],
+    "nice": ["Röntgenschein"],
+    "offer": ["kleines Team", "keine Abenddienste"]
+  },
+  "form": { "lang": "de", "cert": "ZFA", "shift": "Mo bis Do vormittags", "questions": ["certificate", "hours", "start", "experience", "permit", "email"] },
+  "fit_rules": [ { "q": "certificate", "in": ["Ja"] }, { "q": "hours", "in": ["Ja", "Teilweise"] } ],
+  "notify": { "mode": "email", "to": "owner@example.com", "all": true }
+}

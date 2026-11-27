@@ -1,0 +1,18 @@
+{
+  "niche": "trades",
+  "langs": ["de", "ru"],
+  "owner_lang": "ru",
+  "business": { "name": "Fliesen Kaya (example)", "city": "Musterstadt", "address": "Werkstattweg 5, 12345 Musterstadt", "privacy_contact": "info@example.com" },
+  "job": {
+    "title": "Tiler", "title_de": "Fliesenleger (m/w/d)",
+    "hours": "Mo bis Fr 7 bis 16 Uhr", "pay": "19 bis 23 € pro Stunde je nach Erfahrung", "contract": "Vollzeit, unbefristet", "start": "ab sofort",
+    "tasks": ["Bäder und Küchen fliesen", "Untergrund vorbereiten", "Abdichtung"],
+    "must": ["mindestens 2 Jahre Erfahrung als Fliesenleger", "Führerschein Klasse B (Baustellen im Umkreis 40 km)"],
+    "nice": ["eigenes Werkzeug"],
+    "offer": ["Firmenwagen für Baustellen", "pünktliche Bezahlung"],
+    "last_time": "applicants without real tiling experience"
+  },
+  "form": { "lang": "de", "questions": ["start", "experience", "tools", "licence", "work_link", "area"] },
+  "fit_rules": [ { "q": "experience", "in": ["1 bis 3 Jahre", "Über 3 Jahre"] }, { "q": "licence", "in": ["Ja"] } ],
+  "notify": { "mode": "email", "to": "owner@example.com", "all": true }
+}
