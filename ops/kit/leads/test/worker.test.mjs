@@ -8,9 +8,10 @@ globalThis.fetch = async () => { throw new Error("real network call in a test");
 const ENV = {
   APPS_SCRIPT_URL: "https://script.google.test/exec", LEADS_SECRET: "lead-secret", ALLOWED_ORIGINS: "https://client.example",
   THANKS_URL: "https://client.example/danke", META_APP_SECRET: "app-secret", META_VERIFY_TOKEN: "verify-me",
-  TG_SECRET: "tg-secret", TG_OWNER_ID: "1000", LANG: "de", SUMMARY: "off"
+  TG_SECRET: "tg-secret", TG_OWNER_ID: "1000", LANG: "de", SUMMARY: "off", RETRY_MS: 0
 };
-function harness(env = ENV, handler = () => ({ ok: true, body: {} })) {
+const SHEET_OK = { ok: true, body: { ok: true, action: "append" } };
+function harness(env = ENV, handler = () => SHEET_OK) {
   const calls = [], waits = [];
   const f = async (url, opts = {}) => { calls.push({ url, opts }); const r = handler(url, opts); return { ok: r.ok !== false, status: r.ok === false ? 500 : 200, json: async () => r.body }; };
   const ctx = { waitUntil: p => waits.push(p) };
@@ -32,7 +33,7 @@ test("Meta webhook verification", async () => {
 });
 
 test("Instagram DM: signature checked, echo ignored, username looked up, row forwarded", async () => {
-  const h = harness({ ...ENV, IG_TOKEN: "igt" }, url => url.startsWith("https://graph.instagram.com/") ? { body: { username: "anna.fit", name: "Anna" } } : { body: {} });
+  const h = harness({ ...ENV, IG_TOKEN: "igt" }, url => url.startsWith("https://graph.instagram.com/") ? { body: { username: "anna.fit", name: "Anna" } } : SHEET_OK);
   const payload = { object: "instagram", entry: [{ id: "IGBIZ", messaging: [
     { sender: { id: "IGSID1" }, recipient: { id: "IGBIZ" }, message: { mid: "1", text: "Hi, I want a trial session" } },
     { sender: { id: "IGBIZ" }, recipient: { id: "IGSID1" }, message: { mid: "2", text: "Sure!", is_echo: true } }
@@ -96,7 +97,57 @@ test("summary: Anthropic request shape, fallback on error, never with HEALTH=1",
   const b = JSON.parse(calls[0].o.body);
   assert.equal(calls[0].url, "https://api.anthropic.com/v1/messages");
   assert.equal(b.model, "claude-haiku-5-5"); assert.equal(calls[0].o.headers["anthropic-version"], "2023-06-01");
+  assert.deepEqual(b.thinking, { type: "disabled" }, "Haiku 5.5 thinks by default; a short summary must not spend max_tokens on thinking");
   assert.equal(await summarize(long, { SUMMARY: "anthropic", LLM_API_KEY: "k", HEALTH: "1" }, f), "");
   assert.equal(calls.length, 1);
   assert.equal(await summarize(long, { SUMMARY: "anthropic", LLM_API_KEY: "k" }, async () => { throw new Error("down"); }), "");
+});
+
+test("a lead is never dropped silently: retries, error page, Telegram 500, owner alert", async () => {
+  // sheet down: the form visitor gets an error page instead of a fake "thank you"
+  let h = harness(ENV, () => ({ ok: false }));
+  const form = new Request("https://w.test/form", { method: "POST", body: new URLSearchParams({ name: "Anna", phone: "0171 2345678" }), headers: { Origin: "https://client.example", "CF-Connecting-IP": "1.2.3.4" } });
+  let r = await h.call(form);
+  assert.equal(r.status, 502);
+  assert.equal(h.forwarded().length, 3, "3 tries");
+  // Apps Script says 200 but {ok:false,error:"forbidden"} (wrong secret): no blind success, no useless retries
+  h = harness(ENV, () => ({ ok: true, body: { ok: false, error: "forbidden" } }));
+  r = await h.call(new Request("https://w.test/form", { method: "POST", body: JSON.stringify({ name: "J", email: "j@example.com" }), headers: { "Content-Type": "application/json", "CF-Connecting-IP": "1.2.3.5" } }));
+  assert.equal(r.status, 502); assert.equal(h.forwarded().length, 1);
+  // busy once, then saved
+  let n = 0;
+  h = harness(ENV, () => (++n === 1 ? { ok: true, body: { ok: false, error: "busy" } } : SHEET_OK));
+  const upd = { business_message: { chat: { id: 5, type: "private" }, from: { id: 5, first_name: "Oleg" }, text: "Hi" } };
+  const tg = () => new Request("https://w.test/telegram", { method: "POST", body: JSON.stringify(upd), headers: { "X-Telegram-Bot-Api-Secret-Token": "tg-secret" } });
+  r = await h.call(tg());
+  assert.equal(r.status, 200); assert.equal(h.forwarded().length, 2);
+  // Telegram: sheet down -> 500, so Telegram re-sends the update later
+  h = harness(ENV, () => ({ ok: false }));
+  r = await h.call(tg());
+  assert.equal(r.status, 500);
+  // Meta: sheet down -> owner alert in Telegram; HEALTH=1 alert carries no content
+  const env = { ...ENV, ALERT_BOT_TOKEN: "abt", ALERT_CHAT_ID: "77", HEALTH: "1" };
+  h = harness(env, url => url.startsWith("https://api.telegram.org/") ? { body: { ok: true } } : { ok: false });
+  r = await h.call(await metaReq({ object: "page", entry: [{ id: "PAGE", messaging: [{ sender: { id: "PSID" }, message: { text: "Termin wegen Rückenschmerzen" } }] }] }));
+  assert.equal(r.status, 200);
+  const alert = h.calls.find(c => c.url === "https://api.telegram.org/botabt/sendMessage");
+  assert.ok(alert, "alert sent");
+  const body = JSON.parse(alert.opts.body);
+  assert.equal(body.chat_id, "77");
+  assert.doesNotMatch(body.text, /Rücken/);
+});
+
+test("Instagram app secret is accepted as a second signing secret", async () => {
+  const h = harness({ ...ENV, IG_APP_SECRET: "ig-secret" });
+  const payload = { object: "instagram", entry: [{ id: "IGBIZ", messaging: [{ sender: { id: "S1" }, message: { text: "Hallo" } }] }] };
+  assert.equal((await h.call(await metaReq(payload, "ig-secret"))).status, 200);
+  assert.equal((await h.call(await metaReq(payload, "nope"))).status, 401);
+});
+
+test("Telegram business chat: staff or the owner writing in the customer's chat is not a lead, even without TG_OWNER_ID", () => {
+  const env = { ...ENV, TG_OWNER_ID: "" };
+  const base = { chat: { id: 5, type: "private" }, text: "Добрый день" };
+  assert.ok(telegramToLead({ business_message: { ...base, from: { id: 5, first_name: "Oleg" } } }, env));
+  assert.equal(telegramToLead({ business_message: { ...base, from: { id: 1000, first_name: "Owner" } } }, env), null);
+  assert.equal(telegramToLead({ business_message: { ...base, from: { id: 5, first_name: "Oleg" }, sender_business_bot: { id: 9, is_bot: true } } }, env), null);
 });

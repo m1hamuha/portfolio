@@ -76,7 +76,8 @@ function notifyOwner_(subject, text, cfg) {
   var ok = false;
   try { MailApp.sendEmail(cfg.business.ownerEmail, subject, text, { name: "Reminders" }); ok = true; } catch (e) { ok = false; }
   var tg = prop_("TG_BOT_TOKEN"), chat = cfg.business.telegramChatId;
-  if (tg && chat) {
+  // health: true (clinics): patient names, numbers and visit times stay in Google, never in Telegram (no data processing agreement)
+  if (tg && chat && !cfg.health) {
     try {
       var r = UrlFetchApp.fetch("https://api.telegram.org/bot" + tg + "/sendMessage", {
         method: "post", contentType: "application/json", muteHttpExceptions: true,

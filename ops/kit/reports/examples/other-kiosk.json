@@ -1,0 +1,22 @@
+{
+  "kind": "monthly",
+  "lang": "ru",
+  "business": { "name": "Kiosk Example" },
+  "owner_email": "owner@example.com",
+  "send_day": 3,
+  "bank_csv": {
+    "delimiter": ";",
+    "encoding": "UTF-8",
+    "map": { "date": ["Buchungstag", "Buchungsdatum", "Date"], "amount": ["Betrag", "Betrag (€)", "Amount"], "payee": ["Name Zahlungsbeteiligter", "Beguenstigter/Zahlungspflichtiger", "Empfänger", "Payee"], "purpose": ["Verwendungszweck", "Purpose"] }
+  },
+  "rules": [
+    { "cat": "transfer", "any": ["umbuchung", "uebertrag", "übertrag"] },
+    { "cat": "rent", "any": ["miete", "hausverwaltung"], "sign": "out" },
+    { "cat": "wages", "any": ["lohn", "gehalt"], "sign": "out" },
+    { "cat": "supplies", "any": ["metro", "selgros", "großhandel", "grosshandel"], "sign": "out" },
+    { "cat": "bank", "any": ["entgelt", "gebühr", "gebuehr", "kontofuehrung", "kontoführung", "sumup", "zettle"], "sign": "out" },
+    { "cat": "tax", "any": ["finanzamt"], "sign": "out" },
+    { "cat": "sales", "any": ["sumup payout", "auszahlung", "gutschrift"], "sign": "in" }
+  ],
+  "cat_names": { "rent": "Аренда", "wages": "Зарплаты", "supplies": "Закупки", "bank": "Банк и карты", "tax": "Налоги", "other": "Прочее", "sales": "Выручка", "income": "Прочие поступления" }
+}

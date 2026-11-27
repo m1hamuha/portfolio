@@ -35,10 +35,19 @@ export async function processWhatsApp(body, env, fetchImpl = fetch) {
     if (!biz || ignored(env, m.user)) continue;
     if (await store.get(`d:${m.id}`)) continue; /* Meta retries webhooks: answer once */
     await store.put(`d:${m.id}`, 1, 3 * 86400);
-    const r = await handle({ channel: "whatsapp", user: m.user, name: m.name, text: m.text, type: m.type }, deps(biz, env, fetchImpl));
+    const d = deps(biz, env, fetchImpl);
+    const r = await handle({ channel: "whatsapp", user: m.user, name: m.name, text: m.text, type: m.type }, d);
     if (r.replies.length) {
-      await sendText(env, biz.whatsapp_phone_number_id || m.phoneNumberId, m.user, r.replies.join("\n\n"), fetchImpl);
-      sent.push({ to: m.user, text: r.replies.join("\n\n"), intent: r.intent });
+      const text = r.replies.join("\n\n");
+      let s;
+      try { s = await sendText(env, biz.whatsapp_phone_number_id || m.phoneNumberId, m.user, text, fetchImpl); }
+      catch (e) { s = { ok: false, status: 0, data: { error: { message: e.message } } }; }
+      if (!s.ok) {
+        /* the answer did not leave (token expired, number blocked...): the owner must answer by hand */
+        console.log("wa send failed", s.status, JSON.stringify(s.data).slice(0, 300));
+        try { await d.notify(`${biz.name}: the bot could not send its answer to wa.me/${m.user} (error ${s.status}). Please answer in WhatsApp.`); } catch (e) { console.log("notify failed", e.message); }
+      }
+      sent.push({ to: m.user, text, intent: r.intent, ok: s.ok });
     }
   }
   return sent;

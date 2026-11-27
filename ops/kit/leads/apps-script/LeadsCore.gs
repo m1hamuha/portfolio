@@ -220,7 +220,7 @@ var LLM_PROVIDERS = {
     var r = fetchFn("https://api.anthropic.com/v1/messages", {
       method: "post", contentType: "application/json", muteHttpExceptions: true,
       headers: { "x-api-key": key, "anthropic-version": "2023-06-01" },
-      payload: JSON.stringify({ model: cfg.llm.model, max_tokens: 120, system: LLM_PROMPT.replace("LANG", cfg.lang), messages: [{ role: "user", content: String(text).slice(0, 3000) }] })
+      payload: JSON.stringify({ model: cfg.llm.model, max_tokens: 300, thinking: { type: "disabled" }, system: LLM_PROMPT.replace("LANG", cfg.lang), messages: [{ role: "user", content: String(text).slice(0, 3000) }] })
     });
     if (r.getResponseCode() !== 200) return null;
     var j = JSON.parse(r.getContentText());

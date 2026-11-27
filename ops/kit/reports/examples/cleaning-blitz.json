@@ -1,0 +1,9 @@
+{
+  "kind": "cash",
+  "lang": "ru",
+  "business": { "name": "Blitz Reinigung (example)" },
+  "owner_email": "owner@example.com",
+  "cleaners": ["Olga", "Irina", "Maria"],
+  "wages": { "Olga": 1400, "Irina": 1200, "Maria": 600 },
+  "fixed": [ { "what": "rent", "amount": 450 }, { "what": "car", "amount": 220 } ]
+}

@@ -1,7 +1,9 @@
 /* One small interface for any model: complete({ system, content, maxTokens }) -> text.
    content: a string or an array of Anthropic content blocks (text and image).
    Provider via env LLM_PROVIDER: "anthropic" (default) or "mock" (tests, dry runs).
-   Key only from env ANTHROPIC_API_KEY. Model via env LLM_MODEL (default claude-haiku-5-5). */
+   Key only from env ANTHROPIC_API_KEY. Model via env LLM_MODEL (default claude-haiku-5-5).
+   Haiku 5.5 thinks by default and thinking tokens count against max_tokens, so max_tokens is 2000,
+   not a few hundred: a JSON cut off by max_tokens would fail every caption. No temperature: Haiku 5.5 rejects it. */
 
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
 
@@ -13,7 +15,7 @@ export function makeLLM(env = process.env, fetchImpl = globalThis.fetch) {
     return {
       name: `anthropic:${model}`,
       vision: true,
-      async complete({ system, content, maxTokens = 900 }) {
+      async complete({ system, content, maxTokens = 2000 }) {
         if (!env.ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY is not set (or use --mock)");
         const res = await fetchImpl(env.ANTHROPIC_URL || ANTHROPIC_URL, {
           method: "POST",
@@ -58,7 +60,7 @@ export function makeLLM(env = process.env, fetchImpl = globalThis.fetch) {
 /* Offline stand-in: a plain caption built only from the note, so dry runs show the flow. */
 function defaultMock({ content }) {
   const text = Array.isArray(content) ? content.filter((b) => b.type === "text").map((b) => b.text).join("\n") : String(content);
-  const note = (text.match(/OWNER NOTE: (.*)/) || [])[1] || "";
+  const note = (text.match(/(?:OWNER )?NOTE: (.*)/) || [])[1] || "";
   const cta = (text.match(/CALL TO ACTION: (.*)/) || [])[1] || "";
   const caption = [note && note !== "(none)" ? note : "Neu bei uns.", cta].filter(Boolean).join("\n\n");
   return JSON.stringify({ caption, status_text: caption.split("\n")[0].slice(0, 120), alt: "Photo", hashtags: [] });

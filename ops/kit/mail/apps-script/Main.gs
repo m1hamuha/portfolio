@@ -128,7 +128,13 @@ function doGet(e) {
   var cfg = loadConfig_(), p = (e && e.parameter) || {}, secret = prop_("LINK_SECRET");
   var id = p.e || p.c || "", lang = cfg.business.lang || cfg.defaultLang;
   if (!p.a || !verify(p.a.charAt(0) + "|" + id, p.s, secret)) return page_("Link expired.");
+  // Two steps on purpose: mail scanners (e.g. Outlook Safe Links) open every link in an e-mail,
+  // a one-click GET would unsubscribe people who never clicked.
   if (p.a === "u") {
+    var href = prop_("WEBAPP_URL") + "?a=uu&c=" + encodeURIComponent(id) + "&s=" + p.s;
+    return page_(cfg.business.name, '<p><a style="display:block;padding:14px;border-radius:10px;background:#111;color:#fff;text-decoration:none;text-align:center" href="' + escapeHtml(href) + '">' + escapeHtml(textFor("page_unsub_btn", lang, cfg)) + "</a></p>");
+  }
+  if (p.a === "uu") {
     sheet_("Optout", "Optout", cfg).appendRow([id, new Date()]);
     return page_(textFor("page_unsub", lang, cfg));
   }

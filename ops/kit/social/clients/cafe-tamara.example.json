@@ -1,0 +1,26 @@
+{
+  "_note": "Fake example.",
+  "id": "cafe-tamara",
+  "name": "Café Tamara",
+  "niche": "cafe",
+  "city": "Köln",
+  "plan": "plan1",
+  "channels": ["instagram", "facebook"],
+  "publish": "business_suite",
+  "cadence": "weekly",
+  "owner_language": "uk",
+  "post_language": "de",
+  "voice": "friendly, a bit cosy, no big words",
+  "emoji": "one food emoji at most",
+  "hashtags": ["#köln", "#kölnfood", "#frühstückköln"],
+  "max_hashtags": 4,
+  "schedule": { "weekdays": ["wed", "sat"], "posts_per_month": 8, "time": "11:00" },
+  "facts": {
+    "hours": "Mo-So 8-17 Uhr",
+    "address_hint": "Köln Ehrenfeld",
+    "prices": {},
+    "other": ["Terrasse bei gutem Wetter"]
+  },
+  "contact": { "cta": "visit", "whatsapp_link": "https://wa.me/490000000002" },
+  "special_dates": []
+}

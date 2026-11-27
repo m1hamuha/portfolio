@@ -73,13 +73,14 @@ export const NICHES = {
 
 export const LANG_NAMES = { de: "German", en: "English", ru: "Russian", uk: "Ukrainian" };
 
-/* Call to action lines. {wa} is the owner's wa.me link, {hours} from facts. */
+/* Call to action lines. {hours} from facts. Links in Instagram captions are not clickable,
+   so the WhatsApp line points to the button or link in the profile (Mikhail sets it up once). */
 export const CTA = {
   whatsapp: {
-    de: "Schreib uns auf WhatsApp: {wa}",
-    en: "Message us on WhatsApp: {wa}",
-    ru: "Пишите нам в WhatsApp: {wa}",
-    uk: "Пишіть нам у WhatsApp: {wa}",
+    de: "Schreib uns auf WhatsApp, der Button ist im Profil.",
+    en: "Message us on WhatsApp, the button is in our profile.",
+    ru: "Пишите нам в WhatsApp, кнопка в профиле.",
+    uk: "Пишіть нам у WhatsApp, кнопка в профілі.",
   },
   visit: {
     de: "Komm vorbei! {hours}",

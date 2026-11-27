@@ -1,0 +1,18 @@
+{
+  "id": "elektro-andy",
+  "name": "Elektro Andy Beispiel",
+  "niche": "trades",
+  "lang": "de",
+  "langs": ["de", "ru"],
+  "color": "#c25b00",
+  "tagline": { "de": "Elektriker für Wohnung und Haus", "ru": "Электрик для квартиры и дома" },
+  "phone": "0176 0000000",
+  "whatsapp": "0176 0000000",
+  "hide_address": true,
+  "address": { "city": "Musterstadt" },
+  "service_area": ["Musterstadt", "Beispieldorf", "Nebenort"],
+  "hours": { "mo": ["07:00-17:00"], "tu": ["07:00-17:00"], "we": ["07:00-17:00"], "th": ["07:00-17:00"], "fr": ["07:00-15:00"], "sa": [], "su": [] },
+  "prices": [ { "items": [ { "name": { "de": "Anfahrt im Ort", "ru": "Выезд по городу" }, "price": 35 }, { "name": { "de": "Arbeitsstunde", "ru": "Час работы" }, "price": 55 } ] } ],
+  "legal": { "owner_name": "Andreas Beispiel", "email": "andy@example.com", "address": { "street": "Werkstattweg 9", "zip": "12345", "city": "Musterstadt" }, "chamber": "Handwerkskammer Beispiel", "register": "Handwerksrolle Nr. 0000" },
+  "gbp": { "category": "Elektriker" }
+}

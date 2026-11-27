@@ -17,12 +17,30 @@ export async function pauseChat(store, biz, user, hours) {
 /* msg: { channel: "whatsapp"|"web", user, name?, phone?, text?, type? }
    ctx: { biz, llm, calendar, store, notify(text), now } */
 export async function handle(msg, ctx) {
+  /* never lose a customer message: if anything below throws (calendar down, KV error, bad config),
+     the customer still gets the polite fallback and the owner is told */
+  try {
+    return await handleInner(msg, ctx);
+  } catch (e) {
+    const biz = ctx.biz;
+    const lang = msg.lang && LANGS.includes(msg.lang) ? msg.lang : guessLang(msg.text, biz);
+    const contact = msg.channel === "whatsapp" ? `wa.me/${msg.user}` : msg.phone || "site chat";
+    const res = { replies: [t(biz, lang, "error")], notified: [], intent: "error", error: String(e && e.message || e) };
+    const note = `${biz.name}: the bot failed (${res.error.slice(0, 120)}), please answer ${contact}: "${String(msg.text || "").slice(0, 200)}"`;
+    res.notified.push(note);
+    try { if (ctx.notify) await ctx.notify(note); } catch (e2) { console.log("notify failed", e2 && e2.message); }
+    return res;
+  }
+}
+
+async function handleInner(msg, ctx) {
   const { biz, store } = ctx;
   const now = ctx.now || new Date();
   const key = `${biz.id}:${msg.user}`;
   const res = { replies: [], notified: [], intent: null };
   const say = (s) => res.replies.push(s);
-  const tell = async (s) => { res.notified.push(s); if (ctx.notify) await ctx.notify(s); };
+  /* a failing owner alert must not cancel the answer to the customer (the booking may already exist) */
+  const tell = async (s) => { res.notified.push(s); try { if (ctx.notify) await ctx.notify(s); } catch (e) { console.log("notify failed", e && e.message); } };
   const contact = msg.channel === "whatsapp" ? `wa.me/${msg.user}` : msg.phone || msg.email || "site chat";
 
   if (await store.get(`x:${key}`)) return { ...res, intent: "paused" };

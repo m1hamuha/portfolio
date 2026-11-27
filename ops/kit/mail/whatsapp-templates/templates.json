@@ -1,13 +1,13 @@
 {
-  "_about": "Templates to submit to Meta once per client (WhatsApp Manager or submit-templates.mjs). {{BUSINESS}} is replaced by the business name before submitting. Utility = reminders about an existing booking (no offers inside, or Meta re-classifies as marketing). Marketing = come-back invites, only to people who agreed to offers.",
+  "_about": "Meta rejects a body that starts or ends with a variable ({{1}}), so every body starts and ends with fixed text. Templates to submit to Meta once per client (WhatsApp Manager or submit-templates.mjs). {{BUSINESS}} is replaced by the business name before submitting. Utility = reminders about an existing booking (no offers inside, or Meta re-classifies as marketing). Marketing = come-back invites, only to people who agreed to offers.",
   "reminder_day_before": {
     "category": "UTILITY",
     "params": ["name", "date", "time"],
     "example": ["Anna", "28.11.", "14:00"],
     "buttons": { "ru": ["Приду", "Нужно другое время"], "uk": ["Прийду", "Потрібен інший час"], "de": ["Ich komme", "Anderer Termin"], "en": ["I'll come", "Need another time"] },
     "body": {
-      "ru": "{{1}}, здравствуйте! Напоминаем о записи в {{BUSINESS}}: завтра, {{2}}, в {{3}}. Если не получается, нажмите кнопку или ответьте на сообщение.",
-      "uk": "{{1}}, вітаємо! Нагадуємо про запис у {{BUSINESS}}: завтра, {{2}}, о {{3}}. Якщо не виходить, натисніть кнопку або дайте відповідь на повідомлення.",
+      "ru": "Здравствуйте, {{1}}! Напоминаем о записи в {{BUSINESS}}: завтра, {{2}}, в {{3}}. Если не получается, нажмите кнопку или ответьте на сообщение.",
+      "uk": "Вітаємо, {{1}}! Нагадуємо про запис у {{BUSINESS}}: завтра, {{2}}, о {{3}}. Якщо не виходить, натисніть кнопку або дайте відповідь на повідомлення.",
       "de": "Hallo {{1}}, wir erinnern an Ihren Termin bei {{BUSINESS}}: morgen, {{2}}, um {{3}} Uhr. Falls es nicht passt, tippen Sie unten oder antworten Sie auf diese Nachricht.",
       "en": "Hi {{1}}, a reminder of your appointment at {{BUSINESS}}: tomorrow, {{2}}, at {{3}}. If it doesn't suit you, tap below or reply to this message."
     }
@@ -18,8 +18,8 @@
     "example": ["Igor", "20:00"],
     "buttons": { "ru": ["Буду", "НЕТ"], "uk": ["Буду", "НІ"], "de": ["Ich komme", "NEIN"], "en": ["See you", "NO"] },
     "body": {
-      "ru": "{{1}}, здравствуйте! Ждём вас сегодня в {{2}}, {{BUSINESS}}. Если планы изменились, нажмите НЕТ.",
-      "uk": "{{1}}, вітаємо! Чекаємо на вас сьогодні о {{2}}, {{BUSINESS}}. Якщо плани змінилися, натисніть НІ.",
+      "ru": "Здравствуйте, {{1}}! Ждём вас сегодня в {{2}}, {{BUSINESS}}. Если планы изменились, нажмите НЕТ.",
+      "uk": "Вітаємо, {{1}}! Чекаємо на вас сьогодні о {{2}}, {{BUSINESS}}. Якщо плани змінилися, натисніть НІ.",
       "de": "Hallo {{1}}, wir erwarten Sie heute um {{2}} Uhr, {{BUSINESS}}. Falls sich etwas geändert hat, tippen Sie NEIN.",
       "en": "Hi {{1}}, see you today at {{2}}, {{BUSINESS}}. If plans changed, tap NO."
     }
@@ -29,8 +29,8 @@
     "params": ["name", "time"],
     "example": ["Anna", "10:00"],
     "body": {
-      "ru": "{{1}}, здравствуйте, напоминаем: завтра в {{2}}, {{BUSINESS}}. Ответьте 1, если придёте, или 2, чтобы перенести время.",
-      "uk": "{{1}}, вітаємо, нагадуємо: завтра о {{2}}, {{BUSINESS}}. Дайте відповідь 1, якщо прийдете, або 2, щоб перенести час.",
+      "ru": "Здравствуйте, {{1}}, напоминаем: завтра в {{2}}, {{BUSINESS}}. Ответьте 1, если придёте, или 2, чтобы перенести время.",
+      "uk": "Вітаємо, {{1}}, нагадуємо: завтра о {{2}}, {{BUSINESS}}. Дайте відповідь 1, якщо прийдете, або 2, щоб перенести час.",
       "de": "Hallo {{1}}, kurze Erinnerung: morgen um {{2}} Uhr, {{BUSINESS}}. Antworten Sie 1 zum Bestätigen oder 2 zum Verschieben.",
       "en": "Hi {{1}}, a reminder: tomorrow at {{2}}, {{BUSINESS}}. Reply 1 to confirm or 2 to change the time."
     }
@@ -51,8 +51,8 @@
     "params": ["name"],
     "example": ["Sarah"],
     "body": {
-      "ru": "{{1}}, здравствуйте! Давно не виделись в {{BUSINESS}}. Записать вас на удобный день? Напишите, когда удобно. Не хотите таких сообщений, ответьте СТОП.",
-      "uk": "{{1}}, вітаємо! Давно не бачились у {{BUSINESS}}. Записати вас на зручний день? Напишіть, коли зручно. Не хочете таких повідомлень, дайте відповідь СТОП.",
+      "ru": "Здравствуйте, {{1}}! Давно не виделись в {{BUSINESS}}. Записать вас на удобный день? Напишите, когда удобно. Не хотите таких сообщений, ответьте СТОП.",
+      "uk": "Вітаємо, {{1}}! Давно не бачились у {{BUSINESS}}. Записати вас на зручний день? Напишіть, коли зручно. Не хочете таких повідомлень, дайте відповідь СТОП.",
       "de": "Hallo {{1}}, lange nicht gesehen bei {{BUSINESS}}! Sollen wir einen Termin eintragen? Schreiben Sie, wann es passt. Keine solchen Nachrichten mehr? Antworten Sie STOP.",
       "en": "Hi {{1}}, long time no see at {{BUSINESS}}. Shall we book you in? Tell us a day that suits you. Don't want these messages? Reply STOP."
     }
@@ -62,8 +62,8 @@
     "params": ["name"],
     "example": ["Igor"],
     "body": {
-      "ru": "{{1}}, здравствуйте! Давно вас не было в {{BUSINESS}}. Следующий кофе за нами. Не хотите таких сообщений, ответьте СТОП.",
-      "uk": "{{1}}, вітаємо! Давно вас не було в {{BUSINESS}}. Наступна кава від нас. Не хочете таких повідомлень, дайте відповідь СТОП.",
+      "ru": "Здравствуйте, {{1}}! Давно вас не было в {{BUSINESS}}. Следующий кофе за нами. Не хотите таких сообщений, ответьте СТОП.",
+      "uk": "Вітаємо, {{1}}! Давно вас не було в {{BUSINESS}}. Наступна кава від нас. Не хочете таких повідомлень, дайте відповідь СТОП.",
       "de": "Hallo {{1}}, lange nicht gesehen bei {{BUSINESS}}! Ihr nächster Kaffee geht auf uns. Keine solchen Nachrichten mehr? Antworten Sie STOP.",
       "en": "Hi {{1}}, long time no see at {{BUSINESS}}. Your next coffee is on us. Don't want these messages? Reply STOP."
     }

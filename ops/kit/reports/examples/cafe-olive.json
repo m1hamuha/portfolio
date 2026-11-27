@@ -1,0 +1,13 @@
+{
+  "kind": "stock",
+  "lang": "ru",
+  "business": { "name": "Cafe Olive (example)" },
+  "owner_email": "owner@example.com",
+  "staff": ["Barista 1", "Barista 2", "Barista 3"],
+  "tolerance": 0.1,
+  "items": [
+    { "id": "milk", "name": "Молоко", "unit": "л", "price": 1.15, "plan_week": 30 },
+    { "id": "beans", "name": "Кофе в зёрнах", "unit": "кг", "price": 19.5, "plan_week": 6 },
+    { "id": "cups", "name": "Стаканы 0,3", "unit": "шт", "price": 0.09, "plan_week": 400 }
+  ]
+}

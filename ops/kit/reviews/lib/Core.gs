@@ -48,7 +48,7 @@ var ASK = {
     bye: { informal: "Thanks!", formal: "Thank you!" }
   },
   de: {
-    hi: { informal: "Hallo{N}!", formal: "Guten Tag{N},", },
+    hi: { informal: "Hallo{N}!", formal: "Guten Tag{N}!" },
     thanks: {
       visit: { informal: "Danke für deinen Besuch!", formal: "Vielen Dank für Ihren Besuch!" },
       purchase: { informal: "Danke für deinen Einkauf!", formal: "Vielen Dank für Ihren Einkauf!" },
@@ -91,7 +91,6 @@ function askText(biz, opts) {
   var ctx = biz.ask_context || ASK_CONTEXT_BY_NICHE[biz.niche] || "visit";
   var name = opts.name ? String(opts.name).trim() : "";
   var hi = pick(L.hi, tone).replace("{N}", name ? ", " + name : "");
-  if (lang === "de" && !name && tone === "formal") hi = "Guten Tag,";
   var lines = [hi + " " + pick(L.thanks[ctx], tone), pick(L.ask, tone) + " " + (opts.link || reviewUrl(biz)), pick(L.bye, tone) + " " + (biz.signature || biz.name)];
   return lines.join("\n");
 }
@@ -114,7 +113,7 @@ var ASK_RULES = [
   { id: "stars", re: /(5|five|fünf|пять|п'ять)[ -]?(stars?|sterne?n?|звезд\S*|зір\S*)/i, why: "asks for a star count" },
   { id: "gating", re: /(if you (were|are|liked|enjoyed)|if (you're|you are) (happy|satisfied)|wenn (du|sie) zufrieden|wenn es (dir|ihnen) gefallen|если (вам|тебе) понравил|если (вы|ты) доволь|якщо (вам|тобі) сподоба|якщо (ви|ти) задоволен|only (positive|happy)|nur (positive|zufriedene))/i, why: "asks only satisfied customers (review gating)" },
   { id: "staff", re: /(mention|name of|erwähn|nenne|упомян|назов|згада)/i, why: "asks to mention staff or content (Google: not allowed)" },
-  { id: "dash", re: /[–—]/, why: "long dash" }
+  { id: "dash", re: /[\u2013\u2014]/, why: "long dash" }
 ];
 
 function lintAsk(text) {
@@ -168,7 +167,7 @@ function checkReply(biz, review, draft) {
   var problems = [];
   var reply = draft && typeof draft.reply === "string" ? draft.reply.trim() : "";
   if (!reply) problems.push("empty");
-  reply = reply.replace(/[–—]/g, ",").replace(/^["«„]+|["»“]+$/g, "");
+  reply = reply.replace(/[\u2013\u2014]/g, ",").replace(/^["«„]+|["»“]+$/g, "");
   if (reply.length > 4000) problems.push("too long for Google (4096 chars max)");
   if ((biz.niche === "clinic" || biz.health_guard) && HEALTH_WORDS.test(reply)) problems.push("health: mentions treatment or patient status");
   if (/(discount|rabatt|gutschein|скидк|знижк)/i.test(reply) && !(biz.allowed_offers && biz.allowed_offers.length)) problems.push("offer not allowed by owner");

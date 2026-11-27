@@ -1,4 +1,4 @@
-/* Builds the two things to paste into a Gemini Gem (or its successor, a Gemini "Skill") or a NotebookLM notebook:
+/* Builds the two things for a NotebookLM notebook (main route since Gems closed on 17.11.2026) or a Gemini Skill:
    1) instructions.txt  2) rules-<id>.md (upload as the knowledge file / source).
    Usage: node gem/build-gem.mjs kb/cleaning-blitz.json out/   (no network) */
 import fs from "node:fs";
@@ -18,7 +18,8 @@ If someone types a customer's name, address or phone number, remind them not to 
 }
 
 export function rulesMarkdown(kb) {
-  const out = [`# ${kb.name}: rules for the team`, ""];
+  /* the answer rules go first too: NotebookLM has no instruction field in every account, so the source carries them */
+  const out = [`# ${kb.name}: rules for the team`, "", "## How the helper answers", instructions(kb), ""];
   for (const s of kb.sections) out.push(`## ${s.title}${s.page ? ` (${s.source}, page ${s.page})` : ` (${s.source})`}`, s.text, "");
   return out.join("\n");
 }

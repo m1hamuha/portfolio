@@ -1,0 +1,21 @@
+{
+  "id": "tierbedarf-eck",
+  "name": "Tierbedarf Eck Beispiel",
+  "niche": "shop",
+  "lang": "de",
+  "langs": ["de", "en"],
+  "color": "#3f6b2f",
+  "tagline": { "de": "Futter und Zubehör für Hund und Katze", "en": "Food and supplies for dogs and cats" },
+  "phone": "+49 30 0000000",
+  "whatsapp": "+49 160 0000000",
+  "email": "laden@example.com",
+  "address": { "street": "Eckweg 5", "zip": "12345", "city": "Musterstadt" },
+  "hours": { "mo": ["09:00-20:00"], "tu": ["09:00-20:00"], "we": ["09:00-20:00"], "th": ["09:00-20:00"], "fr": ["09:00-20:00"], "sa": ["09:00-16:00"], "su": [] },
+  "prices_endpoint": "https://script.google.com/macros/s/FAKE_SHOP_DEPLOYMENT/exec",
+  "prices": [
+    { "group": { "de": "Hundefutter", "en": "Dog food" }, "items": [ { "name": { "de": "Trockenfutter 15 kg", "en": "Dry food 15 kg" }, "price": 39 } ] }
+  ],
+  "photos": [ { "file": "photos/shop-1.svg", "alt": { "de": "Unser Laden von innen", "en": "Inside our shop" } } ],
+  "legal": { "owner_name": "Max Beispiel", "email": "laden@example.com", "vat_id": "DE000000000" },
+  "gbp": { "category": "Tierbedarfsgeschäft" }
+}

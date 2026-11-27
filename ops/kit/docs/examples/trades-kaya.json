@@ -1,0 +1,29 @@
+{
+  "mode": "items",
+  "ui_lang": "ru",
+  "doc_lang": "de",
+  "customer_lang": "de",
+  "country_code": "49",
+  "business": {
+    "name": "Fliesen Kaya (example)",
+    "address": "Musterstraße 1, 12345 Musterstadt",
+    "contact": "Tel. 0000 000000, info@example.com",
+    "tax_no": "00/000/00000",
+    "iban": "DE00 0000 0000 0000 0000 00",
+    "sign": "Kaya, Fliesen"
+  },
+  "vat": { "mode": "regular", "rate": 19 },
+  "quote_valid_days": 30,
+  "pay_days": 14,
+  "stages": [1, 14, 28],
+  "follow_days": 5,
+  "prices": [
+    { "id": "tiles", "name": "Fliesen verlegen inkl. Kleber", "unit": "m²", "price": 55 },
+    { "id": "tap", "name": "Waschtischarmatur montieren", "unit": "Stk", "price": 95 },
+    { "id": "day", "name": "Arbeitstag (8 Std.)", "unit": "Tag", "price": 360 },
+    { "id": "removal", "name": "Altbelag entfernen und entsorgen", "unit": "m²", "price": 18 },
+    { "id": "travel", "name": "Anfahrt", "unit": "", "price": 25 }
+  ],
+  "free_rows": 3,
+  "footer": "Vielen Dank für Ihr Vertrauen."
+}

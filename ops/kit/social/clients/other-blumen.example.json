@@ -1,0 +1,20 @@
+{
+  "_note": "Fake example. Niche other: posts with dates go to the owner, he posts himself.",
+  "id": "other-blumen",
+  "name": "Blumen Oksana",
+  "niche": "other",
+  "city": "Bremen",
+  "plan": "plan1",
+  "channels": ["instagram", "facebook"],
+  "publish": "owner",
+  "owner_language": "uk",
+  "post_language": "de",
+  "voice": "warm and simple",
+  "emoji": "one flower at most",
+  "hashtags": ["#bremen", "#blumenbremen"],
+  "max_hashtags": 4,
+  "schedule": { "weekdays": ["tue", "fri"], "posts_per_month": 8, "time": "10:00" },
+  "facts": { "hours": "Mo-Sa 9-19 Uhr", "address_hint": "Bremen Findorff", "prices": {}, "other": ["Bestellung per WhatsApp möglich"] },
+  "contact": { "cta": "whatsapp", "whatsapp_link": "https://wa.me/490000000005" },
+  "special_dates": []
+}

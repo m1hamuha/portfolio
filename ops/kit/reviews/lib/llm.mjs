@@ -8,11 +8,12 @@ const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
 export function makeLLM(env = process.env, fetchImpl = globalThis.fetch) {
   const provider = env.LLM_PROVIDER || "anthropic";
   if (provider === "anthropic") {
-    /* Haiku is enough for short replies; set LLM_MODEL=claude-sonnet-5-5 for hard, angry reviews */
+    /* Haiku is enough for short replies; set LLM_MODEL=claude-sonnet-5-5 for hard, angry reviews.
+       Haiku 5.5 thinks by default and thinking counts against max_tokens, so keep max_tokens well above the reply length. */
     const model = env.LLM_MODEL || "claude-haiku-5-5";
     return {
       name: `anthropic:${model}`,
-      async complete({ system, content, maxTokens = 800 }) {
+      async complete({ system, content, maxTokens = 2000 }) {
         if (!env.ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY is not set");
         const res = await fetchImpl(env.ANTHROPIC_URL || ANTHROPIC_URL, {
           method: "POST",

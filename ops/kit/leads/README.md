@@ -9,7 +9,14 @@
 - `worker/` - Cloudflare Worker (один на клиента): форма сайта, вебхуки Meta (Instagram, Facebook, WhatsApp Cloud API), Telegram-бот для бизнес-чатов. Пересылает заявку строкой в таблицу.
 - `site-form/form.html` - готовая форма для сайта клиента (с ловушкой для ботов и галочкой согласия).
 - `config/*.example.json` - примеры для всех 6 ниш (вымышленные данные).
-- `test/` - офлайн-тесты: `node --test ops/kit/leads/test/*.test.mjs` (15 тестов, все проходят, сеть замокана).
+- `test/` - офлайн-тесты: `node --test ops/kit/leads/test/*.test.mjs` (20 тестов, все проходят, сеть замокана).
+
+Проверка скептиком 27.11.2026, исправлено:
+- Worker раньше считал заявку сохранённой при любом HTTP 200, а Apps Script отвечает 200 даже на «неверный секрет». Теперь Worker ждёт `{ok:true}`, повторяет до 3 раз, форма сайта при сбое показывает посетителю «не отправилось, позвоните» вместо ложного «спасибо», Telegram получает 500 и пришлёт сообщение ещё раз, по Meta уходит тревога владельцу (`ALERT_BOT_TOKEN`, `ALERT_CHAT_ID`).
+- Сбой уведомления (Telegram недоступен, лимит почты) больше не роняет запись заявки; занятая блокировка отвечает `busy`, Worker повторяет.
+- В бизнес-чатах Telegram ответы владельца и сотрудников отсекаются по `chat.id`, даже если `TG_OWNER_ID` не заполнен.
+- Instagram API с входом через Instagram подписывает вебхуки секретом Instagram-приложения: добавлен `IG_APP_SECRET`.
+- Вызов claude-haiku-5-5 с `thinking: {type: "disabled"}`: у Haiku 5.5 мышление включено по умолчанию и съело бы весь лимит токенов на короткую сводку.
 
 ## 1. Что именно получает клиент
 
@@ -74,13 +81,13 @@
 | Google Таблица, Gmail, Apps Script | 0 € | [квоты Apps Script](https://developers.google.com/apps-script/guides/services/quotas) |
 | Cloudflare Workers Free | 0 € | developers.cloudflare.com, не открывал сегодня |
 | Telegram-бот | 0 € | [Bot API](https://core.telegram.org/bots/api) |
-| Telegram Business, подключённый бот | по документации Telegram подключённые бизнес-боты доступны и без Premium ([core.telegram.org](https://core.telegram.org/api/bots/connected-business-bots)); остальные функции Business входят в Premium, около 4,99 $ в месяц по данным 2024 ([TechCrunch](https://techcrunch.com/2024/04/01/chat-app-telegram-challenges-meta-with-the-launch-of-new-business-features-and-revenue-sharing/)), цену в Германии проверить в приложении |
+| Telegram Business, подключённый бот | источники расходятся: по [SendPulse](https://sendpulse.com/en/knowledge-base/chatbot/telegram/telegram-business) с 8.05.2026 Premium для подключения бота не нужен, по changelog [chat-data](https://www.chat-data.com/changelog/telegram-business-support) от 12.05.2026 нужен. Не проверено. Если нужен Premium, это около 4,99 $ в месяц по данным 2024 ([TechCrunch](https://techcrunch.com/2024/04/01/chat-app-telegram-challenges-meta-with-the-launch-of-new-business-features-and-revenue-sharing/)). Проверить в приложении клиента на звонке до оплаты |
 | Google Workspace (clinic обязательно) | 6,80 € пользователь/мес при оплате за год, 8,10 € помесячно | [workspace.google.com](https://workspace.google.com/intl/en_ie/pricing.html) |
 | Instagram / Facebook API | 0 € | плата только временем на App Review |
 | WhatsApp входящие от клиентов | бесплатно; ответы через приложение при coexistence бесплатно | [360dialog](https://docs.360dialog.com/docs/resources/phone-numbers/coexistence) |
 | Партнёр WhatsApp | 360dialog 49 € в месяц за номер; Telnyx, Twilio без абонентской платы, около 0,004-0,005 $ за сообщение, входящие тоже считаются | [360dialog.com/pricing](https://360dialog.com/pricing), [telnyx](https://telnyx.com/resources/best-whatsapp-api-provider) |
 | Альтернатива для Instagram без App Review: ManyChat + интеграция с Google Sheets | с 2.03.2026 новые тарифы, по данным третьих сторон Essential 17 $, Pro 39 $ в месяц, старый Pro 15 $; интеграция с Sheets на платном тарифе | [featurebase](https://www.featurebase.app/blog/manychat-pricing), [g2](https://www.g2.com/products/manychat/pricing); официальную страницу открыть не удалось |
-| ИИ (по желанию) | доли цента на письмо с claude-haiku-5-5; при 300 письмах в месяц меньше 1 € | цену модели сверить на anthropic.com перед включением, не проверено |
+| ИИ (по желанию) | claude-haiku-5-5: 0,10 $ за 1 млн входных токенов, 0,50 $ за 1 млн выходных (справочник Anthropic, данные на 3.11.2026). 300 писем по 1000 токенов в месяц = около 0,03 $ | [anthropic.com/pricing](https://www.anthropic.com/pricing); ключ API на аккаунте клиента, нужен минимальный платёж Anthropic, сумму проверить при включении |
 
 ## 7. Ограничения, право, правила платформ
 
@@ -90,7 +97,9 @@
   - Instagram Direct: технически да (вебхук `messages`), но в режиме Standard Access вебхуки приходят только от людей с ролью в приложении ([Meta Messenger webhooks](https://developers.facebook.com/documentation/business-messaging/messenger-platform/webhooks), [App Review Instagram](https://developers.facebook.com/documentation/instagram-platform/app-review)). Для сообщений от всех людей нужен Advanced Access через App Review и Business Verification. На форуме Meta есть жалобы, что вебхуки Instagram приходят не всегда ([тред](https://developers.facebook.com/community/threads/2029428894384878/)). Поэтому в обещание за 29 € без расходов не входит.
   - Facebook Messenger: то же самое (App Review для `pages_messaging`). Если вебхук долго падает, Meta отписывает приложение, нужен контроль.
   - WhatsApp: личный номер или приложение WhatsApp Business без API читать автоматически нельзя. Только номер на Cloud API (с coexistence приложение продолжает работать). Неофициальные способы через веб-версию нарушают правила WhatsApp, номер блокируют.
-  - Telegram: бот видит личные чаты владельца только через Telegram Business (подключённый бот). Сообщения в группах и каналах не берём.
+  - Telegram: бот видит личные чаты владельца только через Telegram Business (подключённый бот). Сообщения в группах и каналах не берём. Нужен ли для этого Premium в 2026 году, источники расходятся (см. раздел 6).
+- Facebook-страница и Instagram сами шлют администратору письма о новых сообщениях (если это включено в настройках уведомлений). Такое письмо Gmail-фильтр может забрать как заявку, без App Review. Текст и формат этих писем не проверены: проверить на первом заказе, обещанием это не считать.
+- Telegram не подписывает договор обработки данных. Для налоговых консультантов, бухгалтеров и врачей (§ 203 StGB) имя и текст заявки в Telegram не отправлять: `notify.detail: "minimal"` или уведомление письмом (пуш Gmail на телефоне).
 - Meta WhatsApp: входящие от клиента открывают окно 24 часа; набор ничего клиентам не отправляет, только читает. Ответы владелец пишет сам в приложении.
 - GDPR:
   - Заявки = персональные данные. Основание: подготовка договора (ст. 6(1)(b)). На форме галочка и ссылка на Datenschutzerklärung; в Datenschutzerklärung упомянуть Google, Cloudflare, Telegram, Meta.
@@ -102,14 +111,16 @@
 
 ## 8. Таблица выполнимости
 
+Пересмотрено скептиком 27.11.2026. Цена 29 € разово.
+
 | Пункт | Статус | Почему | Исправленное обещание (en / ru) |
 |---|---|---|---|
-| trades.leads | as-written | Gmail-фильтр + ярлык, форма через Worker, быстрая заявка из Google Формы, сортировка и напоминание перезвонить по смете. Бесплатно. | |
-| cleaning.leads | as-written | То же, строка: имя, телефон, что нужно, какой день. | |
-| office.leads | as-written | Почта раз в 5 минут, форма сразу, уведомление в Telegram. Telegram без DPA: при желании краткое уведомление. | |
-| clinic.leads | needs-caveat | Сайт и почта работают. Facebook требует App Review и Business Verification у Meta, срок и исход не гарантированы. Данные о здоровье: Workspace с договором (это и есть fee), уведомление без текста. | en: Requests from new patients via your site and email in one list on your phone. Facebook joins once Meta approves it / ru: Запросы новых пациентов с сайта и почты в одной таблице в телефоне. Facebook добавим, когда Meta одобрит доступ |
-| fitness.leads | needs-caveat | Почта бесплатно. Instagram автоматически только после App Review или через платный сервис, WhatsApp только с номером на Cloud API (платный партнёр). На карточке нет fee. | en: Requests from email and your site land in one list by themselves. Instagram and WhatsApp chats you add in 10 seconds / ru: Заявки с почты и сайта сами попадают в один список. Чаты из Instagram и WhatsApp добавляешь за 10 секунд |
-| other.leads | needs-caveat | Telegram (Business-бот) и почта работают бесплатно. WhatsApp только через партнёра с coexistence: абонентка или плата за сообщения, доступность подключения проверять. | en: Customer messages from Telegram and email in one list. WhatsApp joins via a paid partner / ru: Сообщения клиентов из Telegram и почты в одном списке. WhatsApp подключается через платного партнёра |
+| trades.leads | as-written | Gmail-фильтр + ярлык, письма не двигаются; форма через Worker; звонки и WhatsApp мастер вносит через быструю Google Форму. Сортировка и «перезвонить по смете» работают. Бесплатно. Если почта не Gmail (GMX, web.de, T-Online), нужна пересылка в Gmail клиента, проверить на звонке. | |
+| cleaning.leads | as-written | То же. Имя, телефон и день разложены по колонкам, если их спрашивает форма сайта; из свободного письма день и телефон видны в тексте «что нужно». | |
+| office.leads | needs-caveat | Технически работает: форма за секунды, почта раз в 5 минут, не «сразу». Но офис = чаще всего налоговый консультант или бухгалтер (§ 203 StGB), а Telegram не даёт договора обработки данных: имя и текст заявки туда отправлять нельзя. Полное уведомление делаем пушем Gmail на телефон (Google с договором в Workspace), в Telegram только «новая заявка, открыть список». | en: Anyone who writes via your website or email shows up on your phone within 5 minutes / ru: Кто написал тебе с сайта или на почту, через 5 минут виден в твоём телефоне |
+| clinic.leads | needs-caveat | Сайт и почта работают. Facebook автоматически только после App Review и Business Verification у Meta: часы работы, исход не гарантирован, за 29 € не обещать. Данные о здоровье: Workspace с договором (это и есть fee), уведомление без текста, ИИ выключен. | en: Requests from new patients via your site and email in one list on your phone. Facebook messages you add in seconds / ru: Запросы новых пациентов с сайта и почты в одной таблице в телефоне. Сообщения из Facebook добавляешь за секунды |
+| fitness.leads | needs-caveat | Почта бесплатно. Instagram Direct автоматически только с Advanced Access (App Review и Business Verification); в Standard Access вебхуки приходят только от людей с ролью в приложении. WhatsApp только с номером на Cloud API (платный партнёр). На карточке нет fee. | en: Requests from email and your site land in one list by themselves. Instagram and WhatsApp chats you add in 10 seconds / ru: Заявки с почты и сайта сами попадают в один список. Чаты из Instagram и WhatsApp добавляешь за 10 секунд |
+| other.leads | needs-caveat | Telegram (бот в Telegram Business) и почта работают; нужен ли Premium, не проверено. WhatsApp только через партнёра с coexistence (360dialog 49 € в месяц или поштучно), это больше цены услуги за 2 месяца. | en: Customer messages from Telegram and email in one list. WhatsApp joins via a paid partner / ru: Сообщения клиентов из Telegram и почты в одном списке. WhatsApp подключается через платного партнёра |
 
 Апгрейд за отдельные деньги (не на карточке): «Instagram автоматически» после App Review (+1 день работы, ожидание Meta) или через ManyChat (клиент платит ManyChat).
 
@@ -121,5 +132,5 @@
 - `health: true` - клиника: минимальные уведомления, ИИ запрещён.
 - `llm.enabled`, `llm.provider`, `llm.model` - по умолчанию выключено.
 - Script Properties: `CONFIG_JSON`, `LEADS_SECRET` (создаёт `setupLeads()`), `TG_BOT_TOKEN`, `LLM_API_KEY`, `SHEET_ID`.
-- Worker secrets: `LEADS_SECRET`, `META_APP_SECRET`, `META_VERIFY_TOKEN`, `TG_SECRET`, `IG_TOKEN`, `LLM_API_KEY`. Vars в `wrangler.toml`.
+- Worker secrets: `LEADS_SECRET`, `META_APP_SECRET`, `IG_APP_SECRET`, `META_VERIFY_TOKEN`, `TG_SECRET`, `IG_TOKEN`, `LLM_API_KEY`, `ALERT_BOT_TOKEN`. Vars в `wrangler.toml` (в том числе `ALERT_CHAT_ID`).
 - Apps Script веб-приложение отвечает на POST через редирект на googleusercontent.com; Worker идёт по редиректу (`redirect: "follow"`), запись в таблицу уже произошла до редиректа.

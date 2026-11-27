@@ -1,0 +1,21 @@
+{
+  "_note": "Fake example. Niche other: WhatsApp or Drive in, Drive out plus a WhatsApp message.",
+  "id": "other-blumen",
+  "name": "Blumen Oksana",
+  "niche": "other",
+  "city": "Bremen",
+  "owner_language": "uk",
+  "post_language": "de",
+  "voice": "warm and simple",
+  "emoji": "one flower at most",
+  "hashtags": ["#bremen", "#blumenbremen"],
+  "max_hashtags": 3,
+  "facts": { "hours": "Mo-Sa 9-19 Uhr", "prices": {}, "other": [] },
+  "delivery": "drive",
+  "content": {
+    "sizes": ["feed", "story"],
+    "crop": "cover",
+    "clip": { "max_seconds": 15, "mode": "blur", "audio": "mute" },
+    "slideshow": { "enabled": true, "min": 3, "max": 5 }
+  }
+}

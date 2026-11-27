@@ -147,7 +147,11 @@ test("trades: yearly check-up e-mail with unsubscribe that works", () => {
   assert.match(m.subject, /jährliche Wartung/);
   const u = new URL(m.body.match(/https:\/\/x\.test\S+/)[0]);
   assert.equal(u.searchParams.get("a"), "u");
-  c.doGet({ parameter: Object.fromEntries(u.searchParams) });
+  const confirmPage = c.doGet({ parameter: Object.fromEntries(u.searchParams) }).html;
+  assert.equal(c.__book.getSheetByName("Optout").data.length, 1, "opening the link alone (mail scanner) must not unsubscribe");
+  const u2 = new URL(confirmPage.match(/href="([^"]+)"/)[1].replace(/&amp;/g, "&"));
+  assert.equal(u2.searchParams.get("a"), "uu");
+  c.doGet({ parameter: Object.fromEntries(u2.searchParams) });
   assert.equal(c.__book.getSheetByName("Optout").data[1][0], "e:peter@example.com");
   c.__book.getSheetByName("Log").data.length = 1; // even if the log was cleared
   assert.equal(run(c, "2026-11-28T10:00:00Z").sent.length, 0, "opted out");
@@ -247,6 +251,19 @@ test("clinic: no consent means no message; template carries only date and time",
   assert.equal(r.sent.length, 1); assert.equal(r.noChannel.length, 1);
   const body = JSON.parse(c.__sent.fetch[0].opts.payload);
   assert.deepEqual(body.template.components[0].parameters.map(p => p.text), ["28.11.", "10:30"]);
+});
+
+test("clinic (health: true): owner alerts never go to Telegram; no template starts or ends with a variable", () => {
+  const cfg = JSON.parse(cfgFile("clinic")); cfg.business.telegramChatId = "123";
+  const c = loadGas(gs, { props: { CONFIG_JSON: JSON.stringify(cfg), TG_BOT_TOKEN: "tg", LINK_SECRET: "s" } });
+  assert.equal(c.notifyOwner_("x", "Anna +49151 morgen 10:30", c.parseConfig(cfg)).ok, true);
+  assert.equal(c.__sent.fetch.filter(f => f.url.includes("api.telegram.org")).length, 0);
+  assert.equal(c.__sent.mail.length, 1);
+  const all = JSON.parse(fs.readFileSync(path.join(dir, "../whatsapp-templates/templates.json"), "utf8"));
+  for (const [k, t] of Object.entries(all)) if (k[0] !== "_") for (const [l, b] of Object.entries(t.body)) {
+    assert.doesNotMatch(b, /^\s*\{\{\d+\}\}/, k + " " + l + " starts with a variable (Meta rejects it)");
+    assert.doesNotMatch(b, /\{\{\d+\}\}[\s.!?]*$/, k + " " + l + " ends with a variable (Meta rejects it)");
+  }
 });
 
 test("setup creates sheets, secret and the hourly trigger", () => {

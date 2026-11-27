@@ -173,3 +173,21 @@ test("model failure: customer gets a polite fallback, owner is told", async () =
   assert.equal(r.intent, "error");
   assert.equal(notified.length, 1);
 });
+
+test("calendar down: customer still gets the fallback, owner is told, nothing throws", async () => {
+  const { ctx, notified } = setup("salon-lila", [J({ lang: "de", intent: "slots", service_id: "manicure", part_of_day: "any", reply: "" })]);
+  ctx.calendar = { kind: "apps_script", busy: async () => { throw new Error("apps_script: unauthorized"); }, book: async () => ({ ok: false }) };
+  const r = await handle({ channel: "whatsapp", user: "4915100000009", text: "Haben Sie Samstag Zeit für Maniküre?" }, ctx);
+  assert.equal(r.intent, "error");
+  assert.match(r.replies[0], /Entschuldigung/);
+  assert.match(notified[0], /failed .*unauthorized/);
+});
+
+test("owner alert failing does not cancel the booking confirmation", async () => {
+  const { ctx, biz } = setup("salon-lila", [J({ lang: "en", intent: "slots", service_id: "manicure", part_of_day: "any", reply: "" })]);
+  ctx.notify = async () => { throw new Error("telegram down"); };
+  await handle({ channel: "whatsapp", user: "4915100000010", text: "Any time for nails on Saturday?" }, ctx);
+  const r = await handle({ channel: "whatsapp", user: "4915100000010", text: "1" }, ctx);
+  assert.equal(r.intent, "booked");
+  assert.equal(biz.__events.length, 1);
+});

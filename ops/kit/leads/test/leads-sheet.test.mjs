@@ -96,6 +96,18 @@ test("quote follow-up rises after followUpDays, done goes down, a new message re
   assert.match(String(sh.data.find(x => x[5] === "Mark")[11]), /^2026-11-27$/);
 });
 
+test("doPost: a failing alert never loses the lead; a busy lock answers busy so the Worker retries", () => {
+  const c = loadGas(gs, { props: { CONFIG_JSON: cfgFile("office"), SHEET_ID: "x", LEADS_SECRET: "sec", TG_BOT_TOKEN: "t" } });
+  c.UrlFetchApp = { fetch: () => { throw new Error("DNS error"); } };
+  const res = JSON.parse(c.doPost({ postData: { contents: JSON.stringify({ secret: "sec", lead: { channel: "site", name: "Anna Klein", contact: "+49171234567", what: "Buchhaltung" } }) } }).text);
+  assert.equal(res.ok, true);
+  assert.equal(rows(c).length, 1);
+  c.LockService = { getScriptLock: () => ({ tryLock: () => false, releaseLock() {} }) };
+  const busy = JSON.parse(c.doPost({ postData: { contents: JSON.stringify({ secret: "sec", lead: { channel: "site", name: "B", contact: "+49171000000" } }) } }).text);
+  assert.deepEqual(busy, { ok: false, error: "busy" });
+  assert.equal(rows(c).length, 1);
+});
+
 test("doPost refuses a wrong secret and drops unsafe links", () => {
   const c = loadGas(gs, { props: { CONFIG_JSON: cfgFile("office"), SHEET_ID: "x", LEADS_SECRET: "sec" } });
   assert.match(c.doPost({ postData: { contents: JSON.stringify({ secret: "nope", lead: { name: "x" } }) } }).text, /forbidden/);
@@ -145,6 +157,7 @@ test("optional LLM filter: newsletters skipped, requests get a summary; mocked H
       assert.equal(url, "https://api.anthropic.com/v1/messages");
       const b = JSON.parse(o.payload);
       assert.equal(b.model, "claude-haiku-5-5"); assert.equal(o.headers["x-api-key"], "k");
+      assert.deepEqual(b.thinking, { type: "disabled" });
       const isNews = b.messages[0].content.includes("Black Friday");
       return { code: 200, body: { content: [{ type: "text", text: isNews ? '{"lead":false,"what":""}' : '{"lead":true,"what":"укоротить брюки к пятнице"}' }] } };
     }
@@ -166,4 +179,15 @@ test("setupLeads creates secret, sheet with localized header; files have no long
   const walk = d => fs.readdirSync(d, { withFileTypes: true }).flatMap(e => e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]);
   for (const f of walk(path.join(dir, ".."))) assert.ok(!DASHES.test(fs.readFileSync(f, "utf8")), "long dash in " + f);
   for (const n of ["trades", "cleaning", "office", "clinic", "fitness", "other"]) assert.ok(c.parseLeadsConfig(cfgFile(n)).business.name);
+});
+
+test("office: Telegram gets only 'new request', the e-mail alert has the details; clinic e-mail stays minimal", () => {
+  const sent = [];
+  const c = loadGas(gs, { props: { CONFIG_JSON: cfgFile("office"), SHEET_ID: "x", LEADS_SECRET: "sec", TG_BOT_TOKEN: "t" }, fetch: (u, o) => { sent.push(JSON.parse(o.payload).text); return { code: 200 }; } });
+  c.doPost({ postData: { contents: JSON.stringify({ secret: "sec", lead: { channel: "site", name: "Anna Klein", contact: "+49171234567", what: "Buchhaltung" } }) } });
+  assert.equal(sent.length, 1); assert.doesNotMatch(sent[0], /Anna/);
+  assert.match(c.__sent.mail[0].body, /Anna Klein/);
+  const k = loadGas(gs, { props: { CONFIG_JSON: JSON.stringify({ ...JSON.parse(cfgFile("clinic")), notify: { email: "praxis@example.com", detail: "minimal" } }), SHEET_ID: "x", LEADS_SECRET: "sec" } });
+  k.doPost({ postData: { contents: JSON.stringify({ secret: "sec", lead: { channel: "site", name: "Maria", what: "Rückenschmerzen" } }) } });
+  assert.doesNotMatch(k.__sent.mail[0].body, /Maria|Rücken/);
 });

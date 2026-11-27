@@ -108,3 +108,19 @@ test("Cal.com adapter reads free slots (mocked)", async () => {
   assert.equal(free[0].toISOString(), "2026-12-01T08:00:00.000Z");
   assert.equal(f.calls[0].init.headers.Authorization, "Bearer k");
 });
+
+test("Graph API refuses the answer: owner is told to answer by hand", async () => {
+  const tg = [];
+  const f = fakeFetch([
+    ["https://graph.facebook.com/", () => ({ __status: 401, error: { code: 190, message: "token expired" } })],
+    ["https://api.telegram.org/", (b) => { tg.push(b.text); return { ok: true }; }],
+  ]);
+  const env = freshEnv({ MOCK_REPLIES: [J({ intent: "answer", reply: "Hallo!" })], TG_TOKEN: "x", TG_CHAT_ID: "1" });
+  const { byPhoneNumberId } = await import("../businesses/index.js");
+  const biz = byPhoneNumberId("000000000000005"); const old = biz.notify; biz.notify = "telegram";
+  try {
+    const out = await processWhatsApp(waBody("000000000000005", "491700000077", "Hallo"), env, f);
+    assert.equal(out[0].ok, false);
+    assert.match(tg[0], /could not send its answer to wa\.me\/491700000077/);
+  } finally { biz.notify = old; }
+});

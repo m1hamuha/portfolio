@@ -1,5 +1,6 @@
 {
   "niche": "clinic",
+  "health": true,
   "business": { "name": "Praxis Beispiel", "ownerEmail": "praxis@example.com", "lang": "de" },
   "timezone": "Europe/Berlin",
   "defaultLang": "de",

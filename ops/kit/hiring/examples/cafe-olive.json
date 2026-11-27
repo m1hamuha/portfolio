@@ -1,0 +1,22 @@
+{
+  "niche": "cafe",
+  "langs": ["de", "en", "ru", "uk"],
+  "owner_lang": "ru",
+  "business": { "name": "Cafe Olive (example)", "city": "Musterstadt", "address": "Musterstraße 1, 12345 Musterstadt", "privacy_contact": "jobs@example.com" },
+  "job": {
+    "title": "Barista", "title_de": "Barista (m/w/d)",
+    "hours": "Mo bis Fr 7 bis 13 Uhr, 2 Samstage im Monat",
+    "pay": "14,50 € pro Stunde plus Trinkgeld",
+    "contract": "Teilzeit, ca. 25 Std./Woche",
+    "start": "1. Dezember",
+    "tasks": ["Kaffee und Frühstück zubereiten", "Kasse", "Theke sauber halten"],
+    "must": ["Erfahrung mit Siebträger oder Lust, es in 2 Wochen zu lernen", "pünktlich um 7 Uhr", "Deutsch für einfache Gespräche mit Gästen"],
+    "nice": ["Latte Art"],
+    "offer": ["feste Schichten", "Einarbeitung", "Kaffee gratis"],
+    "last_time": "people quit after 2 weeks because of the early start"
+  },
+  "form": { "lang": "de", "shift": "Mo bis Fr 7 bis 13 Uhr", "questions": ["start", "hours", "weekends", "experience", "german", "about"] },
+  "fit_rules": [ { "q": "hours", "in": ["Ja"] }, { "q": "start", "within_days": 30 } ],
+  "notify": { "mode": "email", "to": "owner@example.com", "all": false },
+  "retention_months": 6
+}

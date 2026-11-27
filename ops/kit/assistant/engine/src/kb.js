@@ -46,7 +46,7 @@ export async function ask(kb, question, { llm, log }) {
   const q = String(question || "").trim().slice(0, 800);
   if (!q) return { found: false, answer: "", sources: [] };
   let out = null;
-  try { out = parseJSON(await llm.complete({ system: systemBlocks(kb), messages: [{ role: "user", content: q }], maxTokens: 400 })); } catch { out = null; }
+  try { out = parseJSON(await llm.complete({ system: systemBlocks(kb), messages: [{ role: "user", content: q }], maxTokens: 800 })); } catch { out = null; }
   const lang = out && kb.languages.includes(out.lang) ? out.lang : guess(q, kb);
   const ids = out && Array.isArray(out.sources) ? out.sources.filter((id) => kb.sections.some((s) => s.id === id)) : [];
   /* an answer without a real source is treated as "not in the rules" */

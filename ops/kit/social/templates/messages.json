@@ -48,5 +48,11 @@
     "uk": "Чи можемо ми викласти це фото в наш Instagram/статус WhatsApp? Якщо так, напишіть «так». Відкликати згоду можна будь-коли, тоді ми видалимо пост.",
     "de": "Dürfen wir dieses Foto auf unserem Instagram/WhatsApp-Status zeigen? Wenn ja, antworte bitte mit \"ja\". Du kannst das jederzeit widerrufen, dann löschen wir den Post.",
     "en": "May we post this photo on our Instagram/WhatsApp status? If yes, please answer \"yes\". You can withdraw this at any time and we will delete the post."
+  },
+  "photo_missing": {
+    "ru": "Жду фото для этого дня. Пришли, пожалуйста, в WhatsApp.",
+    "uk": "Чекаю фото на цей день. Надішли, будь ласка, у WhatsApp.",
+    "de": "Für diesen Tag fehlt noch ein Foto. Schick es mir bitte per WhatsApp.",
+    "en": "This day still needs a photo. Please send one on WhatsApp."
   }
 }

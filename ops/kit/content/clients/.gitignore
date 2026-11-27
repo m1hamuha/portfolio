@@ -1,0 +1,3 @@
+# real client files stay local, only fake examples go to git
+*.json
+!*.example.json

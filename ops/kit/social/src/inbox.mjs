@@ -34,6 +34,18 @@ async function readOpt(p) {
   try { return await readFile(p, "utf8"); } catch { return ""; }
 }
 
+/* a folder made by the content kit has a_feed.jpg, a_story.jpg, a_square.jpg, b_clip.mp4 for each original:
+   one post per original (the feed version), notes still keyed by the original name (a.jpg) */
+const VARIANT = /_(story|square)\.jpe?g$/i;
+const baseOf = (n) => n.replace(/\.[^.]+$/, "").replace(/_(feed|clip)$/i, "");
+
+export function noteFor(notes, file) {
+  if (notes[file]) return notes[file];
+  const b = baseOf(file);
+  const k = Object.keys(notes).find((x) => baseOf(x) === b);
+  return k ? notes[k] : "";
+}
+
 export async function readInbox(dir) {
   const names = (await readdir(dir)).sort();
   const notes = parseNotes(await readOpt(join(dir, "notes.txt")));
@@ -41,8 +53,9 @@ export async function readInbox(dir) {
   for (const n of names) {
     const ext = extname(n).toLowerCase();
     if (!IMAGE_EXT.has(ext) && !VIDEO_EXT.has(ext)) continue;
+    if (VARIANT.test(n)) continue;
     const st = await stat(join(dir, n));
-    photos.push({ file: n, note: notes[n] || "", video: VIDEO_EXT.has(ext), bytes: st.size });
+    photos.push({ file: n, note: noteFor(notes, n), video: VIDEO_EXT.has(ext), bytes: st.size });
   }
   return { dir, photos, free: parseFree(await readOpt(join(dir, "free.txt"))) };
 }

@@ -1,0 +1,22 @@
+{
+  "id": "elektro-andy",
+  "name": "Elektro Andy Beispiel",
+  "niche": "trades",
+  "city": "Musterstadt",
+  "lang": "de",
+  "langs": ["de", "ru", "en"],
+  "tone": { "de": "formal", "ru": "formal", "en": "informal" },
+  "review_url": "https://g.page/r/FAKE_trades_review_link/review",
+  "source": "places",
+  "place_id": "ChIJ_FAKE_trades_00000000",
+  "owner_email": "andy@example.com",
+  "owner_whatsapp": "0176 0000000",
+  "country_code": "49",
+  "signature": "Andy, Elektro Andy",
+  "contact_for_complaints": "0176 0000000",
+  "facts": ["repairs under warranty are free"],
+  "allowed_offers": [],
+  "alert_max_stars": 3,
+  "notify_owner": false,
+  "color": "#c25b00"
+}

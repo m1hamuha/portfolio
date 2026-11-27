@@ -1,0 +1,23 @@
+# Phone app for content clients (salon). One Worker for all app clients, on Mikhail's Cloudflare account (free plan).
+name = "photo-app"
+main = "src/index.js"
+compatibility_date = "2026-01-01"
+
+# the app itself (static files, served by the same Worker)
+[assets]
+directory = "../app"
+binding = "ASSETS"
+run_worker_first = ["/api/*"]
+
+[vars]
+LLM_PROVIDER = "anthropic"
+LLM_MODEL = "claude-haiku-5-5"
+
+# daily counter per client (soft limit). Create with: wrangler kv namespace create USAGE  and paste the id.
+[[kv_namespaces]]
+binding = "USAGE"
+id = "PASTE_KV_NAMESPACE_ID"
+
+# Secrets, never in this file:
+#   wrangler secret put ANTHROPIC_API_KEY
+#   wrangler secret put CLIENTS      (JSON list made by: node bin/app-token.mjs clients  , holds only token hashes)

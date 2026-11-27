@@ -1,0 +1,57 @@
+{
+  "_note": "Messages from Mikhail to the owner. {n}, {link}, {clips}, {flagged} are filled by bin/content.mjs or by hand. No long dashes.",
+  "delivery_whatsapp": {
+    "ru": "Готово: {n} фото и {clips} видео, к каждому подпись. Файлы шлю следом как «Документ», так WhatsApp не портит качество. Подписи в файле captions.txt, их можно копировать.",
+    "uk": "Готово: {n} фото і {clips} відео, до кожного підпис. Файли надсилаю слідом як «Документ», так WhatsApp не псує якість. Підписи у файлі captions.txt, їх можна копіювати.",
+    "de": "Fertig: {n} Fotos und {clips} Videos, zu jedem ein Text. Die Dateien schicke ich gleich als \"Dokument\", so bleibt die Qualität. Die Texte stehen in captions.txt zum Kopieren.",
+    "en": "Done: {n} photos and {clips} videos, each with a caption. I send the files next as \"Document\" so WhatsApp keeps the quality. Captions are in captions.txt, ready to copy."
+  },
+  "delivery_link": {
+    "ru": "Готово: {n} фото и {clips} видео с подписями. Всё по ссылке: {link} Ссылка работает 30 дней, скачай к себе.",
+    "uk": "Готово: {n} фото і {clips} відео з підписами. Усе за посиланням: {link} Посилання діє 30 днів, завантаж собі.",
+    "de": "Fertig: {n} Fotos und {clips} Videos mit Texten. Alles unter diesem Link: {link} Der Link gilt 30 Tage, bitte herunterladen.",
+    "en": "Done: {n} photos and {clips} videos with captions. All here: {link} The link works for 30 days, please download."
+  },
+  "delivery_drive": {
+    "ru": "Готово: в папке «Готово» на Google Диске {n} фото и {clips} видео, подписи в captions.txt. Исходники можно удалить из «Входящих», когда посмотришь.",
+    "uk": "Готово: у папці «Готово» на Google Диску {n} фото і {clips} відео, підписи в captions.txt. Оригінали можна видалити з «Вхідних», коли переглянеш.",
+    "de": "Fertig: Im Ordner \"Fertig\" auf Google Drive liegen {n} Fotos und {clips} Videos, die Texte in captions.txt. Die Originale in \"Eingang\" kannst du löschen, wenn du alles gesehen hast.",
+    "en": "Done: the \"Ready\" folder on Google Drive has {n} photos and {clips} videos, captions in captions.txt. You can delete the originals in \"Inbox\" once you have looked."
+  },
+  "flagged_note": {
+    "ru": "К {flagged} файлам у меня вопрос, напишу отдельно.",
+    "uk": "До {flagged} файлів у мене питання, напишу окремо.",
+    "de": "Zu {flagged} Dateien habe ich eine Frage, ich schreibe gleich.",
+    "en": "I have a question about {flagged} files, I will write separately."
+  },
+  "shooting_tips": {
+    "ru": "Как снимать, чтобы вышло хорошо: 1) у окна, днём, без вспышки; 2) протри камеру; 3) телефон держи ровно, вертикально; 4) несколько кадров с разных сторон; 5) видео 10-30 секунд, без зума; 6) лица клиентов только с их согласия.",
+    "uk": "Як знімати, щоб вийшло добре: 1) біля вікна, вдень, без спалаху; 2) протри камеру; 3) тримай телефон рівно, вертикально; 4) кілька кадрів з різних боків; 5) відео 10-30 секунд, без зуму; 6) обличчя клієнтів лише з їхньої згоди.",
+    "de": "So werden die Fotos gut: 1) am Fenster, bei Tageslicht, ohne Blitz; 2) Linse abwischen; 3) Handy gerade und hochkant halten; 4) mehrere Bilder von verschiedenen Seiten; 5) Videos 10-30 Sekunden, ohne Zoom; 6) Gesichter von Kunden nur mit deren Einverständnis.",
+    "en": "How to shoot so it turns out well: 1) by a window, daylight, no flash; 2) wipe the lens; 3) hold the phone straight and upright; 4) a few shots from different sides; 5) videos 10-30 seconds, no zoom; 6) customers' faces only with their consent."
+  },
+  "iphone_format": {
+    "ru": "На iPhone, если шлёшь через Google Диск: Настройки, Камера, Форматы, «Наиболее совместимый». Тогда фото будут в JPG.",
+    "uk": "На iPhone, якщо надсилаєш через Google Диск: Параметри, Камера, Формати, «Найсумісніший». Тоді фото будуть у JPG.",
+    "de": "Am iPhone, wenn du über Google Drive schickst: Einstellungen, Kamera, Formate, \"Maximale Kompatibilität\". Dann sind die Fotos JPG.",
+    "en": "On iPhone, if you send via Google Drive: Settings, Camera, Formats, \"Most Compatible\". Then photos are JPG."
+  },
+  "drive_howto": {
+    "ru": "Я создал папку на Google Диске и дал тебе доступ. В ней две папки: «Входящие» (кидаешь туда фото и видео как есть) и «Готово» (там будет результат). На телефоне: приложение Google Диск, «+», «Загрузить». Можно подписать файл, что это и сколько стоит, в WhatsApp или в файле notes.txt.",
+    "uk": "Я створив папку на Google Диску і дав тобі доступ. У ній дві папки: «Вхідні» (кидаєш туди фото й відео як є) і «Готово» (там буде результат). На телефоні: застосунок Google Диск, «+», «Завантажити». Можна підписати файл, що це і скільки коштує, у WhatsApp або у файлі notes.txt.",
+    "de": "Ich habe einen Ordner auf Google Drive angelegt und dich eingeladen. Darin: \"Eingang\" (dort lädst du Fotos und Videos hoch, wie sie sind) und \"Fertig\" (dort liegt das Ergebnis). Am Handy: Google Drive App, \"+\", \"Hochladen\". Was es ist und was es kostet, kannst du per WhatsApp schreiben.",
+    "en": "I made a Google Drive folder and shared it with you. Inside: \"Inbox\" (upload photos and videos as they are) and \"Ready\" (the results). On the phone: Google Drive app, \"+\", \"Upload\". You can tell me on WhatsApp what each thing is and what it costs."
+  },
+  "app_install": {
+    "ru": "Открой эту ссылку в Safari (iPhone) или Chrome (Android): {link} Потом «Поделиться», «На экран Домой» (iPhone) или меню, «Добавить на главный экран» (Android). Ссылку никому не пересылай, она только для тебя. Если приложение попросит код, вставь: {code}",
+    "uk": "Відкрий це посилання в Safari (iPhone) або Chrome (Android): {link} Потім «Поділитися», «На початковий екран» (iPhone) або меню, «Додати на головний екран» (Android). Посилання нікому не пересилай, воно лише для тебе. Якщо застосунок попросить код, встав: {code}",
+    "de": "Öffne diesen Link in Safari (iPhone) oder Chrome (Android): {link} Dann \"Teilen\", \"Zum Home-Bildschirm\" (iPhone) oder Menü, \"Zum Startbildschirm hinzufügen\" (Android). Bitte nicht weiterleiten, der Link ist nur für dich. Fragt die App nach einem Code, füge ein: {code}",
+    "en": "Open this link in Safari (iPhone) or Chrome (Android): {link} Then \"Share\", \"Add to Home Screen\" (iPhone) or menu, \"Add to Home screen\" (Android). Please do not forward it, the link is only for you. If the app asks for a code, paste: {code}"
+  },
+  "app_howto": {
+    "ru": "Как пользоваться: открой приложение, «Выбрать фото», отметь до 10 снимков. Через минуту готово: светлые фото и подпись. «Сохранить все» кладёт фото в галерею, «Копировать текст» копирует подпись. «Ролик» делает короткое видео из выбранных фото.",
+    "uk": "Як користуватися: відкрий застосунок, «Вибрати фото», познач до 10 знімків. За хвилину готово: світлі фото й підпис. «Зберегти все» кладе фото в галерею, «Копіювати текст» копіює підпис. «Ролик» робить коротке відео з вибраних фото.",
+    "de": "So geht's: App öffnen, \"Fotos wählen\", bis zu 10 Bilder markieren. Nach etwa einer Minute: helle Fotos und ein Text. \"Alle sichern\" legt die Fotos in die Galerie, \"Text kopieren\" kopiert den Text. \"Clip\" macht ein kurzes Video aus den Fotos.",
+    "en": "How to use it: open the app, \"Pick photos\", choose up to 10. In about a minute: bright photos and a caption. \"Save all\" puts the photos in your gallery, \"Copy text\" copies the caption. \"Clip\" makes a short video from the photos."
+  }
+}

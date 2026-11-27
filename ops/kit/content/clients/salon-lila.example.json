@@ -1,0 +1,17 @@
+{
+  "_note": "Fake example. Salon gets the phone app (worker + app). This entry goes into the Worker secret CLIENTS (a JSON list) with token_sha256 filled in. Never put the plain token here.",
+  "id": "salon-lila",
+  "name": "Nagelstudio Lila",
+  "niche": "salon",
+  "city": "Leipzig",
+  "owner_language": "ru",
+  "post_language": "de",
+  "second_language": "ru",
+  "voice": "warm, short",
+  "emoji": "at most two",
+  "hashtags": ["#nägelleipzig", "#nageldesign"],
+  "max_hashtags": 4,
+  "facts": { "hours": "Di-Sa 10-19 Uhr", "prices": { "Maniküre mit Gel": "35 €" }, "other": [] },
+  "delivery": "app",
+  "app": { "token_sha256": "<sha256 of the app token, made by bin/app-token.mjs>", "daily_limit": 40, "ui_language": "ru" }
+}

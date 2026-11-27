@@ -12,7 +12,7 @@ export function makeLLM(env, fetchImpl = fetch) {
     const model = env.LLM_MODEL || "claude-haiku-5-5"; /* cheap and fast; "claude-sonnet-5-5" for harder FAQ */
     return {
       name: `anthropic:${model}`,
-      async complete({ system, messages, maxTokens = 600 }) {
+      async complete({ system, messages, maxTokens = 1024 }) {
         if (!env.ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY is not set");
         const res = await fetchImpl(env.ANTHROPIC_URL || ANTHROPIC_URL, {
           method: "POST",
@@ -41,7 +41,7 @@ export function makeLLM(env, fetchImpl = fetch) {
     const model = env.LLM_MODEL || "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
     return {
       name: `workers-ai:${model}`,
-      async complete({ system, messages, maxTokens = 600 }) {
+      async complete({ system, messages, maxTokens = 1024 }) {
         const sys = Array.isArray(system) ? system.map((b) => b.text).join("\n\n") : system;
         const out = await env.AI.run(model, { messages: [{ role: "system", content: sys }, ...messages], max_tokens: maxTokens });
         return out.response || "";

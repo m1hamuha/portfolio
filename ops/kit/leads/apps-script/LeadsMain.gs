@@ -39,17 +39,23 @@ function setupLeads() {
   return "ok";
 }
 
-function tgSend_(text, cfg) {
+/* emailText: optional fuller text for the e-mail alert (Google, under the client's own account); Telegram gets text */
+function tgSend_(text, cfg, emailText) {
   var tok = lProp_("TG_BOT_TOKEN"), ok = false;
+  // An alert that fails must never stop the lead from being saved, so every call is caught.
   (cfg.notify.telegramChatIds || []).forEach(function (chat) {
     if (!tok) return;
-    var r = UrlFetchApp.fetch("https://api.telegram.org/bot" + tok + "/sendMessage", {
-      method: "post", contentType: "application/json", muteHttpExceptions: true,
-      payload: JSON.stringify({ chat_id: chat, text: text, disable_web_page_preview: true })
-    });
-    ok = ok || r.getResponseCode() === 200;
+    try {
+      var r = UrlFetchApp.fetch("https://api.telegram.org/bot" + tok + "/sendMessage", {
+        method: "post", contentType: "application/json", muteHttpExceptions: true,
+        payload: JSON.stringify({ chat_id: chat, text: text, disable_web_page_preview: true })
+      });
+      ok = ok || r.getResponseCode() === 200;
+    } catch (e) { console.log("telegram alert failed: " + e); }
   });
-  if (cfg.notify.email) { MailApp.sendEmail(cfg.notify.email, text.split("\n")[0].slice(0, 120), text); ok = true; }
+  if (cfg.notify.email) {
+    try { var et = emailText || text; MailApp.sendEmail(cfg.notify.email, et.split("\n")[0].slice(0, 120), et); ok = true; } catch (e) { console.log("mail alert failed: " + e); }
+  }
   return ok;
 }
 
@@ -58,7 +64,12 @@ function addLead_(lead, cfg, now, notify) {
   var plan = planUpsert(rows, lead, now, cfg);
   if (plan.action === "append") { sh.appendRow(plan.row); lFormat_(sh, cfg, sh.getLastRow() - 1); }
   else sh.getRange(plan.index + 2, 1, 1, plan.row.length).setValues([plan.row]);
-  if (notify && (plan.action === "append" || plan.reopened)) tgSend_(notifyText(lead, cfg, lBook_().getUrl()), cfg);
+  if (notify && (plan.action === "append" || plan.reopened)) {
+    var url = lBook_().getUrl();
+    // detail "minimal" keeps names and text out of Telegram; the e-mail alert still has them unless health: true
+    var full = cfg.health ? null : notifyText(lead, { lang: cfg.lang, notify: { detail: "full" } }, url);
+    tgSend_(notifyText(lead, cfg, url), cfg, full);
+  }
   return plan.action;
 }
 
@@ -109,7 +120,8 @@ function doPost(e) {
   var l = body.lead || {};
   var ch = ["email", "site", "instagram", "whatsapp", "facebook", "telegram", "phone"].indexOf(l.channel) >= 0 ? l.channel : "site";
   var lead = { channel: ch, name: lClean(l.name, 60), contact: lClean(l.contact, 80), what: lClean(l.what, 300), when: lClean(l.when, 60), open: /^(https:|tg:|mailto:|tel:)/.test(l.open || "") ? String(l.open).slice(0, 300) : "", externalId: lClean(l.externalId, 120) };
-  var lock = LockService.getScriptLock(); lock.tryLock(20000);
+  var lock = LockService.getScriptLock();
+  if (!lock.tryLock(20000)) return out({ ok: false, error: "busy" }); // the Worker retries
   try {
     var now = new Date();
     var action = addLead_(lead, cfg, now, true);

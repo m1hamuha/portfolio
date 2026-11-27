@@ -1,0 +1,21 @@
+{
+  "_note": "Fake example. Content batch: 10 to 20 files in via WhatsApp, files back via WhatsApp as Document within 2 days.",
+  "id": "cafe-tamara",
+  "name": "Café Tamara",
+  "niche": "cafe",
+  "city": "Köln",
+  "owner_language": "uk",
+  "post_language": "de",
+  "voice": "friendly, cosy, plain words",
+  "emoji": "one food emoji at most",
+  "hashtags": ["#köln", "#kölnfood"],
+  "max_hashtags": 3,
+  "facts": { "hours": "Mo-So 8-17 Uhr", "prices": {}, "other": [] },
+  "delivery": "whatsapp",
+  "content": {
+    "sizes": ["feed", "story"],
+    "crop": "cover",
+    "clip": { "max_seconds": 10, "mode": "cover", "audio": "mute" },
+    "slideshow": { "enabled": false }
+  }
+}

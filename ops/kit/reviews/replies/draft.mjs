@@ -19,7 +19,7 @@ export async function draftOne(biz, review, llm, image) {
   const content = image
     ? [{ type: "image", source: { type: "base64", media_type: image.media_type, data: image.data } }, { type: "text", text: p.user }]
     : p.user;
-  const raw = await llm.complete({ system, content, maxTokens: 800 });
+  const raw = await llm.complete({ system, content, maxTokens: 2000 });
   const parsed = parseModelJson(raw) || { reply: "", flags: ["model output was not JSON"] };
   const rv = { ...review, rating: review.rating || parsed.rating, author: review.author || parsed.author };
   const checked = checkReply(biz, rv, parsed);

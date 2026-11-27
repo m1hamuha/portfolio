@@ -1,0 +1,21 @@
+{
+  "_note": "Fake example. Shop: owner posts the status himself, Mikhail sends ready photo plus text.",
+  "id": "shop-wollhaus",
+  "name": "Wollhaus Petrova",
+  "niche": "shop",
+  "city": "Hannover",
+  "plan": "plan1",
+  "channels": ["whatsapp_status", "instagram"],
+  "publish": "owner",
+  "owner_language": "ru",
+  "post_language": "de",
+  "second_language": "ru",
+  "voice": "plain and friendly",
+  "emoji": "none or one",
+  "hashtags": ["#hannover", "#wolle"],
+  "max_hashtags": 3,
+  "schedule": { "weekdays": ["thu"], "posts_per_month": 4, "time": "09:00" },
+  "facts": { "hours": "Mo-Fr 10-18, Sa 10-14", "address_hint": "Hannover List", "prices": {}, "other": [] },
+  "contact": { "cta": "visit", "whatsapp_link": "https://wa.me/490000000003" },
+  "special_dates": []
+}

@@ -31,7 +31,8 @@ export function approvalText(client, month, posts) {
   const body = posts.map((p) => {
     const day = (WD[lang] || WD.en)[p.weekday] || p.weekday;
     const photo = p.photo ? `[${p.photo}]` : "[photo missing]";
-    return `*${p.n}. ${day} ${dmy(p.date)} ${p.time}* ${photo}\n${fullCaption(p)}`;
+    const text = p.needs_photo ? msg("photo_missing", lang) : fullCaption(p);
+    return `*${p.n}. ${day} ${dmy(p.date)} ${p.time}* ${photo}\n${text}`;
   });
   return [head, ...body, msg("approval_footer", lang)].join("\n\n");
 }
@@ -56,4 +57,30 @@ export function planMarkdown(client, month, posts, warnings = []) {
     if (p.problems && p.problems.length) lines.push(`CHECK: ${p.problems.join("; ")}`, "");
   }
   return lines.join("\n");
+}
+
+/* Owner's WhatsApp reply to the approval message.
+   "да" / "ok" / "ja" / "yes" / "так" / "👍"   -> { all: true, changes: [], unclear: false }
+   "2: цена 7 €\n5 убрать"                     -> { all: false, changes: [{ n: 2, text: "цена 7 €" }, { n: 5, text: "убрать", drop: true }] }
+   Posts not named in changes count as approved only if the reply also says yes ("да, но 2: ...").
+   unclear: true means "Mikhail reads it himself, nothing is scheduled yet". This is the safe default:
+   "да, но второй пост убери" or "ok aber Post 3 ohne Preis" must never count as a plain yes. */
+const YES = /^\s*(да|ок|ok|okay|ja|jep|yes|так|добре|passt|gut|go|👍|✅)(?=$|[\s,.!)]|\p{Extended_Pictographic})/iu;
+const DROP = /(убрать|убери|удалить|не надо|прибрати|прибери|видалити|weg|raus|löschen|remove|drop|skip)/i;
+const ITEM = /(?:^|[\s,])(?:#|№|nr\.?\s*|пост\s*|post\s*)?(\d{1,2})\s*[:.)]\s+(.+)$/iu;
+/* anything after the yes that looks like a wish: a number, "but", "only", "change", "without", a drop word */
+const W = (w) => `(?<!\\p{L})${w}(?!\\p{L})`; /* whole word, also for Cyrillic (\b is ASCII only in JS) */
+const BUT = new RegExp(["\\d", W("но"), "только", "кроме", "помен", "измен", "исправ", W("без"), W("але"), "тільки", "крім", "змін", "виправ", W("aber"), W("nur"), "außer", "änder", W("ohne"), W("but"), "except", W("only"), "change", "without", "instead", W("statt"), "вместо", "замість"].join("|"), "iu");
+export function parseApproval(text) {
+  const t = String(text || "").trim();
+  const changes = [];
+  for (const line of t.split(/\r?\n|;|,\s*(?=(?:#|№|nr\.?\s*|пост\s*|post\s*)?\d{1,2}\s*[:.)]\s)/iu)) {
+    const m = line.match(ITEM);
+    if (m) changes.push({ n: Number(m[1]), text: m[2].trim(), ...(DROP.test(m[2]) ? { drop: true } : {}) });
+  }
+  const yes = YES.test(t);
+  const rest = t.replace(YES, "");
+  const wordsLeft = rest.replace(/[\s\p{P}\p{S}\p{Extended_Pictographic}]/gu, "").length;
+  const unclear = changes.length ? false : !yes || BUT.test(rest) || DROP.test(rest) || wordsLeft > 25;
+  return { all: yes && !changes.length && !unclear, approvedRest: yes && !unclear, changes, unclear };
 }

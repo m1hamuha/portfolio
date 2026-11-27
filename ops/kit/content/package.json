@@ -1,0 +1,13 @@
+{
+  "name": "content-kit",
+  "private": true,
+  "type": "module",
+  "description": "Owner's phone photos and videos into clean photos, short clips and captions",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "demo": "node bin/content.mjs run --client clients/cafe-tamara.example.json --in examples/in --out /tmp/content-demo --mock"
+  },
+  "dependencies": {
+    "sharp": "^0.35.5"
+  }
+}

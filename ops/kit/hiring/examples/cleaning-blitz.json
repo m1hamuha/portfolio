@@ -1,0 +1,17 @@
+{
+  "niche": "cleaning",
+  "langs": ["de", "ru", "uk", "en"],
+  "owner_lang": "ru",
+  "business": { "name": "Blitz Reinigung (example)", "city": "Musterstadt", "address": "Beispielweg 2, 12345 Musterstadt", "privacy_contact": "info@example.com" },
+  "job": {
+    "title": "Cleaner on call", "title_de": "Reinigungskraft auf Abruf (m/w/d)",
+    "hours": "kurzfristig bei Krankheit im Team, meist 2 bis 4 Std. vormittags", "pay": "15 € pro Stunde", "contract": "Minijob oder Teilzeit", "start": "ab sofort",
+    "tasks": ["Büros und Wohnungen reinigen nach Checkliste"],
+    "must": ["kann am selben Tag einspringen", "wohnt in Nord oder Mitte"],
+    "offer": ["Fahrtkosten werden bezahlt"],
+    "last_time": "people lived too far away to come at short notice"
+  },
+  "form": { "lang": "ru", "questions": ["area", "start", "weekends", "experience", "german"] },
+  "fit_rules": [ { "q": "weekends", "in": ["Да", "Только суббота"] } ],
+  "notify": { "mode": "email", "to": "owner@example.com", "all": true }
+}

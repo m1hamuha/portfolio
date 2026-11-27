@@ -19,15 +19,15 @@
 
 | Ниша | Обещание на сайте | Что ставим |
 |---|---|---|
-| salon | «Clients who write to your WhatsApp at night get a free time for nails, hair or massage» / «Клиентка пишет ночью в WhatsApp и сразу узнаёт, когда можно прийти на маникюр или массаж» | C: движок, `booking.mode = calendar`, календарь через Apps Script (Google Календарь на телефоне). Клиентка пишет, получает 3 свободных времени, отвечает цифрой, событие встаёт в календарь. Пример: `engine/businesses/salon-lila.json`. Дешёвый вариант: A+B (автоответ со ссылкой на страницу записи). |
+| salon | «Clients who write to your WhatsApp at night get a free time for nails, hair or massage» / «Клиентка пишет ночью в WhatsApp и сразу узнаёт, когда можно прийти на маникюр или массаж» | За 79 €: A+B (автоответ со ссылкой на страницу записи Google Календаря, запись встаёт в календарь сама). Отдельным заказом: C, движок, `booking.mode = calendar`, календарь через Apps Script (Google Календарь на телефоне). Клиентка пишет, получает 3 свободных времени, отвечает цифрой, событие встаёт в календарь. Пример: `engine/businesses/salon-lila.json`. |
 | cafe | «Guests book a table in WhatsApp or Instagram at night and get an answer at once» / «Гости бронируют столик в WhatsApp или Instagram даже ночью, ответ приходит сразу» | По карточке: 20 минут по видео, значит A: автоответ в WhatsApp Business и в Meta Business Suite для Instagram, гость пишет день, время, людей, имя; заявка уже лежит в WhatsApp кафе, утром подтверждают. Полная бронь с подсчётом столов: C, `booking.mode = tables` (только WhatsApp, Instagram через API требует проверки приложения Meta, см. раздел 7). Пример: `engine/businesses/cafe-olive.json`. |
 | shop | «Your WhatsApp answers shoppers on stock, prices, hours. Family chats as usual» / «WhatsApp сам отвечает покупателям про цены и часы. Родным пишешь как раньше» | A: приветствие только для «не из контактов» (родные не получают), часы, каталог WhatsApp с ценами. Ответ про конкретный товар («есть батарейки АА?»): только C, `booking.mode = none`, номера родных в секрете `IGNORE_NUMBERS`. Пример: `engine/businesses/shop-eck.json`. |
 | trades | «Your WhatsApp answers new clients in seconds, even while you're under a sink» / «Новый клиент сразу получает ответ в WhatsApp, пока ты на объекте» | A: приветственное сообщение (уходит новому контакту или после 14 дней тишины), фильтр «не из контактов», просьба прислать адрес и фото. Текст: `autoreply/examples/trades-example.json`. |
-| fitness | «A helper on your WhatsApp answers questions on prices and trials, even at night» / «Помощник в твоём WhatsApp сразу отвечает про цены и пробное, даже ночью» | C: `booking.mode = classes`, расписание групп в `business.json`, запись на пробное, владелец утром получает «new booking: Anna, ...» в свой WhatsApp. Если не знает: «Я уточню» и сообщение владельцу. Пример: `engine/businesses/fitness-move.json`. |
+| fitness | «A helper on your WhatsApp answers questions on prices and trials, even at night» / «Помощник в твоём WhatsApp сразу отвечает про цены и пробное, даже ночью» | За 79 €: A+B (автоответ с ценами, пробным и ссылкой на запись). Отдельным заказом: C, `booking.mode = classes`, расписание групп в `business.json`, запись на пробное, владелец утром получает «new booking: Anna, ...» в свой WhatsApp. Если не знает: «Я уточню» и сообщение владельцу. Пример: `engine/businesses/fitness-move.json`. |
 | clinic | «Patients writing at night get an answer on WhatsApp, you confirm in the morning» / «Пациент пишет ночью в WhatsApp, сразу получает ответ и просит время приёма» | A: автоответ вне часов с прайсом для самоплательщиков, просьбой написать день и время и запретом присылать данные о здоровье. Без модели. Движок C возможен (`booking.mode = request`, `health_guard`), но не советую, см. раздел 7. |
 | cleaning | «Clients get your price on WhatsApp in a minute, even while you sleep» / «Клиент получает цену в WhatsApp за минуту, даже ночью, пока ты спишь» | A: автоответ вне часов с прайсом и районами, просьба прислать адрес и день. Текст: `autoreply/examples/cleaning-example.json`. |
 | office | «A chat on your website answers clients day and night and books them a call with you» / «Чат на твоём сайте отвечает клиентам днём и ночью и записывает их на звонок с тобой» | C без Meta: виджет `engine/widget/widget.js` на сайте клиента, отвечает только по прайсу, показывает 3 времени, клиент жмёт время, вводит имя и телефон, событие с напоминанием на телефоне встаёт в Google Календарь. Пример: `engine/businesses/office-steuer.json`. |
-| other | «Customers get a reply in WhatsApp in a minute, even at 11 pm» / «Клиент в WhatsApp получает ответ за минуту, даже в 11 вечера» | C как у салона (свободные часы из календаря, запись, остальное владельцу). Дешёвый вариант: A+B. |
+| other | «Customers get a reply in WhatsApp in a minute, even at 11 pm» / «Клиент в WhatsApp получает ответ за минуту, даже в 11 вечера» | A+B: автоответ с ценами и ссылкой на страницу записи, записи в календаре, остальные вопросы в WhatsApp. Отдельным заказом C как у салона. |
 
 ## 2. Стек
 
@@ -66,12 +66,12 @@
 3. Видеозвонок: клиент ставит WhatsApp Business (если ещё нет, чаты переносятся при переходе с обычного WhatsApp на том же телефоне), вставляем приветствие, автоответ по расписанию «вне часов работы», 2-3 быстрых ответа, фильтр получателей «не из контактов». Для кафе ещё Meta Business Suite: Inbox, Automations, instant reply и away message для Instagram. 20-30 мин.
 4. Тест: пишем с твоего номера, проверяем, что пришло. 5 мин.
 
-### Уровень B (дешёвый вариант для salon, other, fitness): 1-1,5 ч
+### Уровень B (по карточке за 79 €: salon, other, fitness): 1-1,5 ч
 1. В аккаунте клиента: Google Календарь, Appointment schedule (только с компьютера) или Cal.com. Услуги, длительность, перерывы. 30-40 мин.
 2. Ссылку в автоответ, статус WhatsApp, профиль Instagram, Google Maps. 15 мин.
 3. Тестовая запись вместе с клиентом. 10 мин.
 
-### Уровень C, WhatsApp (salon, fitness, shop, other, cafe с бронью): 3-4 ч
+### Уровень C, WhatsApp (только как отдельный, более дорогой заказ): 3-4 ч
 1. Скопировать пример из `engine/businesses/`, заполнить услуги, цены, длительность, часы, исключения, FAQ, тексты владельца. 45 мин.
 2. Подключить номер (путь из раздела 3). Путь 1: клиент проходит Embedded Signup по ссылке, 15 мин. Путь 2: через кабинет посредника, 30 мин.
 3. В Google-аккаунте клиента: script.google.com, новый проект, вставить `apps-script/Calendar.gs` и `appsscript.json`, Script properties: `TOKEN`. Deploy, Web app, «Execute as me», «Anyone». 15 мин.
@@ -107,7 +107,7 @@
 | Meta Business Suite для Instagram | 0 € | |
 | Google appointment schedule (1 страница) | 0 € (напоминания клиенту по почте только в платных тарифах) | [Google help](https://support.google.com/calendar/answer/16287038) |
 | Cal.com Free | 0 € | [cal.com/pricing](https://cal.com/pricing) |
-| WhatsApp Cloud API: ответы в окне 24 ч | с 01.10.2026 первые 1000 сообщений на номер в месяц бесплатно, дальше по тарифу utility страны получателя (Германия около 0,046 € по сторонним обзорам) | [Twilio о смене тарифов](https://help.twilio.com/articles/53100480177819), [страница Meta](https://developers.facebook.com/documentation/business-messaging/whatsapp/pricing) |
+| WhatsApp Cloud API: ответы в окне 24 ч | с 01.10.2026 Meta берёт плату за каждый ответ через API (раньше ответы в окне 24 ч были бесплатны), ставка как utility страны получателя: Германия 0,0456 € (несколько посредников, официальный rate card не открылся). Посредники (Sinch, SendPulse, Chatarmin) пишут о 1000 бесплатных сообщений на номер в месяц, на странице Meta в выдаче этого не видно: считать, что их может не быть. 300 ответов в месяц: до 14 € | [Twilio о смене тарифов](https://help.twilio.com/articles/53100480177819), [страница Meta](https://developers.facebook.com/documentation/business-messaging/whatsapp/pricing) |
 | Шаблон владельцу вне окна 24 ч | около 0,046 € за штуку (Германия, utility) | там же |
 | Посредник 360dialog (только путь 2) | 49 € за номер | [360dialog pricing](https://360dialog.com/pricing) |
 | Claude Haiku 5.5 | 0,10 $ / 0,50 $ за 1 млн токенов. Один ответ примерно 3000 токенов на входе: около 0,0005 $. 1000 ответов: около 0,5 $ | [цены Anthropic](https://platform.claude.com/docs/en/about-claude/pricing) |
@@ -115,7 +115,7 @@
 | Apps Script, Google Календарь | 0 € | лимиты личного аккаунта для одной точки не проверял, для салона хватает с запасом |
 | Telegram для оповещений | 0 € | |
 
-Итого для клиента: A и B 0 €; C через путь 1 или 3 обычно 1-3 € в месяц; C через посредника около 50 €.
+Итого для клиента: A и B 0 €; C через путь 1 или 3 от 1 до 15 € в месяц (зависит от того, есть ли 1000 бесплатных); C через посредника около 50-65 €.
 Не проверено напрямую у Meta: точные ставки 2026 для Германии и детали бесплатных 1000 сообщений. Перед продажей открыть официальный rate card.
 
 ## 7. Ограничения, право, правила площадок
@@ -129,32 +129,41 @@
 - **Клиника.** Сообщения со словами о здоровье не уходят в модель (`health_guard`), бот отвечает «на вопросы о здоровье здесь не отвечаем» и даёт 116117 и 112. Но сам WhatsApp для переписки с пациентами в Германии спорен (данные ст. 9 GDPR у Meta). Рекомендую уровень A: статичный автоответ без модели, просьба не присылать данные о здоровье. Владельцу в Telegram не пересылать текст пациента (Telegram без AVV), движок шлёт только «новое сообщение, прочитай в WhatsApp».
 - **Без холодных сообщений (UWG §7).** Движок только отвечает тем, кто написал. Никаких рассылок по номерам из базы.
 - **Магазин.** Наличие в `business.json` правит владелец (или ты по его сообщению). Если товара нет в списке, бот не угадывает, а передаёт владельцу.
+- **Надёжность движка.** Если календарь, KV или модель падают, клиент всё равно получает «извините, скоро ответит человек», а владелец сигнал. Если Graph API не принял ответ (истёк токен), владелец получает «ответь сам». Поэтому для C лучше `notify: "telegram"` (кроме клиник): оповещение через WhatsApp при сломанном токене тоже не дойдёт.
 - **Цена 79 € за уровень C** почти не окупает 3-4 часа. Либо поднимать цену для C, либо продавать A+B по 79 €, а C как отдельный вариант.
 
 ## 8. Таблица выполнимости
 
+Проверка скептиком 27.11.2026. Главная поправка: уровень C в WhatsApp держится на трёх непроверенных вещах
+(coexistence для номеров в Германии, статус Tech Provider для одиночки, Business Verification), и с 01.10.2026
+каждый ответ бота через API платный (около 0,046 € в Германии, бесплатные 1000 в месяц только по данным посредников).
+За 79 € разово честно обещать можно только то, что делают уровни A и B. Уровень C продавать отдельно и дороже,
+когда путь 1 или 2 из раздела 3 проверен на первом клиенте.
+
 | Задача | Статус | Почему | Исправленное обещание (en / ru) |
 |---|---|---|---|
-| salon.bot | needs-caveat | Работает через движок, но «календарь в телефоне» должен быть Google Календарём (iPhone-календарь iCloud не читаем), и номер в Cloud API нужен через Tech Provider или посредника | en: «Clients who write to your WhatsApp at night see free times from your Google Calendar and book» / ru: «Клиентка пишет ночью в WhatsApp, видит свободное время из твоего Google Календаря и записывается» |
-| cafe.bot | needs-caveat | За 20 минут видеозвонка ставится только автоответ (A): гость получает ответ сразу, но бронь подтверждает кафе. Бронь с подсчётом столов (C) только в WhatsApp, не в Instagram, и это 3-4 ч | en: «Guests who write in WhatsApp or Instagram at night get an answer at once and leave a table request» / ru: «Гости пишут ночью в WhatsApp или Instagram, сразу получают ответ и оставляют заявку на столик» |
-| shop.bot | needs-caveat | Бесплатно: часы, каталог и приветствие только для новых (родные не получают). Ответ про конкретный товар и наличие требует движка и списка товаров, который владелец обновляет | en: «New shoppers on WhatsApp get your hours and price list at once. Family chats as usual» / ru: «Новые покупатели в WhatsApp сразу получают часы работы и прайс. Родным пишешь как раньше» |
-| trades.bot | as-written | Приветствие WhatsApp Business для новых контактов, бесплатно, 30 минут | |
-| fitness.bot | as-written | Движок: цены, пробное, запись на группу, «уточню» и сообщение владельцу. Плата Meta и модели мелкая (раздел 6), при пути 2 плюс посредник | |
-| clinic.bot | needs-caveat | Ответ сразу даёт статичный автоответ с прайсом, без модели и без данных о здоровье. Индивидуальный ответ моделью на вопросы пациентов не советую | en: «Patients writing at night get your prices and hours on WhatsApp at once, you set the time in the morning» / ru: «Пациент пишет ночью в WhatsApp, сразу получает цены и часы приёма, время ты назначаешь утром» |
-| cleaning.bot | as-written | Автоответ вне часов с прайсом и районами, бесплатно. Клиент видит весь прайс, а не расчёт под свою квартиру | |
-| office.bot | as-written | Виджет на сайте плюс движок плюс Apps Script, событие с напоминанием в Google Календаре. Без Meta | |
-| other.bot | as-written | Движок как у салона. Записи в календарь, прочие вопросы владельцу | |
+| salon.bot | needs-caveat | «Программа читает календарь и предлагает время в чате» это уровень C: Cloud API через coexistence (доступность в Германии не подтверждена официально), Tech Provider или посредник 49 €/мес, ключи Anthropic и Cloudflare, 3-4 ч плюс день подготовки. За 79 € надёжно: автоответ со ссылкой на страницу записи Google Календаря (уровень B), запись встаёт в календарь сама. iPhone-календарь (iCloud) не подходит, нужен Google Календарь | en: «Night messages on WhatsApp get your booking link. Clients pick a free time, it lands in your Google Calendar» / ru: «Ночью в WhatsApp клиентка сразу получает ссылку на запись, выбирает свободное время, и запись встаёт в твой Google Календарь» |
+| cafe.bot | needs-caveat | За 20 минут ставится только автоответ (A). Он не знает, есть ли столик: гость оставляет заявку, кафе подтверждает утром. Заявки из Instagram остаются во входящих Instagram, а не в WhatsApp. Подсчёт столов (C) только в WhatsApp и только через Cloud API. Строки short и get тоже поправить | en: «Guests who write in WhatsApp or Instagram at night get an answer at once and leave a table request» (short: «Guests ask for a table, even at night»; get: «Requests wait in your WhatsApp and Instagram inbox») / ru: «Гости пишут ночью в WhatsApp или Instagram, сразу получают ответ и оставляют заявку на столик» (short: «Гости просят столик даже ночью»; get: «Заявки ждут тебя в WhatsApp и в Instagram») |
+| shop.bot | needs-caveat | Бесплатно (A): приветствие и автоответ только для «не из контактов», часы, каталог с ценами. Ответ про конкретный товар и наличие, как в истории «after», только через C и список, который владелец обновляет | en: «New shoppers on WhatsApp get your hours and price list at once. Family chats as usual» / ru: «Новые покупатели в WhatsApp сразу получают часы работы и прайс. Родным пишешь как раньше» |
+| trades.bot | as-written | Приветствие WhatsApp Business для новых контактов (и после 14 дней тишины), фильтр «не из контактов», просьба прислать адрес и фото. Бесплатно, 30 минут. Телефону нужен интернет | |
+| fitness.bot | needs-caveat | Строка get («помощник пишет "уточню" и сообщает тебе») и запись на пробное в чате требуют уровня C с теми же рисками, что у салона. Движок записывает на пробное без проверки мест в группе (календарь `none`), владелец только получает сообщение. За 79 € надёжно: автоответ с ценами, условиями пробного и ссылкой на запись | en: «Night messages on WhatsApp get your prices, the free trial and a link to book it» / ru: «Ночью в WhatsApp человек сразу получает цены, условия пробного и ссылку на запись» |
+| clinic.bot | needs-caveat | Ответ сразу даёт статичный автоответ вне часов: цены для самоплательщиков, часы, просьба написать день и время и не писать о здоровье. Без модели. Само обещание выполнимо, оговорка правовая: переписка с пациентами в WhatsApp остаётся решением практики (ст. 9 GDPR), бот с моделью не советую | en: «Patients writing at night get your prices and hours on WhatsApp at once, you set the time in the morning» / ru: «Пациент пишет ночью в WhatsApp, сразу получает цены и часы приёма, время ты назначаешь утром» |
+| cleaning.bot | as-written | Автоответ вне часов с прайсом и районами, просьба прислать адрес и день. Бесплатно. Клиент видит прайс «от», а не расчёт под свою квартиру, как и в истории «after» | |
+| office.bot | as-written | Виджет на сайте плюс движок плюс Apps Script: ответ только по прайсу, 3 времени, запись в Google Календарь с напоминанием. Без Meta. Нужны доступ к сайту, аккаунт Cloudflare и ключ Anthropic на клиента. Для Steuerberater и других Berufsgeheimnisträger: в чат не вводить данные мандантов (виджет так и пишет), с Anthropic нужна оговорка о § 203 StGB в договоре | |
+| other.bot | as-written | Через уровни A+B: автоответ за минуту с ценами и ссылкой на страницу записи, записи сами встают в календарь, остальные вопросы остаются в WhatsApp. Конкретные часы прямо в чате, как в истории «after», только через C | |
 
 ## Тесты
 
 ```
 cd ops/kit/bot/engine && node --test test/*.test.mjs
 ```
-24 теста, сеть не нужна, платные API не вызываются (Anthropic, Graph API, Cal.com и Apps Script подменены).
+27 тестов, сеть не нужна, платные API не вызываются (Anthropic, Graph API, Cal.com и Apps Script подменены).
 Проверяют: время и часовые пояса, свободные окна и вместимость, запись салона цифрой, защиту от двойной записи,
 проверку сумм и времени, ответ магазина, бронь и отказ кафе, запись на пробное с шаблоном при закрытом окне 24 ч,
 защиту клиники, подпись вебхука, игнор номеров родных, повтор вебхука Meta, паузу при ответе владельца,
 голосовые, мост Apps Script (токен, конфликт, вместимость), сайтовый чат с записью в календарь, Cal.com, листы автоответов.
+После проверки скептиком добавлено: календарь упал, значит клиент всё равно получает вежливый ответ, владелец получает сигнал;
+сбой оповещения владельца не отменяет подтверждение записи; Graph API не принял ответ, значит владелец получает «ответь сам».
 Сборка Worker проверена через `wrangler deploy --dry-run`.
 
 ## Файлы
@@ -178,4 +187,6 @@ cd ops/kit/bot/engine && node --test test/*.test.mjs
 - AI Act ст. 50: https://www.goodwinlaw.com/en/insights/publications/2026/08/alerts-technology-dpc-eu-ai-act-transparency-obligations-now-in-force
 - Anthropic DPA и хранение: https://www.anthropic.com/legal/data-processing-addendum , https://platform.claude.com/docs/en/manage-claude/api-and-data-retention
 - Cloudflare лимиты: https://developers.cloudflare.com/workers/platform/limits , https://developers.cloudflare.com/kv/platform/limits
-- 360dialog: https://360dialog.com/pricing
+- 360dialog: https://360dialog.com/pricing , изменения цен 2026: https://pricingsaas.com/companies/360dialog/diffs/2026Q2
+- Плата за ответы с 01.10.2026 и ставка Германии (посредники): https://sendpulse.com/blog/whatsapp-service-message-pricing , https://chatarmin.com/en/blog/whatsapp-business-costs , https://keaz.app/whatsapp-facts , https://blckalpaca.at/en/knowledge-base/social-media/community-management-social-customer-care/whatsapp-business-customer-service-pricing (пишет, что у Meta бесплатного лимита нет)
+- Coexistence в Германии: официального списка стран не нашёл; https://chatarmin.com/en/blog/what-is-a-whats-app-business-account-all-the-options-and-features-of-your-whats-app-business-account пишет, что в DE и AT выкатывается неравномерно, https://telnyx.com/release-notes/whatsapp-coexistence (приложение 2.24.17+)

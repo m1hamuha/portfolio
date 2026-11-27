@@ -27,6 +27,7 @@ export async function runEval(kb, set, llm) {
 }
 
 if (process.argv[1] && process.argv[1].endsWith("run-eval.mjs")) {
+  if (!process.argv[2]) { console.error("usage: node eval/run-eval.mjs eval/<set>.json [--live]"); process.exit(1); }
   const set = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
   const kb = JSON.parse(fs.readFileSync(new URL(`../kb/${set.kb}.json`, import.meta.url), "utf8"));
   if (!process.argv.includes("--live")) {

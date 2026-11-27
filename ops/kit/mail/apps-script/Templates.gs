@@ -162,6 +162,7 @@ var TEXTS = {
     ru: "Готово, больше писем не будет.", uk: "Готово, листів більше не буде.",
     de: "Erledigt, Sie erhalten keine solchen E-Mails mehr.", en: "Done, you will not get these emails any more."
   },
+  page_unsub_btn: { ru: "Отписаться от писем", uk: "Відписатися від листів", de: "Keine E-Mails mehr erhalten", en: "Unsubscribe" },
   page_confirm_btn: { ru: "Подтвердить", uk: "Підтвердити", de: "Bestätigen", en: "Confirm" },
   page_other: { ru: "Другое время: напишите нам", uk: "Інший час: напишіть нам", de: "Andere Zeit: schreiben Sie uns", en: "Other time: write to us" }
 };

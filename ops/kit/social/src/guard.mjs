@@ -41,14 +41,14 @@ export function checkCaption(cap, { niche, allowedText = "", maxHashtags = 5, ma
   const tags = (cap.hashtags || []).length + (text.match(/#[\p{L}\p{N}_]+/gu) || []).length;
   if (tags > maxHashtags) problems.push(`${tags} hashtags, Instagram allows ${maxHashtags}`);
   if (text.length > maxLen) problems.push(`caption longer than ${maxLen} characters`);
-  if (/[–—]/.test(text)) problems.push("long dash in text");
+  if (/[\u2013\u2014]/.test(text)) problems.push("long dash in text");
   if (cap.status_text && cap.status_text.length > 139) problems.push("status text longer than 139 characters");
   return problems;
 }
 
 /* tidy model output: strip long dashes, dedupe hashtags, cap count */
 export function tidy(cap, maxHashtags = 5) {
-  const fix = (s) => String(s || "").replace(/\s?[–—]\s?/g, ", ").replace(/ ,/g, ",").trim();
+  const fix = (s) => String(s || "").replace(/\s?[\u2013\u2014]\s?/g, ", ").replace(/ ,/g, ",").trim();
   const tags = [...new Set((cap.hashtags || []).map((h) => "#" + String(h).replace(/^#+/, "").replace(/\s+/g, "")))].filter((h) => h.length > 1);
   return {
     caption: fix(cap.caption),

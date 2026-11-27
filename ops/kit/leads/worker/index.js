@@ -4,8 +4,12 @@
 //   GET  /meta       Meta webhook verification (Instagram, Facebook Page, WhatsApp Cloud API)
 //   POST /meta       Meta webhook events, signature checked with META_APP_SECRET
 //   POST /telegram   Telegram bot updates (business_message from a connected business bot, or direct bot chats)
-// Secrets (wrangler secret put ...): LEADS_SECRET, META_APP_SECRET, META_VERIFY_TOKEN, TG_SECRET, IG_TOKEN, LLM_API_KEY
-// Vars (wrangler.toml): APPS_SCRIPT_URL, ALLOWED_ORIGINS, THANKS_URL, TG_OWNER_ID, LANG, SUMMARY, SUMMARY_MODEL, HEALTH, IG_API_VERSION
+// Secrets (wrangler secret put ...): LEADS_SECRET, META_APP_SECRET, IG_APP_SECRET (optional), META_VERIFY_TOKEN, TG_SECRET,
+//   IG_TOKEN, LLM_API_KEY, ALERT_BOT_TOKEN (optional, alert to the owner when a lead could not be saved)
+// Vars (wrangler.toml): APPS_SCRIPT_URL, ALLOWED_ORIGINS, THANKS_URL, TG_OWNER_ID, LANG, SUMMARY, SUMMARY_MODEL, HEALTH, IG_API_VERSION, ALERT_CHAT_ID
+// A lead is never dropped silently: forward() retries and checks that the sheet answered {ok:true}; the site form shows an
+// error page if saving failed (so the visitor calls instead), Telegram gets HTTP 500 (Telegram re-sends the update),
+// Meta events that still fail trigger an owner alert (ALERT_BOT_TOKEN + ALERT_CHAT_ID) and a Workers log line.
 
 const enc = new TextEncoder();
 const hits = new Map(); // per-isolate burst guard for the public form
@@ -61,7 +65,11 @@ export function metaToLeads(p) {
 export function telegramToLead(u, env) {
   const m = u.business_message || u.message;
   if (!m || !m.from || m.from.is_bot) return null;
-  if (u.business_message && String(m.from.id) === String(env.TG_OWNER_ID || "")) return null; // the owner's own reply
+  if (u.business_message) {
+    // In a business chat the chat id is the customer. Anything sent by someone else (the owner, his staff, a business bot) is not a lead.
+    if (m.sender_business_bot || String(m.from.id) !== String(m.chat.id)) return null;
+    if (String(m.from.id) === String(env.TG_OWNER_ID || "")) return null;
+  }
   if (u.message && (m.chat.type !== "private" || /^\/start/.test(m.text || ""))) return null;
   const name = clip([m.from.first_name, m.from.last_name].filter(Boolean).join(" "), 60);
   return {
@@ -79,7 +87,8 @@ export const PROVIDERS = {
       method: "POST",
       headers: { "content-type": "application/json", "x-api-key": env.LLM_API_KEY, "anthropic-version": "2023-06-01" },
       body: JSON.stringify({
-        model: env.SUMMARY_MODEL || "claude-haiku-5-5", max_tokens: 60,
+        model: env.SUMMARY_MODEL || "claude-haiku-5-5", max_tokens: 200,
+        thinking: { type: "disabled" }, // Haiku 5.5 thinks by default; a one-line summary does not need it (allowed at default effort)
         system: `Summarize what this customer wants in at most 8 words in ${LANGS[env.LANG] || "German"}. No names, no phone numbers, no greetings. Output only the summary.`,
         messages: [{ role: "user", content: String(text).slice(0, 2000) }]
       })
@@ -107,16 +116,37 @@ async function enrich(lead, env, f) {
   delete lead.senderId;
   return lead;
 }
-export async function forward(lead, env, f = fetch) {
+// Apps Script answers HTTP 200 even for "forbidden" or "busy", so the body must say {ok:true}.
+export async function forward(lead, env, f = fetch, tries = 3) {
   const clean = { channel: lead.channel, name: clip(lead.name, 60), contact: clip(lead.contact, 80), what: clip(lead.what, 300), when: clip(lead.when, 60), open: clip(lead.open, 300), externalId: clip(lead.externalId, 120) };
-  const r = await f(env.APPS_SCRIPT_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ secret: env.LEADS_SECRET, lead: clean }), redirect: "follow" });
-  return r.ok;
+  for (let i = 0; i < tries; i++) {
+    try {
+      const r = await f(env.APPS_SCRIPT_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ secret: env.LEADS_SECRET, lead: clean }), redirect: "follow" });
+      const j = r.ok ? await r.json().catch(() => ({})) : {};
+      if (j && j.ok === true) return true;
+      if (j && j.error === "forbidden") break; // wrong LEADS_SECRET: retrying will not help
+    } catch (e) { /* network error: retry */ }
+    if (i < tries - 1) await new Promise(res => setTimeout(res, env.RETRY_MS === undefined ? 1500 * (i + 1) : +env.RETRY_MS));
+  }
+  return false;
+}
+async function alertOwner(lead, env, f) {
+  console.log("lead NOT saved", lead.channel);
+  if (!env.ALERT_BOT_TOKEN || !env.ALERT_CHAT_ID) return;
+  const text = env.HEALTH === "1"
+    ? `Eine Anfrage (${lead.channel}) konnte nicht in die Liste gespeichert werden. Bitte das Postfach des Kanals direkt prüfen.`
+    : `Anfrage NICHT gespeichert (${lead.channel}): ${[lead.name, lead.contact, lead.what].filter(Boolean).join(", ").slice(0, 500)}`;
+  try {
+    await f(`https://api.telegram.org/bot${env.ALERT_BOT_TOKEN}/sendMessage`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: env.ALERT_CHAT_ID, text }) });
+  } catch (e) { /* the log line above stays */ }
 }
 async function deliverAll(leads, env, f) {
+  let all = true;
   for (const l of leads) {
-    const ok = await forward(await enrich(l, env, f), env, f);
-    if (!ok) console.log("forward failed", l.channel);
+    const lead = await enrich(l, env, f);
+    if (!(await forward(lead, env, f))) { all = false; await alertOwner(lead, env, f); }
   }
+  return all;
 }
 
 /* ---------- site form ---------- */
@@ -148,7 +178,11 @@ async function handleForm(req, env, ctx, f) {
     what: clip(d.message || d.what, 600), when: clip(d.when || d.day, 60),
     open: phone ? "https://wa.me/" + phone : "mailto:" + email, externalId: phone || email
   };
-  ctx.waitUntil(deliverAll([lead], env, f));
+  // Saved synchronously: if the sheet is unreachable the visitor sees it and can call instead of waiting forever.
+  if (!(await deliverAll([lead], env, f))) {
+    const msg = "Sorry, your request could not be sent. Please call or e-mail us. / Leider ist ein Fehler aufgetreten. Bitte rufen Sie uns an oder schreiben Sie eine E-Mail.";
+    return form.html ? new Response(msg, { status: 502, headers: { "Content-Type": "text/plain; charset=utf-8", ...cors } }) : Response.json({ ok: false, error: "not saved" }, { status: 502, headers: cors });
+  }
   return done();
 }
 
@@ -163,7 +197,11 @@ export default {
     if (url.pathname === "/meta" && req.method === "POST") {
       const raw = await req.text();
       const sig = (req.headers.get("X-Hub-Signature-256") || "").replace(/^sha256=/, "");
-      if (!env.META_APP_SECRET || !safeEqual(sig, await hmacHex(env.META_APP_SECRET, raw))) return new Response("bad signature", { status: 401 });
+      // Instagram API with Instagram Login signs with the Instagram app secret, Facebook/WhatsApp with the Meta app secret.
+      const secrets = [env.META_APP_SECRET, env.IG_APP_SECRET].filter(Boolean);
+      let good = false;
+      for (const s of secrets) if (safeEqual(sig, await hmacHex(s, raw))) good = true;
+      if (!good) return new Response("bad signature", { status: 401 });
       let p; try { p = JSON.parse(raw); } catch (e) { return new Response("bad json", { status: 400 }); }
       ctx.waitUntil(deliverAll(metaToLeads(p), env, f));
       return new Response("EVENT_RECEIVED");
@@ -171,7 +209,8 @@ export default {
     if (url.pathname === "/telegram" && req.method === "POST") {
       if (!env.TG_SECRET || !safeEqual(req.headers.get("X-Telegram-Bot-Api-Secret-Token"), env.TG_SECRET)) return new Response("forbidden", { status: 403 });
       const lead = telegramToLead(await req.json(), env);
-      if (lead) ctx.waitUntil(deliverAll([lead], env, f));
+      // Synchronous: on failure Telegram gets 500 and delivers the update again later.
+      if (lead && !(await deliverAll([lead], env, f))) return new Response("retry", { status: 500 });
       return new Response("ok");
     }
     return new Response("not found", { status: 404 });

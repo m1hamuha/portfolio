@@ -1,0 +1,13 @@
+{
+  "kind": "reorder",
+  "lang": "ru",
+  "business": { "name": "Zoo Eck (example)" },
+  "owner_email": "owner@example.com",
+  "till": {
+    "type": "csv_drive",
+    "folder_id": "PUT_DRIVE_FOLDER_ID_HERE",
+    "delimiter": ";",
+    "map": { "date": ["Datum", "Date"], "sku": ["Artikelnummer", "SKU"], "qty": ["Menge", "Quantity"] }
+  },
+  "reorder": { "cover_days": 14, "slow_days": 90 }
+}

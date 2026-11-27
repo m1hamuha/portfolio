@@ -1,0 +1,28 @@
+{
+  "id": "move-studio",
+  "name": "Move Studio Beispiel",
+  "niche": "fitness",
+  "lang": "de",
+  "langs": ["de", "en", "ru"],
+  "color": "#c25b00",
+  "tagline": { "de": "Kleines Studio, Kurse mit max. 8 Personen", "en": "Small studio, classes of up to 8 people", "ru": "Маленькая студия, группы до 8 человек" },
+  "phone": "0176 0000000",
+  "whatsapp": "0176 0000000",
+  "address": { "street": "Sportplatz 2", "zip": "12345", "city": "Musterstadt" },
+  "hours": { "mo": ["07:00-21:00"], "tu": ["07:00-21:00"], "we": ["07:00-21:00"], "th": ["07:00-21:00"], "fr": ["07:00-20:00"], "sa": ["09:00-14:00"], "su": [] },
+  "prices": [ { "items": [
+    { "name": { "de": "Monatsabo", "en": "Monthly", "ru": "Абонемент на месяц" }, "price": 49 },
+    { "name": { "de": "10er-Karte", "en": "10-class card", "ru": "Карта на 10 занятий" }, "price": 120 },
+    { "name": { "de": "Probetraining", "en": "Trial class", "ru": "Пробное занятие" }, "price": { "de": "kostenlos", "en": "free", "ru": "бесплатно" } }
+  ] } ],
+  "booking": {
+    "enabled": true,
+    "endpoint": "https://script.google.com/macros/s/FAKE_GYM_DEPLOYMENT/exec",
+    "title": { "de": "Kostenloses Probetraining", "en": "Free trial class", "ru": "Бесплатное пробное занятие" },
+    "slots": ["Mo 18:00", "Mi 18:00", "Sa 10:00"],
+    "delete_after_days": 90
+  },
+  "photos": [ { "file": "photos/gym-1.svg", "alt": { "de": "Trainingsraum", "en": "Training room", "ru": "Зал" } } ],
+  "legal": { "owner_name": "Jana Beispiel", "email": "info@example.com" },
+  "gbp": { "category": "Fitnessstudio" }
+}

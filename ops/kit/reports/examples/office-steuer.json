@@ -1,0 +1,9 @@
+{
+  "kind": "receivables",
+  "lang": "ru",
+  "customer_lang": "de",
+  "country_code": "49",
+  "business": { "name": "Steuerbuero Example", "sign": "Ihr Steuerbüro Example" },
+  "owner_email": "owner@example.com",
+  "stages": [1, 14, 28]
+}

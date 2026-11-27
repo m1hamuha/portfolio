@@ -1,0 +1,30 @@
+{
+  "_note": "Fake example. One file per client. No secrets in here. Copy to clients/<id>.json (that folder is for real clients: keep real files out of git).",
+  "id": "salon-lila",
+  "name": "Nagelstudio Lila",
+  "niche": "salon",
+  "city": "Leipzig",
+  "plan": "plan1",
+  "channels": ["instagram"],
+  "publish": "business_suite",
+  "owner_language": "ru",
+  "post_language": "de",
+  "second_language": "ru",
+  "voice": "warm, short, like the owner talking to a regular client",
+  "emoji": "at most two, nail or sparkle",
+  "hashtags": ["#nägelleipzig", "#nageldesign", "#leipzig"],
+  "max_hashtags": 5,
+  "schedule": { "weekdays": ["tue", "fri"], "posts_per_month": 8, "time": "18:30" },
+  "facts": {
+    "hours": "Di-Sa 10-19 Uhr",
+    "address_hint": "Leipzig Gohlis, Nähe Straßenbahn 4",
+    "prices": { "Maniküre mit Gel": "35 €", "Auffüllen": "30 €" },
+    "other": ["Termine nur nach Absprache"]
+  },
+  "contact": { "cta": "whatsapp", "whatsapp_link": "https://wa.me/490000000001" },
+  "special_dates": [
+    { "date": "2026-12-24", "closed": true },
+    { "date": "2026-12-31", "closed": true },
+    { "date": "2026-12-19", "note": "Letzte Termine vor Weihnachten" }
+  ]
+}
