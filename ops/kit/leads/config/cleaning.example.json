@@ -1,0 +1,11 @@
+{
+  "niche": "cleaning",
+  "business": { "name": "Glanz Reinigung (example)", "lang": "uk" },
+  "email": {
+    "enabled": true,
+    "query": "in:inbox newer_than:3d (from:(no-reply@wix.example) OR to:(anfrage@glanz.example))",
+    "formSenders": ["no-reply@wix.example"]
+  },
+  "notify": { "telegramChatIds": [], "detail": "full" },
+  "followUpDays": 3
+}

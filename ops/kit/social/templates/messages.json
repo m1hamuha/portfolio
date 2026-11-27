@@ -1,0 +1,52 @@
+{
+  "_note": "Messages Mikhail sends to the owner (not to the owner's customers). {name}, {month}, {n}, {date} are filled by render.mjs or by hand. No long dashes.",
+  "weekly_photo_request": {
+    "ru": "Привет! Пришли, пожалуйста, 2-3 фото с этой недели и пару слов к каждому (что это, цена, если хочешь). Для салона: напиши свободные окна на следующую неделю.",
+    "uk": "Привіт! Надішли, будь ласка, 2-3 фото з цього тижня і кілька слів до кожного (що це, ціна, якщо хочеш). Для салону: напиши вільні години на наступний тиждень.",
+    "de": "Hallo! Schick mir bitte 2-3 Fotos von dieser Woche und ein paar Worte dazu (was ist das, Preis, wenn du willst). Für den Salon: deine freien Termine nächste Woche.",
+    "en": "Hi! Please send 2-3 photos from this week and a few words for each (what it is, price if you like). For the salon: your free slots next week."
+  },
+  "approval_intro": {
+    "ru": "Посты на {month} для {name}: {n} шт. Посмотри, пожалуйста.",
+    "uk": "Пости на {month} для {name}: {n} шт. Подивись, будь ласка.",
+    "de": "Posts für {month} für {name}: {n} Stück. Schau bitte drüber.",
+    "en": "Posts for {month} for {name}: {n} in total. Please have a look."
+  },
+  "approval_footer": {
+    "ru": "Если всё ок, напиши «да». Если что-то поменять, напиши номер поста и что исправить.",
+    "uk": "Якщо все ок, напиши «так». Якщо щось змінити, напиши номер поста і що виправити.",
+    "de": "Wenn alles passt, schreib \"ja\". Wenn ich etwas ändern soll, schreib die Nummer und was.",
+    "en": "If all is fine, write \"yes\". To change something, write the post number and what to change."
+  },
+  "scheduled_done": {
+    "ru": "Готово: {n} постов стоят в плане, первый выйдет {date}. Если надо что-то снять, просто напиши.",
+    "uk": "Готово: {n} постів у плані, перший вийде {date}. Якщо треба щось зняти, просто напиши.",
+    "de": "Fertig: {n} Posts sind geplant, der erste geht am {date} raus. Wenn etwas raus soll, schreib einfach.",
+    "en": "Done: {n} posts are scheduled, the first goes out on {date}. If something should come off, just write."
+  },
+  "post_yourself": {
+    "ru": "Пост на {date} готов. Сохрани фото, скопируй текст и выложи в Instagram или в статус WhatsApp.",
+    "uk": "Пост на {date} готовий. Збережи фото, скопіюй текст і виклади в Instagram або в статус WhatsApp.",
+    "de": "Der Post für {date} ist fertig. Foto speichern, Text kopieren und in Instagram oder im WhatsApp-Status posten.",
+    "en": "The post for {date} is ready. Save the photo, copy the text and post it on Instagram or your WhatsApp status."
+  },
+  "access_howto": {
+    "ru": "Как дать мне доступ без пароля: 1) Instagram должен быть профессиональным аккаунтом и привязан к Meta Business Suite. 2) business.facebook.com, Настройки, Люди, Пригласить. 3) Мой адрес вставлю сам на звонке. 4) Доступ только к Instagram и Facebook-странице, права: Контент. Пароль не нужен, убрать меня можно в один клик.",
+    "uk": "Як дати мені доступ без пароля: 1) Instagram має бути професійним акаунтом і прив'язаний до Meta Business Suite. 2) business.facebook.com, Налаштування, Люди, Запросити. 3) Мою адресу вставлю сам на дзвінку. 4) Доступ лише до Instagram і Facebook-сторінки, права: Контент. Пароль не потрібен, прибрати мене можна в один клік.",
+    "de": "So gibst du mir Zugriff ohne Passwort: 1) Instagram als professionelles Konto, verknüpft mit der Meta Business Suite. 2) business.facebook.com, Einstellungen, Personen, Einladen. 3) Meine Adresse trage ich im Call ein. 4) Nur Zugriff auf Instagram und die Facebook-Seite, Recht: Inhalte. Kein Passwort nötig, du kannst mich mit einem Klick entfernen.",
+    "en": "How to give me access without a password: 1) Instagram as a professional account linked to Meta Business Suite. 2) business.facebook.com, Settings, People, Invite. 3) I add my address on our call. 4) Access only to Instagram and the Facebook page, permission: Content. No password needed, you can remove me with one click."
+  },
+  "status_howto": {
+    "ru": "Как поставить статус: WhatsApp, вкладка «Обновления», значок камеры, выбери фото, вставь текст в подпись, отправь. Статус видят только те, у кого есть твой номер, 24 часа.",
+    "uk": "Як поставити статус: WhatsApp, вкладка «Оновлення», значок камери, вибери фото, встав текст у підпис, надішли. Статус бачать лише ті, у кого є твій номер, 24 години.",
+    "de": "So postest du einen Status: WhatsApp, Reiter \"Aktuelles\", Kamera-Symbol, Foto wählen, Text als Bildunterschrift einfügen, senden. Den Status sehen 24 Stunden lang nur Leute, die deine Nummer haben.",
+    "en": "How to post a status: WhatsApp, Updates tab, camera icon, pick the photo, paste the text as caption, send. Only people who have your number see it, for 24 hours."
+  },
+  "consent_customer": {
+    "_note": "Short consent the owner asks from a customer or member before a photo with their face or name is posted. Owner keeps the answer (screenshot) for proof.",
+    "ru": "Можно мы выложим это фото в наш Instagram/WhatsApp-статус? Если да, ответьте «да». Отозвать согласие можно в любой момент, тогда мы удалим пост.",
+    "uk": "Чи можемо ми викласти це фото в наш Instagram/статус WhatsApp? Якщо так, напишіть «так». Відкликати згоду можна будь-коли, тоді ми видалимо пост.",
+    "de": "Dürfen wir dieses Foto auf unserem Instagram/WhatsApp-Status zeigen? Wenn ja, antworte bitte mit \"ja\". Du kannst das jederzeit widerrufen, dann löschen wir den Post.",
+    "en": "May we post this photo on our Instagram/WhatsApp status? If yes, please answer \"yes\". You can withdraw this at any time and we will delete the post."
+  }
+}

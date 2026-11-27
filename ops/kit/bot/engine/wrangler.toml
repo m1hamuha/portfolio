@@ -1,0 +1,24 @@
+# One Worker per client is the default (client-owned Cloudflare account, free plan).
+name = "chat-engine"
+main = "src/index.js"
+compatibility_date = "2026-01-01"
+
+[vars]
+LLM_PROVIDER = "anthropic"
+LLM_MODEL = "claude-haiku-5-5"
+WA_GRAPH_VERSION = "v23.0"   # check the current Graph API version when deploying
+# BUSINESS_ID = "salon-lila"  # fallback when a message carries no known phone_number_id
+
+# Chat memory for one day (history, offered times, pause flags). Create with:
+#   wrangler kv namespace create CHATS   and paste the id below.
+[[kv_namespaces]]
+binding = "CHATS"
+id = "PASTE_KV_NAMESPACE_ID"
+
+# Secrets, never in this file:
+#   wrangler secret put ANTHROPIC_API_KEY
+#   wrangler secret put WA_TOKEN          (system user token of the client's WhatsApp Business Account)
+#   wrangler secret put WA_APP_SECRET     (Meta app secret, for the webhook signature)
+#   wrangler secret put WA_VERIFY_TOKEN   (any long random string, also typed into the Meta webhook form)
+#   wrangler secret put GAS_URL / GAS_TOKEN (Apps Script calendar bridge)
+#   wrangler secret put OWNER_WA / TG_TOKEN / TG_CHAT_ID / IGNORE_NUMBERS (optional)

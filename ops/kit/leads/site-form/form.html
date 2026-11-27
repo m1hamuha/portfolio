@@ -1,0 +1,13 @@
+<!-- Drop-in request form for the client's site. Replace ACTION with https://leads-<client>.<account>.workers.dev/form
+     Works without JavaScript (redirects to THANKS_URL). Labels: change language as needed. -->
+<form class="lead-form" method="post" action="ACTION">
+  <label>Name <input name="name" autocomplete="name" maxlength="60" required></label>
+  <label>Telefon <input name="phone" type="tel" autocomplete="tel" maxlength="30"></label>
+  <label>E-Mail <input name="email" type="email" autocomplete="email" maxlength="120"></label>
+  <label>Was brauchen Sie? <textarea name="message" maxlength="600" rows="3"></textarea></label>
+  <label>Wunschtag <input name="when" maxlength="60"></label>
+  <!-- honeypot: hidden from people, bots fill it -->
+  <div style="position:absolute;left:-9999px" aria-hidden="true"><input name="website" tabindex="-1" autocomplete="off"></div>
+  <label><input type="checkbox" required> Ich bin einverstanden, dass meine Angaben zur Bearbeitung der Anfrage gespeichert werden (siehe Datenschutzerklärung).</label>
+  <button type="submit">Anfrage senden</button>
+</form>

@@ -1,0 +1,9 @@
+{
+  "niche": "cleaning",
+  "business": { "name": "Glanz Reinigung (example)", "ownerEmail": "owner@example.com", "lang": "ru" },
+  "timezone": "Europe/Berlin",
+  "defaultLang": "de",
+  "countryCode": "49",
+  "reminders": { "enabled": false },
+  "comeback": { "enabled": true, "source": "clients", "sheet": "Clients", "kind": "rebook", "afterDays": 28, "maxDays": 120, "sendHour": 9, "channels": ["email"], "requireMarketingConsent": false, "perRun": 80 }
+}

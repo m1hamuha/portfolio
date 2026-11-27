@@ -1,0 +1,11 @@
+{
+  "niche": "office",
+  "business": { "name": "Steuerbüro Muster (example)", "lang": "de" },
+  "email": {
+    "enabled": true,
+    "query": "in:inbox newer_than:2d (from:(kontakt@steuer-muster.example) OR to:(anfrage@steuer-muster.example))",
+    "formSenders": ["kontakt@steuer-muster.example"]
+  },
+  "notify": { "telegramChatIds": ["000000000"], "detail": "full" },
+  "llm": { "enabled": false }
+}

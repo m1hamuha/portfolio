@@ -1,0 +1,29 @@
+{
+  "id": "fitness-move",
+  "niche": "fitness",
+  "niche_label": "small fitness and yoga studio",
+  "name": "Move Studio (example)",
+  "timezone": "Europe/Berlin",
+  "languages": ["de", "ru", "uk", "en"],
+  "default_lang": "de",
+  "currency": "EUR",
+  "whatsapp_phone_number_id": "000000000000003",
+  "hours": { "mon": ["07:00-21:00"], "tue": ["07:00-21:00"], "wed": ["07:00-21:00"], "thu": ["07:00-21:00"], "fri": ["07:00-20:00"], "sat": ["09:00-13:00"], "sun": [] },
+  "services": [
+    { "id": "trial", "name": { "de": "Probetraining", "ru": "Пробное занятие", "uk": "Пробне заняття", "en": "Trial session" }, "price": 0, "bookable": false },
+    { "id": "month", "name": { "de": "Monatsabo", "ru": "Абонемент на месяц", "uk": "Абонемент на місяць", "en": "Monthly pass" }, "price": 59, "bookable": false },
+    { "id": "ten", "name": { "de": "10er-Karte", "ru": "Карта на 10 занятий", "uk": "Картка на 10 занять", "en": "10-class card" }, "price": 120, "bookable": false }
+  ],
+  "classes": [
+    { "id": "morning-730", "name": "Functional 7:30", "days": ["mon", "wed", "fri"], "time": "07:30", "duration_min": 60, "trial": true, "capacity": 12 },
+    { "id": "morning-900", "name": "Yoga 9:00", "days": ["tue", "thu", "sat"], "time": "09:00", "duration_min": 60, "trial": true, "capacity": 10 },
+    { "id": "evening-1900", "name": "Pilates 19:00", "days": ["mon", "thu"], "time": "19:00", "duration_min": 60, "trial": false, "capacity": 10 }
+  ],
+  "trial_name": "Probetraining / trial",
+  "facts": ["The trial session is free (0 EUR)", "Bring a towel and indoor shoes", "Showers available"],
+  "booking": { "mode": "classes", "calendar": "none", "days_ahead": 7, "min_notice_min": 360, "offer_count": 3 },
+  "notify": "whatsapp",
+  "owner_lang": "de",
+  "human_pause_hours": 12,
+  "ai_disclosure": true
+}

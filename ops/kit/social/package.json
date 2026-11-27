@@ -1,0 +1,10 @@
+{
+  "name": "social-kit",
+  "private": true,
+  "type": "module",
+  "description": "Monthly content plan and caption generator for small business posts",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "demo": "node bin/social.mjs plan --client clients/salon-lila.json --month 2026-12 --inbox examples/inbox-salon --out /tmp/social-demo --mock"
+  }
+}

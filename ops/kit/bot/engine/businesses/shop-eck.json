@@ -1,0 +1,22 @@
+{
+  "id": "shop-eck",
+  "niche": "shop",
+  "niche_label": "small corner shop",
+  "name": "Eckladen (example)",
+  "timezone": "Europe/Berlin",
+  "languages": ["de", "ru", "uk", "en"],
+  "default_lang": "de",
+  "currency": "EUR",
+  "whatsapp_phone_number_id": "000000000000005",
+  "hours": { "mon": ["08:00-19:00"], "tue": ["08:00-19:00"], "wed": ["08:00-19:00"], "thu": ["08:00-19:00"], "fri": ["08:00-19:00"], "sat": ["09:00-14:00"], "sun": [] },
+  "services": [
+    { "id": "aa4", "name": { "de": "Batterien AA, 4 Stück", "en": "AA batteries, pack of 4", "ru": "Батарейки АА, 4 шт.", "uk": "Батарейки АА, 4 шт." }, "price": 3.5, "in_stock": true },
+    { "id": "sim", "name": { "de": "Prepaid-SIM", "en": "Prepaid SIM card", "ru": "Предоплаченная SIM-карта", "uk": "Передплачена SIM-картка" }, "price": 9.99, "in_stock": true },
+    { "id": "pelmeni", "name": { "de": "Pelmeni 1 kg", "en": "Pelmeni 1 kg", "ru": "Пельмени 1 кг", "uk": "Пельмені 1 кг" }, "price": 6.9, "in_stock": false, "note": "next delivery Friday" }
+  ],
+  "facts": ["Stock list updated by the owner every Monday; for anything not listed the owner answers", "No delivery, pick-up only"],
+  "booking": { "mode": "none" },
+  "notify": "none",
+  "human_pause_hours": 12,
+  "ai_disclosure": true
+}

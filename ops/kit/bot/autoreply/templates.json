@@ -1,0 +1,78 @@
+{
+  "_note": "Texts for the free WhatsApp Business app (no API). Placeholders: {name} {prices} {hours} {link} {callback} {areas} {ask}. Keys: greeting (first message or after 14 days of silence), away (outside opening hours), quick (shortcut -> text). Sie/вы form.",
+  "trades": {
+    "greeting": {
+      "de": "Hallo, hier ist {name}. Ich bin gerade bei einem Kunden und rufe Sie innerhalb von {callback} zurück. Schicken Sie mir bitte schon die Adresse und ein Foto vom Problem, dann bringe ich gleich das richtige Material mit.",
+      "en": "Hi, this is {name}. I'm on a job and will call you back within {callback}. Please send the address and a photo of the problem, so I bring the right parts.",
+      "ru": "Здравствуйте, это {name}. Я сейчас на объекте и перезвоню в течение {callback}. Пришлите, пожалуйста, адрес и фото проблемы, чтобы я сразу взял нужные детали.",
+      "uk": "Добрий день, це {name}. Я зараз на об'єкті й передзвоню протягом {callback}. Надішліть, будь ласка, адресу та фото проблеми, щоб я одразу взяв потрібні деталі."
+    },
+    "away": {
+      "de": "Danke für Ihre Nachricht an {name}. Ich arbeite {hours}. Schicken Sie Adresse und Foto, ich melde mich am nächsten Arbeitstag. Bei Wasser oder Gas im Notfall: Haupthahn zu und Notdienst 112 bzw. Versorger anrufen.",
+      "en": "Thanks for writing to {name}. My hours: {hours}. Send the address and a photo, I will reply on the next working day. Emergency with water or gas: close the main valve and call 112 or your utility.",
+      "ru": "Спасибо за сообщение, {name}. Я работаю: {hours}. Пришлите адрес и фото, отвечу в следующий рабочий день. Если авария с водой или газом: перекройте кран и звоните 112 или в аварийную службу.",
+      "uk": "Дякую за повідомлення, {name}. Я працюю: {hours}. Надішліть адресу та фото, відповім наступного робочого дня. Якщо аварія з водою чи газом: перекрийте кран і телефонуйте 112 або в аварійну службу."
+    }
+  },
+  "cleaning": {
+    "away": {
+      "de": "Danke für Ihre Anfrage bei {name}! Unsere Preise:\n{prices}\nWir arbeiten in: {areas}.\nSchreiben Sie Adresse, Größe der Wohnung und Wunschtag. Wir bestätigen die Uhrzeit am Morgen.",
+      "en": "Thanks for writing to {name}! Our prices:\n{prices}\nWe work in: {areas}.\nSend your address, flat size and preferred day. We confirm the time in the morning.",
+      "ru": "Спасибо за запрос в {name}! Наши цены:\n{prices}\nРаботаем в районах: {areas}.\nНапишите адрес, размер квартиры и удобный день. Время подтвердим утром.",
+      "uk": "Дякуємо за запит до {name}! Наші ціни:\n{prices}\nПрацюємо в районах: {areas}.\nНапишіть адресу, розмір квартири та зручний день. Час підтвердимо вранці."
+    }
+  },
+  "cafe": {
+    "away": {
+      "de": "Danke für Ihre Nachricht an {name}! Für eine Tischreservierung schreiben Sie bitte: Tag, Uhrzeit, Personenzahl und Namen. Wir bestätigen, sobald wir öffnen ({hours}).{link_line}",
+      "en": "Thanks for writing to {name}! To book a table please send: day, time, number of people and a name. We confirm as soon as we open ({hours}).{link_line}",
+      "ru": "Спасибо за сообщение в {name}! Для брони столика напишите: день, время, сколько человек и имя. Подтвердим, как только откроемся ({hours}).{link_line}",
+      "uk": "Дякуємо за повідомлення до {name}! Для бронювання столика напишіть: день, час, кількість осіб та ім'я. Підтвердимо, щойно відкриємося ({hours}).{link_line}"
+    }
+  },
+  "shop": {
+    "greeting": {
+      "de": "Hallo, hier ist {name}. Geöffnet: {hours}.\nPreise und Sortiment sehen Sie im Katalog (Symbol oben im Chat).{link_line}\nFür alles andere antworte ich selbst, sobald ich kann.",
+      "en": "Hi, this is {name}. Open: {hours}.\nPrices and products are in our catalog (icon at the top of this chat).{link_line}\nFor anything else I answer myself as soon as I can.",
+      "ru": "Здравствуйте, это {name}. Открыты: {hours}.\nЦены и товары смотрите в каталоге (значок вверху чата).{link_line}\nНа остальное отвечу сам, как только смогу.",
+      "uk": "Добрий день, це {name}. Відчинено: {hours}.\nЦіни та товари дивіться в каталозі (значок угорі чату).{link_line}\nНа інше відповім сам, щойно зможу."
+    }
+  },
+  "clinic": {
+    "away": {
+      "de": "Danke für Ihre Nachricht an {name}. Die Praxis ist geschlossen. Sprechzeiten: {hours}.\nPreise (Selbstzahler):\n{prices}\nSchreiben Sie gern Ihren Wunschtag und die Tageszeit, wir melden uns am Morgen. Bitte schicken Sie hier keine Befunde oder Gesundheitsdaten. Bei Schmerzen im Notfall: 116117, bei Lebensgefahr 112.",
+      "en": "Thanks for writing to {name}. The practice is closed. Hours: {hours}.\nPrices (self-pay):\n{prices}\nTell us your preferred day and time of day, we reply in the morning. Please do not send medical findings or health details here. Urgent pain: 116117, life-threatening: 112.",
+      "ru": "Спасибо за сообщение в {name}. Практика закрыта. Часы приёма: {hours}.\nЦены (самостоятельная оплата):\n{prices}\nНапишите удобный день и время дня, мы ответим утром. Пожалуйста, не присылайте сюда снимки и данные о здоровье. Сильная боль: 116117, угроза жизни: 112.",
+      "uk": "Дякуємо за повідомлення до {name}. Практика зачинена. Години прийому: {hours}.\nЦіни (самостійна оплата):\n{prices}\nНапишіть зручний день і час доби, ми відповімо вранці. Будь ласка, не надсилайте сюди знімки та дані про здоров'я. Сильний біль: 116117, загроза життю: 112."
+    }
+  },
+  "salon": {
+    "away": {
+      "de": "Danke für Ihre Nachricht an {name}! Freie Termine sehen und buchen Sie hier rund um die Uhr: {link}\nPreise:\n{prices}",
+      "en": "Thanks for writing to {name}! See free times and book any time here: {link}\nPrices:\n{prices}",
+      "ru": "Спасибо за сообщение в {name}! Свободное время можно посмотреть и записаться здесь в любое время: {link}\nЦены:\n{prices}",
+      "uk": "Дякуємо за повідомлення до {name}! Вільний час можна переглянути й записатися тут будь-коли: {link}\nЦіни:\n{prices}"
+    }
+  },
+  "fitness": {
+    "away": {
+      "de": "Danke für Ihre Nachricht an {name}! Preise:\n{prices}\nTrainingszeiten: {hours}. Probetraining buchen: {link}",
+      "en": "Thanks for writing to {name}! Prices:\n{prices}\nOpening hours: {hours}. Book a trial: {link}",
+      "ru": "Спасибо за сообщение в {name}! Цены:\n{prices}\nЧасы работы: {hours}. Записаться на пробное: {link}",
+      "uk": "Дякуємо за повідомлення до {name}! Ціни:\n{prices}\nГодини роботи: {hours}. Записатися на пробне: {link}"
+    }
+  },
+  "other": {
+    "away": {
+      "de": "Danke für Ihre Nachricht an {name}! Preise:\n{prices}\nTermin buchen: {link}\nAndere Fragen beantworten wir ab {next_open}.",
+      "en": "Thanks for writing to {name}! Prices:\n{prices}\nBook a time: {link}\nOther questions: we reply from {next_open}.",
+      "ru": "Спасибо за сообщение в {name}! Цены:\n{prices}\nЗаписаться: {link}\nНа другие вопросы ответим с {next_open}.",
+      "uk": "Дякуємо за повідомлення до {name}! Ціни:\n{prices}\nЗаписатися: {link}\nНа інші питання відповімо з {next_open}."
+    }
+  },
+  "quick": {
+    "preis": { "de": "Unsere Preise:\n{prices}", "en": "Our prices:\n{prices}", "ru": "Наши цены:\n{prices}", "uk": "Наші ціни:\n{prices}" },
+    "zeiten": { "de": "Geöffnet: {hours}", "en": "Open: {hours}", "ru": "Часы работы: {hours}", "uk": "Години роботи: {hours}" },
+    "termin": { "de": "Termin buchen: {link}", "en": "Book a time: {link}", "ru": "Записаться: {link}", "uk": "Записатися: {link}" }
+  }
+}

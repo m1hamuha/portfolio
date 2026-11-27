@@ -1,0 +1,20 @@
+{
+  "niche": "salon",
+  "business": { "name": "Nagelstudio Lila (example)", "ownerEmail": "owner@example.com", "phone": "+49 30 0000000", "lang": "ru" },
+  "timezone": "Europe/Berlin",
+  "defaultLang": "de",
+  "countryCode": "49",
+  "source": { "type": "calendar", "calendarId": "primary" },
+  "reminders": { "enabled": true, "when": "day_before", "kind": "reminder_day_before", "sendHour": 17, "channels": ["whatsapp"], "requireConsent": true },
+  "comeback": { "enabled": true, "kind": "comeback", "afterDays": 42, "maxDays": 120, "sendHour": 11, "channels": ["whatsapp"], "requireMarketingConsent": true },
+  "whatsapp": {
+    "mode": "api",
+    "provider": "meta",
+    "graphVersion": "v24.0",
+    "phoneNumberId": "000000000000000",
+    "templates": {
+      "reminder_day_before": { "name": "reminder_day_before", "params": ["name", "date", "time"] },
+      "comeback": { "name": "comeback_invite", "params": ["name"] }
+    }
+  }
+}

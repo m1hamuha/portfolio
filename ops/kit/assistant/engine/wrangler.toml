@@ -1,0 +1,20 @@
+# Staff helper. Deploy in the client's own Cloudflare account (free plan).
+name = "team-helper"
+main = "src/index.js"
+compatibility_date = "2026-01-01"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+run_worker_first = ["/ask", "/unanswered"]
+
+[vars]
+KB_ID = "office-steuer"
+LLM_PROVIDER = "anthropic"
+LLM_MODEL = "claude-haiku-5-5"
+
+[[kv_namespaces]]
+binding = "CHATS"
+id = "PASTE_KV_NAMESPACE_ID"
+
+# Secrets: wrangler secret put ANTHROPIC_API_KEY / TEAM_CODE / OWNER_CODE

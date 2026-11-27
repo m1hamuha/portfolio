@@ -1,0 +1,13 @@
+{
+  "niche": "clinic",
+  "business": { "name": "Praxis Beispiel", "lang": "de" },
+  "health": true,
+  "email": {
+    "enabled": true,
+    "query": "in:inbox newer_than:2d from:(formular@praxis-beispiel.example)",
+    "formSenders": ["formular@praxis-beispiel.example"]
+  },
+  "notify": { "telegramChatIds": ["000000000"], "detail": "minimal" },
+  "retentionDays": 90,
+  "_note": "health=true forces minimal alerts and no LLM. Use Google Workspace with the data processing amendment, share the sheet only with the doctor and the front desk."
+}
