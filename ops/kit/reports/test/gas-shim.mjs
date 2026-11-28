@@ -182,7 +182,7 @@ export function loadGas(files, opts = {}) {
       getFolderById: (id) => {
         const files = (drive[id] || []).slice();
         let i = 0;
-        return { getFiles: () => ({ hasNext: () => i < files.length, next: () => files[i++] }), createFile: (b) => { const f = fakeFile(b.name || "file", b); (drive[id] = drive[id] || []).push(f); return f; }, getId: () => id };
+        return { getFiles: () => ({ hasNext: () => i < files.length, next: () => files[i++] }), createFile: (b) => { const f = fakeFile(b.name || "file", b); (drive[id] = drive[id] || []).push(f); return f; }, getId: () => id, getName: () => `Folder ${id}` };
       },
       getFileById: (id) => Object.values(drive).flat().find((f) => f.getId() === id),
       getRootFolder: () => ctx.DriveApp.getFolderById("root"),

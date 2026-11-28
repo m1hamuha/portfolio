@@ -18,5 +18,6 @@
   "allowed_offers": [],
   "alert_max_stars": 3,
   "notify_owner": true,
+  "owner_drafts": true,
   "color": "#1d5f8a"
 }

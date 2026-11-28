@@ -50,7 +50,7 @@ test("auth: wrong or missing token is 401", async () => {
 test("me and caption, then daily limit", async () => {
   const env = envOf();
   const me = await (await worker.fetch(req("/api/me"), env)).json();
-  assert.deepEqual(me, { name: "Nagelstudio Lila", niche: "salon", ui_language: "ru", used: 0, daily_limit: 2 });
+  assert.deepEqual(me, { name: "Nagelstudio Lila", niche: "salon", ui_language: "ru", used: 0, daily_limit: 2, captions_until: "2027-12-01" });
   const { f, calls } = fakeAnthropic("Nude mit Goldlinien.");
   const r = await worker.fetch(req("/api/caption", { method: "POST", body: { images: [IMG, IMG, IMG, IMG], note: "Nude mit Gold" } }), env, {}, f);
   assert.equal(r.status, 200);
@@ -105,4 +105,17 @@ test("app texts: 4 languages, same keys, no long dashes; app files clean", async
   for (const l of ["uk", "de", "en"]) assert.deepEqual(Object.keys(T[l]).sort(), keys, l);
   for (const l of Object.keys(T)) for (const v of Object.values(T[l])) assert.ok(!/[\u2013\u2014]/.test(v));
   for (const f of await readdir(join(here, "../app"))) assert.ok(!/[\u2013\u2014]/.test(await readFile(join(here, "../app", f), "utf8")), f);
+});
+
+test("caption term: after captions_until the model is not called, the app says so", async () => {
+  const old = workerEntry({ ...example, app: { ...example.app, token_sha256: hash(TOKEN), captions_until: "2020-01-01" } });
+  const env = envOf({ CLIENTS: JSON.stringify([old]) });
+  const { f, calls } = fakeAnthropic("x");
+  const r = await worker.fetch(req("/api/caption", { method: "POST", body: { images: [IMG] } }), env, {}, f);
+  assert.equal(r.status, 402);
+  assert.deepEqual(await r.json(), { error: "term_over", captions_until: "2020-01-01" });
+  assert.equal(calls.length, 0);
+  assert.equal((await worker.fetch(req("/api/me"), env)).status, 200, "the app still opens: photos and clips work on the phone");
+  assert.throws(() => workerEntry({ ...example, app: { token_sha256: hash(TOKEN) } }), /captions_until/);
+  for (const l of ["ru", "uk", "de", "en"]) assert.ok(T[l].term && !/[\u2013\u2014]/.test(T[l].term), l);
 });

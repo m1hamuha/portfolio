@@ -12,11 +12,12 @@ function fakeFetch(replies) {
   fn.calls = calls;
   return fn;
 }
+const ANT = { LLM_PROVIDER: "anthropic", LLM_ALLOW_NON_EU: "yes", ANTHROPIC_API_KEY: "k" };
 const OK = { status: 200, json: { content: [{ type: "text", text: "Hallo" }] } };
 
 test("anthropic: headers, model, body", async () => {
   const f = fakeFetch([OK]);
-  const llm = makeLLM({ ANTHROPIC_API_KEY: "test-key" }, f);
+  const llm = makeLLM({ LLM_PROVIDER: "anthropic", LLM_ALLOW_NON_EU: "yes", ANTHROPIC_API_KEY: "test-key" }, f);
   assert.equal(await llm.complete({ system: "s", user: "u" }), "Hallo");
   const c = f.calls[0];
   assert.equal(c.url, "https://api.anthropic.com/v1/messages");
@@ -43,15 +44,16 @@ test("bedrock-eu refuses non-EU region and non-EU profile", () => {
 
 test("retries on 529, fails fast on 400", async () => {
   const f = fakeFetch([{ status: 529, json: {} }, OK]);
-  assert.equal(await makeLLM({ ANTHROPIC_API_KEY: "k" }, f).complete({ user: "x" }), "Hallo");
+  assert.equal(await makeLLM(ANT, f).complete({ user: "x" }), "Hallo");
   assert.equal(f.calls.length, 2);
   const g = fakeFetch([{ status: 400, json: { error: "bad" } }, OK]);
-  await assert.rejects(makeLLM({ ANTHROPIC_API_KEY: "k" }, g).complete({ user: "x" }), /400/);
+  await assert.rejects(makeLLM(ANT, g).complete({ user: "x" }), /400/);
   assert.equal(g.calls.length, 1);
 });
 
 test("missing key and unknown provider throw", () => {
-  assert.throws(() => makeLLM({}), /ANTHROPIC_API_KEY/);
+  assert.throws(() => makeLLM({}), /AWS_BEARER_TOKEN_BEDROCK/);
+  assert.throws(() => makeLLM({ LLM_PROVIDER: "anthropic", LLM_ALLOW_NON_EU: "yes" }), /ANTHROPIC_API_KEY/);
   assert.throws(() => makeLLM({ LLM_PROVIDER: "x" }), /unknown/);
 });
 
@@ -66,4 +68,13 @@ test("redact removes IBAN, email, phone, tax id", () => {
   assert.ok(!/DE89|example\.de|1234567|67890/.test(r), r);
   assert.match(r, /\[IBAN\].*\[EMAIL\].*\[PHONE\].*\[TAXID\]/);
   assert.match(r, /1\.234,50 EUR am 03\.11\.2026/);
+});
+
+test("default is EU; anthropic only with explicit non-EU consent", async () => {
+  const f = fakeFetch([OK]);
+  const llm = makeLLM({ AWS_BEARER_TOKEN_BEDROCK: "bk" }, f);
+  assert.equal(llm.provider, "bedrock-eu");
+  await llm.complete({ user: "u" });
+  assert.match(f.calls[0].url, /bedrock-runtime\.eu-central-1/);
+  assert.throws(() => makeLLM({ LLM_PROVIDER: "anthropic", ANTHROPIC_API_KEY: "k" }), /outside the EU/);
 });

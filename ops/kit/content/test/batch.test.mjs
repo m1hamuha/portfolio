@@ -79,6 +79,11 @@ test("batch end to end (mock captions): photos, video clip with subtitles, slide
     const caps = await readFile(join(out, "captions.txt"), "utf8");
     assert.match(caps, /Kürbissuppe, Suppe des Tages 6 €/);
     assert.match(r.message, /^Готово: у папці «Готово»/);
+    /* the bill follows the rule told before the work: photo €1, clip €1, clip with subtitles €3, slideshow free */
+    assert.equal(r.bill.photos, 3);
+    assert.equal(r.bill.subtitled, FF ? 1 : 0);
+    assert.equal(r.bill.total, FF ? 6 : 3);
+    assert.match(r.message, new RegExp(`Разом ${FF ? 6 : 3} €`));
     const again = await runBatch({ client: clientPath, in: inDir, out, mock: true }, {});
     assert.equal(again.items.filter((x) => x.file !== "(slideshow)").length, 0);
     assert.equal(again.skipped.length, FF ? 4 : 3);

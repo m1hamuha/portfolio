@@ -125,7 +125,7 @@ test("shop: reorder list and slow movers (site story: 3 left, 18 sold, order 20)
 
 test("other: bank CSV to one page (site story: 6,200 in, 4,900 out, 1,300 left)", () => {
   const cfg = ex("other-kiosk");
-  const rows = core.csvToObjects(fs.readFileSync(here("../examples/bank.sample.csv"), "utf8"), cfg.bank_csv.map, ";");
+  const rows = core.csvToObjects(fs.readFileSync(here("../examples/bank.sample.csv"), "utf8"), core.bankProfiles(cfg)[0].map, ";");
   const txc = core.categorize(rows, cfg.rules);
   const sm = core.monthSummary(txc, "2026-11");
   assert.equal(sm.in, 6200);
@@ -286,4 +286,80 @@ test("apps script: monthly one page from bank file in Drive", () => {
 test("no long dashes in kit files", () => {
   const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.name === "node_modules" ? [] : e.isDirectory() ? walk(`${d}/${e.name}`) : [`${d}/${e.name}`]));
   for (const f of walk(here(".."))) assert.ok(!/[\u2013\u2014]/.test(fs.readFileSync(f, "utf8")), f);
+});
+
+test("other: two banks with different exports land on one page; a file no profile knows is refused", () => {
+  const cfg = ex("other-kiosk");
+  const all = fs.readFileSync(here("../examples/bank.sample.csv"), "utf8");
+  /* bank 1 without the two payments that went through bank 2 */
+  const bank1 = all.split("\n").filter((l) => !/Selgros|Payout 1333/.test(l)).join("\n");
+  const bank2 = fs.readFileSync(here("../examples/bank2.sample.csv"), "utf8");
+  const a = core.bankCsvRows(() => bank1, core.bankProfiles(cfg));
+  const b = core.bankCsvRows(() => bank2, core.bankProfiles(cfg));
+  assert.match(a.profile, /main bank/);
+  assert.match(b.profile, /second bank/);
+  const sm = core.monthSummary(core.categorize(a.rows.concat(b.rows), cfg.rules), "2026-11");
+  assert.equal(sm.in, 6200);
+  assert.equal(sm.out, 4900);
+  assert.equal(sm.left, 1300);
+  assert.equal(sm.unsorted, 0);
+  assert.throws(() => core.bankCsvRows(() => "Foo;Bar\n1;2", core.bankProfiles(cfg)), /matches no bank_csv profile/);
+  assert.equal(core.validateReportConfig({ ...cfg, bank_csv: [] }).filter((e) => /bank_csv/.test(e)).length, 1);
+});
+
+test("apps script: files from two banks in one Drive folder make one month", () => {
+  const cfg = { ...ex("other-kiosk"), bank_folder_id: "BANK" };
+  const all = fs.readFileSync(here("../examples/bank.sample.csv"), "utf8");
+  const bank1 = all.split("\n").filter((l) => !/Selgros|Payout 1333/.test(l)).join("\n");
+  const g = loadGas([CORE, GLUE], { config: cfg, drive: { BANK: [fakeFile("bank1.csv", bank1), fakeFile("bank2.csv", fs.readFileSync(here("../examples/bank2.sample.csv"), "utf8"))] } });
+  g.ctx.setup();
+  g.ctx.todayIso_ = () => "2026-12-03";
+  const sm = g.ctx.monthly();
+  assert.equal(sm.left, 1300);
+  assert.match(g.log.mail.at(-1).body, /Пришло: 6 200 €/);
+});
+
+test("apps script: no bank file by the 3rd gives a note, a file added later still gives the page", () => {
+  const cfg = { ...ex("other-kiosk"), bank_folder_id: "BANK" };
+  const g = loadGas([CORE, GLUE], { config: cfg, drive: { BANK: [] } });
+  g.ctx.setup();
+  assert.ok(g.log.triggers.some((t) => t.fn === "bankDaily"));
+  g.ctx.todayIso_ = () => "2026-12-03";
+  const empty = g.ctx.monthly();
+  assert.equal(empty.empty, true);
+  assert.match(g.log.mail.at(-1).body, /ещё нет платежей/);
+  assert.match(g.log.mail.at(-1).body, /Folder BANK/);
+  assert.doesNotMatch(g.log.mail.at(-1).body, /Пришло: 0/);
+  const mails = g.log.mail.length;
+  /* the owner drops the CSV on the 5th: next morning the page goes out */
+  g.ctx.todayIso_ = () => "2026-12-06";
+  g.ctx.DriveApp.getFolderById("BANK").createFile({ name: "umsatz.csv", data: fs.readFileSync(here("../examples/bank.sample.csv"), "utf8") });
+  assert.ok(g.ctx.bankDaily() > 0);
+  assert.equal(g.log.mail.length, mails + 1);
+  assert.match(g.log.mail.at(-1).body, /Пришло: 6 200 €/);
+  /* nothing new the day after: no second mail */
+  g.ctx.todayIso_ = () => "2026-12-07";
+  assert.equal(g.ctx.bankDaily(), 0);
+  assert.equal(g.log.mail.length, mails + 1);
+  /* a file before the send day is only read in, the page waits for the 3rd */
+  g.ctx.todayIso_ = () => "2027-01-02";
+  g.ctx.DriveApp.getFolderById("BANK").createFile({ name: "dec.csv", data: "Buchungstag;Name Zahlungsbeteiligter;Verwendungszweck;Betrag\n01.01.2027;Hausverwaltung Example;Miete Januar;-1.500,00\n" });
+  /* a wrong file (PDF statement) does not block the good one and is named in the next page */
+  g.ctx.DriveApp.getFolderById("BANK").createFile({ name: "Kontoauszug.pdf", data: "%PDF-1.7 binary" });
+  assert.equal(g.ctx.bankDaily(), 1);
+  assert.equal(g.log.mail.length, mails + 1);
+  g.ctx.todayIso_ = () => "2027-01-03";
+  g.ctx.monthly();
+  assert.match(g.log.mail.at(-1).body, /Файл Kontoauszug\.pdf не прочитан/);
+  g.ctx.monthly();
+  assert.doesNotMatch(g.log.mail.at(-1).body, /Kontoauszug/);
+});
+
+test("other: empty month note in 4 languages names the folder", () => {
+  for (const l of ["ru", "uk", "de", "en"]) {
+    const t = core.emptyMonthText("2026-11", l, "Kiosk Bank", "Kiosk");
+    assert.match(t, /^Kiosk 2026-11\n/);
+    assert.match(t, /Kiosk Bank/);
+    assert.match(t, /CSV/);
+  }
 });

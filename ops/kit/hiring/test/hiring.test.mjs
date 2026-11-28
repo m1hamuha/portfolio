@@ -48,7 +48,7 @@ test("question check catches forbidden questions and file uploads", () => {
 });
 
 test("AGG check on ad texts", () => {
-  const good = "Barista (m/w/d) in Musterstadt\n14,50 € pro Stunde, Mo bis Fr 7 bis 13 Uhr\nDeutsch für einfache Gespräche mit Gästen.";
+  const good = "Barista (m/w/d) in Musterstadt\n15,00 € pro Stunde, Mo bis Fr 7 bis 13 Uhr\nDeutsch für einfache Gespräche mit Gästen.";
   assert.deepEqual(J(core.aggLint(good, "de")), []);
   const bad = "Barista gesucht\nWir sind ein junges Team und suchen dich bis 30 Jahre, Muttersprachler, Bewerbung mit Foto.";
   const why = core.aggLint(bad, "de").map((x) => x.why).join(" | ");
@@ -102,17 +102,17 @@ test("LLM adapter: Anthropic request shape (mocked HTTP), refusal and missing ke
 test("job ad end to end with a mocked model: link inserted, AGG checked, markdown and QR", async () => {
   const cfg = ex("cafe-olive");
   const reply = JSON.stringify({ title_de: "Barista (m/w/d)", ads: {
-    de: "Barista (m/w/d) im Cafe Olive\n14,50 € pro Stunde plus Trinkgeld, Mo bis Fr 7 bis 13 Uhr\nBewirb dich in 2 Minuten: {{FORM_LINK}}",
+    de: "Barista (m/w/d) im Cafe Olive\n15,00 € pro Stunde plus Trinkgeld, Mo bis Fr 7 bis 13 Uhr\nBewirb dich in 2 Minuten: {{FORM_LINK}}",
     en: "Barista wanted, 14.50 € per hour. Apply in 2 minutes: {{FORM_LINK}}",
-    ru: "Бариста, 14,50 € в час. Анкета на 2 минуты: {{FORM_LINK}}",
-    uk: "Бариста, 14,50 € на годину. Анкета на 2 хвилини: {{FORM_LINK}}",
+    ru: "Бариста, 15,00 € в час. Анкета на 2 минуты: {{FORM_LINK}}",
+    uk: "Бариста, 15,00 € на годину. Анкета на 2 хвилини: {{FORM_LINK}}",
   } });
   let seen;
   const llm = makeLLM({ LLM_PROVIDER: "mock", MOCK_REPLY: (req) => { seen = req; return "```json\n" + reply + "\n```"; } });
   const res = await makeAd(cfg, { llm, link: "https://forms.gle/EXAMPLE" });
   assert.match(seen.system, /AGG/);
   assert.match(seen.system, /Max 140 words/);
-  assert.match(seen.user, /Pay: 14,50 €/);
+  assert.match(seen.user, /Pay: 15,00 €/);
   assert.match(res.ads.de, /https:\/\/forms\.gle\/EXAMPLE/);
   assert.deepEqual(Object.values(res.issues).flat(), []);
   const md = renderMarkdown(cfg, res, core.buildFormSpec(cfg), []);
@@ -221,4 +221,44 @@ test("setup refuses a config with a forbidden custom question or missing GDPR co
 test("no long dashes in kit files (vendor excluded)", () => {
   const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(`${d}/${e.name}`) : [`${d}/${e.name}`]));
   for (const f of walk(here(".."))) assert.ok(!/[\u2013\u2014]/.test(fs.readFileSync(f, "utf8")), f);
+});
+
+test("cleaning stand-in list: area and free days in the form, list sorted free today first, then your areas", () => {
+  const cfg = ex("cleaning-blitz");
+  const spec = core.buildFormSpec(cfg);
+  const days = spec.items.find((i) => i.id === "days");
+  assert.equal(days.type, "checkbox");
+  assert.equal(days.options.length, 7);
+  assert.ok(spec.items.find((i) => i.id === "area"));
+  assert.equal(core.weekdayLabel("2026-11-27", "ru"), "Пятница");
+  assert.equal(core.weekdayLabel("2026-11-29", "de"), "Sonntag");
+  const list = core.standbyList([
+    { name: "Irina", phone: "2", area: "Mitte", days: "Понедельник, Вторник", ts: "2026-11-20" },
+    { name: "Maria", phone: "1", area: "Nord, 13403", days: "Пятница", ts: "2026-11-10" },
+    { name: "Olena", phone: "3", area: "Süd", days: ["Пятница"], ts: "2026-11-25" },
+    { name: "No phone", phone: "", area: "Nord", days: "Пятница" },
+  ], cfg, "2026-11-27");
+  assert.deepEqual(list.rows.map((r) => r.name), ["Maria", "Olena", "Irina"], "free on Friday first, own area before others");
+  assert.equal(list.weekday, "Пятница");
+  const table = core.standbyTable(list, "ru");
+  assert.deepEqual(J(table[0]), ["Сегодня свободна", "Имя", "Телефон", "Район", "Свободные дни"]);
+  assert.deepEqual(J(table[1]), ["да", "Maria", "1", "Nord, 13403", "Пятница"]);
+  const bad = { ...cfg, form: { ...cfg.form, questions: ["area", "start"] } };
+  assert.match(core.validateHiringConfig(bad).join(), /standby list needs/);
+});
+
+test("apps script: cleaning form has a days checkbox; each answer rebuilds the stand-in tab", () => {
+  const g = loadGas([here("../lib/HiringCore.gs"), here("../apps-script/Hiring.gs")], { config: ex("cleaning-blitz") });
+  g.ctx.setup();
+  const form = g.forms[0];
+  assert.ok(form.items.some((i) => i.type === "Checkbox" && i.choices.includes("Пятница")));
+  assert.ok(g.log.triggers.some((t) => t.fn === "refreshStandby"), "list re-sorted every morning");
+  submit(g, form, { name: "Maria Example", phone: "0151 1", area: "Nord", days: ["Понедельник", "Пятница"], start: "2026-11-30", consent: "Да" });
+  const ss = g.sheetsById[g.store.SHEET_ID];
+  const tab = ss.getSheetByName("Список замены");
+  assert.ok(tab, "stand-in tab exists");
+  assert.equal(tab.data[1][1], "Maria Example");
+  assert.equal(tab.data[1][3], "Nord");
+  assert.match(tab.data[1][4], /Пятница/);
+  assert.match(g.log.mail[0].body, /Понедельник, Пятница/, "checkbox answers are joined in the mail");
 });

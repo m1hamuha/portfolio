@@ -191,3 +191,37 @@ test("office: Telegram gets only 'new request', the e-mail alert has the details
   k.doPost({ postData: { contents: JSON.stringify({ secret: "sec", lead: { channel: "site", name: "Maria", what: "Rückenschmerzen" } }) } });
   assert.doesNotMatch(k.__sent.mail[0].body, /Maria|Rücken/);
 });
+
+test("quick-add form: built from config, answers land in the sheet, Instagram and Facebook get an Open link", () => {
+  const c = loadGas(gs, { props: { CONFIG_JSON: cfgFile("fitness") } });
+  assert.equal(c.setupLeads(), "ok");
+  const forms = Object.values(c.FormApp.__forms);
+  assert.equal(forms.length, 1);
+  const f = forms[0];
+  assert.deepEqual(f.dest, ["SPREADSHEET", "sheet-test-id"]);
+  assert.deepEqual([...f.items.map(i => i.title)], ["Откуда", "Имя", "Контакт", "Что нужно", "Когда"]);
+  assert.deepEqual([...f.items[0].choices], ["Instagram", "WhatsApp", "телефон"]);
+  assert.match(c.__props.QUICK_FORM_URL, /viewform$/);
+  c.setupQuickAddForm();
+  assert.equal(Object.keys(c.FormApp.__forms).length, 1, "second run reuses the form");
+
+  c.onFormSubmitLead({ namedValues: { "Отметка времени": ["27.11.2026 09:00"], "Откуда": ["Instagram"], "Имя": ["Аня"], "Контакт": ["@anya.fit"], "Что нужно": ["пробное"], "Когда": ["суббота"] } });
+  let r = rows(c)[0];
+  assert.deepEqual([r[4], r[5], r[6], r[7], r[9]], ["Instagram", "Аня", "@anya.fit", "пробное", "https://ig.me/m/anya.fit"]);
+
+  const k = loadGas(gs, { props: { CONFIG_JSON: cfgFile("clinic"), SHEET_ID: "x", TG_BOT_TOKEN: "t" } });
+  k.setupQuickAddForm();
+  const kf = Object.values(k.FormApp.__forms)[0];
+  assert.deepEqual([...kf.items.map(i => i.title)], ["Kanal", "Name", "Kontakt", "Anliegen", "Wann"]);
+  assert.deepEqual([...kf.items[0].choices], ["Telefon", "Facebook"]);
+  k.onFormSubmitLead({ namedValues: { "Kanal": ["Facebook"], "Name": ["Frau Weber"], "Kontakt": [""], "Anliegen": ["Neupatientin, Termin"] } });
+  r = k.__book.getSheetByName("Leads").data[1];
+  assert.equal(r[4], "Facebook"); assert.equal(r[9], "https://business.facebook.com/latest/inbox");
+  assert.equal(k.__sent.fetch.length, 0, "quick add sends no alert");
+
+  const o = loadGas(gs, { props: { CONFIG_JSON: cfgFile("other"), SHEET_ID: "x" } });
+  o.onFormSubmitLead({ namedValues: { "Откуда": ["WhatsApp"], "Имя": ["Анна"], "Контакт": ["0151 2223334"], "Что нужно": ["цена за 3 штуки"] } });
+  assert.equal(o.__book.getSheetByName("Leads").data[1][9], "https://wa.me/491512223334");
+  assert.equal(o.contactLink("telegram", "@nadel_kunde", o.parseLeadsConfig(cfgFile("other"))).open, "https://t.me/nadel_kunde");
+  assert.equal(o.contactLink("email", "Anna@Example.com", o.parseLeadsConfig(cfgFile("other"))).open, "mailto:anna@example.com");
+});

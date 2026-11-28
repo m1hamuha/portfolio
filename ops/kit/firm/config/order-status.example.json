@@ -1,0 +1,8 @@
+{
+  "source": "csv",
+  "shop": "example-shop",
+  "baseUrl": "https://shop.example",
+  "verify": "zip",
+  "lang": "de",
+  "statusText": {}
+}

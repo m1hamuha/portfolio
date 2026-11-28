@@ -27,6 +27,15 @@ export function times(text) {
   return out;
 }
 
+/* weight change in kg ("minus 6 kg", "-6 kg", "6 kg weniger", "down 6 kg", "lost 6 kg", "схуд на 6 кг").
+   Health data (GDPR art. 9) and reads like a weight-loss promise: never automatic, Mikhail checks the written consent. */
+const KG = "(?:kg|кг|kilo)";
+const WEIGHT_RE = new RegExp(
+  `(?:minus|мінус|минус|down|lost|verloren|abgenommen|скинул|скинула|схуд\\S*|похуд\\S*|(?<![\\d\\p{L}])[-−])\\s*(?:на\\s*)?\\d+(?:[.,]\\d+)?\\s*${KG}|\\d+(?:[.,]\\d+)?\\s*${KG}\\s*(?:weniger|less|down|меньше|менше|abgenommen)`,
+  "iu"
+);
+export const hasWeightLoss = (text) => WEIGHT_RE.test(String(text || ""));
+
 /* returns a list of problems (empty = ok) */
 export function checkCaption(cap, { niche, allowedText = "", maxHashtags = 5, maxLen = 2200 }) {
   const problems = [];
@@ -42,6 +51,7 @@ export function checkCaption(cap, { niche, allowedText = "", maxHashtags = 5, ma
   if (tags > maxHashtags) problems.push(`${tags} hashtags, Instagram allows ${maxHashtags}`);
   if (text.length > maxLen) problems.push(`caption longer than ${maxLen} characters`);
   if (/[\u2013\u2014]/.test(text)) problems.push("long dash in text");
+  if (niche === "fitness" && hasWeightLoss(text)) problems.push("weight-loss number: health data, post only with the member's written consent and 'individual result'");
   if (cap.status_text && cap.status_text.length > 139) problems.push("status text longer than 139 characters");
   return problems;
 }

@@ -1,12 +1,31 @@
 {
   "niche": "office",
-  "business": { "name": "Steuerbüro Muster (example)", "lang": "de" },
+  "business": {
+    "name": "Steuerbüro Muster (example)",
+    "lang": "de"
+  },
   "email": {
     "enabled": true,
     "query": "in:inbox newer_than:2d (from:(kontakt@steuer-muster.example) OR to:(anfrage@steuer-muster.example))",
-    "formSenders": ["kontakt@steuer-muster.example"]
+    "formSenders": [
+      "kontakt@steuer-muster.example"
+    ]
   },
-  "notify": { "telegramChatIds": ["000000000"], "email": "office@steuer-muster.example", "detail": "minimal" },
+  "notify": {
+    "telegramChatIds": [
+      "000000000"
+    ],
+    "email": "office@steuer-muster.example",
+    "detail": "minimal"
+  },
   "_note": "Tax advisors (§ 203 StGB): Telegram has no data processing agreement, so Telegram only gets 'new request, open the list'. Full details come as an e-mail push from Google.",
-  "llm": { "enabled": false }
+  "llm": {
+    "enabled": false
+  },
+  "quickAdd": {
+    "channels": [
+      "phone",
+      "whatsapp"
+    ]
+  }
 }

@@ -1,0 +1,7 @@
+{
+  "lang": "de",
+  "pages": [
+    { "name": "Firma A, Grundreinigung 100 m2", "url": "https://competitor-a.example/preise" },
+    { "name": "Firma B, Fensterreinigung", "url": "https://competitor-b.example/fenster", "pattern": "ab\\s*([\\d.,]+)\\s*€" }
+  ]
+}

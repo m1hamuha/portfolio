@@ -1,0 +1,65 @@
+{
+  "niche": "fitness",
+  "langs": [
+    "de",
+    "en"
+  ],
+  "owner_lang": "de",
+  "business": {
+    "name": "Studio Beispiel (example)",
+    "city": "Musterstadt",
+    "address": "Sportweg 3, 12345 Musterstadt",
+    "privacy_contact": "info@example.com"
+  },
+  "job": {
+    "title": "Evening trainer",
+    "title_de": "Fitnesstrainer (m/w/d) abends",
+    "hours": "Mo bis Fr 18 bis 21 Uhr",
+    "pay": "18 € pro Stunde",
+    "contract": "Minijob oder Teilzeit",
+    "start": "ab sofort",
+    "tasks": [
+      "Kurse und Trainingsfläche betreuen",
+      "neue Mitglieder einweisen"
+    ],
+    "must": [
+      "Trainerlizenz (z. B. B-Lizenz Fitness)",
+      "abends an Werktagen frei"
+    ],
+    "offer": [
+      "freies Training im Studio"
+    ],
+    "last_time": "many applicants without a licence"
+  },
+  "form": {
+    "lang": "de",
+    "cert": "B-Lizenz Fitness oder gleichwertig",
+    "shift": "Mo bis Fr 18 bis 21 Uhr",
+    "questions": [
+      "certificate",
+      "hours",
+      "start",
+      "experience",
+      "work_link"
+    ]
+  },
+  "fit_rules": [
+    {
+      "q": "certificate",
+      "in": [
+        "Ja"
+      ]
+    },
+    {
+      "q": "hours",
+      "in": [
+        "Ja"
+      ]
+    }
+  ],
+  "notify": {
+    "mode": "email",
+    "to": "owner@example.com",
+    "all": false
+  }
+}

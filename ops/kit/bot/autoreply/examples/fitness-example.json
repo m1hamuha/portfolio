@@ -1,0 +1,64 @@
+{
+  "id": "fitness-example",
+  "niche": "fitness",
+  "name": "Studio Beispiel (example)",
+  "languages": [
+    "de",
+    "ru",
+    "en"
+  ],
+  "default_lang": "de",
+  "currency": "EUR",
+  "hours": {
+    "mon": [
+      "07:00-21:00"
+    ],
+    "tue": [
+      "07:00-21:00"
+    ],
+    "wed": [
+      "07:00-21:00"
+    ],
+    "thu": [
+      "07:00-21:00"
+    ],
+    "fri": [
+      "07:00-20:00"
+    ],
+    "sat": [
+      "09:00-14:00"
+    ],
+    "sun": []
+  },
+  "services": [
+    {
+      "id": "trial",
+      "name": {
+        "de": "Probetraining",
+        "en": "Trial class",
+        "ru": "Пробное занятие",
+        "uk": "Пробне заняття"
+      },
+      "price": 0
+    },
+    {
+      "id": "month",
+      "name": {
+        "de": "Monatskarte",
+        "en": "Monthly pass",
+        "ru": "Абонемент на месяц",
+        "uk": "Абонемент на місяць"
+      },
+      "price": 59
+    }
+  ],
+  "autoreply": {
+    "link": "https://cal.com/EXAMPLE/probetraining",
+    "timetable": {
+      "de": "morgens Mo-Fr 7:30 und 9:00, abends 18:00 und 19:30",
+      "en": "mornings Mon-Fri 7:30 and 9:00, evenings 18:00 and 19:30",
+      "ru": "утром Пн-Пт 7:30 и 9:00, вечером 18:00 и 19:30",
+      "uk": "зранку Пн-Пт 7:30 і 9:00, увечері 18:00 і 19:30"
+    }
+  }
+}

@@ -70,10 +70,12 @@
 
 ## 8. Таблица выполнимости
 
-| Задача | Статус | Почему | Исправленное обещание (en / ru) |
-|---|---|---|---|
-| cleaning.assistant | needs-caveat | Строка make называет Gemini, а Gems с 17.11.2026 только для чтения, и у skills нет публичной ссылки (только по почте, с веба). Обещание выполнимо бесплатно через NotebookLM: публичная ссылка в WhatsApp, ответ только по правилам с цитатой. Каждому новенькому нужен Google-аккаунт, данные клиентов в вопросы не вводить | Обещание оставить. make, en: «I load your rules into NotebookLM, Google's free helper, and test it» / ru: «Загружаю твои правила в NotebookLM, бесплатного помощника от Google, и проверяю». get, en: «You send the link on WhatsApp, new cleaners open it with their Google account» / ru: «Ты пересылаешь ссылку в WhatsApp, новенькие открывают её со своим Google-аккаунтом» |
-| office.assistant | as-written | Страница команды в Cloudflare клиента, ответ только из прайса с номером страницы, проверка на 30 вопросах (`eval/`), расходы центы в месяц. Оговорки: 49 € за 2,5-3 ч почти не окупаются; для Steuerberater в помощник не вводить данные мандантов (§ 203 StGB), страница это пишет | |
+После первой проверки (27.11.2026) строки make и get у cleaning переписаны на сайте (патч `chat.json`): вместо Gemini теперь NotebookLM.
+
+| Задача | Статус | Почему |
+|---|---|---|
+| cleaning.assistant | as-written | make: «I load your rules into NotebookLM, Google's free helper, and test it» / «Загружаю твои правила в NotebookLM, помощника от Google, и проверяю». get: «You send the link on WhatsApp, new cleaners sign in with Google» / «Ты пересылаешь ссылку в WhatsApp, новенькие входят с Google-аккаунтом». NotebookLM бесплатно, публичная ссылка, ответ только по правилам с цитатой. Каждому новенькому нужен Google-аккаунт, данные клиентов в вопросы не вводить. Gems не используем (с 17.11.2026 только чтение) |
+| office.assistant | as-written | Страница команды в Cloudflare клиента, ответ только из прайса с номером страницы, проверка на 30 вопросах (`eval/`), расходы центы в месяц. Оговорки: 49 € за 2,5-3 ч почти не окупаются; для Steuerberater в помощник не вводить данные мандантов (§ 203 StGB), страница это пишет |
 
 ## Тесты
 

@@ -9,6 +9,7 @@ var L_DEFAULTS = {
   timezone: "Europe/Berlin", countryCode: "49", sheet: "Leads",
   email: { enabled: true, query: "", label: "Leads", formSenders: [], maxThreads: 25 },
   notify: { telegramChatIds: [], email: "", detail: "full" },
+  quickAdd: { enabled: true, channels: ["phone", "whatsapp"], facebookInbox: "https://business.facebook.com/latest/inbox" },
   followUpDays: 5, retentionDays: 365, health: false,
   llm: { enabled: false, provider: "anthropic", model: "claude-haiku-5-5" }
 };
@@ -79,8 +80,9 @@ var L_FIELDS = {
   name: ["name", "your-name", "vorname", "nachname", "vor- und nachname", "ihr name", "имя", "ім'я", "імʼя", "full name"],
   phone: ["telefon", "telefonnummer", "phone", "tel", "mobil", "handy", "телефон", "номер", "your-phone"],
   email: ["e-mail", "email", "mail", "your-email", "почта", "пошта", "e-mail-adresse"],
-  what: ["nachricht", "message", "anliegen", "ihre nachricht", "your-message", "leistung", "service", "betreff", "subject", "сообщение", "повідомлення", "что нужно", "що потрібно", "anfrage"],
-  when: ["wunschtermin", "termin", "datum", "date", "wunschtag", "wann", "когда", "коли", "день", "preferred date"]
+  what: ["nachricht", "message", "anliegen", "ihre nachricht", "your-message", "leistung", "service", "betreff", "subject", "сообщение", "повідомлення", "что нужно", "що потрібно", "anfrage", "what"],
+  when: ["wunschtermin", "termin", "datum", "date", "wunschtag", "wann", "когда", "коли", "день", "preferred date", "when"],
+  contact: ["контакт", "kontakt", "contact"]
 };
 function fieldOf_(label) {
   var t = String(label).trim().toLowerCase().replace(/[*:]+$/, "").trim();
@@ -136,6 +138,52 @@ function emailToLead(msg, cfg) {
   }
   lead.received = msg.date;
   return lead;
+}
+
+/* ---------- quick-add Google Form: calls and chats the kit cannot read by itself ----------
+ * (WhatsApp without the Cloud API, Instagram and Facebook without Meta App Review).
+ * The owner picks the channel, types a name, a phone or @username and what they want: about 10 seconds.
+ * cfg.quickAdd.channels decides which channels the form offers. */
+var L_QUICK = {
+  title: { ru: "Быстрая заявка", uk: "Швидка заявка", de: "Anfrage schnell eintragen", en: "Quick add" },
+  channel: { ru: "Откуда", uk: "Звідки", de: "Kanal", en: "Channel" },
+  name: { ru: "Имя", uk: "Імʼя", de: "Name", en: "Name" },
+  contact: { ru: "Контакт", uk: "Контакт", de: "Kontakt", en: "Contact" },
+  contactHelp: { ru: "Телефон или @ник", uk: "Телефон або @нік", de: "Telefon oder @Name", en: "Phone or @username" },
+  what: { ru: "Что нужно", uk: "Що потрібно", de: "Anliegen", en: "What" },
+  when: { ru: "Когда", uk: "Коли", de: "Wann", en: "When" }
+};
+var L_QUICK_CHANNELS = ["phone", "whatsapp", "instagram", "facebook", "telegram", "email"];
+function quickAddSpec(cfg) {
+  var lang = cfg.lang, q = function (k) { return L_QUICK[k][lang] || L_QUICK[k].en; };
+  var chans = (cfg.quickAdd.channels || []).filter(function (c) { return L_QUICK_CHANNELS.indexOf(c) >= 0; });
+  if (!chans.length) chans = ["phone"];
+  return {
+    title: q("title") + " · " + cfg.business.name,
+    items: [
+      { key: "channel", type: "choice", title: q("channel"), required: true, choices: chans.map(function (c) { return (L_CHANNELS[lang] || L_CHANNELS.en)[c]; }) },
+      { key: "name", type: "text", title: q("name"), required: false },
+      { key: "contact", type: "text", title: q("contact"), help: q("contactHelp"), required: false },
+      { key: "what", type: "paragraph", title: q("what"), required: true },
+      { key: "when", type: "text", title: q("when"), required: false }
+    ]
+  };
+}
+/* "Open" link for a typed-in contact: tap it and the chat opens on the phone */
+function contactLink(channel, raw, cfg) {
+  var v = String(raw || "").trim(), fb = (cfg.quickAdd && cfg.quickAdd.facebookInbox) || "";
+  var handle = (v.match(/^@?([A-Za-z0-9._]{2,30})$/) || [])[1];
+  if (v.charAt(0) === "@" && handle) {
+    if (channel === "instagram") return { contact: "@" + handle, open: "https://ig.me/m/" + handle };
+    if (channel === "telegram") return { contact: "@" + handle, open: "https://t.me/" + handle };
+    return { contact: "@" + handle, open: channel === "facebook" ? fb : "" };
+  }
+  if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) return { contact: v.toLowerCase(), open: "mailto:" + v.toLowerCase() };
+  var p = lNormPhone(v, cfg.countryCode);
+  if (p) return { contact: "+" + p, open: channel === "telegram" ? "https://t.me/+" + p : "https://wa.me/" + p };
+  if (handle && channel === "instagram") return { contact: "@" + handle, open: "https://ig.me/m/" + handle };
+  if (handle && channel === "telegram") return { contact: "@" + handle, open: "https://t.me/" + handle };
+  return { contact: lClean(v, 80), open: channel === "facebook" ? fb : "" };
 }
 
 /* ---------- rows ---------- */

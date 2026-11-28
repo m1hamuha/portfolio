@@ -28,6 +28,7 @@ function setup() {
     else if (it.type === "para") item = form.addParagraphTextItem();
     else if (it.type === "date") item = form.addDateItem();
     else if (it.type === "choice") { item = form.addMultipleChoiceItem(); item.setChoiceValues(it.options); }
+    else if (it.type === "checkbox") { item = form.addCheckboxItem(); item.setChoiceValues(it.options); }
     item.setTitle(it.title).setRequired(it.required);
   });
 
@@ -45,6 +46,10 @@ function setup() {
   HP_().setProperty("SPEC", JSON.stringify(spec));
   ScriptApp.newTrigger("onSubmit").forForm(form).onFormSubmit().create();
   ScriptApp.newTrigger("cleanup").timeBased().everyDays(1).atHour(4).create();
+  if (cfg.standby) {
+    ScriptApp.newTrigger("refreshStandby").timeBased().everyDays(1).atHour(5).create(); // "free today" fresh each morning
+    refreshStandby();
+  }
   var url = form.getPublishedUrl();
   return { form_url: url, short_url: form.shortenFormUrl ? form.shortenFormUrl(url) : url, sheet_url: ss.getUrl() };
 }
@@ -60,7 +65,7 @@ function onSubmit(e) {
   var cfg = H_();
   var spec = JSON.parse(HP_().getProperty("SPEC"));
   var byTitle = {};
-  e.response.getItemResponses().forEach(function (r) { byTitle[r.getItem().getTitle()] = r.getResponse(); });
+  e.response.getItemResponses().forEach(function (r) { var v = r.getResponse(); byTitle[r.getItem().getTitle()] = Array.isArray(v) ? v.join(", ") : v; });
   var a = answersFrom_(spec, byTitle);
   var today = new Date().toISOString().slice(0, 10);
   var fit = fitCheck(a, cfg.fit_rules, today);
@@ -81,6 +86,7 @@ function onSubmit(e) {
     }
     sh.getRange(row, cols - 1, 1, 2).setValues([[fit.fits ? "✔" : "", fit.why.join(", ") + note]]);
   } finally { lock.releaseLock(); }
+  if (cfg.standby) refreshStandby();
   return fit;
 }
 
@@ -114,6 +120,7 @@ function cleanup() {
     var d = ts && typeof ts.toISOString === "function" ? ts.toISOString().slice(0, 10) : String(ts).slice(0, 10);
     if (d && d < cutoff) sh.deleteRow(row);
   }
+  if (cfg.standby) refreshStandby();
   return removed;
 }
 
@@ -124,4 +131,33 @@ function openForm_(form) {
   try { if (typeof form.setRequireLogin === "function") form.setRequireLogin(false); } catch (e) { console.warn("setRequireLogin: " + e); }
   try { if (typeof form.setAcceptingResponses === "function") form.setAcceptingResponses(true); } catch (e) { console.warn("setAcceptingResponses: " + e); }
   return form;
+}
+
+/* Stand-in list (cfg.standby): one tab, rebuilt from the answers on every answer, every morning and after cleanup.
+   Free today first, then your areas in your order. Nothing is sent anywhere: the owner opens the tab and calls. */
+function refreshStandby() {
+  var cfg = H_();
+  var spec = JSON.parse(HP_().getProperty("SPEC"));
+  var ss = SpreadsheetApp.openById(HP_().getProperty("SHEET_ID"));
+  var sh = ss.getSheets().filter(function (s) { return s.getFormUrl && s.getFormUrl(); })[0];
+  var last = sh.getLastRow(), cols = sh.getLastColumn();
+  var rows = [];
+  if (last >= 2) {
+    var vals = sh.getRange(1, 1, last, cols).getValues();
+    var head = vals[0];
+    vals.slice(1).forEach(function (v) {
+      var byTitle = {};
+      head.forEach(function (h, i) { byTitle[h] = v[i]; });
+      var a = answersFrom_(spec, byTitle);
+      var ts = v[0] && typeof v[0].toISOString === "function" ? v[0].toISOString() : String(v[0]);
+      rows.push({ name: a.name, phone: a.phone, area: a.area, days: a.days, ts: ts });
+    });
+  }
+  var list = standbyList(rows, cfg, new Date().toISOString().slice(0, 10));
+  var table = standbyTable(list, cfg.owner_lang || "de");
+  var name = (STANDBY_TXT[cfg.owner_lang] || STANDBY_TXT.de).tab;
+  var tab = ss.getSheetByName(name) || ss.insertSheet(name);
+  tab.clear();
+  tab.getRange(1, 1, table.length, table[0].length).setValues(table);
+  return list;
 }

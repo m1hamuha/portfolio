@@ -2,6 +2,8 @@
    One Worker serves the app files (../../app, static assets) and one small API:
      GET  /api/me        -> { name, ui_language, used, daily_limit }
      POST /api/caption   -> { caption, status_text, alt, hashtags, problems }   body: { images: [{media_type, data}], note }
+   Term: app.captions_until (YYYY-MM-DD, set at install, 12 months by default). After that day /api/caption answers
+   402 "term_over"; the photo and clip work runs on the phone and keeps working. Extending = a new date in CLIENTS.
    Auth: "Authorization: Bearer <app token>". The Worker keeps only sha256 of tokens (secret CLIENTS).
    Photos are not stored: they go to the model for the caption and are dropped. The app does the photo work on the phone. */
 import { makeLLM } from "../../../social/src/llm.mjs";
@@ -50,13 +52,15 @@ export default {
     const client = await auth(req, env);
     if (!client) return json({ error: "unauthorized" }, 401);
     const limit = (client.app && client.app.daily_limit) || 40;
+    const until = client.app && client.app.captions_until;
     const used = await usage(env, client.id);
 
     if (url.pathname === "/api/me" && req.method === "GET") {
-      return json({ name: client.name, niche: client.niche, ui_language: (client.app && client.app.ui_language) || client.owner_language || "ru", used, daily_limit: limit });
+      return json({ name: client.name, niche: client.niche, ui_language: (client.app && client.app.ui_language) || client.owner_language || "ru", used, daily_limit: limit, ...(until ? { captions_until: until } : {}) });
     }
 
     if (url.pathname === "/api/caption" && req.method === "POST") {
+      if (until && today() > until) return json({ error: "term_over", captions_until: until }, 402);
       if (used >= limit) return json({ error: "daily_limit" }, 429);
       let body;
       try { body = await req.json(); } catch { return json({ error: "bad json" }, 400); }

@@ -5,7 +5,7 @@
   "defaultLang": "de",
   "countryCode": "49",
   "source": { "type": "sheet", "sheet": "Bookings", "weekly": "Weekly" },
-  "reminders": { "enabled": true, "when": "same_day", "kind": "reminder_same_day", "sendHour": 10, "untilHour": 18, "channels": ["whatsapp"], "requireConsent": true },
+  "reminders": { "enabled": true, "when": "same_day", "kind": "reminder_same_day", "sendHour": 10, "untilHour": 18, "channels": ["whatsapp"], "requireConsent": false },
   "comeback": { "enabled": true, "kind": "comeback", "afterDays": 21, "maxDays": 90, "sendHour": 12, "channels": ["whatsapp"], "requireMarketingConsent": true },
-  "whatsapp": { "mode": "assist" }
+  "whatsapp": { "mode": "assist", "_why": "The card promises 2 taps from the studio WhatsApp. Reminders of a booked session go from the owner by hand, so no consent tick; invites only with offers consent." }
 }

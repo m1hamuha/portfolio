@@ -96,7 +96,23 @@ export function loadGas(files, { props = {}, sheets = {}, events = [], fetch = (
     LockService: { getScriptLock: () => ({ tryLock: () => true, releaseLock() {} }) },
     HtmlService: { createHtmlOutput: html => ({ html, setTitle() { return this; } }) },
     ContentService: { createTextOutput: t => ({ text: t, setMimeType() { return this; } }), MimeType: { JSON: "json" } },
-    Session: { getScriptTimeZone: () => "Europe/Berlin" }
+    Session: { getScriptTimeZone: () => "Europe/Berlin" },
+    FormApp: (() => {
+      const forms = {};
+      const item = (type, f) => { const it = { type, title: "", required: false, choices: null, help: "" };
+        Object.assign(it, { setTitle: t => (it.title = t, it), setRequired: r => (it.required = r, it), setChoiceValues: c => (it.choices = c, it), setHelpText: h => (it.help = h, it) });
+        f.items.push(it); return it; };
+      return {
+        DestinationType: { SPREADSHEET: "SPREADSHEET" },
+        create: title => { const id = "form" + (Object.keys(forms).length + 1); const f = { id, title, items: [], dest: null };
+          Object.assign(f, { getId: () => id, getPublishedUrl: () => "https://docs.google.com/forms/d/e/" + id + "/viewform",
+            addMultipleChoiceItem: () => item("choice", f), addTextItem: () => item("text", f), addParagraphTextItem: () => item("paragraph", f),
+            setDestination: (t, sid) => { f.dest = [t, sid]; return f; } });
+          return (forms[id] = f); },
+        openById: id => { if (!forms[id]) throw new Error("no form"); return forms[id]; },
+        __forms: forms
+      };
+    })()
   };
   vm.createContext(ctx);
   for (const f of files) vm.runInContext(fs.readFileSync(f, "utf8"), ctx, { filename: path.basename(f) });

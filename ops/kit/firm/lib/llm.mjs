@@ -1,8 +1,9 @@
 /* One call shape for all firm projects: complete({ system, user, maxTokens }) -> text.
    Provider from env LLM_PROVIDER:
-     "anthropic"  (default) Anthropic Messages API, key in ANTHROPIC_API_KEY. Inference region: not EU (see README).
-     "bedrock-eu" Claude on Amazon Bedrock, EU geo inference profile, key in AWS_BEARER_TOKEN_BEDROCK (Bedrock API key),
-                  region in AWS_REGION (default eu-central-1). Use this when the firm was promised "stored in the EU".
+     "bedrock-eu" (default) Claude on Amazon Bedrock, EU geo inference profile, key in AWS_BEARER_TOKEN_BEDROCK
+                  (Bedrock API key), region in AWS_REGION (default eu-central-1). Keeps the site promise "stored in the EU".
+     "anthropic"  Anthropic Messages API, key in ANTHROPIC_API_KEY. Inference region: not EU (see README), so it only
+                  starts with LLM_ALLOW_NON_EU=yes, set after the firm agreed in writing.
      "mock"       tests and dry runs, reply from env MOCK_REPLY (string or function).
    Model in LLM_MODEL (default claude-haiku-5-5; claude-sonnet-5-5 for long or hard texts).
    No secrets in code. fetchImpl is injectable for offline tests. */
@@ -31,10 +32,11 @@ function textOf(json) {
 }
 
 export function makeLLM(env = process.env, fetchImpl = globalThis.fetch) {
-  const provider = env.LLM_PROVIDER || "anthropic";
+  const provider = env.LLM_PROVIDER || "bedrock-eu";
   const model = env.LLM_MODEL || "claude-haiku-5-5";
 
   if (provider === "anthropic") {
+    if (env.LLM_ALLOW_NON_EU !== "yes") throw new Error("anthropic runs outside the EU: set LLM_ALLOW_NON_EU=yes only with the firm's written consent, else use bedrock-eu");
     if (!env.ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY missing");
     return {
       provider, model,

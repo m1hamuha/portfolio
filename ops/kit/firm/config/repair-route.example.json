@@ -1,0 +1,9 @@
+{
+  "lang": "de",
+  "manager": { "email": "verwaltung@firm.example" },
+  "categories": [
+    { "id": "water", "words": ["wasser", "rohr", "tropft", "leak"], "tradesman": { "name": "Sanitär Beispiel", "email": "sanitaer@trade.example" } },
+    { "id": "power", "words": ["strom", "steckdose", "licht"], "tradesman": { "name": "Elektro Beispiel", "email": "elektro@trade.example" } },
+    { "id": "heating", "words": ["heizung", "warmwasser", "kalt"], "tradesman": { "name": "Heizung Beispiel", "email": "heizung@trade.example" } }
+  ]
+}

@@ -110,6 +110,8 @@ function setup() {
     var rs = sheet_(tab_("rules"), ["cat", "words (comma)", "sign (in/out/any)"]);
     if (rs.getLastRow() === 1) cfg.rules.forEach(function (r) { rs.appendRow([r.cat, (r.any || []).join(", "), r.sign || "any"]); });
     ScriptApp.newTrigger("monthly").timeBased().onMonthDay(cfg.send_day || 3).atHour(7).create();
+    /* a bank file added after the send day still gives the page: checked every morning */
+    if (cfg.bank_folder_id) ScriptApp.newTrigger("bankDaily").timeBased().everyDays(1).atHour(8).create();
   }
   sheet_(tab_("sum"));
   refresh();
@@ -329,7 +331,8 @@ function zettleFetch_(from, to) {
 
 /* ---------- other: one page a month from the bank file ---------- */
 
-/* Bank CSV dropped into the Statement tab via File > Import, or into Drive folder cfg.bank_folder_id. */
+/* Bank CSV dropped into the Statement tab via File > Import, or into Drive folder cfg.bank_folder_id.
+   Files from several banks can go into the same folder (cfg.bank_csv as a list of profiles). */
 function importBankCsv() {
   var cfg = cfg_();
   var it = DriveApp.getFolderById(cfg.bank_folder_id).getFiles();
@@ -338,7 +341,18 @@ function importBankCsv() {
   while (it.hasNext()) {
     var f = it.next();
     if (props_().getProperty("BANK_" + f.getId())) continue;
-    var rows = csvToObjects(f.getBlob().getDataAsString(cfg.bank_csv.encoding || "UTF-8"), cfg.bank_csv.map, cfg.bank_csv.delimiter);
+    var blob = f.getBlob();
+    /* one profile per bank: a second bank with other columns or encoding works too.
+       A file no profile knows (a PDF statement, another bank) is skipped and named in the next page,
+       so one wrong file does not stop the import of the others */
+    var rows;
+    try { rows = bankCsvRows(function (enc) { return blob.getDataAsString(enc); }, bankProfiles(cfg)).rows; }
+    catch (err) {
+      console.error(err);
+      props_().setProperty("BANK_" + f.getId(), "bad");
+      props_().setProperty("BANK_BAD", ((props_().getProperty("BANK_BAD") || "") + "\n" + f.getName()).trim());
+      continue;
+    }
     /* bank exports often overlap ("last 30 days"): a payment already in the tab is not added twice */
     var seen = keysOf_(sh, 4, bankKey_);
     var vals = rows.map(function (r) { return [isoDate(r.date), num(r.amount), r.payee || "", r.purpose || "", ""]; })
@@ -361,6 +375,17 @@ function keysOf_(sh, ncols, keyFn) {
   return out;
 }
 
+/* every morning: new bank files are read at once; after the send day a new file sends the page again,
+   so a CSV added on the 5th still gives the month's page the next morning */
+function bankDaily() {
+  var cfg = cfg_();
+  if (!cfg.bank_folder_id) return 0;
+  var n = importBankCsv();
+  var day = +todayIso_().slice(8, 10);
+  if (n > 0 && day >= (cfg.send_day || 3)) monthly();
+  return n;
+}
+
 function monthly(noMail) {
   var cfg = cfg_(), L = lang_();
   if (cfg.bank_folder_id) importBankCsv();
@@ -373,7 +398,16 @@ function monthly(noMail) {
   if (txc.length) sh.getRange(2, 5, txc.length, 1).setValues(txc.map(function (t) { return [t.guessed ? "? " + t.cat : t.cat]; }));
   var mk = prevMonthKey(monthKey(todayIso_())); // on the 3rd we report the month that just ended
   var sm = monthSummary(txc, mk);
-  var text = onePageText(sm, L, cfg.cat_names, cfg.business.name);
+  /* no payments yet for that month: a short note where to put the file, not a page of zeros */
+  var text = sm.in + sm.out === 0
+    ? emptyMonthText(mk, L, cfg.bank_folder_id ? DriveApp.getFolderById(cfg.bank_folder_id).getName() : "", cfg.business.name)
+    : onePageText(sm, L, cfg.cat_names, cfg.business.name);
+  sm.empty = sm.in + sm.out === 0;
+  var bad = props_().getProperty("BANK_BAD");
+  if (bad) {
+    text += "\n\n" + bad.split("\n").map(function (name) { return rt(L, "one_bad", { file: name }); }).join("\n");
+    if (!noMail) props_().deleteProperty("BANK_BAD");
+  }
   writeBlock_(tab_("month"), text.split("\n").map(function (l) { return [l]; }));
   if (!noMail && cfg.owner_email) MailApp.sendEmail(cfg.owner_email, cfg.business.name + " " + mk, text);
   return sm;
