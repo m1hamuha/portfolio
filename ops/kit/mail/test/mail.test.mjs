@@ -10,6 +10,8 @@ import { buildRequests, submit } from "../whatsapp-templates/submit-templates.mj
 const dir = path.dirname(fileURLToPath(import.meta.url));
 const gs = ["Templates.gs", "Core.gs", "Channels.gs", "Main.gs"].map(f => path.join(dir, "../apps-script", f));
 const cfgFile = n => fs.readFileSync(path.join(dir, "../config", n + ".example.json"), "utf8");
+// salon and other ship in assist mode (free); the paid API upgrade is tested with this override
+const apiCfg = n => { const c = JSON.parse(cfgFile(n)); c.whatsapp = { ...c.whatsapp, mode: "api", provider: "meta", graphVersion: "v24.0", phoneNumberId: "000000000000000" }; c.reminders.requireConsent = true; return JSON.stringify(c); };
 const DASHES = new RegExp("[" + String.fromCharCode(0x2013, 0x2014) + "]");
 const at = iso => new Date(iso);
 const ev = (id, startIso, mins, title, desc = "") => new FakeEvent(id, at(startIso), new Date(at(startIso).getTime() + mins * 60000), title, desc);
@@ -46,14 +48,14 @@ test("every text exists in ru, uk, de, en and no file of the kit has long dashes
   for (const f of walk(path.join(dir, ".."))) assert.ok(!DASHES.test(fs.readFileSync(f, "utf8")), "long dash in " + f);
 });
 
-test("salon: WhatsApp template the day before, only with consent, once", () => {
+test("salon API upgrade: WhatsApp template the day before, only with consent, once", () => {
   const events = [
     ev("e1", "2026-11-28T13:00:00Z", 60, "Anna Maniküre +49 151 1111111"),
     ev("e2", "2026-11-28T15:00:00Z", 60, "Olga 0152 2222222"),
     ev("e3", "2026-11-27T18:00:00Z", 60, "Today +49 151 3333333 #wa")
   ];
   const c = loadGas(gs, {
-    props: { CONFIG_JSON: cfgFile("salon"), WA_TOKEN: "test-token", LINK_SECRET: "s" },
+    props: { CONFIG_JSON: apiCfg("salon"), WA_TOKEN: "test-token", LINK_SECRET: "s" },
     sheets: { Contacts: [["Имя", "Телефон", "Почта", "Язык", "WhatsApp можно", "Акции можно", "Не писать"], ["Anna", "0151 1111111", "", "ru", "да", "", ""]] },
     events, fetch: okWa
   });
@@ -73,14 +75,14 @@ test("salon: WhatsApp template the day before, only with consent, once", () => {
   assert.equal(run(c, "2026-11-27T21:30:00Z").sent.length, 0, "no messages late in the evening");
 });
 
-test("salon: come-back invite only with offers consent and no future booking", () => {
+test("salon API upgrade: come-back invite only with offers consent and no future booking", () => {
   const events = [
     ev("p1", "2026-10-10T10:00:00Z", 60, "Sveta +49 151 4444444 #wa #promo"),
     ev("p2", "2026-10-10T12:00:00Z", 60, "Nina +49 151 5555555 #wa"),
     ev("p3", "2026-10-09T12:00:00Z", 60, "Lena +49 151 6666666 #wa #promo"),
     ev("f3", "2026-12-05T12:00:00Z", 60, "Lena +49 151 6666666 #wa #promo")
   ];
-  const c = loadGas(gs, { props: { CONFIG_JSON: cfgFile("salon"), WA_TOKEN: "t", LINK_SECRET: "s" }, events, fetch: okWa });
+  const c = loadGas(gs, { props: { CONFIG_JSON: apiCfg("salon"), WA_TOKEN: "t", LINK_SECRET: "s" }, events, fetch: okWa });
   const r = run(c, "2026-11-27T11:00:00Z");
   assert.deepEqual(r.sent, ["cb|p:491514444444|2026-10-10"]);
   const body = JSON.parse(c.__sent.fetch[0].opts.payload);
@@ -90,7 +92,7 @@ test("salon: come-back invite only with offers consent and no future booking", (
 
 test("WhatsApp API error is reported to the owner, not marked as sent", () => {
   const c = loadGas(gs, {
-    props: { CONFIG_JSON: cfgFile("salon"), WA_TOKEN: "t", LINK_SECRET: "s" },
+    props: { CONFIG_JSON: apiCfg("salon"), WA_TOKEN: "t", LINK_SECRET: "s" },
     events: [ev("e1", "2026-11-28T13:00:00Z", 60, "Anna +49 151 1111111 #wa")],
     fetch: () => ({ code: 400, body: { error: { message: "Template not approved" } } })
   });
@@ -198,6 +200,20 @@ test("fitness: weekly timetable, assist mode sends the owner tap-to-send links",
   assert.equal(run(c, "2026-11-30T11:05:00Z").assist.length, 0, "digest not repeated");
 });
 
+test("fitness assist: the trainer's list has every booked client (no consent tick needed), invites still need offers consent", () => {
+  const c = loadGas(gs, {
+    props: { CONFIG_JSON: cfgFile("fitness"), LINK_SECRET: "s" },
+    sheets: {
+      Bookings: [["Дата", "Час", "Імʼя", "Телефон", "Пошта", "Мова", "WhatsApp можна", "Акції можна", "Статус"]],
+      Weekly: [["День тижня", "Час", "Імʼя", "Телефон", "Мова", "WhatsApp можна", "Акції можна"], ["Mo", "19:00", "Tom", "+49 160 1234567", "en", "", ""], ["Mo", "18:00", "Ira", "+49 160 2222222", "uk", "так", ""]]
+    }
+  });
+  withNow(c, "2026-11-30T09:05:00Z");
+  const r = run(c, "2026-11-30T09:05:00Z");
+  assert.equal(r.assist.length, 2, "Tom has no tick and still gets his reminder from the trainer");
+  assert.equal(c.__sent.fetch.length, 0, "no paid API call");
+});
+
 test("cleaning: rebook e-mail 4 weeks after the last cleaning, respects the mail quota", () => {
   const c = loadGas(gs, {
     props: { CONFIG_JSON: cfgFile("cleaning"), LINK_SECRET: "s", WEBAPP_URL: "https://x.test/exec" },
@@ -247,7 +263,8 @@ test("clinic: no consent means no message; template carries only date and time",
     events: [ev("k1", "2026-11-28T09:30:00Z", 30, "A +49 151 1000001"), ev("k2", "2026-11-28T10:00:00Z", 30, "B +49 151 1000002")],
     fetch: okWa
   });
-  const r = run(c, "2026-11-27T15:30:00Z");
+  assert.equal(run(c, "2026-11-27T15:30:00Z").sent.length, 0, "not before 18:00, the evening before");
+  const r = run(c, "2026-11-27T17:30:00Z");
   assert.equal(r.sent.length, 1); assert.equal(r.noChannel.length, 1);
   const body = JSON.parse(c.__sent.fetch[0].opts.payload);
   assert.deepEqual(body.template.components[0].parameters.map(p => p.text), ["28.11.", "10:30"]);
@@ -290,4 +307,26 @@ test("WhatsApp template submission builds Meta requests (mocked HTTP)", async ()
   const res = await submit(reqs.slice(0, 1), { token: "t", wabaId: "123", fetchImpl: async (u, o) => { calls.push([u, o]); return { ok: true, status: 200, json: async () => ({ status: "PENDING" }) }; } });
   assert.equal(calls[0][0], "https://graph.facebook.com/v24.0/123/message_templates");
   assert.equal(res[0].status, "PENDING");
+});
+
+test("salon and other ship in assist mode: the evening before, the owner gets one tap-to-send link per client", () => {
+  const events = [
+    ev("e1", "2026-11-28T13:00:00Z", 60, "Anna Maniküre +49 151 1111111"),
+    ev("e2", "2026-11-28T15:00:00Z", 60, "Olga 0152 2222222 #stop")
+  ];
+  const c = loadGas(gs, { props: { CONFIG_JSON: cfgFile("salon"), LINK_SECRET: "s" }, events });
+  assert.equal(run(c, "2026-11-27T14:00:00Z").assist.length, 0, "not before 17:00");
+  const r = run(c, "2026-11-27T16:30:00Z");
+  assert.deepEqual(r.assist, ["rem|e1|2026-11-28|14:00"], "Olga asked not to be written to");
+  assert.equal(c.__sent.fetch.filter(f => /graph\.facebook|360dialog/.test(f.url)).length, 0, "no paid API call");
+  const m = c.__sent.mail[0];
+  assert.equal(m.to, "owner@example.com");
+  assert.match(m.body, /https:\/\/wa\.me\/491511111111\?text=/);
+  assert.equal(run(c, "2026-11-27T17:30:00Z").assist.length, 0, "list not repeated");
+
+  const o = loadGas(gs, { props: { CONFIG_JSON: cfgFile("other"), LINK_SECRET: "s" }, events: [ev("o1", "2026-11-28T09:00:00Z", 60, "Anna +49 151 7777777 #ru")] });
+  const ro = run(o, "2026-11-27T16:30:00Z");
+  assert.equal(ro.assist.length, 1);
+  const text = decodeURIComponent(o.__sent.mail[0].body.match(/text=(\S+)/)[1]);
+  assert.match(text, /завтра в 10:00/); assert.match(text, /Ответьте 1, если придёте, или 2/);
 });

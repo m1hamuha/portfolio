@@ -6,6 +6,7 @@
  *   TG_BOT_TOKEN    Telegram bot token for alerts (optional)
  *   LLM_API_KEY     optional, only if llm.enabled (never for clinics)
  *   SHEET_ID        set by setupLeads()
+ *   QUICK_FORM_ID, QUICK_FORM_URL   set by setupQuickAddForm() (called from setupLeads)
  */
 function lProp_(k) { return PropertiesService.getScriptProperties().getProperty(k) || ""; }
 function lCfg_() { return parseLeadsConfig(lProp_("CONFIG_JSON")); }
@@ -36,6 +37,7 @@ function setupLeads() {
   if (cfg.email.enabled) ScriptApp.newTrigger("checkMail").timeBased().everyMinutes(5).create();
   ScriptApp.newTrigger("morningDigest").timeBased().atHour(cfg.digestHour || 8).everyDays(1).create();
   ScriptApp.newTrigger("onFormSubmitLead").forSpreadsheet(lBook_()).onFormSubmit().create();
+  setupQuickAddForm();
   return "ok";
 }
 
@@ -130,21 +132,48 @@ function doPost(e) {
   } finally { lock.releaseLock(); }
 }
 
-/* Google Form "quick add" (phone calls, WhatsApp you typed in yourself) */
+/* Google Form "quick add" (phone calls, WhatsApp, Instagram or Facebook chats you typed in yourself) */
 var L_CH_WORDS = { phone: /tel|phone|anruf|звон|дзвін|телеф/i, whatsapp: /whats/i, instagram: /insta/i, telegram: /telegr/i, facebook: /face/i, email: /mail|почт|пошт/i, site: /site|сайт|web/i };
 function formToLead(named, cfg) {
-  var lead = { channel: "phone", name: "", contact: "", what: "", when: "" };
+  var lead = { channel: "phone", name: "", contact: "", what: "", when: "" }, raw = "";
   Object.keys(named || {}).forEach(function (q) {
     var v = String((named[q] || [])[0] || "").trim();
     if (!v) return;
     if (/kanal|channel|откуда|звідки/i.test(q)) { for (var c in L_CH_WORDS) if (L_CH_WORDS[c].test(v)) { lead.channel = c; break; } return; }
     var f = fieldOf_(q);
-    if (f === "phone") { var p = lNormPhone(v, cfg.countryCode); lead.contact = p ? "+" + p : v; lead.open = p ? "https://wa.me/" + p : ""; }
-    else if (f === "email") { if (!lead.contact) lead.contact = v; }
+    if (f === "phone" || f === "contact") raw = raw || v;
+    else if (f === "email") { if (!raw) raw = v; }
     else if (f) lead[f] = lClean(v, f === "what" ? 300 : 60);
   });
+  var cl = contactLink(lead.channel, raw, cfg);
+  lead.contact = cl.contact; lead.open = cl.open;
+  if (!lead.open && lead.channel === "facebook") lead.open = cfg.quickAdd.facebookInbox || "";
   lead.externalId = lead.contact || lead.name;
   return lead;
+}
+
+/* Creates the quick-add Google Form once (answers land in this spreadsheet, onFormSubmitLead turns them into rows).
+ * Returns the form link: put it on the phone home screen next to the list. */
+function setupQuickAddForm() {
+  var cfg = lCfg_(), p = PropertiesService.getScriptProperties();
+  if (cfg.quickAdd.enabled === false) return "";
+  var form = null, id = lProp_("QUICK_FORM_ID");
+  if (id) { try { form = FormApp.openById(id); } catch (e) { form = null; } }
+  if (!form) {
+    var spec = quickAddSpec(cfg);
+    form = FormApp.create(spec.title);
+    spec.items.forEach(function (q) {
+      var it = q.type === "choice" ? form.addMultipleChoiceItem() : q.type === "paragraph" ? form.addParagraphTextItem() : form.addTextItem();
+      it.setTitle(q.title).setRequired(!!q.required);
+      if (q.choices) it.setChoiceValues(q.choices);
+      if (q.help) it.setHelpText(q.help);
+    });
+    form.setDestination(FormApp.DestinationType.SPREADSHEET, lBook_().getId());
+    p.setProperty("QUICK_FORM_ID", form.getId());
+  }
+  var url = form.getPublishedUrl();
+  p.setProperty("QUICK_FORM_URL", url);
+  return url;
 }
 function onFormSubmitLead(e) {
   var cfg = lCfg_(), now = new Date();

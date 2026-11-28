@@ -10,6 +10,8 @@
    2. New review -> reply draft from the LLM (rules in Core.gs buildReplyPrompt) -> checked by checkReply.
    3. One mail to the operator per run with all drafts. Stars <= alert_max_stars: also a Telegram message at once,
       and (notify_owner) a mail to the owner. Every draft carries a wa.me link that opens WhatsApp to the owner with the draft.
+      Places shows more ratings than it returns: the owner (owner_drafts or notify_owner) gets a heads-up with the Maps
+      link, so a new review is never missed silently. Turn off per client with "owner_heads_up": false.
    4. Source "gbp" only: an approve link. Click it after the owner said yes, and the reply is posted on Google.
 
    Script Properties (Project settings > Script properties). Secrets ONLY here, never in the code or the repo:
@@ -297,8 +299,20 @@ function ownerText_(biz, it) {
   var r = it.review, d = it.draft;
   return "New Google review / Neue Bewertung, " + (r.rating || "?") + "/5, " + (r.author || "") + ":\n" + (r.text || "(only stars)") +
     "\n\n" + (biz.owner_drafts && d.reply ? "Reply draft, check it and paste it under the review:\n" + d.reply + (d.problems && d.problems.length ? "\n(CHECK: " + d.problems.join("; ") + ")" : "") +
-    "\n\nWhere: Google Maps app > You > Your business > Reviews, or " + mapsUrl(biz) : "Mikhail will send you a reply draft on WhatsApp.");
+    "\n\nWhere: Google Maps app > You > Your business > Reviews, or " + mapsUrl(biz) :
+      biz.owner_drafts ? "No draft this time. Please look on Google Maps and reply there: " + mapsUrl(biz) : "Mikhail will send you a reply draft on WhatsApp.");
 }
+
+/* heads-up for the owner when Places shows more ratings than it lets us read (it returns at most 5 reviews).
+   The owner learns that something new came in and where to look, so a new bad review is not missed silently. */
+function ownerHeadsUpText_(biz, ro) {
+  return "New Google rating(s) / Neue Bewertung(en): " + ro.added +
+    (ro.avg ? ", about " + ro.avg + " stars / ca. " + ro.avg + " Sterne" + (ro.sure ? "" : " (rough / grob)") : "") + ".\n" +
+    "The text is not visible to the watcher yet. Please look on Google Maps and reply there if needed.\n" +
+    "Der Text ist für den Wächter noch nicht sichtbar. Bitte in Google Maps nachsehen und dort antworten.\n" + mapsUrl(biz);
+}
+
+function wantsHeadsUp_(biz) { return biz.owner_heads_up !== false && !!(biz.owner_drafts || biz.notify_owner); }
 
 function isBad_(biz, it) { return (it.review.rating || 5) <= (biz.alert_max_stars || 3); }
 
@@ -329,6 +343,11 @@ function watchAll() {
       if (biz.owner_email) safe("Owner mail", function () { MailApp.sendEmail(biz.owner_email, "Neue Google-Bewertung " + it.review.rating + "/5: " + biz.name, body); });
       if (biz.owner_telegram_chat_id) safe("Owner Telegram", function () { telegram_(body, biz.owner_telegram_chat_id); });
     });
+    if (res.ratingsOnly && res.ratingsOnly.added > 0 && wantsHeadsUp_(biz)) {
+      var hu = ownerHeadsUpText_(biz, res.ratingsOnly);
+      if (biz.owner_email) safe("Owner heads-up mail", function () { MailApp.sendEmail(biz.owner_email, "Neue Google-Bewertung: " + biz.name, hu); });
+      if (biz.owner_telegram_chat_id) safe("Owner heads-up Telegram", function () { telegram_(hu, biz.owner_telegram_chat_id); });
+    }
   });
   try { pruneDrafts_(); } catch (e) { /* not important for this run */ }
   var worth = results.filter(function (r) { return r.items.length || r.ratingsOnly || r.error || r.first; });

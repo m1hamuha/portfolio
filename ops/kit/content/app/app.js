@@ -98,6 +98,7 @@ async function onFiles(list) {
   say(t.writing);
   const { status, data } = await api("/api/caption", { images: ready.slice(0, 3).map((r) => ({ media_type: "image/jpeg", data: r.small })), note: $("note").value });
   if (status === 429) say(t.limit);
+  else if (status === 402) say(t.term);
   else if (status !== 200 || !data.caption) say(t.noText);
   else {
     $("caption").value = [data.caption, (data.hashtags || []).join(" ")].filter(Boolean).join("\n\n");

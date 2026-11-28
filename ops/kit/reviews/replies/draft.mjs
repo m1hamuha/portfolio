@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /* Reply drafts for Google reviews.
    node replies/draft.mjs <business.json> <reviews.json> [--out drafts.md]
-   node replies/draft.mjs <business.json> --image screenshot.jpg [--note "what happened"] [--out drafts.md]
+   node replies/draft.mjs <business.json> --image screenshot.jpg [--note "what happened"] [--out drafts.md] [--force]
+     --image works only while "screenshots_until" (YYYY-MM-DD) in business.json is not past: cafe gets 30 days of screenshots.
    reviews.json: [{ "author": "Anna", "rating": 2, "text": "...", "owner_note": "cook was ill, now two cooks" }]
    Needs ANTHROPIC_API_KEY in the environment (or LLM_PROVIDER=mock for a dry run). Nothing is posted anywhere:
    you read the drafts, send bad-review drafts to the owner, then paste them on Google yourself. */
@@ -11,6 +12,22 @@ import { buildReplyPrompt, parseModelJson, checkReply, waLink } from "../lib/cor
 import { makeLLM } from "../lib/llm.mjs";
 
 const MEDIA = { ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".webp": "image/webp", ".gif": "image/gif" };
+
+/* cafe and similar: screenshot drafts are part of the one-time price only for a set window (30 days from the order).
+   business.json: "screenshots_until": "YYYY-MM-DD" (last day included). No field: no window, not a screenshot client. */
+export function screenshotWindow(biz, now = new Date()) {
+  const until = biz.screenshots_until;
+  if (!until) return { open: false, until: null, reason: "no screenshots_until in business.json" };
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(until)) return { open: false, until, reason: "screenshots_until must be YYYY-MM-DD" };
+  const end = new Date(until + "T23:59:59Z");
+  return end >= now ? { open: true, until } : { open: false, until, reason: `screenshot window ended on ${until}` };
+}
+
+export function untilFromStart(start, days = 30) {
+  const d = new Date(start + "T00:00:00Z");
+  d.setUTCDate(d.getUTCDate() + days - 1);
+  return d.toISOString().slice(0, 10);
+}
 
 export async function draftOne(biz, review, llm, image) {
   const p = buildReplyPrompt(biz, image ? { ...review, text: review.text || "(the review is in the attached screenshot: read the author, the stars and the text from it)" } : review);
@@ -60,6 +77,11 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   let drafts;
   const img = arg("--image");
   if (img) {
+    const w = screenshotWindow(biz);
+    if (!w.open && !process.argv.includes("--force")) {
+      console.error(`not drafting: ${w.reason}. New reviews after the window come by the watcher (owner_drafts). --force to draft anyway.`);
+      process.exit(3);
+    }
     const data = fs.readFileSync(img).toString("base64");
     drafts = [await draftOne(biz, { owner_note: arg("--note") || "" }, llm, { media_type: MEDIA[path.extname(img).toLowerCase()] || "image/jpeg", data })];
   } else {

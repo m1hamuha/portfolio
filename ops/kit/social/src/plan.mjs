@@ -3,6 +3,24 @@ import { NICHES } from "./niches.mjs";
 
 const WD = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 
+/* Tariffs as on the site (v-fast/app.js, ORD.plan1..3). per_week caps a weekly range, max_month caps a month,
+   usual is the default posts_per_month. plan1 (€10, "twice a week") = about 8 posts a month, never 12. */
+export const PLANS = {
+  plan1: { price_eur: 10, per_week: 2, max_month: 9, usual: 8 },
+  plan2: { price_eur: 25, per_week: 4, max_month: 15, usual: 13 },
+  plan3: { price_eur: 40, per_week: 7, max_month: 31, usual: 30 },
+};
+
+/* how many posts the client's tariff allows in this period (Infinity if no tariff is set) */
+export function planCap(client, period) {
+  const pl = PLANS[client.plan];
+  if (!pl) return Infinity;
+  if (/^\d{4}-\d{2}$/.test(period)) return pl.max_month;
+  const [from, to] = periodRange(period);
+  const days = Math.round((Date.parse(to) - Date.parse(from)) / 86400000) + 1;
+  return Math.ceil(days / 7) * pl.per_week;
+}
+
 /* period: "YYYY-MM" (a month) or "YYYY-MM-DD..YYYY-MM-DD" (a week or any range, both days included) */
 export function periodRange(period) {
   const p = String(period || "");
@@ -53,9 +71,12 @@ export function buildPlan(client, period, inbox = { photos: [], free: [] }) {
   const closed = new Set((client.special_dates || []).filter((x) => x.closed).map((x) => x.date));
   const candidates = periodDates(period, s.weekdays || ["tue", "fri"]).filter((d) => !closed.has(d));
   const isMonth = /^\d{4}-\d{2}$/.test(period);
-  const want = Math.min(isMonth ? s.posts_per_month || candidates.length : candidates.length, candidates.length);
-  const dates = spread(candidates, want);
+  const cap = planCap(client, period);
+  const asked = isMonth ? s.posts_per_month || (PLANS[client.plan] || {}).usual || candidates.length : candidates.length;
   const warnings = [];
+  if (asked > cap) warnings.push(`${client.plan} allows ${cap} posts in ${period}, not ${asked}: offer the next tariff`);
+  const want = Math.min(asked, cap, candidates.length);
+  const dates = spread(candidates, want);
   if (isMonth && s.posts_per_month && candidates.length < s.posts_per_month) warnings.push(`only ${dates.length} posting days in ${period}; add weekdays`);
 
   const photos = inbox.photos || [];

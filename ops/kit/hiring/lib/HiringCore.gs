@@ -4,7 +4,7 @@
 var HIRE_LANGS = ["de", "en", "ru", "uk"];
 
 /* ---------- question library: short, job-related, allowed under AGG and GDPR ---------- */
-/* type: text | para | choice | date. "opts" are per language. Never ask age, photo, gender, origin, religion,
+/* type: text | para | choice | checkbox | date. "opts" are per language. Never ask age, photo, gender, origin, religion,
    family, pregnancy, health, union membership. File upload is not used: in Google Forms it forces a Google login. */
 var Q_LIB = {
   name:       { type: "text", req: true,  de: "Vor- und Nachname", en: "First and last name", ru: "Имя и фамилия", uk: "Ім'я та прізвище" },
@@ -30,6 +30,9 @@ var Q_LIB = {
                 opts: { de: ["Ja", "Nein / unklar"], en: ["Yes", "No / not sure"], ru: ["Да", "Нет / не уверен(а)"], uk: ["Так", "Ні / не впевнений(а)"] } },
   work_link:  { type: "text", req: false, de: "Link zu Fotos oder Video deiner Arbeit (optional, z. B. Instagram, Google Drive)", en: "Link to photos or a video of your work (optional, e.g. Instagram, Google Drive)",
                 ru: "Ссылка на фото или видео работ (необязательно, например Instagram, Google Drive)", uk: "Посилання на фото або відео робіт (необов'язково, наприклад Instagram, Google Drive)" },
+  days:       { type: "checkbox", req: true, de: "An welchen Tagen kannst du einspringen?", en: "Which days can you step in?", ru: "В какие дни можешь выйти на замену?", uk: "У які дні можеш вийти на заміну?",
+                opts: { de: ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"], en: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+                        ru: ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"], uk: ["Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота", "Неділя"] } },
   about:      { type: "para", req: false, de: "Ein, zwei Sätze über dich", en: "One or two lines about you", ru: "Пара слов о себе", uk: "Кілька слів про себе" },
   consent:    { type: "choice", req: true, de: "Datenschutz: Ich habe den Hinweis oben gelesen.", en: "Privacy: I have read the notice above.", ru: "Конфиденциальность: я прочитал(а) текст выше.", uk: "Конфіденційність: я прочитав(ла) текст вище.",
                 opts: { de: ["Ja"], en: ["Yes"], ru: ["Да"], uk: ["Так"] } }
@@ -199,7 +202,54 @@ function validateHiringConfig(cfg) {
   if (cfg.form && cfg.form.questions && cfg.form.questions.length > 8) e.push("max 8 questions (2 minutes)");
   if ((cfg.form && cfg.form.questions || []).indexOf("hours") >= 0 && !cfg.form.shift) e.push("hours question needs form.shift");
   if ((cfg.form && cfg.form.questions || []).indexOf("certificate") >= 0 && !cfg.form.cert) e.push("certificate question needs form.cert");
+  if (cfg.standby) {
+    if ((cfg.form && cfg.form.questions || []).indexOf("area") < 0 || cfg.form.questions.indexOf("days") < 0) e.push("standby list needs the questions area and days");
+    if (cfg.standby.areas && !Array.isArray(cfg.standby.areas)) e.push("standby.areas must be a list");
+  }
   if (!cfg.notify || ["email", "none"].indexOf(cfg.notify.mode) < 0) e.push("notify.mode must be email|none");
   if (cfg.notify && cfg.notify.mode === "email" && !cfg.notify.to) e.push("notify.to missing");
   return e;
+}
+
+/* ---------- stand-in list (cleaning: who to call when someone is ill) ---------- */
+/* rows: [{name, phone, area, days, start, fits, ts}] from the answers sheet; days = "Montag, Freitag" or an array.
+   cfg.standby: {areas: ["Nord", "Mitte"]} = your areas, nearest first. Sorted: free today first, then by your
+   area order (others last), then newest answer first. Only people with a phone number are listed. */
+function weekdayLabel(today, L) {
+  var d = new Date(Date.parse(String(today).slice(0, 10) + "T12:00:00Z")).getUTCDay(); // 0 = Sunday
+  return Q_LIB.days.opts[L || "de"][(d + 6) % 7];
+}
+
+function standbyList(rows, cfg, today) {
+  var L = cfg.form.lang || "de";
+  var wd = weekdayLabel(today, L).toLowerCase();
+  var areas = ((cfg.standby && cfg.standby.areas) || []).map(function (a) { return String(a).toLowerCase(); });
+  var rank = function (area) {
+    var a = String(area || "").toLowerCase();
+    for (var i = 0; i < areas.length; i++) if (areas[i] && a.indexOf(areas[i]) >= 0) return i;
+    return areas.length;
+  };
+  var list = rows.filter(function (r) { return String(r.phone || "").trim(); }).map(function (r) {
+    var days = Array.isArray(r.days) ? r.days : String(r.days || "").split(/\s*,\s*/).filter(String);
+    return { name: r.name, phone: r.phone, area: r.area, days: days, today: days.some(function (x) { return String(x).toLowerCase() === wd; }), rank: rank(r.area), ts: String(r.ts || ""), fits: r.fits !== false };
+  });
+  list.sort(function (a, b) {
+    if (a.today !== b.today) return a.today ? -1 : 1;
+    if (a.rank !== b.rank) return a.rank - b.rank;
+    return a.ts < b.ts ? 1 : a.ts > b.ts ? -1 : 0;
+  });
+  return { weekday: weekdayLabel(today, L), rows: list };
+}
+
+/* Tab text in the owner's language */
+var STANDBY_TXT = {
+  ru: { tab: "Список замены", head: ["Сегодня свободна", "Имя", "Телефон", "Район", "Свободные дни"], yes: "да" },
+  uk: { tab: "Список заміни", head: ["Сьогодні вільна", "Ім'я", "Телефон", "Район", "Вільні дні"], yes: "так" },
+  de: { tab: "Ersatzliste", head: ["Heute frei", "Name", "Telefon", "Gegend", "Freie Tage"], yes: "ja" },
+  en: { tab: "Stand-in list", head: ["Free today", "Name", "Phone", "Area", "Free days"], yes: "yes" }
+};
+
+function standbyTable(list, ownerLang) {
+  var t = STANDBY_TXT[ownerLang] || STANDBY_TXT.de;
+  return [t.head].concat(list.rows.map(function (r) { return [r.today ? t.yes : "", r.name, r.phone, r.area, r.days.join(", ")]; }));
 }

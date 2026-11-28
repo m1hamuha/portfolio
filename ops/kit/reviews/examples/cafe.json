@@ -30,5 +30,6 @@
   "notify_owner": false,
   "color": "#3f6b2f",
   "owner_drafts": true,
-  "owner_telegram_chat_id": "000000000"
+  "owner_telegram_chat_id": "000000000",
+  "screenshots_until": "2026-12-26"
 }

@@ -1,0 +1,11 @@
+{
+  "id": "other-example",
+  "niche": "other",
+  "name": "Massage Beispiel (example)",
+  "languages": ["de", "en"],
+  "default_lang": "de",
+  "currency": "EUR",
+  "hours": { "mon": ["09:00-18:00"], "tue": ["09:00-18:00"], "wed": ["09:00-18:00"], "thu": ["09:00-18:00"], "fri": ["09:00-16:00"], "sat": [], "sun": [] },
+  "services": [ { "id": "s60", "name": { "de": "Termin 60 Min", "en": "Session 60 min" }, "price": 40 } ],
+  "autoreply": { "link": "https://cal.com/EXAMPLE", "next_open": { "de": "9 Uhr", "en": "9 am" } }
+}

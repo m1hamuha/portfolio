@@ -16,6 +16,7 @@ import { makeClip, makeSlideshow, frameAt, probe, hasFfmpeg, makeSrt, noteWithou
 import { access } from "node:fs/promises";
 import { computeParams, statsFromPixels } from "../app/enhance.js";
 import { captionFor } from "../core/captions.mjs";
+import { bill } from "../pipeline/price.mjs";
 import MSG from "../templates/messages.json" with { type: "json" };
 
 export function args(argv) {
@@ -92,6 +93,7 @@ export async function runBatch(a, env = process.env, fetchImpl = globalThis.fetc
         outputs = r.files;
         storyFiles.push(...r.files.filter((f) => f.endsWith("_story.jpg")));
         if (r.lowRes) extra.warning = "low resolution source, ask for the original";
+        if (bgStep && bgStep.kept.includes(path)) extra.background = "kept";
         image = llm && llm.vision ? await modelCopy(path) : null;
       } else {
         if (!ff) throw new Error("ffmpeg not installed");
@@ -138,9 +140,13 @@ export async function runBatch(a, env = process.env, fetchImpl = globalThis.fetc
   const flagged = items.filter((i) => i.problems && i.problems.length).length + errors.length;
   const key = { whatsapp: "delivery_whatsapp", link: "delivery_link", drive: "delivery_drive" }[client.delivery || "whatsapp"] || "delivery_whatsapp";
   let text = message(key, lang, { n: photos, clips, link: a.link || "{link}" });
+  const kept = items.filter((i) => i.background === "kept").length;
+  if (kept) text += "\n" + message("background_kept", lang, { kept });
+  const b = bill(items, c.prices);
+  text += "\n" + message("bill", lang, { ...b, pp: b.prices.photo, pc: b.prices.clip, ps: b.prices.clip_subtitled });
   if (flagged) text += "\n" + message("flagged_note", lang, { flagged });
   await writeFile(join(a.out, "message.txt"), text + "\n");
-  return { items, skipped, errors, message: text };
+  return { items, skipped, errors, bill: b, message: text };
 }
 
 const isMain = import.meta.url === `file://${process.argv[1]}`;

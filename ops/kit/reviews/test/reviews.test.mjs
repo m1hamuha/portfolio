@@ -264,3 +264,35 @@ test("no long dashes in any kit file", () => {
   const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? (e.name === "vendor" ? [] : walk(path.join(d, e.name))) : [path.join(d, e.name)]));
   for (const f of walk(kit)) assert.ok(!LONG_DASH.test(fs.readFileSync(f, "utf8")), f);
 });
+
+test("watcher (Places): owner gets a heads-up when new ratings are not readable, can be turned off", () => {
+  const run = (biz) => {
+    const g = loadGas(GS, {
+      props: { CLIENTS_JSON: JSON.stringify([biz]), PLACES_API_KEY: "k", OPERATOR_EMAIL: "op@example.com", "state:praxis-zahn": JSON.stringify({ seen: ["a"], rating: 4.8, count: 10 }) },
+      fetch: () => placesBody(12, 4.5, [{ id: "a", rating: 5, text: "Gut", author: "A" }]),
+    });
+    g.ctx.watchAll();
+    return g.log.mail;
+  };
+  const mail = run(clinic);
+  const owner = mail.find((m) => m.to === clinic.owner_email);
+  assert.ok(owner, "clinic owner gets a heads-up");
+  assert.match(owner.body, /New Google rating\(s\) \/ Neue Bewertung\(en\): 2/);
+  assert.match(owner.body, /https:\/\/www\.google\.com\/maps/);
+  assert.ok(!LONG_DASH.test(owner.body));
+  assert.match(mail.find((m) => m.to === "op@example.com").body, /2 new rating\(s\) not visible/);
+  assert.equal(run({ ...clinic, owner_heads_up: false }).filter((m) => m.to === clinic.owner_email).length, 0);
+  assert.equal(run({ ...clinic, owner_drafts: false, notify_owner: false }).filter((m) => m.to === clinic.owner_email).length, 0);
+});
+
+test("cafe screenshot drafts only inside the paid window", async () => {
+  const { screenshotWindow, untilFromStart } = await import("../replies/draft.mjs");
+  assert.equal(untilFromStart("2026-11-27", 30), "2026-12-26");
+  assert.equal(cafe.screenshots_until, "2026-12-26");
+  assert.equal(screenshotWindow(cafe, new Date("2026-12-26T20:00:00Z")).open, true);
+  const after = screenshotWindow(cafe, new Date("2026-12-27T08:00:00Z"));
+  assert.equal(after.open, false);
+  assert.match(after.reason, /ended on 2026-12-26/);
+  assert.equal(screenshotWindow(salon).open, false, "no window set: no screenshot service");
+  assert.equal(screenshotWindow({ screenshots_until: "26.12.2026" }).open, false);
+});

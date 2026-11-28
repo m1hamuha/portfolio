@@ -1,0 +1,15 @@
+{
+  "id": "salon-example",
+  "niche": "salon",
+  "name": "Nagelstudio Beispiel (example)",
+  "languages": ["de", "ru", "uk", "en"],
+  "default_lang": "de",
+  "currency": "EUR",
+  "hours": { "mon": [], "tue": ["10:00-19:00"], "wed": ["10:00-19:00"], "thu": ["10:00-20:00"], "fri": ["10:00-19:00"], "sat": ["10:00-15:00"], "sun": [] },
+  "services": [
+    { "id": "manicure", "name": { "de": "Maniküre", "en": "Manicure", "ru": "Маникюр", "uk": "Манікюр" }, "price": 35 },
+    { "id": "haircut", "name": { "de": "Haarschnitt Damen", "en": "Women's haircut", "ru": "Женская стрижка", "uk": "Жіноча стрижка" }, "price": 39, "price_from": true },
+    { "id": "massage60", "name": { "de": "Rückenmassage 60 Min", "en": "Back massage 60 min", "ru": "Массаж спины 60 мин", "uk": "Масаж спини 60 хв" }, "price": 55 }
+  ],
+  "autoreply": { "link": "https://calendar.app.google/EXAMPLE" }
+}

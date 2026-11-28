@@ -97,6 +97,8 @@ var REPORT_TEXTS = {
     one_more: " (на {d} больше, чем в прошлом месяце)",
     one_less: " (на {d} меньше, чем в прошлом месяце)",
     one_note: "Это обзор для тебя, не для налоговой.",
+    one_bad: "Файл {file} не прочитан: это не CSV-выписка твоего банка. Положи в папку CSV из онлайн-банка.",
+    one_empty: "За {month} в таблице ещё нет платежей. Положи файл CSV из онлайн-банка в папку {folder}, страница придёт письмом на следующее утро.",
     rem1: "Здравствуйте, {client}! Напоминаю про счёт {no} на {amount} от {issued}. Срок оплаты был {due}. Если уже оплатили, спасибо, тогда это сообщение можно не читать. {owner}",
     rem2: "Здравствуйте, {client}. Счёт {no} на {amount} пока не оплачен, просрочка {days} дн. Пожалуйста, переведите сумму в ближайшие дни или напишите, если что-то не так со счётом. {owner}",
     rem3: "{client}, счёт {no} на {amount} просрочен на {days} дн. Прошу оплатить до {deadline}. Если оплата не придёт, мне придётся передать вопрос дальше. {owner}"
@@ -119,7 +121,9 @@ var REPORT_TEXTS = {
     rem3: "{client}, рахунок {no} на {amount} прострочений на {days} дн. Прошу оплатити до {deadline}. Якщо оплата не надійде, мені доведеться передати питання далі. {owner}",
     one_in: "Надійшло: {v}", one_out: "Витрачено: {v}", one_left: "Залишилось: {v}",
     one_more: " (на {d} більше, ніж минулого місяця)", one_less: " (на {d} менше, ніж минулого місяця)",
-    one_note: "Це огляд для тебе, не для податкової."
+    one_note: "Це огляд для тебе, не для податкової.",
+    one_bad: "Файл {file} не прочитано: це не CSV-виписка твого банку. Поклади в папку CSV з онлайн-банку.",
+    one_empty: "За {month} у таблиці ще немає платежів. Поклади файл CSV з онлайн-банку в папку {folder}, сторінка прийде листом наступного ранку."
   },
   de: {
     stock_line: "{name}: {used} {unit}, geplant {plan} {unit}, {cost}",
@@ -137,6 +141,8 @@ var REPORT_TEXTS = {
     one_in: "Eingang: {v}", one_out: "Ausgang: {v}", one_left: "Übrig: {v}",
     one_more: " ({d} mehr als im Vormonat)", one_less: " ({d} weniger als im Vormonat)",
     one_note: "Übersicht für dich, keine Buchhaltung.",
+    one_bad: "Die Datei {file} ließ sich nicht lesen: kein CSV-Export deiner Bank. Leg die CSV-Datei aus dem Online-Banking in den Ordner.",
+    one_empty: "Für {month} sind noch keine Zahlungen in der Tabelle. Leg die CSV-Datei aus deinem Online-Banking in den Ordner {folder}, die Seite kommt am nächsten Morgen per Mail.",
     rem1: "Guten Tag {client}, eine kurze Erinnerung an die Rechnung {no} über {amount} vom {issued}, fällig am {due}. Falls Sie schon bezahlt haben, vielen Dank und bitte ignorieren Sie diese Nachricht. {owner}",
     rem2: "Guten Tag {client}, die Rechnung {no} über {amount} ist seit {days} Tagen offen. Bitte überweisen Sie den Betrag in den nächsten Tagen oder melden Sie sich, falls etwas an der Rechnung nicht stimmt. {owner}",
     rem3: "Guten Tag {client}, die Rechnung {no} über {amount} ist seit {days} Tagen überfällig. Bitte zahlen Sie bis zum {deadline}. Danach muss ich weitere Schritte einleiten. {owner}"
@@ -157,6 +163,8 @@ var REPORT_TEXTS = {
     one_in: "Came in: {v}", one_out: "Went out: {v}", one_left: "Left: {v}",
     one_more: " ({d} more than last month)", one_less: " ({d} less than last month)",
     one_note: "An overview for you, not for taxes.",
+    one_bad: "The file {file} could not be read: it is not a CSV export from your bank. Put the CSV from online banking into the folder.",
+    one_empty: "No payments for {month} in the sheet yet. Put the CSV file from your online banking into the folder {folder}, the page comes by email the next morning.",
     rem1: "Hi {client}, a quick reminder about invoice {no} for {amount} from {issued}, due on {due}. If you have already paid, thank you and please ignore this. {owner}",
     rem2: "Hi {client}, invoice {no} for {amount} is now {days} days overdue. Please transfer the amount in the next few days, or tell me if something is wrong with the invoice. {owner}",
     rem3: "Hi {client}, invoice {no} for {amount} is {days} days overdue. Please pay by {deadline}. After that I will have to take further steps. {owner}"
@@ -440,6 +448,23 @@ function csvToObjects(text, map, delimiter) {
 }
 
 /* ---------- other: bank statement -> one page a month ---------- */
+/* cfg.bank_csv is one profile {map, delimiter, encoding, name} or a list of them (two banks with different
+   exports). For each file the first profile whose columns are all found is used. readText(encoding) gives the
+   file text in that encoding. Returns {profile, rows}; throws if no profile fits. */
+function bankProfiles(cfg) { return [].concat(cfg.bank_csv || []); }
+
+function bankCsvRows(readText, profiles) {
+  var errs = [];
+  for (var i = 0; i < profiles.length; i++) {
+    var p = profiles[i];
+    try {
+      var rows = csvToObjects(readText(p.encoding || "UTF-8"), p.map, p.delimiter);
+      return { profile: p.name || String(i + 1), rows: rows };
+    } catch (e) { errs.push((p.name || String(i + 1)) + ": " + e.message); }
+  }
+  throw new Error("bank file matches no bank_csv profile (" + errs.join("; ") + ")");
+}
+
 /* rules: [{cat: "rent", any: ["miete", "hausverwaltung"]}, ...] matched against payee + purpose, lower case.
    tx: [{date, amount (+ in, - out), payee, purpose}] */
 function categorize(tx, rules, fallbackIn, fallbackOut) {
@@ -498,6 +523,12 @@ function onePageText(sm, lang, catNames, title) {
   return lines.join("\n");
 }
 
+/* nothing for the month yet (the client has not added the bank file): say so instead of a page of zeros */
+function emptyMonthText(month, lang, folderName, title) {
+  var t = rt(lang, "one_empty", { month: month, folder: folderName || "" }).replace(" ,", ",");
+  return (title ? title + " " + month + "\n" : "") + t;
+}
+
 /* config check used by setup and tests */
 function validateReportConfig(cfg) {
   var errs = [];
@@ -511,6 +542,11 @@ function validateReportConfig(cfg) {
   if (cfg.kind === "cash" && !(cfg.cleaners && cfg.cleaners.length)) errs.push("cash needs cleaners");
   if (cfg.kind === "reorder" && !cfg.till) errs.push("reorder needs till");
   if (cfg.kind === "monthly" && !(cfg.rules && cfg.rules.length)) errs.push("monthly needs rules");
+  if (cfg.kind === "monthly") {
+    var bp = bankProfiles(cfg);
+    if (!bp.length) errs.push("monthly needs bank_csv (one profile or a list, one per bank)");
+    bp.forEach(function (p, i) { ["date", "amount"].forEach(function (k) { if (!p.map || !p.map[k]) errs.push("bank_csv[" + i + "].map." + k + " missing"); }); });
+  }
   if (cfg.owner_email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(cfg.owner_email)) errs.push("owner_email looks wrong");
   return errs;
 }

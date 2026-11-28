@@ -1,0 +1,11 @@
+{
+  "id": "cafe-example",
+  "niche": "cafe",
+  "name": "Café Beispiel (example)",
+  "languages": ["de", "en"],
+  "default_lang": "de",
+  "currency": "EUR",
+  "hours": { "mon": [], "tue": ["12:00-22:00"], "wed": ["12:00-22:00"], "thu": ["12:00-22:00"], "fri": ["12:00-23:00"], "sat": ["10:00-23:00"], "sun": ["10:00-16:00"] },
+  "services": [],
+  "autoreply": { "channels": ["whatsapp", "instagram"] }
+}

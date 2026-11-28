@@ -1,8 +1,29 @@
 {
   "niche": "other",
-  "business": { "name": "Schneiderei Nadel (example)", "lang": "ru" },
-  "email": { "enabled": true, "query": "in:inbox newer_than:2d -category:promotions -category:social -category:updates", "formSenders": [] },
-  "llm": { "enabled": true, "provider": "anthropic", "model": "claude-haiku-5-5" },
-  "notify": { "telegramChatIds": [], "detail": "full" },
-  "_worker": "WhatsApp (Cloud API, coexistence) via /meta and Telegram business chats via /telegram"
+  "business": {
+    "name": "Schneiderei Nadel (example)",
+    "lang": "ru"
+  },
+  "email": {
+    "enabled": true,
+    "query": "in:inbox newer_than:2d -category:promotions -category:social -category:updates",
+    "formSenders": []
+  },
+  "llm": {
+    "enabled": true,
+    "provider": "anthropic",
+    "model": "claude-haiku-5-5"
+  },
+  "notify": {
+    "telegramChatIds": [],
+    "detail": "full"
+  },
+  "_worker": "Telegram business chats via ../worker /telegram. WhatsApp chats through the quick-add form; WhatsApp via /meta only as a paid upgrade (Cloud API number with coexistence at a partner).",
+  "quickAdd": {
+    "channels": [
+      "whatsapp",
+      "phone",
+      "instagram"
+    ]
+  }
 }

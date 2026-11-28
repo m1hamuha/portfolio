@@ -53,5 +53,29 @@
     "uk": "Як користуватися: відкрий застосунок, «Вибрати фото», познач до 10 знімків. За хвилину готово: світлі фото й підпис. «Зберегти все» кладе фото в галерею, «Копіювати текст» копіює підпис. «Ролик» робить коротке відео з вибраних фото.",
     "de": "So geht's: App öffnen, \"Fotos wählen\", bis zu 10 Bilder markieren. Nach etwa einer Minute: helle Fotos und ein Text. \"Alle sichern\" legt die Fotos in die Galerie, \"Text kopieren\" kopiert den Text. \"Clip\" macht ein kurzes Video aus den Fotos.",
     "en": "How to use it: open the app, \"Pick photos\", choose up to 10. In about a minute: bright photos and a caption. \"Save all\" puts the photos in your gallery, \"Copy text\" copies the caption. \"Clip\" makes a short video from the photos."
+  },
+  "price_rule": {
+    "ru": "Цена: 1 € за фото, 1 € за ролик до 15 секунд без субтитров, 3 € за ролик с субтитрами. Ролик из твоих фото (слайд-шоу) бесплатно.",
+    "uk": "Ціна: 1 € за фото, 1 € за ролик до 15 секунд без субтитрів, 3 € за ролик із субтитрами. Ролик із твоїх фото (слайд-шоу) безкоштовно.",
+    "de": "Preis: 1 € pro Foto, 1 € pro Clip bis 15 Sekunden ohne Untertitel, 3 € pro Clip mit Untertiteln. Ein Clip aus deinen Fotos (Diashow) kostet nichts extra.",
+    "en": "Price: €1 per photo, €1 per clip up to 15 seconds without subtitles, €3 per clip with subtitles. A clip made from your photos (slideshow) is free."
+  },
+  "bill": {
+    "ru": "За эту партию: фото {photos} × {pp} €, ролики {clips} × {pc} €, ролики с субтитрами {subtitled} × {ps} €. Итого {total} €.",
+    "uk": "За цю партію: фото {photos} × {pp} €, ролики {clips} × {pc} €, ролики із субтитрами {subtitled} × {ps} €. Разом {total} €.",
+    "de": "Für diese Lieferung: Fotos {photos} × {pp} €, Clips {clips} × {pc} €, Clips mit Untertiteln {subtitled} × {ps} €. Zusammen {total} €.",
+    "en": "For this batch: photos {photos} × €{pp}, clips {clips} × €{pc}, clips with subtitles {subtitled} × €{ps}. Total €{total}."
+  },
+  "background_kept": {
+    "ru": "На {kept} фото фон оставил как был: товар не вырезался чисто (шерсть, бахрома, стекло). Свет поправлен.",
+    "uk": "На {kept} фото фон залишив як був: товар не вирізався чисто (вовна, бахрома, скло). Світло виправлене.",
+    "de": "Bei {kept} Fotos habe ich den Hintergrund gelassen: Die Ware ließ sich nicht sauber freistellen (Wolle, Fransen, Glas). Das Licht ist korrigiert.",
+    "en": "On {kept} photos I kept the background: the item did not cut out cleanly (wool, fringe, glass). The light is fixed."
+  },
+  "app_term": {
+    "ru": "Приложение твоё: фото и ролики в нём работают всегда. Тексты к фото оно пишет до {until}, потом продление по желанию.",
+    "uk": "Застосунок твій: фото й ролики в ньому працюють завжди. Тексти до фото він пише до {until}, потім продовження за бажанням.",
+    "de": "Die App gehört dir: Fotos und Clips gehen darin immer. Texte zu den Fotos schreibt sie bis {until}, danach Verlängerung, wenn du willst.",
+    "en": "The app is yours: photos and clips work in it for good. It writes captions until {until}, then you can extend if you like."
   }
 }

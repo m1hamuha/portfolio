@@ -1,17 +1,64 @@
 {
   "niche": "other",
-  "business": { "name": "Schneiderei Nadel (example)", "ownerEmail": "owner@example.com", "lang": "ru" },
+  "business": {
+    "name": "Schneiderei Nadel (example)",
+    "ownerEmail": "owner@example.com",
+    "lang": "ru"
+  },
   "timezone": "Europe/Berlin",
   "defaultLang": "de",
   "countryCode": "49",
-  "source": { "type": "calendar", "calendarId": "primary" },
-  "reminders": { "enabled": true, "when": "day_before", "kind": "reminder_day_before", "sendHour": 17, "channels": ["whatsapp"], "requireConsent": true },
-  "comeback": { "enabled": true, "kind": "comeback", "afterDays": 30, "maxDays": 90, "sendHour": 11, "channels": ["whatsapp"], "requireMarketingConsent": true },
+  "source": {
+    "type": "calendar",
+    "calendarId": "primary"
+  },
+  "reminders": {
+    "enabled": true,
+    "when": "day_before",
+    "kind": "reminder_day_before",
+    "sendHour": 17,
+    "channels": [
+      "whatsapp"
+    ],
+    "requireConsent": false
+  },
+  "comeback": {
+    "enabled": true,
+    "kind": "comeback",
+    "afterDays": 30,
+    "maxDays": 90,
+    "sendHour": 11,
+    "channels": [
+      "whatsapp"
+    ],
+    "requireMarketingConsent": true
+  },
   "whatsapp": {
-    "mode": "api", "provider": "meta", "graphVersion": "v24.0", "phoneNumberId": "000000000000000",
+    "mode": "assist",
+    "_upgrade": "Paid upgrade, not part of the 19 EUR card: set mode to api with provider 360dialog (coexistence keeps the number in the app). Meta and partner fees are named to the client before.",
+    "provider": "360dialog",
     "templates": {
-      "reminder_day_before": { "name": "reminder_1_2", "params": ["name", "time"] },
-      "comeback": { "name": "comeback_invite", "params": ["name"] }
+      "reminder_day_before": {
+        "name": "reminder_1_2",
+        "params": [
+          "name",
+          "time"
+        ]
+      },
+      "comeback": {
+        "name": "comeback_invite",
+        "params": [
+          "name"
+        ]
+      }
+    }
+  },
+  "texts": {
+    "reminder_day_before": {
+      "ru": "{name}, здравствуйте! Напоминаем: завтра в {time}, {business}. Ответьте 1, если придёте, или 2, чтобы перенести время.",
+      "uk": "{name}, вітаємо! Нагадуємо: завтра о {time}, {business}. Дайте відповідь 1, якщо прийдете, або 2, щоб перенести час.",
+      "de": "Hallo {name}, kurze Erinnerung: morgen um {time} Uhr, {business}. Antworten Sie 1 zum Bestätigen oder 2, um den Termin zu verschieben.",
+      "en": "Hi {name}, a reminder: tomorrow at {time}, {business}. Reply 1 to confirm or 2 to change the time."
     }
   }
 }

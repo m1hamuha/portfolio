@@ -5,8 +5,8 @@ import { readFile, rm } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
-import { periodDates, periodRange, spread, buildPlan } from "../src/plan.mjs";
-import { prices, times, checkCaption, tidy } from "../src/guard.mjs";
+import { periodDates, periodRange, spread, buildPlan, planCap, PLANS } from "../src/plan.mjs";
+import { prices, times, checkCaption, tidy, hasWeightLoss } from "../src/guard.mjs";
 import { systemPrompt, userContent, writeCaption, allowedText } from "../src/captions.mjs";
 import { makeLLM, parseJSON } from "../src/llm.mjs";
 import { parseNotes, parseFree, readInbox, noteFor } from "../src/inbox.mjs";
@@ -176,4 +176,33 @@ test("end to end with mock model: files written, missing photos not captioned", 
   assert.ok(approvalText(cafe, "x", []).startsWith("Пости"));
   assert.match(planCSV([{ n: 1, caption: 'a "b"', hashtags: [] }]), /"a ""b"""/);
   await rm(out, { recursive: true, force: true });
+});
+
+test("plan: tariff caps posts (plan1 = about 8 a month, never 12)", async () => {
+  const other = await load("clients/other-blumen.example.json");
+  assert.equal(other.plan, "plan1");
+  assert.equal(planCap(other, "2026-12"), PLANS.plan1.max_month);
+  const photos = Array.from({ length: 14 }, (_, i) => ({ file: `p${i}.jpg` }));
+  const greedy = { ...other, schedule: { weekdays: ["mon", "tue", "wed", "thu", "fri"], posts_per_month: 12 } };
+  const r = buildPlan(greedy, "2026-12", { photos, free: [] });
+  assert.equal(r.slots.length, 9);
+  assert.ok(r.warnings.some((w) => w.includes("plan1 allows 9")));
+  /* no posts_per_month: the tariff's usual count */
+  const plain = { ...other, schedule: { weekdays: ["mon", "tue", "wed", "thu", "fri"] } };
+  assert.equal(buildPlan(plain, "2026-12", { photos, free: [] }).slots.length, 8);
+  /* a week on plan1: at most 2 posts, even with more weekdays */
+  assert.equal(buildPlan(greedy, "2026-12-07..2026-12-13", { photos, free: [] }).slots.length, 2);
+  /* the example clients stay inside their tariff */
+  for (const f of ["salon-lila", "cafe-tamara", "shop-wollhaus", "fitness-kraft", "other-blumen"]) {
+    const c = await load(`clients/${f}.example.json`);
+    assert.ok(c.schedule.posts_per_month <= planCap(c, "2026-12"), f);
+  }
+});
+
+test("guard: weight-loss numbers in fitness need written consent (CHECK)", () => {
+  for (const t of ["Marina: minus 6 kg!", "Минус 6 кг за 8 недель", "6 kg weniger", "down 3.5 kg", "схудла на 4 кг", "-5kg"]) assert.ok(hasWeightLoss(t), t);
+  for (const t of ["First 60 kg lift", "Маша, первые 60 кг", "Hanteln 8-10 kg", "Kniebeuge mit 40 kg"]) assert.ok(!hasWeightLoss(t), t);
+  const p = checkCaption({ caption: "Marinas Bewertung: minus 6 kg in 8 Wochen." }, { niche: "fitness" });
+  assert.ok(p.some((x) => x.startsWith("weight-loss number")));
+  assert.deepEqual(checkCaption({ caption: "Marina, 8 Wochen dabei. Zum ersten Mal 60 kg." }, { niche: "fitness" }), []);
 });
